@@ -113,10 +113,10 @@ marker_nul='     '
 
 # prompt
 
-console.prompt () {
+frobulate.prompt () {
 	# initialize string return array
 
-	console_str=()
+	frobulate.str=()
 
 	begin="${1}"
 	end="${2}"
@@ -181,197 +181,197 @@ console.prompt () {
 
 	# populate array at end to avoid integrating spaces
 
-	[ $# -ge 0 ] && console_str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -ge 0 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
 
-	[ $# -eq 1 ] && console_str=("${span_begin}")
+	[ $# -eq 1 ] && frobulate.str=("${span_begin}")
 
-	[ $# -ge 2 ] && console_str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -ge 2 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
 
-	[ $# -eq 3 ] && console_str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -eq 3 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
 }
 
 # highlights
 
-console.red () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.red () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${red}${value}${reset}"
 }
 
-console.green () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.green () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${green}${value}${reset}"
 }
 
-console.yellow () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.yellow () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${yellow}${value}${reset}"
 }
 
-console.blue () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.blue () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${blue}${value}${reset}"
 }
 
-console.magenta () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.magenta () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${value}${reset}"
 }
 
-console.cyan () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.cyan () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${cyan}${value}${reset}"
 }
 
 # prompts #
 
-console.maru () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.maru () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${green}${marker_maru} ${value}${reset}"
 }
 
-console.batsu () {
-	value="${console_str[@]}"
-	console.prompt "$@"
+frobulate.batsu () {
+	value="${frobulate.str[@]}"
+	frobulate.prompt "$@"
 
 	echo -e "${red}${marker_batsu} ${value}${reset}"
 }
 
-console.bako () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.bako () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${white}${marker_bako} ${value}${reset}"
 }
 
-console.sankaku () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.sankaku () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${cyan}${marker_sankaku} ${value}${reset}"
 }
 
-console.inf() {
-	console.prompt "${@}"
-	value="${console_str[@]}"
+frobulate.inf() {
+	frobulate.prompt "${@}"
+	value="${frobulate.str[@]}"
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
 }
 
-console.msg () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.msg () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${cyan}${marker_msg} ${value}${reset}"
 }
 
-console.wrn () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.wrn () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
 }
 
-console.add () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.add () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${blue}${marker_add} ${value}${reset}"
 }
 
-console.rem () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.rem () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${red}${marker_rem} ${value}${reset}"
 }
 
-console.ret () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.ret () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
 }
 
-console.rel () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.rel () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${marker_rel} ${value}${reset}"
 }
 
-console.fwd () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.fwd () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${white}${marker_fwd} ${value}${reset}"
 }
 
-console.rev () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.rev () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${white}${marker_rev} ${value}${reset}"
 }
 
-console.stp () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.stp () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${white}${marker_stp} ${value}${reset}"
 }
 
-console.dwl () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.dwl () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 }
 
-console.upl () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.upl () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
 }
 
-console.lnk () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.lnk () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
 }
 
-console.scs () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.scs () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 }
 
-console.err () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.err () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
 }
 
-console.ins () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.ins () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
@@ -382,23 +382,23 @@ console.ins () {
 # includes space after value to separate input
 # use for questions, input, user values
 
-console.ask () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.ask () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -ne "${magenta}${marker_ask} ${value} ${reset}"
 }
 
-console.ipt () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.ipt () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -ne "${magenta}${marker_add} ${value} ${reset}"
 }
 
-console.usr () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.usr () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -ne "${magenta}${marker_usr} ${value} ${reset}"
 }
@@ -407,7 +407,7 @@ console.usr () {
 
 # use to mark directives or instructions
 
-console.num () {
+frobulate.num () {
 	before="[ "
 	after=" ]"
 
@@ -415,8 +415,8 @@ console.num () {
 
 	shift
 
-	console.prompt "$@"
-	value="${console_str[@]}"
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${before}${number}${after} ${value}"
 }
@@ -426,9 +426,9 @@ console.num () {
 # no marker
 # use to separate notices and messages from execution blocks
 
-console.sep () {
-	console.prompt "$@"
-	value="${console_str[@]}"
+frobulate.sep () {
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	echo -e "${value}"
 }
@@ -438,9 +438,9 @@ console.sep () {
 # predefined separator:
 # use to separate instructions or warnings from prompts
 
-console.separate () {
+frobulate.separate () {
 
-	console.sep
+	frobulate.sep
 	echo
 }
 
@@ -448,15 +448,15 @@ console.separate () {
 
 # generic title from script name
 
-console.script () {
+frobulate.script () {
 	description="${1}"
 
-	console.msg "${description}" "[ ${script%-*} // ${version} ]"
+	frobulate.msg "${description}" "[ ${script%-*} // ${version} ]"
 }
 
 # wait
 
-console.wait () {
+frobulate.wait () {
 	# wait in seconds
 
 	seconds="${1}"
@@ -470,7 +470,7 @@ console.wait () {
 
 # countdown
 
-console.countdown () {
+frobulate.countdown () {
 	before="[ "
 	after=" ]"
 
@@ -478,8 +478,8 @@ console.countdown () {
 
 	shift
 
-	console.prompt "$@"
-	value="${console_str[@]}"
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	shift
 
@@ -498,7 +498,7 @@ console.countdown () {
 
 # progress
 
-console.progress () {
+frobulate.progress () {
 	# catch PID of last command
 
 	PID=$!
@@ -509,8 +509,8 @@ console.progress () {
 	before="[ "
 	after=" ]"
 
-	console.prompt "$@"
-	value="${console_str[@]}"
+	frobulate.prompt "$@"
+	value="${frobulate.str[@]}"
 
 	i=1
 
@@ -529,7 +529,7 @@ console.progress () {
 
 # directory
 
-console.directory () {
+frobulate.directory () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -547,7 +547,7 @@ console.directory () {
 
 	for directory in ${list[@]}
 	do
-		console.add "Creating directory" "[ ${directory} ]"
+		frobulate.add "Creating directory" "[ ${directory} ]"
 		echo
 
 		# create directory and set permissions
@@ -566,7 +566,7 @@ console.directory () {
 
 # type
 
-console.type () {
+frobulate.type () {
 	for (( character=0; character<=${#1}; character++ ))
 	do
 		interval=$(( (RANDOM % 5) + 1 ))
@@ -582,7 +582,7 @@ console.type () {
 
 # write
 
-console.write () {
+frobulate.write () {
 	content="${1}"
 	path="${2}"
 
@@ -603,7 +603,7 @@ console.write () {
 
 	for file in ${list[@]}
 	do
-		console.add "Writing" "[ ${file} ]"
+		frobulate.add "Writing" "[ ${file} ]"
 		echo
 
 		# write to file and set permissions
@@ -622,7 +622,7 @@ console.write () {
 
 # file
 
-console.file () {
+frobulate.file () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -642,7 +642,7 @@ console.file () {
 
 	for file in ${list[@]}
 	do
-		console.add "Creating" "[ ${file} ]"
+		frobulate.add "Creating" "[ ${file} ]"
 		echo
 
 		# create file and set permissions
@@ -661,7 +661,7 @@ console.file () {
 
 # keep
 
-console.keep () {
+frobulate.keep () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -691,7 +691,7 @@ console.keep () {
 			then
 				keep=1
 
-				console.ret "Keeping" "[ ${file} ]"
+				frobulate.ret "Keeping" "[ ${file} ]"
 				echo
 			fi
 		done
@@ -708,7 +708,7 @@ console.keep () {
 
 # delete
 
-console.delete () {
+frobulate.delete () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -726,7 +726,7 @@ console.delete () {
 
 	for file in ${list[@]}
 	do
-		console.rem "Deleting" "[ ${file} ]"
+		frobulate.rem "Deleting" "[ ${file} ]"
 		echo
 
 		# remove file
@@ -741,7 +741,7 @@ console.delete () {
 
 # copy
 
-console.copy () {
+frobulate.copy () {
 	source="${1}"
 	target="${2}"
 
@@ -762,7 +762,7 @@ console.copy () {
 
 	for file in ${list[@]}
 	do
-		console.lnk "Copying" "[ ${file} ]"
+		frobulate.lnk "Copying" "[ ${file} ]"
 		echo
 
 		cp -r -f "${source}"/"${file}" "${target}"/"${file}"
@@ -775,7 +775,7 @@ console.copy () {
 
 # link
 
-console.link () {
+frobulate.link () {
 	source="${1}"
 	target="${2}"
 
@@ -796,7 +796,7 @@ console.link () {
 
 	for file in ${list[@]}
 	do
-		console.lnk "Linking" "[ ${file} ]"
+		frobulate.lnk "Linking" "[ ${file} ]"
 		echo
 
 		ln -s -f "${source}"/"${file}" "${target}"/"${file}"
@@ -809,7 +809,7 @@ console.link () {
 
 # get
 
-console.get () {
+frobulate.get () {
 	# parse url and download file according to source concatenation
 
 	command_get () {
@@ -834,7 +834,7 @@ console.get () {
 
 	command_get &
 
-	console.progress "Downloading" "[ ${file} ]"
+	frobulate.progress "Downloading" "[ ${file} ]"
 	echo
 
 	chmod a+rx "${path}"/"${file}"
@@ -842,7 +842,7 @@ console.get () {
 
 # download
 
-console.download () {
+frobulate.download () {
 	source="${1}"
 	path="${2}"
 
@@ -861,12 +861,12 @@ console.download () {
 
 	[ ! -d "${path}" ] && mkdir -p "${path}"
 
-	console.dwl "Loading..."
+	frobulate.dwl "Loading..."
 	echo
 
 	for file in ${list[@]}
 	do
-		console.get
+		frobulate.get
 	done
 
 	# unset array
@@ -876,7 +876,7 @@ console.download () {
 
 # put
 
-console.put () {
+frobulate.put () {
 	type="${1}"
 
 	curl									\
@@ -884,24 +884,24 @@ console.put () {
 		-H "Content-Type: ${type}"			\
 		-d "${file}" &
 
-	console.progress "Uploading" "[ ${file} ]"
+	frobulate.progress "Uploading" "[ ${file} ]"
 	echo
 }
 
 # upload
 
-console.upload () {
+frobulate.upload () {
 
-	console.upl "Loading..."
+	frobulate.upl "Loading..."
 	echo
 
-	console.put
+	frobulate.put
 
 }
 
 # silence
 
-console.silence () {
+frobulate.silence () {
 	# wrap command execution and redirect all output to null sink:
 	# provides fully silent execution
 
@@ -912,7 +912,7 @@ console.silence () {
 
 # log
 
-console.log () {
+frobulate.log () {
 	# wrap command execution and redirect all output to /var log file:
 	# provides logged and fully silent execution
 
@@ -923,7 +923,7 @@ console.log () {
 
 # password
 
-console.password () {
+frobulate.password () {
 	# obfuscate password input with custom mask
 
 	mask_character="•"
@@ -968,7 +968,7 @@ console.password () {
 
 # input
 
-console.input () {
+frobulate.input () {
 	list=($@)
 
 	for value in "${list[@]}"
@@ -976,9 +976,9 @@ console.input () {
 		label=${value^}
 		prompt="$(echo ${label} | sed 's/_/ /'):"
 
-		console.ipt "${prompt}"
+		frobulate.ipt "${prompt}"
 
-		[[ "${value}" = *password* ]] && console.password || read input
+		[[ "${value}" = *password* ]] && frobulate.password || read input
 
 		# prevent empty input
 
@@ -987,14 +987,14 @@ console.input () {
 			if [ -z "${input}" ]
 			then
 				echo
-				console.err "${prompt%:} cannot be empty."
+				frobulate.err "${prompt%:} cannot be empty."
 				echo
 
 				prompt="$(echo ${label} | sed 's/_/ /'):"
 
-				console.ipt "${prompt}"
+				frobulate.ipt "${prompt}"
 
-				[[ "${value}" = *password* ]] && console.password || read input
+				[[ "${value}" = *password* ]] && frobulate.password || read input
 			else
 					break
 			fi
@@ -1002,7 +1002,7 @@ console.input () {
 
 		value=${label,}
 
-		console_rtn+=("${value}=${input}")
+		frobulate.rtn+=("${value}=${input}")
 
 	done
 
@@ -1014,18 +1014,18 @@ console.input () {
 
 # clean
 
-console.clean () {
+frobulate.clean () {
 	command_autoremove="apt-get autoremove"
 	command_clean="apt-get clean"
 
-	console.log "${command_autoremove}" &
+	frobulate.log "${command_autoremove}" &
 
-	console.progress "Flushing packages..."
+	frobulate.progress "Flushing packages..."
 	echo
 
-	console.log "${command_clean}" &
+	frobulate.log "${command_clean}" &
 
-	console.progress "Cleaning..."
+	frobulate.progress "Cleaning..."
 	echo
 
 	# fix dpkg lock and errors:
@@ -1036,24 +1036,24 @@ console.clean () {
 
 # hold
 
-console.hold () {
+frobulate.hold () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	list=($@)
 
 	command_hold="apt-mark hold"
 
-	console.inf "Holding packages."
+	frobulate.inf "Holding packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		console.wrn "Holding" "[ '${package}' ]"
+		frobulate.wrn "Holding" "[ '${package}' ]"
 		echo
 
-		console.log "${command_hold} ${package}" &
+		frobulate.log "${command_hold} ${package}" &
 
-		console.progress "Holding..."
+		frobulate.progress "Holding..."
 		echo
 	done
 
@@ -1064,7 +1064,7 @@ console.hold () {
 
 # release
 
-console.release () {
+frobulate.release () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1082,17 +1082,17 @@ console.release () {
 
 	command_unhold="apt-mark unhold"
 
-	console.inf "Releasing packages."
+	frobulate.inf "Releasing packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		console.wrn "Releasing" "[ '${package}' ]"
+		frobulate.wrn "Releasing" "[ '${package}' ]"
 		echo
 
-		console.log "${command_unhold} ${package}" &
+		frobulate.log "${command_unhold} ${package}" &
 
-		console.progress "Releasing..."
+		frobulate.progress "Releasing..."
 		echo
 	done
 
@@ -1103,7 +1103,7 @@ console.release () {
 
 # failsafe
 
-console.failsafe () {
+frobulate.failsafe () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1127,20 +1127,20 @@ console.failsafe () {
 	do
 		for package in ${list[@]}
 		do
-		   console.log "yes | ${command_update}"
+		   frobulate.log "yes | ${command_update}"
 
-		   console.log "yes | ${command_upgrade}"
+		   frobulate.log "yes | ${command_upgrade}"
 
-		   console.log "yes | ${command_install}" "${package}"
+		   frobulate.log "yes | ${command_install}" "${package}"
 
-		   console.log "yes | $command_update"
+		   frobulate.log "yes | $command_update"
 		done
 	done
 }
 
 # install
 
-console.install () {
+frobulate.install () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1158,25 +1158,25 @@ console.install () {
 
 	command_install="apt-get install"
 
-	console.inf "Installing packages."
+	frobulate.inf "Installing packages."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)" ]
 		then
-			console.wrn "Package not installed" "[ '${package}' ]"
+			frobulate.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			console.log "yes | ${command_install} ${package}" &
+			frobulate.log "yes | ${command_install} ${package}" &
 
-			console.progress "Installing..."
+			frobulate.progress "Installing..."
 			echo
 		else
-			console.scs "Package installed" "[ '${package}' ]"
+			frobulate.scs "Package installed" "[ '${package}' ]"
 			echo
 
-			console.fwd "Continuing..."
+			frobulate.fwd "Continuing..."
 			echo
 
 			:
@@ -1189,12 +1189,12 @@ console.install () {
 
 	# cleanup
 
-	console.clean
+	frobulate.clean
 }
 
 # install
 
-console.install.minimal () {
+frobulate.install.minimal () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1214,25 +1214,25 @@ console.install.minimal () {
 
 	command_install="apt-get install --no-install-recommends --no-upgrade"
 
-	console.inf "Installing minimal package requirements."
+	frobulate.inf "Installing minimal package requirements."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)" ]
 		then
-			console.wrn "Package not installed" "[ '${package}' ]"
+			frobulate.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			console.log "yes | ${command_install} ${package}" &
+			frobulate.log "yes | ${command_install} ${package}" &
 
-			console.progress "Installing..."
+			frobulate.progress "Installing..."
 			echo
 		else
-			console.scs "Package installed" "[ '${package}' ]"
+			frobulate.scs "Package installed" "[ '${package}' ]"
 			echo
 
-			console.fwd "Continuing..."
+			frobulate.fwd "Continuing..."
 			echo
 
 			:
@@ -1245,12 +1245,12 @@ console.install.minimal () {
 
 	# cleanup
 
-	console.clean
+	frobulate.clean
 }
 
 # reinstall
 
-console.reinstall () {
+frobulate.reinstall () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1268,14 +1268,14 @@ console.reinstall () {
 
 	command_reinstall="apt-get install --reinstall"
 
-	console.inf "Reinstalling packages."
+	frobulate.inf "Reinstalling packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		console.log "yes | ${command_reinstall} ${package}" &
+		frobulate.log "yes | ${command_reinstall} ${package}" &
 
-		console.progress "Reinstalling..."
+		frobulate.progress "Reinstalling..."
 		echo
 	done
 
@@ -1285,44 +1285,44 @@ console.reinstall () {
 
 	# cleanup
 
-	console.clean
+	frobulate.clean
 }
 
 # update
 
-console.update () {
+frobulate.update () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_update="apt-get update"
 
-	console.inf "Processing package and repository information."
+	frobulate.inf "Processing package and repository information."
 	echo
 
-	console.log "${command_update}" &
+	frobulate.log "${command_update}" &
 
-	console.progress "Updating..."
+	frobulate.progress "Updating..."
 	echo
 }
 
 # upgrade
 
-console.upgrade () {
+frobulate.upgrade () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_upgrade="apt-get upgrade"
 
-	console.inf "Processing installed packages."
+	frobulate.inf "Processing installed packages."
 	echo
 
-	console.log "yes | ${command_upgrade}" &
+	frobulate.log "yes | ${command_upgrade}" &
 
-	console.progress "Upgrading..."
+	frobulate.progress "Upgrading..."
 	echo
 }
 
 # purge
 
-console.purge () {
+frobulate.purge () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1340,25 +1340,25 @@ console.purge () {
 
 	command_purge="sudo apt-get purge"
 
-	console.inf "Purging selected packages."
+	frobulate.inf "Purging selected packages."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -o installed)" ]
 		then
-			console.wrn "Selected package" "[ '${package}' ]"
+			frobulate.wrn "Selected package" "[ '${package}' ]"
 			echo
 
-			console.log "yes | ${command_purge} ${package}" &
+			frobulate.log "yes | ${command_purge} ${package}" &
 
-			console.progress "Purging..."
+			frobulate.progress "Purging..."
 			echo
 		else
-			console.scs "Package not installed" "[ '${package}' ]"
+			frobulate.scs "Package not installed" "[ '${package}' ]"
 			echo
 
-			console.fwd "Continuing..."
+			frobulate.fwd "Continuing..."
 			echo
 
 			:
@@ -1371,12 +1371,12 @@ console.purge () {
 
 	# cleanup
 
-	console.clean
+	frobulate.clean
 }
 
 # dialog
 
-console.dialog () {
+frobulate.dialog () {
 
 	# dialog window title
 
@@ -1413,11 +1413,11 @@ console.dialog () {
 	then
 		dialog=$(k_dialog)
 	else
-		console.wrn "'dialog' not installed."
-		console.wrn "This utility must be run using the 'directory' option."
+		frobulate.wrn "'dialog' not installed."
+		frobulate.wrn "This utility must be run using the 'directory' option."
 		echo
 
-		console.fwd "Exiting..."
+		frobulate.fwd "Exiting..."
 		echo
 
 		exit 1
@@ -1426,15 +1426,15 @@ console.dialog () {
 
 # clear
 
-console.clear () {
-	console.wait
+frobulate.clear () {
+	frobulate.wait
 
 	clear
 }
 
 # terminate
 
-console.terminate () {
+frobulate.terminate () {
 	process_name="${1}"
 
 	[[ $(command -v pgrep) ]] && process_id=$(pgrep -f "${process_name}")
@@ -1448,34 +1448,34 @@ console.terminate () {
 
 # exit
 
-console.exit () {
+frobulate.exit () {
 	instance="${1}"
 
-	console.countdown 3 "Exiting" "[ ${instance} ]"
+	frobulate.countdown 3 "Exiting" "[ ${instance} ]"
 
-	console.kill "${SHELL}"
+	frobulate.kill "${SHELL}"
 }
 
 # trap
 
-console.result () {
+frobulate.result () {
 	checkpoint="${1}"
 	instance="${2}"
 
 	if [[ $(command -v "${checkpoint}") ]]
 	then
-		console.scs "Setup complete" "[ ${instance} ]"
+		frobulate.scs "Setup complete" "[ ${instance} ]"
 		echo
 	else
-		console.err "Setup errors were encountered" "[ ${instance} ]"
+		frobulate.err "Setup errors were encountered" "[ ${instance} ]"
 		echo
 
-		console.inf "Consult setup logs for details" '[ ${PREFIX}/var/log/ ]'
+		frobulate.inf "Consult setup logs for details" '[ ${PREFIX}/var/log/ ]'
 		echo
 	fi
 }
 
-console.trap () {
+frobulate.trap () {
 	instance="${1}"
 
 	[ $# -eq 1 ] && signal="EXIT" || signal="${2}"
@@ -1483,8 +1483,8 @@ console.trap () {
 	trap "${instance}" "${signal}"
 }
 
-console.user () {
-	console.inf "Current user name is ${SUDO_USER:-$USER}."
+frobulate.user () {
+	frobulate.inf "Current user name is ${SUDO_USER:-$USER}."
 
 	sleep 1
 }

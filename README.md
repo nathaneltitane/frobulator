@@ -1,4 +1,4 @@
-### Terminal
+### Frobulator
 
 ![frobulator](https://raw.githubusercontent.com/nathaneltitane/frobulator/master/frobulator.svg)
 

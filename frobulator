@@ -781,7 +781,7 @@ frobulate.link () {
 
 	if [[ -n "${#list[@]}" ]]
 	then
-		# ${3} - array
+		# ${2} - array
 
 		list=(${@:3})
 	else
@@ -794,24 +794,13 @@ frobulate.link () {
 
 	[ ! -d "${target}" ] && mkdir -p "${target}"
 
-	if [ $# -eq 4 ]
-	then
-		file="${3}"
-		link="${4}"
-
-		frobulate.lnk "Linking" "[ ${file} ]"
+	for file in ${list[@]}
+	do
+		console.lnk "Linking" "[ ${file} ]"
 		echo
 
-		ln -s -f "${source}"/"${file}" "${target}"/"${link}"
-	else
-		for file in ${list[@]}
-		do
-			frobulate.lnk "Linking" "[ ${file} ]"
-			echo
-
-			ln -s -f "${source}"/"${file}" "${target}"/"${file}"
-		done
-	fi
+		ln -s -f "${source}"/"${file}" "${target}"/"${file}"
+	done
 
 	# unset array
 

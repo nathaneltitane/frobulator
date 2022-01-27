@@ -2,8 +2,6 @@
 
 # dependencies #
 
-[ -z "${PREFIX}" ] && PREFIX="usr"
-
 # script #
 
 # version #

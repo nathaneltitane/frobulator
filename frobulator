@@ -1127,13 +1127,13 @@ frobulate.failsafe () {
 	do
 		for package in ${list[@]}
 		do
-		   frobulate.log "yes | ${command_update}"
+			frobulate.log "yes | ${command_update}"
 
-		   frobulate.log "yes | ${command_upgrade}"
+			frobulate.log "yes | ${command_upgrade}"
 
-		   frobulate.log "yes | ${command_install}" "${package}"
+			frobulate.log "yes | ${command_install}" "${package}"
 
-		   frobulate.log "yes | ${command_update}"
+			frobulate.log "yes | ${command_update}"
 		done
 	done
 }
@@ -1192,10 +1192,15 @@ frobulate.install () {
 	frobulate.clean
 }
 
-# install
+# command
 
-frobulate.install.minimal () {
+frobulate.command () {
 	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ -z $(command -v apt-file) ]]
+	then
+		frobulate.install apt-file
+	fi
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1203,49 +1208,43 @@ frobulate.install.minimal () {
 
 		list=(${@:1})
 	else
-		package="${1}"
+		command="${1}"
 
 		list=()
 
-		list+=("${package}")
+		list+=("${command}")
 	fi
 
-	# use '--no-install-recommends' option to keep bloat to a minimum
-
-	command_install="apt-get install --no-install-recommends --no-upgrade"
-
-	frobulate.inf "Installing minimal package requirements."
-	echo
-
-	for package in ${list[@]}
+	for command in ${list[@]}
 	do
-		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)" ]
+		command_update="apt-file update"
+		command_query=$(apt-file search "${PREFIX}"/bin/"${command}" | tail -n 1 | cut -d ':' -f 1)
+
+		if [[ -z $(command -v "${command}") ]]
 		then
-			frobulate.wrn "Package not installed" "[ '${package}' ]"
-			echo
+			"${command_update}"
 
-			frobulate.log "yes | ${command_install} ${package}" &
-
-			frobulate.progress "Installing..."
-			echo
-		else
-			frobulate.scs "Package installed" "[ '${package}' ]"
-			echo
-
-			frobulate.fwd "Continuing..."
-			echo
-
-			:
+			if [[ -z "${command_query}" ]]
+			then
+				frobulate.err "No package found that provides command '${command}'"
+				echo
+			else
+				install_list+=("${command_query}")
+			fi
 		fi
 	done
+
+	# install
+
+	list=(
+		${install_list[@]}
+	)
+
+	frobulate.install ${list[@]}
 
 	# unset array
 
 	list=()
-
-	# cleanup
-
-	frobulate.clean
 }
 
 # reinstall

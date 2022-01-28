@@ -116,7 +116,7 @@ marker_nul='     '
 frobulate.prompt () {
 	# initialize string return array
 
-	frobulate.str=()
+	frobulate_str=()
 
 	begin="${1}"
 	end="${2}"
@@ -181,55 +181,55 @@ frobulate.prompt () {
 
 	# populate array at end to avoid integrating spaces
 
-	[ $# -ge 0 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -ge 0 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
 
-	[ $# -eq 1 ] && frobulate.str=("${span_begin}")
+	[ $# -eq 1 ] && frobulate_str=("${span_begin}")
 
-	[ $# -ge 2 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -ge 2 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
 
-	[ $# -eq 3 ] && frobulate.str=("${span_begin}""${span_middle}""${span_end}")
+	[ $# -eq 3 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
 }
 
 # highlights
 
 frobulate.red () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${red}${value}${reset}"
 }
 
 frobulate.green () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${green}${value}${reset}"
 }
 
 frobulate.yellow () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${yellow}${value}${reset}"
 }
 
 frobulate.blue () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${value}${reset}"
 }
 
 frobulate.magenta () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${value}${reset}"
 }
 
 frobulate.cyan () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${value}${reset}"
 }
@@ -238,13 +238,13 @@ frobulate.cyan () {
 
 frobulate.maru () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${green}${marker_maru} ${value}${reset}"
 }
 
 frobulate.batsu () {
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 	frobulate.prompt "$@"
 
 	echo -e "${red}${marker_batsu} ${value}${reset}"
@@ -252,126 +252,126 @@ frobulate.batsu () {
 
 frobulate.bako () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_bako} ${value}${reset}"
 }
 
 frobulate.sankaku () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_sankaku} ${value}${reset}"
 }
 
 frobulate.inf() {
 	frobulate.prompt "${@}"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
 }
 
 frobulate.msg () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_msg} ${value}${reset}"
 }
 
 frobulate.wrn () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
 }
 
 frobulate.add () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${marker_add} ${value}${reset}"
 }
 
 frobulate.rem () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${red}${marker_rem} ${value}${reset}"
 }
 
 frobulate.ret () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
 }
 
 frobulate.rel () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_rel} ${value}${reset}"
 }
 
 frobulate.fwd () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_fwd} ${value}${reset}"
 }
 
 frobulate.rev () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_rev} ${value}${reset}"
 }
 
 frobulate.stp () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_stp} ${value}${reset}"
 }
 
 frobulate.dwl () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 }
 
 frobulate.upl () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
 }
 
 frobulate.lnk () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
 }
 
 frobulate.scs () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 }
 
 frobulate.err () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
 }
 
 frobulate.ins () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
@@ -384,21 +384,21 @@ frobulate.ins () {
 
 frobulate.ask () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_ask} ${value} ${reset}"
 }
 
 frobulate.ipt () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_add} ${value} ${reset}"
 }
 
 frobulate.usr () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_usr} ${value} ${reset}"
 }
@@ -416,7 +416,7 @@ frobulate.num () {
 	shift
 
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${before}${number}${after} ${value}"
 }
@@ -428,7 +428,7 @@ frobulate.num () {
 
 frobulate.sep () {
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	echo -e "${value}"
 }
@@ -479,7 +479,7 @@ frobulate.countdown () {
 	shift
 
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	shift
 
@@ -510,7 +510,7 @@ frobulate.progress () {
 	after=" ]"
 
 	frobulate.prompt "$@"
-	value="${frobulate.str[@]}"
+	value="${frobulate_str[@]}"
 
 	i=1
 

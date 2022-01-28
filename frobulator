@@ -1131,9 +1131,9 @@ frobulate.failsafe () {
 	command_upgrade="apt-get upgrade"
 	command_install="apt-get install"
 
-	while [[ -z $(command -v "${package}") ]]
+	for package in ${list[@]}
 	do
-		for package in ${list[@]}
+		while [[ -z $(command -v "${package}") ]]
 		do
 			frobulate.log "yes | ${command_update}"
 

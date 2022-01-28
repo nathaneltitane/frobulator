@@ -1,22 +1,22 @@
 #!/bin/bash
 
-# dependencies #
+# dependencies /////////////////////////////////////////////////////////////////
 
-# script #
+# script ///////////////////////////////////////////////////////////////////////
 
-# version #
+# version //////////////////////////////////////////////////////////////////////
 
-# variables #
+# variables ////////////////////////////////////////////////////////////////////
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
-# defaults #
+# defaults /////////////////////////////////////////////////////////////////////
 
-# terminal
+# terminal colors //////////////////////////////////////////////////////////////
 
 if [ -z "$(command -v tput)" ]
 then
-	# ansi colors
+	# ansi color escapes
 
 	if [[ -t 1 ]]
 	then
@@ -31,7 +31,7 @@ then
 		reset=$(echo -e \\e\[39m)
 	fi
 else
-	# colors and attributes
+	# 'tput' colors and attributes
 
 	if [[ -t 1 ]]
 	then
@@ -53,38 +53,38 @@ else
 		standout_start=$(tput smso)
 		standout_stop=$(tput rmso)
 
-		reset=$(tput sgr 0)														# reset all attributes
+		reset=$(tput sgr 0)											# reset all attributes
 
-		# terminal control
+		# 'tput' terminal control
 
-		terminal_info=$(tput longname)											# full description of terminal
+		terminal_info=$(tput longname)								# full description of terminal
 
-		terminal_height=$(tput lines)											# number of lines in terminal
-		terminal_width=$(tput cols)												# number of columns in terminal
-		terminal_colors=$(tput colors)											# number of colors available
+		terminal_height=$(tput lines)								# number of lines in terminal
+		terminal_width=$(tput cols)									# number of columns in terminal
+		terminal_colors=$(tput colors)								# number of colors available
 
-		terminal_save_cursor=$(tput sc)											# save cursor position of terminal
-		terminal_restore_cursor=$(tput rc)										# restore cursor position of terminal
+		terminal_save_cursor=$(tput sc)								# save cursor position of terminal
+		terminal_restore_cursor=$(tput rc)							# restore cursor position of terminal
 
-		terminal_home_cursor=$(tput home)										# move cursor to upper left corner (0,0) Same as 'tput cup 0 0'
-		terminal_move_cursor=$(tput cup ${tput_row} ${tput_col})				# move cursor to position (row, column)
-		terminal_cursor_down=$(tput cud1)										# move cursor down 1 line
-		terminal_cursor_up=$(tput cuu1)											# move cursor up 1 line
+		terminal_home_cursor=$(tput home)							# move cursor to upper left corner (0,0) Same as 'tput cup 0 0'
+		terminal_move_cursor=$(tput cup ${tput_row} ${tput_col})	# move cursor to position (row, column)
+		terminal_cursor_down=$(tput cud1)							# move cursor down 1 line
+		terminal_cursor_up=$(tput cuu1)								# move cursor up 1 line
 
-		terminal_cursor_hide=$(tput civis)										# set cursor to invisible state
-		terminal_cursor_show=$(tput cnorm)										# set cursor to normal state
+		terminal_cursor_hide=$(tput civis)							# set cursor to invisible state
+		terminal_cursor_show=$(tput cnorm)							# set cursor to normal state
 
-		terminal_save_screen=$(tput smcup)										# save screen contents
-		terminal_restore_screen=$(tput rmcup)									# restore screen contents
+		terminal_save_screen=$(tput smcup)							# save screen contents
+		terminal_restore_screen=$(tput rmcup)						# restore screen contents
 
-		terminal_clear_right=$(tput el)											# clear from cursor to end of line - left
-		terminal_clear_left=$(tput el)											# clear from cursor to beginning of line - right
-		terminal_clear_down=$(tput ed)											# clear from cursor to end of the screen - down
-		terminal_clear_all=$(tput clear)										# clear entire screen and home cursor (0,0) - all
+		terminal_clear_right=$(tput el)								# clear from cursor to end of line - left
+		terminal_clear_left=$(tput el)								# clear from cursor to beginning of line - right
+		terminal_clear_down=$(tput ed)								# clear from cursor to end of the screen - down
+		terminal_clear_all=$(tput clear)							# clear entire screen and home cursor (0,0) - all
 	fi
 fi
 
-# markers
+# markers //////////////////////////////////////////////////////////////////////
 
 marker_top='[ ⋀ ]'
 marker_bot='[ ⋁ ]'
@@ -134,15 +134,15 @@ frobulate.prompt () {
 
 	# parse arguments
 
-	[ $# -ge 0 ] && span_character="/"											# 0 argument   - full dash line
+	[ $# -ge 0 ] && span_character="/"		# 0 argument   - full dash line
 
-	[ $# -eq 1 ] && span_character="/"											# 1 argument   - pad to end of line
+	[ $# -eq 1 ] && span_character="/"		# 1 argument   - pad to end of line
 
-	[ $# -eq 3 ] && span_character="${3}"										# 3 arguments  - replace span character with argument 3
+	[ $# -eq 3 ] && span_character="${3}"	# 3 arguments  - replace span character with argument 3
 
-	[ $# -ge 2 ] && span=${span::-6}											# 2+ arguments - reduce span by 6 characters: compensate for line marker + space
-	[ $# -ge 2 ] && begin="${begin} "											# 2+ arguments - append space to 'begin' value
-	[ $# -ge 2 ] && end=" ${end}"												# 2+ arguments - prepend space to 'end' value
+	[ $# -ge 2 ] && span=${span::-6}		# 2+ arguments - reduce span by 6 characters: compensate for line marker + space
+	[ $# -ge 2 ] && begin="${begin} "		# 2+ arguments - append space to 'begin' value
+	[ $# -ge 2 ] && end=" ${end}"			# 2+ arguments - prepend space to 'end' value
 
 	# fold paragraph if character count is above 80
 	# indent second line onward (6 spaces) to match line marker

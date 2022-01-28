@@ -1205,10 +1205,7 @@ frobulate.install () {
 frobulate.command () {
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -z $(command -v apt-file) ]]
-	then
-		frobulate.install apt-file
-	fi
+	frobulate.failsafe apt-file
 
 	apt-file update > dev/null
 

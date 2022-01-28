@@ -1002,7 +1002,7 @@ frobulate.input () {
 
 		value=${label,}
 
-		frobulate.rtn+=("${value}=${input}")
+		frobulate_rtn+=("${value}=${input}")
 
 	done
 

@@ -468,6 +468,14 @@ frobulate.wait () {
 	sleep "${seconds}"
 }
 
+# clear
+
+frobulate.clear () {
+	frobulate.wait
+
+	clear
+}
+
 # countdown
 
 frobulate.countdown () {
@@ -1218,7 +1226,7 @@ frobulate.command () {
 	for command in ${list[@]}
 	do
 		command_update="apt-file update"
-		command_query=$(apt-file search "${PREFIX}"/bin/"${command}" | tail -n 1 | cut -d ':' -f 1)
+		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
 
 		if [[ -z $(command -v "${command}") ]]
 		then
@@ -1419,14 +1427,6 @@ frobulate.dialog () {
 
 		exit 1
 	fi
-}
-
-# clear
-
-frobulate.clear () {
-	frobulate.wait
-
-	clear
 }
 
 # terminate

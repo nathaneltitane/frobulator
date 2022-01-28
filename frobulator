@@ -1133,7 +1133,7 @@ frobulate.failsafe () {
 
 		   frobulate.log "yes | ${command_install}" "${package}"
 
-		   frobulate.log "yes | $command_update"
+		   frobulate.log "yes | ${command_update}"
 		done
 	done
 }

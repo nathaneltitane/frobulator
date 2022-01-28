@@ -1039,7 +1039,10 @@ frobulate.clean () {
 	# fix dpkg lock and errors:
 	# remove all post-install logs - prevent package configuration errors
 
-	[ -d "${PREFIX}"/var/lib/dpkg/info ] && rm -rf "${PREFIX}"/var/lib/dpkg/info/*.postinst
+	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
+	then
+		rm -rf "${PREFIX}"/var/lib/dpkg/info/*.postinst
+	fi
 }
 
 # hold /////////////////////////////////////////////////////////////////////////

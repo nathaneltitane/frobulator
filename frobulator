@@ -1210,6 +1210,8 @@ frobulate.command () {
 		frobulate.install apt-file
 	fi
 
+	apt-file update > dev/null
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array
@@ -1230,8 +1232,6 @@ frobulate.command () {
 
 		if [[ -z $(command -v "${command}") ]]
 		then
-			"${command_update}"
-
 			if [[ -z "${command_query}" ]]
 			then
 				frobulate.err "No package found that provides command" "[ '${command}' ]"

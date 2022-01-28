@@ -1207,7 +1207,7 @@ frobulate.command () {
 
 	frobulate.failsafe apt-file
 
-	apt-file update > dev/null
+	frobulate.log "apt-file update"
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1224,7 +1224,6 @@ frobulate.command () {
 
 	for command in ${list[@]}
 	do
-		command_update="apt-file update"
 		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
 
 		if [[ -z $(command -v "${command}") ]]

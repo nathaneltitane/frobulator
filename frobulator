@@ -1250,7 +1250,7 @@ frobulate.command () {
 				list=()
 			fi
 		else
-			frobulate.scs "Package '${command_query}' provides command" "[ '${command}' ]"
+			frobulate.scs "Command available" "[ '${command}' ]"
 			echo
 		fi
 	done

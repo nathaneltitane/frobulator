@@ -1413,7 +1413,6 @@ frobulate.dialog () {
 	then
 		dialog=$(k_dialog)
 	else
-		frobulate.wrn "'dialog' not installed."
 		frobulate.wrn "This utility must be run using the 'directory' option."
 		echo
 

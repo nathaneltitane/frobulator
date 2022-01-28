@@ -190,7 +190,7 @@ frobulate.prompt () {
 	[ $# -eq 3 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
 }
 
-# highlights
+# highlights ///////////////////////////////////////////////////////////////////
 
 frobulate.red () {
 	frobulate.prompt "$@"
@@ -234,7 +234,7 @@ frobulate.cyan () {
 	echo -e "${cyan}${value}${reset}"
 }
 
-# prompts #
+# prompts //////////////////////////////////////////////////////////////////////
 
 frobulate.maru () {
 	frobulate.prompt "$@"
@@ -376,7 +376,7 @@ frobulate.ins () {
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
 
-# prompt inputs
+# prompt inputs ////////////////////////////////////////////////////////////////
 
 # no new line after prompt: keeps user input beside prompt
 # includes space after value to separate input
@@ -403,7 +403,7 @@ frobulate.usr () {
 	echo -ne "${magenta}${marker_usr} ${value} ${reset}"
 }
 
-# numbering
+# numbering ////////////////////////////////////////////////////////////////////
 
 # use to mark directives or instructions
 
@@ -421,7 +421,7 @@ frobulate.num () {
 	echo -e "${before}${number}${after} ${value}"
 }
 
-# prompt separator
+# separator ////////////////////////////////////////////////////////////////////
 
 # no marker
 # use to separate notices and messages from execution blocks
@@ -433,7 +433,7 @@ frobulate.sep () {
 	echo -e "${value}"
 }
 
-# separate
+# separate /////////////////////////////////////////////////////////////////////
 
 # predefined separator:
 # use to separate instructions or warnings from prompts
@@ -454,7 +454,7 @@ frobulate.script () {
 	frobulate.msg "${description}" "[ ${script%-*} // ${version} ]"
 }
 
-# wait
+# wait /////////////////////////////////////////////////////////////////////////
 
 frobulate.wait () {
 	# wait in seconds
@@ -468,7 +468,7 @@ frobulate.wait () {
 	sleep "${seconds}"
 }
 
-# clear
+# clear ////////////////////////////////////////////////////////////////////////
 
 frobulate.clear () {
 	frobulate.wait
@@ -476,7 +476,7 @@ frobulate.clear () {
 	clear
 }
 
-# countdown
+# countdown ////////////////////////////////////////////////////////////////////
 
 frobulate.countdown () {
 	before="[ "
@@ -504,7 +504,7 @@ frobulate.countdown () {
 	echo
 }
 
-# progress
+# progress /////////////////////////////////////////////////////////////////////
 
 frobulate.progress () {
 	# catch PID of last command
@@ -535,7 +535,7 @@ frobulate.progress () {
 	echo
 }
 
-# directory
+# directory ////////////////////////////////////////////////////////////////////
 
 frobulate.directory () {
 	path="${1}"
@@ -572,7 +572,7 @@ frobulate.directory () {
 	list=()
 }
 
-# type
+# type /////////////////////////////////////////////////////////////////////////
 
 frobulate.type () {
 	for (( character=0; character<=${#1}; character++ ))
@@ -588,7 +588,7 @@ frobulate.type () {
 	printf '\n'
 }
 
-# write
+# write ////////////////////////////////////////////////////////////////////////
 
 frobulate.write () {
 	content="${1}"
@@ -628,7 +628,7 @@ frobulate.write () {
 	done
 }
 
-# file
+# file /////////////////////////////////////////////////////////////////////////
 
 frobulate.file () {
 	path="${1}"
@@ -667,7 +667,7 @@ frobulate.file () {
 	list=()
 }
 
-# keep
+# keep /////////////////////////////////////////////////////////////////////////
 
 frobulate.keep () {
 	path="${1}"
@@ -714,7 +714,7 @@ frobulate.keep () {
 	list=()
 }
 
-# delete
+# delete ///////////////////////////////////////////////////////////////////////
 
 frobulate.delete () {
 	path="${1}"
@@ -747,7 +747,7 @@ frobulate.delete () {
 	list=()
 }
 
-# copy
+# copy /////////////////////////////////////////////////////////////////////////
 
 frobulate.copy () {
 	source="${1}"
@@ -781,7 +781,7 @@ frobulate.copy () {
 	list=()
 }
 
-# link
+# link /////////////////////////////////////////////////////////////////////////
 
 frobulate.link () {
 	source="${1}"
@@ -815,7 +815,7 @@ frobulate.link () {
 	list=()
 }
 
-# get
+# get //////////////////////////////////////////////////////////////////////////
 
 frobulate.get () {
 	# parse url and download file according to source concatenation
@@ -848,7 +848,7 @@ frobulate.get () {
 	chmod a+rx "${path}"/"${file}"
 }
 
-# download
+# download /////////////////////////////////////////////////////////////////////
 
 frobulate.download () {
 	source="${1}"
@@ -896,7 +896,7 @@ frobulate.put () {
 	echo
 }
 
-# upload
+# upload ///////////////////////////////////////////////////////////////////////
 
 frobulate.upload () {
 
@@ -907,29 +907,29 @@ frobulate.upload () {
 
 }
 
-# silence
+# silence //////////////////////////////////////////////////////////////////////
 
 frobulate.silence () {
 	# wrap command execution and redirect all output to null sink:
 	# provides fully silent execution
 
-	command="$@"
+	command="${@}"
 
 	"${SHELL}" -c "${command}" >> /dev/null 2>&1
 }
 
-# log
+# log //////////////////////////////////////////////////////////////////////////
 
 frobulate.log () {
 	# wrap command execution and redirect all output to /var log file:
 	# provides logged and fully silent execution
 
-	command="$@"
+	command="${@}"
 
 	"${SHELL}" -c "${command}" >> "${PREFIX}"/var/log/"${script}"-"${stamp}".log 2>&1
 }
 
-# password
+# password /////////////////////////////////////////////////////////////////////
 
 frobulate.password () {
 	# obfuscate password input with custom mask
@@ -974,7 +974,7 @@ frobulate.password () {
 	echo
 }
 
-# input
+# input ////////////////////////////////////////////////////////////////////////
 
 frobulate.input () {
 	list=($@)
@@ -1020,7 +1020,7 @@ frobulate.input () {
 	echo
 }
 
-# clean
+# clean ////////////////////////////////////////////////////////////////////////
 
 frobulate.clean () {
 	command_autoremove="apt-get autoremove"
@@ -1042,7 +1042,7 @@ frobulate.clean () {
 	[ -d "${PREFIX}"/var/lib/dpkg/info ] && rm -rf "${PREFIX}"/var/lib/dpkg/info/*.postinst
 }
 
-# hold
+# hold /////////////////////////////////////////////////////////////////////////
 
 frobulate.hold () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1070,7 +1070,7 @@ frobulate.hold () {
 	list=()
 }
 
-# release
+# release /////////////////////////////////////////////////////////////////////#
 
 frobulate.release () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1109,7 +1109,7 @@ frobulate.release () {
 	list=()
 }
 
-# failsafe
+# failsafe /////////////////////////////////////////////////////////////////////
 
 frobulate.failsafe () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1146,7 +1146,7 @@ frobulate.failsafe () {
 	done
 }
 
-# install
+# install //////////////////////////////////////////////////////////////////////
 
 frobulate.install () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1200,7 +1200,7 @@ frobulate.install () {
 	frobulate.clean
 }
 
-# command
+# command //////////////////////////////////////////////////////////////////////
 
 frobulate.command () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1253,7 +1253,7 @@ frobulate.command () {
 	done
 }
 
-# reinstall
+# reinstall ////////////////////////////////////////////////////////////////////
 
 frobulate.reinstall () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1325,7 +1325,7 @@ frobulate.upgrade () {
 	echo
 }
 
-# purge
+# purge ////////////////////////////////////////////////////////////////////////
 
 frobulate.purge () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1379,7 +1379,7 @@ frobulate.purge () {
 	frobulate.clean
 }
 
-# dialog
+# dialog ///////////////////////////////////////////////////////////////////////
 
 frobulate.dialog () {
 
@@ -1428,7 +1428,7 @@ frobulate.dialog () {
 	fi
 }
 
-# terminate
+# terminate ////////////////////////////////////////////////////////////////////
 
 frobulate.terminate () {
 	process_name="${1}"
@@ -1442,7 +1442,7 @@ frobulate.terminate () {
 	fi
 }
 
-# exit
+# exit /////////////////////////////////////////////////////////////////////////
 
 frobulate.exit () {
 	instance="${1}"
@@ -1452,7 +1452,7 @@ frobulate.exit () {
 	frobulate.kill "${SHELL}"
 }
 
-# trap
+# result ///////////////////////////////////////////////////////////////////////
 
 frobulate.result () {
 	checkpoint="${1}"
@@ -1471,6 +1471,8 @@ frobulate.result () {
 	fi
 }
 
+# trap /////////////////////////////////////////////////////////////////////////
+
 frobulate.trap () {
 	instance="${1}"
 
@@ -1478,6 +1480,8 @@ frobulate.trap () {
 
 	trap "${instance}" "${signal}"
 }
+
+# user  ////////////////////////////////////////////////////////////////////////
 
 frobulate.user () {
 	frobulate.inf "Current user name is ${SUDO_USER:-$USER}."

@@ -1226,7 +1226,7 @@ frobulate.command () {
 
 			if [[ -z "${command_query}" ]]
 			then
-				frobulate.err "No package found that provides command '${command}'"
+				frobulate.err "No package found that provides command" "[ '${command}' ]"
 				echo
 			else
 				install_list+=("${command_query}")

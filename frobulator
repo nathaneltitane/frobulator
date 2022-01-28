@@ -1229,22 +1229,21 @@ frobulate.command () {
 				frobulate.err "No package found that provides command" "[ '${command}' ]"
 				echo
 			else
-				install_list+=("${command_query}")
+				list+=("${command_query}")
+
+				# install
+
+				if [[ -n "${#list[@]}" ]]
+				then
+					frobulate.install ${list[@]}
+				fi
+
+				# unset array
+
+				list=()
 			fi
 		fi
 	done
-
-	# install
-
-	list=(
-		${install_list[@]}
-	)
-
-	frobulate.install ${list[@]}
-
-	# unset array
-
-	list=()
 }
 
 # reinstall

@@ -10,7 +10,7 @@
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
-# defaults //////////////////////////////////////////////////////////////////////
+# defaults /////////////////////////////////////////////////////////////////////
 
 # terminal colors //////////////////////////////////////////////////////////////
 
@@ -35,6 +35,8 @@ else
 
 	if [[ -t 1 ]]
 	then
+		# define colors
+
 		black=$(tput setaf 0)
 		red=$(tput setaf 1)
 		green=$(tput setaf 2)
@@ -43,6 +45,8 @@ else
 		magenta=$(tput setaf 5)
 		cyan=$(tput setaf 6)
 		white=$(tput setaf 7)
+
+		# define formatting
 
 		bold=$(tput bold)
 		underline_start=$(tput smul)
@@ -53,34 +57,82 @@ else
 		standout_start=$(tput smso)
 		standout_stop=$(tput rmso)
 
-		reset=$(tput sgr 0)											# reset all attributes
+		# reset all attributes
+
+		reset=$(tput sgr 0)
 
 		# 'tput' terminal control
 
-		terminal_info=$(tput longname)								# full description of terminal
+		# full description of terminal
 
-		terminal_height=$(tput lines)								# number of lines in terminal
-		terminal_width=$(tput cols)									# number of columns in terminal
-		terminal_colors=$(tput colors)								# number of colors available
+		terminal_info=$(tput longname)
 
-		terminal_save_cursor=$(tput sc)								# save cursor position of terminal
-		terminal_restore_cursor=$(tput rc)							# restore cursor position of terminal
+		# number of lines in terminal
+		terminal_height=$(tput lines)
 
-		terminal_home_cursor=$(tput home)							# move cursor to upper left corner (0,0) Same as 'tput cup 0 0'
-		terminal_move_cursor=$(tput cup ${tput_row} ${tput_col})	# move cursor to position (row, column)
-		terminal_cursor_down=$(tput cud1)							# move cursor down 1 line
-		terminal_cursor_up=$(tput cuu1)								# move cursor up 1 line
+		# number of columns in terminal
 
-		terminal_cursor_hide=$(tput civis)							# set cursor to invisible state
-		terminal_cursor_show=$(tput cnorm)							# set cursor to normal state
+		terminal_width=$(tput cols)
 
-		terminal_save_screen=$(tput smcup)							# save screen contents
-		terminal_restore_screen=$(tput rmcup)						# restore screen contents
+		# number of colors available
 
-		terminal_clear_right=$(tput el)								# clear from cursor to end of line - left
-		terminal_clear_left=$(tput el)								# clear from cursor to beginning of line - right
-		terminal_clear_down=$(tput ed)								# clear from cursor to end of the screen - down
-		terminal_clear_all=$(tput clear)							# clear entire screen and home cursor (0,0) - all
+		terminal_colors=$(tput colors)
+
+		# save cursor position of terminal
+
+		terminal_save_cursor=$(tput sc)
+
+		# restore cursor position of terminal
+
+		terminal_restore_cursor=$(tput rc)
+
+		# move cursor to upper left corner (0,0) - same as 'tput cup 0 0'
+
+		terminal_home_cursor=$(tput home)
+
+		# move cursor to position (row, column)
+
+		terminal_move_cursor=$(tput cup ${tput_row} ${tput_col})
+
+		# move cursor down 1 row
+
+		terminal_cursor_down=$(tput cud1)
+
+		# move cursor up 1 row
+
+		terminal_cursor_up=$(tput cuu1)
+
+		# set cursor to invisible state
+
+		terminal_cursor_hide=$(tput civis)
+
+		# set cursor to normal state
+
+		terminal_cursor_show=$(tput cnorm)
+
+		# save screen contents
+
+		terminal_save_screen=$(tput smcup)
+
+		# restore screen contents
+
+		terminal_restore_screen=$(tput rmcup)
+
+		# clear from cursor to end of line - left
+
+		terminal_clear_right=$(tput el)
+
+		# clear from cursor to beginning of line - right
+
+		terminal_clear_left=$(tput el)
+
+		# clear from cursor to end of the screen - down
+
+		terminal_clear_down=$(tput ed)
+
+		# clear entire screen and home cursor (0,0) - all
+
+		terminal_clear_all=$(tput clear)
 	fi
 fi
 

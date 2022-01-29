@@ -165,7 +165,7 @@ marker_nul='     '
 
 # prompt
 
-frobulate.prompt () {
+frobulator.prompt () {
 	# initialize string return array
 
 	frobulate_str=()
@@ -244,43 +244,43 @@ frobulate.prompt () {
 
 # highlights ///////////////////////////////////////////////////////////////////
 
-frobulate.red () {
-	frobulate.prompt "$@"
+frobulator.red () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${red}${value}${reset}"
 }
 
-frobulate.green () {
-	frobulate.prompt "$@"
+frobulator.green () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${green}${value}${reset}"
 }
 
-frobulate.yellow () {
-	frobulate.prompt "$@"
+frobulator.yellow () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${yellow}${value}${reset}"
 }
 
-frobulate.blue () {
-	frobulate.prompt "$@"
+frobulator.blue () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${value}${reset}"
 }
 
-frobulate.magenta () {
-	frobulate.prompt "$@"
+frobulator.magenta () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${value}${reset}"
 }
 
-frobulate.cyan () {
-	frobulate.prompt "$@"
+frobulator.cyan () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${value}${reset}"
@@ -288,141 +288,141 @@ frobulate.cyan () {
 
 # prompts //////////////////////////////////////////////////////////////////////
 
-frobulate.maru () {
-	frobulate.prompt "$@"
+frobulator.maru () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${green}${marker_maru} ${value}${reset}"
 }
 
-frobulate.batsu () {
+frobulator.batsu () {
 	value="${frobulate_str[@]}"
-	frobulate.prompt "$@"
+	frobulator.prompt "$@"
 
 	echo -e "${red}${marker_batsu} ${value}${reset}"
 }
 
-frobulate.bako () {
-	frobulate.prompt "$@"
+frobulator.bako () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_bako} ${value}${reset}"
 }
 
-frobulate.sankaku () {
-	frobulate.prompt "$@"
+frobulator.sankaku () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_sankaku} ${value}${reset}"
 }
 
-frobulate.inf() {
-	frobulate.prompt "${@}"
+frobulator.inf() {
+	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
 }
 
-frobulate.msg () {
-	frobulate.prompt "$@"
+frobulator.msg () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_msg} ${value}${reset}"
 }
 
-frobulate.wrn () {
-	frobulate.prompt "$@"
+frobulator.wrn () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
 }
 
-frobulate.add () {
-	frobulate.prompt "$@"
+frobulator.add () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${marker_add} ${value}${reset}"
 }
 
-frobulate.rem () {
-	frobulate.prompt "$@"
+frobulator.rem () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${red}${marker_rem} ${value}${reset}"
 }
 
-frobulate.ret () {
-	frobulate.prompt "$@"
+frobulator.ret () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
 }
 
-frobulate.rel () {
-	frobulate.prompt "$@"
+frobulator.rel () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_rel} ${value}${reset}"
 }
 
-frobulate.fwd () {
-	frobulate.prompt "$@"
+frobulator.fwd () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_fwd} ${value}${reset}"
 }
 
-frobulate.rev () {
-	frobulate.prompt "$@"
+frobulator.rev () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_rev} ${value}${reset}"
 }
 
-frobulate.stp () {
-	frobulate.prompt "$@"
+frobulator.stp () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_stp} ${value}${reset}"
 }
 
-frobulate.dwl () {
-	frobulate.prompt "$@"
+frobulator.dwl () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 }
 
-frobulate.upl () {
-	frobulate.prompt "$@"
+frobulator.upl () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
 }
 
-frobulate.lnk () {
-	frobulate.prompt "$@"
+frobulator.lnk () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
 }
 
-frobulate.scs () {
-	frobulate.prompt "$@"
+frobulator.scs () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 }
 
-frobulate.err () {
-	frobulate.prompt "$@"
+frobulator.err () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
 }
 
-frobulate.ins () {
-	frobulate.prompt "$@"
+frobulator.ins () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
@@ -434,22 +434,22 @@ frobulate.ins () {
 # includes space after value to separate input
 # use for questions, input, user values
 
-frobulate.ask () {
-	frobulate.prompt "$@"
+frobulator.ask () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_ask} ${value} ${reset}"
 }
 
-frobulate.ipt () {
-	frobulate.prompt "$@"
+frobulator.ipt () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_add} ${value} ${reset}"
 }
 
-frobulate.usr () {
-	frobulate.prompt "$@"
+frobulator.usr () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_usr} ${value} ${reset}"
@@ -459,7 +459,7 @@ frobulate.usr () {
 
 # use to mark directives or instructions
 
-frobulate.num () {
+frobulator.num () {
 	before="[ "
 	after=" ]"
 
@@ -467,7 +467,7 @@ frobulate.num () {
 
 	shift
 
-	frobulate.prompt "$@"
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${before}${number}${after} ${value}"
@@ -478,8 +478,8 @@ frobulate.num () {
 # no marker
 # use to separate notices and messages from execution blocks
 
-frobulate.sep () {
-	frobulate.prompt "$@"
+frobulator.sep () {
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${value}"
@@ -490,9 +490,9 @@ frobulate.sep () {
 # predefined separator:
 # use to separate instructions or warnings from prompts
 
-frobulate.separate () {
+frobulator.separate () {
 
-	frobulate.sep
+	frobulator.sep
 	echo
 }
 
@@ -500,15 +500,15 @@ frobulate.separate () {
 
 # generic title from script name
 
-frobulate.script () {
+frobulator.script () {
 	description="${1}"
 
-	frobulate.msg "${description}" "[ ${script%-*} // ${version} ]"
+	frobulator.msg "${description}" "[ ${script%-*} // ${version} ]"
 }
 
 # wait /////////////////////////////////////////////////////////////////////////
 
-frobulate.wait () {
+frobulator.wait () {
 	# wait in seconds
 
 	seconds="${1}"
@@ -522,15 +522,15 @@ frobulate.wait () {
 
 # clear ////////////////////////////////////////////////////////////////////////
 
-frobulate.clear () {
-	frobulate.wait
+frobulator.clear () {
+	frobulator.wait
 
 	clear
 }
 
 # countdown ////////////////////////////////////////////////////////////////////
 
-frobulate.countdown () {
+frobulator.countdown () {
 	before="[ "
 	after=" ]"
 
@@ -538,7 +538,7 @@ frobulate.countdown () {
 
 	shift
 
-	frobulate.prompt "$@"
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	shift
@@ -558,7 +558,7 @@ frobulate.countdown () {
 
 # progress /////////////////////////////////////////////////////////////////////
 
-frobulate.progress () {
+frobulator.progress () {
 	# catch PID of last command
 
 	PID=$!
@@ -569,7 +569,7 @@ frobulate.progress () {
 	before="[ "
 	after=" ]"
 
-	frobulate.prompt "$@"
+	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	i=1
@@ -589,7 +589,7 @@ frobulate.progress () {
 
 # directory ////////////////////////////////////////////////////////////////////
 
-frobulate.directory () {
+frobulator.directory () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -607,7 +607,7 @@ frobulate.directory () {
 
 	for directory in ${list[@]}
 	do
-		frobulate.add "Creating directory" "[ ${directory} ]"
+		frobulator.add "Creating directory" "[ ${directory} ]"
 		echo
 
 		# create directory and set permissions
@@ -626,7 +626,7 @@ frobulate.directory () {
 
 # type /////////////////////////////////////////////////////////////////////////
 
-frobulate.type () {
+frobulator.type () {
 	for (( character=0; character<=${#1}; character++ ))
 	do
 		interval=$(( (RANDOM % 5) + 1 ))
@@ -642,7 +642,7 @@ frobulate.type () {
 
 # write ////////////////////////////////////////////////////////////////////////
 
-frobulate.write () {
+frobulator.write () {
 	content="${1}"
 	path="${2}"
 
@@ -663,7 +663,7 @@ frobulate.write () {
 
 	for file in ${list[@]}
 	do
-		frobulate.add "Writing" "[ ${file} ]"
+		frobulator.add "Writing" "[ ${file} ]"
 		echo
 
 		# write to file and set permissions
@@ -682,7 +682,7 @@ frobulate.write () {
 
 # file /////////////////////////////////////////////////////////////////////////
 
-frobulate.file () {
+frobulator.file () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -702,7 +702,7 @@ frobulate.file () {
 
 	for file in ${list[@]}
 	do
-		frobulate.add "Creating" "[ ${file} ]"
+		frobulator.add "Creating" "[ ${file} ]"
 		echo
 
 		# create file and set permissions
@@ -721,7 +721,7 @@ frobulate.file () {
 
 # keep /////////////////////////////////////////////////////////////////////////
 
-frobulate.keep () {
+frobulator.keep () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -751,7 +751,7 @@ frobulate.keep () {
 			then
 				keep=1
 
-				frobulate.ret "Keeping" "[ ${file} ]"
+				frobulator.ret "Keeping" "[ ${file} ]"
 				echo
 			fi
 		done
@@ -768,7 +768,7 @@ frobulate.keep () {
 
 # delete ///////////////////////////////////////////////////////////////////////
 
-frobulate.delete () {
+frobulator.delete () {
 	path="${1}"
 
 	if [[ -n "${#list[@]}" ]]
@@ -786,7 +786,7 @@ frobulate.delete () {
 
 	for file in ${list[@]}
 	do
-		frobulate.rem "Deleting" "[ ${file} ]"
+		frobulator.rem "Deleting" "[ ${file} ]"
 		echo
 
 		# remove file
@@ -801,7 +801,7 @@ frobulate.delete () {
 
 # copy /////////////////////////////////////////////////////////////////////////
 
-frobulate.copy () {
+frobulator.copy () {
 	source="${1}"
 	target="${2}"
 
@@ -822,7 +822,7 @@ frobulate.copy () {
 
 	for file in ${list[@]}
 	do
-		frobulate.lnk "Copying" "[ ${file} ]"
+		frobulator.lnk "Copying" "[ ${file} ]"
 		echo
 
 		cp -r -f "${source}"/"${file}" "${target}"/"${file}"
@@ -835,7 +835,7 @@ frobulate.copy () {
 
 # link /////////////////////////////////////////////////////////////////////////
 
-frobulate.link () {
+frobulator.link () {
 	source="${1}"
 	target="${2}"
 
@@ -856,7 +856,7 @@ frobulate.link () {
 
 	for file in ${list[@]}
 	do
-		console.lnk "Linking" "[ ${file} ]"
+		frobulator.lnk "Linking" "[ ${file} ]"
 		echo
 
 		ln -s -f "${source}"/"${file}" "${target}"/"${file}"
@@ -869,7 +869,7 @@ frobulate.link () {
 
 # get //////////////////////////////////////////////////////////////////////////
 
-frobulate.get () {
+frobulator.get () {
 	# parse url and download file according to source concatenation
 
 	command_get () {
@@ -894,7 +894,7 @@ frobulate.get () {
 
 	command_get &
 
-	frobulate.progress "Downloading" "[ ${file} ]"
+	frobulator.progress "Downloading" "[ ${file} ]"
 	echo
 
 	chmod a+rx "${path}"/"${file}"
@@ -902,7 +902,7 @@ frobulate.get () {
 
 # download /////////////////////////////////////////////////////////////////////
 
-frobulate.download () {
+frobulator.download () {
 	source="${1}"
 	path="${2}"
 
@@ -921,12 +921,12 @@ frobulate.download () {
 
 	[ ! -d "${path}" ] && mkdir -p "${path}"
 
-	frobulate.dwl "Loading..."
+	frobulator.dwl "Loading..."
 	echo
 
 	for file in ${list[@]}
 	do
-		frobulate.get
+		frobulator.get
 	done
 
 	# unset array
@@ -936,7 +936,7 @@ frobulate.download () {
 
 # put
 
-frobulate.put () {
+frobulator.put () {
 	type="${1}"
 
 	curl									\
@@ -944,24 +944,24 @@ frobulate.put () {
 		-H "Content-Type: ${type}"			\
 		-d "${file}" &
 
-	frobulate.progress "Uploading" "[ ${file} ]"
+	frobulator.progress "Uploading" "[ ${file} ]"
 	echo
 }
 
 # upload ///////////////////////////////////////////////////////////////////////
 
-frobulate.upload () {
+frobulator.upload () {
 
-	frobulate.upl "Loading..."
+	frobulator.upl "Loading..."
 	echo
 
-	frobulate.put
+	frobulator.put
 
 }
 
 # silence //////////////////////////////////////////////////////////////////////
 
-frobulate.silence () {
+frobulator.silence () {
 	# wrap command execution and redirect all output to null sink:
 	# provides fully silent execution
 
@@ -972,7 +972,7 @@ frobulate.silence () {
 
 # log //////////////////////////////////////////////////////////////////////////
 
-frobulate.log () {
+frobulator.log () {
 	# wrap command execution and redirect all output to /var log file:
 	# provides logged and fully silent execution
 
@@ -983,7 +983,7 @@ frobulate.log () {
 
 # password /////////////////////////////////////////////////////////////////////
 
-frobulate.password () {
+frobulator.password () {
 	# obfuscate password input with custom mask
 
 	mask_character="•"
@@ -1028,7 +1028,7 @@ frobulate.password () {
 
 # input ////////////////////////////////////////////////////////////////////////
 
-frobulate.input () {
+frobulator.input () {
 	list=($@)
 
 	for value in "${list[@]}"
@@ -1036,9 +1036,9 @@ frobulate.input () {
 		label=${value^}
 		prompt="$(echo ${label} | sed 's/_/ /'):"
 
-		frobulate.ipt "${prompt}"
+		frobulator.ipt "${prompt}"
 
-		[[ "${value}" = *password* ]] && frobulate.password || read input
+		[[ "${value}" = *password* ]] && frobulator.password || read input
 
 		# prevent empty input
 
@@ -1047,14 +1047,14 @@ frobulate.input () {
 			if [ -z "${input}" ]
 			then
 				echo
-				frobulate.err "${prompt%:} cannot be empty."
+				frobulator.err "${prompt%:} cannot be empty."
 				echo
 
 				prompt="$(echo ${label} | sed 's/_/ /'):"
 
-				frobulate.ipt "${prompt}"
+				frobulator.ipt "${prompt}"
 
-				[[ "${value}" = *password* ]] && frobulate.password || read input
+				[[ "${value}" = *password* ]] && frobulator.password || read input
 			else
 					break
 			fi
@@ -1074,18 +1074,18 @@ frobulate.input () {
 
 # clean ////////////////////////////////////////////////////////////////////////
 
-frobulate.clean () {
+frobulator.clean () {
 	command_autoremove="apt-get autoremove"
 	command_clean="apt-get clean"
 
-	frobulate.log "${command_autoremove}" &
+	frobulator.log "${command_autoremove}" &
 
-	frobulate.progress "Flushing packages..."
+	frobulator.progress "Flushing packages..."
 	echo
 
-	frobulate.log "${command_clean}" &
+	frobulator.log "${command_clean}" &
 
-	frobulate.progress "Cleaning..."
+	frobulator.progress "Cleaning..."
 	echo
 
 	# fix dpkg lock and errors:
@@ -1099,24 +1099,24 @@ frobulate.clean () {
 
 # hold /////////////////////////////////////////////////////////////////////////
 
-frobulate.hold () {
+frobulator.hold () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	list=($@)
 
 	command_hold="apt-mark hold"
 
-	frobulate.inf "Holding packages."
+	frobulator.inf "Holding packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		frobulate.wrn "Holding" "[ '${package}' ]"
+		frobulator.wrn "Holding" "[ '${package}' ]"
 		echo
 
-		frobulate.log "${command_hold} ${package}" &
+		frobulator.log "${command_hold} ${package}" &
 
-		frobulate.progress "Holding..."
+		frobulator.progress "Holding..."
 		echo
 	done
 
@@ -1127,7 +1127,7 @@ frobulate.hold () {
 
 # release /////////////////////////////////////////////////////////////////////#
 
-frobulate.release () {
+frobulator.release () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1145,17 +1145,17 @@ frobulate.release () {
 
 	command_unhold="apt-mark unhold"
 
-	frobulate.inf "Releasing packages."
+	frobulator.inf "Releasing packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		frobulate.wrn "Releasing" "[ '${package}' ]"
+		frobulator.wrn "Releasing" "[ '${package}' ]"
 		echo
 
-		frobulate.log "${command_unhold} ${package}" &
+		frobulator.log "${command_unhold} ${package}" &
 
-		frobulate.progress "Releasing..."
+		frobulator.progress "Releasing..."
 		echo
 	done
 
@@ -1166,7 +1166,7 @@ frobulate.release () {
 
 # failsafe /////////////////////////////////////////////////////////////////////
 
-frobulate.failsafe () {
+frobulator.failsafe () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1190,20 +1190,20 @@ frobulate.failsafe () {
 	do
 		while [[ -z $(command -v "${package}") ]]
 		do
-			frobulate.log "yes | ${command_update}"
+			frobulator.log "yes | ${command_update}"
 
-			frobulate.log "yes | ${command_upgrade}"
+			frobulator.log "yes | ${command_upgrade}"
 
-			frobulate.log "yes | ${command_install}" "${package}"
+			frobulator.log "yes | ${command_install}" "${package}"
 
-			frobulate.log "yes | ${command_update}"
+			frobulator.log "yes | ${command_update}"
 		done
 	done
 }
 
 # install //////////////////////////////////////////////////////////////////////
 
-frobulate.install () {
+frobulator.install () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1221,25 +1221,25 @@ frobulate.install () {
 
 	command_install="apt-get install"
 
-	frobulate.inf "Installing packages."
+	frobulator.inf "Installing packages."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)" ]
 		then
-			frobulate.wrn "Package not installed" "[ '${package}' ]"
+			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			frobulate.log "yes | ${command_install} ${package}" &
+			frobulator.log "yes | ${command_install} ${package}" &
 
-			frobulate.progress "Installing..."
+			frobulator.progress "Installing..."
 			echo
 		else
-			frobulate.scs "Package installed" "[ '${package}' ]"
+			frobulator.scs "Package installed" "[ '${package}' ]"
 			echo
 
-			frobulate.fwd "Continuing..."
+			frobulator.fwd "Continuing..."
 			echo
 
 			:
@@ -1252,17 +1252,17 @@ frobulate.install () {
 
 	# cleanup
 
-	frobulate.clean
+	frobulator.clean
 }
 
 # command //////////////////////////////////////////////////////////////////////
 
-frobulate.command () {
+frobulator.command () {
 	export DEBIAN_FRONTEND=noninteractive
 
-	frobulate.failsafe apt-file
+	frobulator.failsafe apt-file
 
-	frobulate.log "apt-file update"
+	frobulator.log "apt-file update"
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1285,7 +1285,7 @@ frobulate.command () {
 		then
 			if [[ -z "${command_query}" ]]
 			then
-				frobulate.err "No package found that provides command" "[ '${command}' ]"
+				frobulator.err "No package found that provides command" "[ '${command}' ]"
 				echo
 			else
 				list+=("${command_query}")
@@ -1294,7 +1294,7 @@ frobulate.command () {
 
 				if [[ -n "${#list[@]}" ]]
 				then
-					frobulate.install ${list[@]}
+					frobulator.install ${list[@]}
 				fi
 
 				# unset array
@@ -1302,7 +1302,7 @@ frobulate.command () {
 				list=()
 			fi
 		else
-			frobulate.scs "Command available" "[ '${command}' ]"
+			frobulator.scs "Command available" "[ '${command}' ]"
 			echo
 		fi
 	done
@@ -1310,7 +1310,7 @@ frobulate.command () {
 
 # reinstall ////////////////////////////////////////////////////////////////////
 
-frobulate.reinstall () {
+frobulator.reinstall () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1328,14 +1328,14 @@ frobulate.reinstall () {
 
 	command_reinstall="apt-get install --reinstall"
 
-	frobulate.inf "Reinstalling packages."
+	frobulator.inf "Reinstalling packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		frobulate.log "yes | ${command_reinstall} ${package}" &
+		frobulator.log "yes | ${command_reinstall} ${package}" &
 
-		frobulate.progress "Reinstalling..."
+		frobulator.progress "Reinstalling..."
 		echo
 	done
 
@@ -1345,44 +1345,44 @@ frobulate.reinstall () {
 
 	# cleanup
 
-	frobulate.clean
+	frobulator.clean
 }
 
 # update
 
-frobulate.update () {
+frobulator.update () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_update="apt-get update"
 
-	frobulate.inf "Processing package and repository information."
+	frobulator.inf "Processing package and repository information."
 	echo
 
-	frobulate.log "${command_update}" &
+	frobulator.log "${command_update}" &
 
-	frobulate.progress "Updating..."
+	frobulator.progress "Updating..."
 	echo
 }
 
 # upgrade
 
-frobulate.upgrade () {
+frobulator.upgrade () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_upgrade="apt-get upgrade"
 
-	frobulate.inf "Processing installed packages."
+	frobulator.inf "Processing installed packages."
 	echo
 
-	frobulate.log "yes | ${command_upgrade}" &
+	frobulator.log "yes | ${command_upgrade}" &
 
-	frobulate.progress "Upgrading..."
+	frobulator.progress "Upgrading..."
 	echo
 }
 
 # purge ////////////////////////////////////////////////////////////////////////
 
-frobulate.purge () {
+frobulator.purge () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -1400,25 +1400,25 @@ frobulate.purge () {
 
 	command_purge="sudo apt-get purge"
 
-	frobulate.inf "Purging selected packages."
+	frobulator.inf "Purging selected packages."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -o installed)" ]
 		then
-			frobulate.wrn "Selected package" "[ '${package}' ]"
+			frobulator.wrn "Selected package" "[ '${package}' ]"
 			echo
 
-			frobulate.log "yes | ${command_purge} ${package}" &
+			frobulator.log "yes | ${command_purge} ${package}" &
 
-			frobulate.progress "Purging..."
+			frobulator.progress "Purging..."
 			echo
 		else
-			frobulate.scs "Package not installed" "[ '${package}' ]"
+			frobulator.scs "Package not installed" "[ '${package}' ]"
 			echo
 
-			frobulate.fwd "Continuing..."
+			frobulator.fwd "Continuing..."
 			echo
 
 			:
@@ -1431,13 +1431,12 @@ frobulate.purge () {
 
 	# cleanup
 
-	frobulate.clean
+	frobulator.clean
 }
 
 # dialog ///////////////////////////////////////////////////////////////////////
 
-frobulate.dialog () {
-
+frobulator.dialog () {
 	# dialog window title
 
 	title="${script%.sh} - ${1}"
@@ -1473,10 +1472,10 @@ frobulate.dialog () {
 	then
 		dialog=$(k_dialog)
 	else
-		frobulate.wrn "This utility must be run using the 'directory' option."
+		frobulator.wrn "This utility must be run using the 'directory' option."
 		echo
 
-		frobulate.fwd "Exiting..."
+		frobulator.fwd "Exiting..."
 		echo
 
 		exit 1
@@ -1485,7 +1484,7 @@ frobulate.dialog () {
 
 # terminate ////////////////////////////////////////////////////////////////////
 
-frobulate.terminate () {
+frobulator.terminate () {
 	process_name="${1}"
 
 	if [[ $(command -v pgrep) ]] && [[ $(command -v pkill) ]]
@@ -1499,37 +1498,37 @@ frobulate.terminate () {
 
 # exit /////////////////////////////////////////////////////////////////////////
 
-frobulate.exit () {
+frobulator.exit () {
 	instance="${1}"
 
-	frobulate.countdown 3 "Exiting" "[ ${instance} ]"
+	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
-	frobulate.kill "${SHELL}"
+	frobulator.kill "${SHELL}"
 }
 
 # result ///////////////////////////////////////////////////////////////////////
 
-frobulate.result () {
+frobulator.result () {
 	checkpoint="${1}"
 	instance="${2}"
 
 	if [[ $(command -v "${checkpoint}") ]]
 	then
-		frobulate.scs "Setup complete" "[ ${instance} ]"
+		frobulator.scs "Setup complete" "[ ${instance} ]"
 		echo
 	else
-		frobulate.err "Setup errors were encountered" "[ ${instance} ]"
+		frobulator.err "Setup errors were encountered" "[ ${instance} ]"
 		echo
 
-		frobulate.inf "Consult setup logs for details" '[ ${PREFIX}/var/log/ ]'
+		frobulator.inf "Consult setup logs for details" '[ ${PREFIX}/var/log/ ]'
 		echo
 	fi
 }
 
 # user  ////////////////////////////////////////////////////////////////////////
 
-frobulate.user () {
-	frobulate.inf "Current user name is ${SUDO_USER:-$USER}."
+frobulator.user () {
+	frobulator.inf "Current user name is ${SUDO_USER:-$USER}."
 
 	sleep 1
 }

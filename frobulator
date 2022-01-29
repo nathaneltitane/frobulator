@@ -120,7 +120,7 @@ else
 
 		# clear from cursor to end of line - left
 
-		terminal_clear_right=$(tput el)
+		terminal_clear_right=$(tput el1)
 
 		# clear from cursor to beginning of line - right
 

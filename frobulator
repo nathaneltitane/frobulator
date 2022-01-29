@@ -1569,6 +1569,7 @@ frobulator.extract () {
 	frobulator.require ${list[@]}
 
 	archive="${1}"
+	directory="${2}"
 
 	if [ -z "${directory}" ]
 	then
@@ -1642,14 +1643,13 @@ frobulator.extract () {
 			*)
 				echo
 				frobulator.err "Extraction failed" "[ '${archive}' ]"
-				frobulator.wrn "Unknown or unsupported archive type."
 				echo
 			;;
 
 		esac
 	else
 		echo
-		frobulator.err "Not a valid archive type" "[ '${archive}' ]"
+		frobulator.err "Unsupported archive type" "[ '${archive}' ]"
 		echo
 	fi
 }

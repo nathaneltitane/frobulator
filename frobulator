@@ -1321,9 +1321,6 @@ frobulator.require () {
 
 				list=()
 			fi
-		else
-			frobulator.scs "Command available" "[ '${command}' ]"
-			echo
 		fi
 	done
 }
@@ -1585,26 +1582,6 @@ frobulator.extract () {
 	then
 		case "${archive}"
 		in
-			*.bz2)
-				bzip					\
-					--stdout			\
-					--keep				\
-					--decompress "${archive}" > "${directory}"
-			;;
-
-			*.gz)
-				gzip					\
-					--stdout			\
-					--keep				\
-					--decompress "${archive}" > "${directory}"
-			;;
-
-			*.Z)
-				uncompress 				\
-					--stdout 			\
-					--keep "${archive}" > "${directory}"
-			;;
-
 			*.tar.bz2|*.tbz2)
 				tar						\
 					--extract			\
@@ -1626,6 +1603,26 @@ frobulator.extract () {
 					--extract			\
 					--file="${archive}" \
 					--directory="${directory}"
+			;;
+
+			*.bz2)
+				bzip					\
+					--stdout			\
+					--keep				\
+					--decompress "${archive}" > "${directory}"
+			;;
+
+			*.gz)
+				gzip					\
+					--stdout			\
+					--keep				\
+					--decompress "${archive}" > "${directory}"
+			;;
+
+			*.Z)
+				uncompress 				\
+					--stdout 			\
+					--keep "${archive}" > "${directory}"
 			;;
 
 			*.7z)

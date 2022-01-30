@@ -163,7 +163,7 @@ marker_not='[ ⨉ ]'
 
 marker_nul='     '
 
-# prompt
+# prompt ///////////////////////////////////////////////////////////////////////
 
 frobulator.prompt () {
 	# initialize string return array

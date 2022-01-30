@@ -1076,7 +1076,7 @@ frobulator.input () {
 
 				[[ "${value}" = *password* ]] && frobulator.password || read input
 			else
-					break
+				break
 			fi
 		done
 

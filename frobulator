@@ -920,7 +920,6 @@ frobulator.link () {
 		list+=("${file}")
 	fi
 
-
 	if [ ! -d "${target}" ]
 	then
 		mkdir -p "${target}"
@@ -937,17 +936,20 @@ frobulator.link () {
 			then
 				file=${list[0]}
 				link=${list[0]}
-
-				ln -s -f "${source}"/"${file}" "${target}"/"${link}"
 			fi
 
 			if [ $# -eq 4 ]
 			then
 				file=${list[0]}
 				link=${list[1]}
-
-				ln -s -f "${source}"/"${file}" "${target}"/"${link}"
 			fi
+
+			if [ -e "${target}"/"${link} ]
+			then
+				rm -rf "${target}"/"${link}
+			fi
+
+			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
 
 		else
 			echo error

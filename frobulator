@@ -1298,7 +1298,7 @@ frobulator.failsafe () {
 
 			frobulator.log "${command_upgrade}"
 
-			frobulator.log "${command_install}" "${package}"
+			frobulator.log "${command_install} ${package}"
 
 			frobulator.log "${command_update}"
 		done
@@ -1323,7 +1323,7 @@ frobulator.install () {
 		list+=("${package}")
 	fi
 
-	command_install="apt-get install"
+	command_install="apt-get --assume-yes install"
 
 	frobulator.inf "Installing packages."
 	echo
@@ -1335,7 +1335,7 @@ frobulator.install () {
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			frobulator.log "yes | ${command_install} ${package}" &
+			frobulator.log "${command_install} ${package}" &
 
 			frobulator.progress "Installing..."
 			echo

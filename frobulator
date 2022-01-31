@@ -1642,7 +1642,6 @@ frobulator.extract () {
 				frobulator.err "Extraction failed" "[ '${archive}' ]"
 				echo
 			;;
-
 		esac
 	else
 		echo

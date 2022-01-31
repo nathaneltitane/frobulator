@@ -944,9 +944,9 @@ frobulator.link () {
 				link=${list[1]}
 			fi
 
-			if [ -e "${target}"/"${link} ]
+			if [ -e "${target}"/"${link}" ]
 			then
-				rm -rf "${target}"/"${link}
+				rm -rf "${target}"/"${link}"
 			fi
 
 			ln -s -f "${source}"/"${file}" "${target}"/"${link}"

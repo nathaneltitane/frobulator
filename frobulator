@@ -1427,14 +1427,14 @@ frobulator.reinstall () {
 		list+=("${package}")
 	fi
 
-	command_reinstall="apt-get install --reinstall"
+	command_reinstall="apt-get --assume-yes install --reinstall"
 
 	frobulator.inf "Reinstalling packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		frobulator.log "yes | ${command_reinstall} ${package}" &
+		frobulator.log "${command_reinstall} ${package}" &
 
 		frobulator.progress "Reinstalling..."
 		echo
@@ -1470,12 +1470,12 @@ frobulator.update () {
 frobulator.upgrade () {
 	export DEBIAN_FRONTEND=noninteractive
 
-	command_upgrade="apt-get upgrade"
+	command_upgrade="apt-get --assume-yes upgrade"
 
 	frobulator.inf "Processing installed packages."
 	echo
 
-	frobulator.log "yes | ${command_upgrade}" &
+	frobulator.log "${command_upgrade}" &
 
 	frobulator.progress "Upgrading..."
 	echo
@@ -1499,7 +1499,7 @@ frobulator.purge () {
 		list+=("${package}")
 	fi
 
-	command_purge="sudo apt-get purge"
+	command_purge="sudo apt-get --assume-yes purge"
 
 	frobulator.inf "Purging selected packages."
 	echo
@@ -1511,7 +1511,7 @@ frobulator.purge () {
 			frobulator.wrn "Selected package" "[ '${package}' ]"
 			echo
 
-			frobulator.log "yes | ${command_purge} ${package}" &
+			frobulator.log "${command_purge} ${package}" &
 
 			frobulator.progress "Purging..."
 			echo

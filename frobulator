@@ -852,7 +852,11 @@ frobulator.link () {
 		list+=("${file}")
 	fi
 
-	[ ! -d "${target}" ] && mkdir -p "${target}"
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir -p "${target}"
+	fi
 
 	for file in ${list[@]}
 	do

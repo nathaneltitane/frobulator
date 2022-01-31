@@ -929,7 +929,7 @@ frobulator.link () {
 	do
 		if [ -e "${source}"/"${file}" ]
 		then
-			echo "Linking" "[ ${file} ]"
+			frobulator.lnk "Linking" "[ ${file} ]"
 			echo
 
 			if [ $# -eq 3 ]

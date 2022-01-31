@@ -950,9 +950,6 @@ frobulator.link () {
 			fi
 
 			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
-
-		else
-			echo error
 		fi
 	done
 

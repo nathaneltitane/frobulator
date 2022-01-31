@@ -173,7 +173,10 @@ frobulator.prompt () {
 	begin="${1}"
 	end="${2}"
 
-	[ -z "${count}" ] && count="80"
+	if [ -z "${count}" ]
+	then
+		count="80"
+	fi
 
 	# set span width
 
@@ -186,15 +189,47 @@ frobulator.prompt () {
 
 	# parse arguments
 
-	[ $# -ge 0 ] && span_character="/"		# 0 argument   - full dash line
+	# 0 argument   - full dash line
 
-	[ $# -eq 1 ] && span_character="/"		# 1 argument   - pad to end of line
+	if [ $# -ge 0 ]
+	then
+		span_character="/"
+	fi
 
-	[ $# -eq 3 ] && span_character="${3}"	# 3 arguments  - replace span character with argument 3
+	# 1 argument   - pad to end of line
 
-	[ $# -ge 2 ] && span=${span::-6}		# 2+ arguments - reduce span by 6 characters: compensate for line marker + space
-	[ $# -ge 2 ] && begin="${begin} "		# 2+ arguments - append space to 'begin' value
-	[ $# -ge 2 ] && end=" ${end}"			# 2+ arguments - prepend space to 'end' value
+	if [ $# -eq 1 ]
+	then
+		span_character="/"
+	fi
+
+	# 3 arguments  - replace span character with argument 3
+
+	if [ $# -eq 3 ]
+	then
+		span_character="${3}"
+	fi
+
+	# 2+ arguments - reduce span by 6 characters: compensate for line marker + space
+
+	if [ $# -ge 2 ]
+	then
+		span=${span::-6}
+	fi
+
+	# 2+ arguments - append space to 'begin' value
+
+	if [ $# -ge 2 ]
+	then
+		begin="${begin} "
+	fi
+
+	# 2+ arguments - prepend space to 'end' value
+
+	if [ $# -ge 2 ]
+	then
+		end=" ${end}"
+	fi
 
 	# fold paragraph if character count is above 80
 	# indent second line onward (6 spaces) to match line marker
@@ -233,13 +268,25 @@ frobulator.prompt () {
 
 	# populate array at end to avoid integrating spaces
 
-	[ $# -ge 0 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	if [ $# -ge 0 ]
+	then
+		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	fi
 
-	[ $# -eq 1 ] && frobulate_str=("${span_begin}")
+	if [ $# -eq 1 ]
+	then
+		frobulate_str=("${span_begin}")
+	fi
 
-	[ $# -ge 2 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	if [ $# -ge 2 ]
+	then
+		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	fi
 
-	[ $# -eq 3 ] && frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	if [ $# -eq 3 ]
+	then
+		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+	fi
 }
 
 # highlights ///////////////////////////////////////////////////////////////////
@@ -515,7 +562,10 @@ frobulator.wait () {
 
 	# set defaults
 
-	[ -z "${seconds}" ] && seconds="1"
+	if [ -z "${seconds}" ]
+	then
+		seconds="1"
+	fi
 
 	sleep "${seconds}"
 }
@@ -612,7 +662,10 @@ frobulator.directory () {
 
 		# create directory and set permissions
 
-		[ ! -d "${path}"/"${directory}" ] && mkdir -p "${path}"/"${directory}"
+		if [ ! -d "${path}"/"${directory}" ]
+		then
+			mkdir -p "${path}"/"${directory}"
+		fi
 
 		# set ownership
 
@@ -659,7 +712,10 @@ frobulator.write () {
 		list+=("${file}")
 	fi
 
-	[ ! -d "${path}" ] && mkdir -p "${path}"
+	if [ ! -d "${path}" ]
+	then
+		mkdir -p "${path}"
+	fi
 
 	for file in ${list[@]}
 	do
@@ -698,7 +754,10 @@ frobulator.file () {
 		list+=("${file}")
 	fi
 
-	[ ! -d "${path}" ] && mkdir -p "${path}"
+	if [ ! -d "${path}" ]
+	then
+		 mkdir -p "${path}"
+	fi
 
 	for file in ${list[@]}
 	do
@@ -707,7 +766,10 @@ frobulator.file () {
 
 		# create file and set permissions
 
-		[ ! -f "${path}"/"${file}" ] && touch "${path}"/"${file}"
+		if [ ! -f "${path}"/"${file}" ]
+		then
+			touch "${path}"/"${file}"
+		fi
 
 		# set ownership
 
@@ -758,7 +820,10 @@ frobulator.keep () {
 
 		# remove unmarked items
 
-		[[ "$keep" = 0 ]] && rm -rf "${item}"
+		if [[ "$keep" = 0 ]]
+		then
+			rm -rf "${item}"
+		fi
 	done
 
 	# unset array
@@ -818,7 +883,10 @@ frobulator.copy () {
 		list+=("${file}")
 	fi
 
-	[ ! -d "${target}" ] && mkdir -p "${target}"
+	if [ ! -d "${target}" ]
+	then
+		mkdir -p "${target}"
+	fi
 
 	for file in ${list[@]}
 	do

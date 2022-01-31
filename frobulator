@@ -1286,21 +1286,21 @@ frobulator.failsafe () {
 		list+=("${package}")
 	fi
 
-	command_update="apt-get update"
-	command_upgrade="apt-get upgrade"
-	command_install="apt-get install"
+	command_update="apt-get --assume-yes update"
+	command_upgrade="apt-get --assume-yes upgrade"
+	command_install="apt-get --assume-yes install"
 
 	for package in ${list[@]}
 	do
 		while [[ -z $(command -v "${package}") ]]
 		do
-			frobulator.log "yes | ${command_update}"
+			frobulator.log "${command_update}"
 
-			frobulator.log "yes | ${command_upgrade}"
+			frobulator.log "${command_upgrade}"
 
-			frobulator.log "yes | ${command_install}" "${package}"
+			frobulator.log "${command_install}" "${package}"
 
-			frobulator.log "yes | ${command_update}"
+			frobulator.log "${command_update}"
 		done
 	done
 }

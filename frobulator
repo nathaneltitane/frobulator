@@ -929,9 +929,6 @@ frobulator.link () {
 	do
 		if [ -e "${source}"/"${file}" ]
 		then
-			frobulator.lnk "Linking" "[ ${file} ]"
-			echo
-
 			if [ $# -eq 3 ]
 			then
 				file=${list[0]}
@@ -943,6 +940,9 @@ frobulator.link () {
 				file=${list[0]}
 				link=${list[1]}
 			fi
+
+			frobulator.lnk "Linking" "[ ${file} ]"
+			echo
 
 			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
 		fi

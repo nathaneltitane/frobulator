@@ -550,7 +550,15 @@ frobulator.separate () {
 frobulator.script () {
 	description="${1}"
 
-	frobulator.msg "${description}" "[ ${script%-*} // ${version} ]"
+	if [[ "${description}" = *-* ]]
+	then
+		message="${script%-*} // ${version}"
+	else
+		message="${script} // ${version}"
+	fi
+
+	frobulator.msg "${description}" "[ ${message} ]"
+
 }
 
 # wait /////////////////////////////////////////////////////////////////////////

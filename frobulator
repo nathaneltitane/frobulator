@@ -554,7 +554,7 @@ frobulator.script () {
 	then
 		message="${script%-*} // ${version}"
 	else
-		message="${script} // ${version}"
+		message="${script}"
 	fi
 
 	frobulator.msg "${description}" "[ ${message} ]"

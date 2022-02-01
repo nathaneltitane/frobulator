@@ -1659,6 +1659,8 @@ frobulator.extract () {
 
 	if [ -f "${archive}" ]
 	then
+		extract_message="frobulator.inf "Extracting" "['${archive}']""
+
 		case "${archive}"
 		in
 			*.tar.bz2|*.tbz2)
@@ -1667,6 +1669,8 @@ frobulator.extract () {
 					--bzip2				\
 					--file="${archive}" \
 					--directory="${directory}"
+
+					${extract_message}
 			;;
 
 			*.tar.gz|*.tgz)
@@ -1675,6 +1679,9 @@ frobulator.extract () {
 					--gzip				\
 					--file="${archive}" \
 					--directory="${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.tar)
@@ -1682,6 +1689,9 @@ frobulator.extract () {
 					--extract			\
 					--file="${archive}" \
 					--directory="${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.bz2)
@@ -1689,6 +1699,9 @@ frobulator.extract () {
 					--stdout			\
 					--keep				\
 					--decompress "${archive}" > "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.gz)
@@ -1696,24 +1709,39 @@ frobulator.extract () {
 					--stdout			\
 					--keep				\
 					--decompress "${archive}" > "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.Z)
 				uncompress 				\
 					--stdout 			\
 					--keep "${archive}" > "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.7z)
 				7z x "${archive}" -o "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.rar)
 				unrar e "${archive}" "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*.zip)
 				unzip "${archive}" -d "${directory}"
+
+					${extract_message}
+
 			;;
 
 			*)

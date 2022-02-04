@@ -1667,7 +1667,7 @@ frobulator.extract () {
 
 	if [ -f "${archive}" ]
 	then
-		extract_message="frobulator.inf "Extracting" "['${archive}']""
+		extract_message="frobulator.inf "Extracting" "[ ${archive} ]""
 
 		case "${archive}"
 		in

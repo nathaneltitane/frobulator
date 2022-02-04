@@ -1427,6 +1427,8 @@ frobulator.require () {
 		list+=("${command}")
 	fi
 
+	frobulator.fwd "Validating requirements..."
+
 	for command in ${list[@]}
 	do
 		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")

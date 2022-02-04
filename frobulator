@@ -744,6 +744,49 @@ frobulator.write () {
 	done
 }
 
+# flag / ///////////////////////////////////////////////////////////////////////
+
+frobulator.flag () {
+	content="${1}"
+	path="${2}"
+
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${2} - array
+
+		list=(${@:3})
+	else
+		file="${3}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
+	if [ ! -d "${path}" ]
+	then
+		mkdir -p "${path}"
+	fi
+
+	for file in ${list[@]}
+	do
+		frobulator.add "Writing" "[ ${file} ]"
+		echo
+
+		# write to file and set permissions
+
+		echo "${content}" > "${path}"/"${file}"
+
+		# set ownership
+
+		chown "${uid}":"${gid}" -R "${path}"/"${file}"
+
+		# set permissions
+
+		chmod a+rx "${path}"/"${file}"
+	done
+}
+
 # file /////////////////////////////////////////////////////////////////////////
 
 frobulator.file () {

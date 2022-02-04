@@ -1677,6 +1677,7 @@ frobulator.extract () {
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 			;;
 
 			*.tar.gz|*.tgz)
@@ -1687,6 +1688,7 @@ frobulator.extract () {
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1697,6 +1699,7 @@ frobulator.extract () {
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1707,6 +1710,7 @@ frobulator.extract () {
 					--decompress "${archive}" > "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1717,6 +1721,7 @@ frobulator.extract () {
 					--decompress "${archive}" > "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1726,6 +1731,7 @@ frobulator.extract () {
 					--keep "${archive}" > "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1733,6 +1739,7 @@ frobulator.extract () {
 				7z x "${archive}" -o "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1740,6 +1747,7 @@ frobulator.extract () {
 				unrar e "${archive}" "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 
@@ -1747,6 +1755,7 @@ frobulator.extract () {
 				unzip "${archive}" -d "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
+					echo
 
 			;;
 

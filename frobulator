@@ -1428,6 +1428,7 @@ frobulator.require () {
 	fi
 
 	frobulator.fwd "Validating requirements..."
+	echo
 
 	for command in ${list[@]}
 	do

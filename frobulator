@@ -952,6 +952,48 @@ frobulator.copy () {
 	list=()
 }
 
+# move /////////////////////////////////////////////////////////////////////////
+
+frobulator.move () {
+	source="${1}"
+	target="${2}"
+
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${2} - array
+
+		list=(${@:3})
+	else
+		file="${3}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir -p "${target}"
+	fi
+
+	for file in ${list[@]}
+	do
+		if [ -z "${source}" ]
+		then
+			source="${PWD}"
+		fi
+
+		frobulator.lnk "Moving" "[ ${file} ]"
+		echo
+
+		mv "${source}"/"${file}" "${target}"/"${file}"
+	done
+
+	# unset array
+
+	list=()
+}
+
 # link /////////////////////////////////////////////////////////////////////////
 
 frobulator.link () {

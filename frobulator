@@ -1020,24 +1020,29 @@ frobulator.link () {
 
 	for file in ${list[@]}
 	do
-		if [ -e "${source}"/"${file}" ]
+		if [ -e "${source}" ]
 		then
-			if [ $# -eq 3 ]
+			if [ -e "${source}"/"${file}" ]
 			then
-				file=${list[0]}
-				link=${list[0]}
+				if [ $# -eq 3 ]
+				then
+					file=${list[0]}
+					link=${list[0]}
+				fi
+
+				if [ $# -eq 4 ]
+				then
+					file=${list[0]}
+					link=${list[1]}
+				fi
+
+				frobulator.lnk "Linking" "[ ${file} ]"
+				echo
+
+				ln -s -f "${source}"/"${file}" "${target}"/"${link}"
 			fi
-
-			if [ $# -eq 4 ]
-			then
-				file=${list[0]}
-				link=${list[1]}
-			fi
-
-			frobulator.lnk "Linking" "[ ${file} ]"
-			echo
-
-			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
+		else
+			:
 		fi
 	done
 

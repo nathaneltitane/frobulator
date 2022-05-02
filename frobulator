@@ -621,9 +621,8 @@ frobulator.progress () {
 
 	PID=$!
 
-	# spinner="\/"
+	spinner="\/"
 
-	spinner="⬒◩◧⬕⬓◪◨⬔"
 	before="[ "
 	after=" ]"
 
@@ -636,7 +635,7 @@ frobulator.progress () {
 	do
 		echo -ne "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
 
-		sleep 0.1
+		sleep 0.25
 	done
 
 	# normalize line spacing:

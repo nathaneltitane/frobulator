@@ -165,6 +165,8 @@ marker_nul='     '
 
 # system ///////////////////////////////////////////////////////////////////////
 
+# provide userspace read/write access to logs
+
 if [ -d /var/log ]
 then
 	chmod -R 777 /var/log

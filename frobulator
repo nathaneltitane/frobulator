@@ -170,6 +170,7 @@ marker_nul='     '
 if [ -d /var/log ]
 then
 	chmod -R 777 /var/log
+	chmod -R 777 /var/log/*.log
 fi
 
 # prompt ///////////////////////////////////////////////////////////////////////

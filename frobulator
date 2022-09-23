@@ -1169,7 +1169,11 @@ frobulator.log () {
 
 	command="${@}"
 
-	"${SHELL}" -c "${command}" >> "${PREFIX}"/var/log/"${script}"-"${stamp}".log 2>&1
+	"${SHELL}" -c "${command}" | while IFS='' read -r line
+	do
+		echo "${stamp} ${line}"
+
+	done >> "${PREFIX}"/var/log/"${script}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////

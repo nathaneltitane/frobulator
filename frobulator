@@ -1724,6 +1724,36 @@ frobulator.user () {
 	sleep 1
 }
 
+# superuser ////////////////////////////////////////////////////////////////////
+
+frobulator.escalate () {
+	if [[ $(id -u -n) = "root" ]]
+	then
+		if [ -z "${SUDO:-$HOME}" ]
+		then
+			SUDO_HOME=/root
+		else
+			SUDO_HOME="${SUDO:-$HOME}"
+		fi
+
+		USER="${SUDO_USER}"
+		USER_HOME=/home/"${USER}"
+	else
+		frobulator.require sudo
+
+		self="${0}"
+		command="${@}"
+
+		# set superuser password prompt
+
+		export SUDO_PROMPT="[ $(tput setaf 3)${USER}$(tput sgr 0) ] >_ ? "
+
+		# restart as superuser
+
+		exec sudo "${SHELL}" "${self}" "${command}"
+	fi
+}
+
 # extract //////////////////////////////////////////////////////////////////////
 
 frobulator.extract () {

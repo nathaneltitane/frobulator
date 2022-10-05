@@ -522,7 +522,7 @@ frobulator.num () {
 
 # separator ////////////////////////////////////////////////////////////////////
 
-# no marker
+# no marker:
 # use to separate notices and messages from execution blocks
 
 frobulator.sep () {

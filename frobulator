@@ -1632,6 +1632,8 @@ frobulator.dialog () {
 
 	title="${script%.sh} - ${1}"
 
+	dialog_command="${@}"
+
 	# gtk dialog - zenity
 
 	g_dialog () {
@@ -1640,7 +1642,7 @@ frobulator.dialog () {
 			--multiple				\
 			--directory				\
 			--separator=$'\n'		\
-			--title="${title}"		"${@}"
+			--title="${title}"		"${dialog_command}"
 	}
 
 	# kde dialog - kdialog
@@ -1650,7 +1652,7 @@ frobulator.dialog () {
 			--getopenfilename		\
 			--multiple				\
 			--separate-output		\
-			--title "${title}"		"${@}"
+			--title "${title}"		"${dialog_command}"
 	}
 
 	# define dialog usage

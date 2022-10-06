@@ -36,6 +36,10 @@ Frobulator is easy to use and understand and can be found being used in the foll
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
+### Reports:
+
+[Submit bug report or feature request](https://github.com/nathaneltitane/frobulator/issues)
+
 ---
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 10-05-2022 ]

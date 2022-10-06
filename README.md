@@ -11,7 +11,9 @@ A shell scripting function library: Frobulate all the things.
 Currently being used in:
 
 [[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
+
 [[ L²CU // Project Page ]](https://github.com/nathaneltitane/l2cu)
+
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
 

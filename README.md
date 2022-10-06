@@ -10,14 +10,6 @@ A shell scripting function library: Frobulate all the things.
 
 Frobulator helps to streamline your scripting projects.
 
-Frobulator is easy to use and understand and can be found being used in the following projects:
-
-[[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
-
-[[ L²CU // Project Page ]](https://github.com/nathaneltitane/l2cu)
-
-[[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
-
 Frobulator provides POSIX-compliant and BASH-based scripting commands and functions, amongst which you will find:
 
 - Colorized prompts
@@ -27,8 +19,17 @@ Frobulator provides POSIX-compliant and BASH-based scripting commands and functi
 - Streamlined file and directory commands
 - Customized Debian-based system commands (i.e.: apt/aptitude package commands)
    - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
+   - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
 - Countdown and progress items to ad to your scripts
 - Customizable password obfuscation prompts
-- Logging, redirection and silencing functions for pretty execution and informed debugging
+- Script checkpoint solutions to interate over only failed elements or modules
+- Streamlined archive detection and extraction routines
+- Clean ogging, redirection and silencing functions for pretty execution and informed debugging
 
+Frobulator is easy to use and understand and can be found being used in the following projects:
 
+[[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
+
+[[ L²CU // Project Page ]](https://github.com/nathaneltitane/l2cu)
+
+[[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)

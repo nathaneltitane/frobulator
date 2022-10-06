@@ -1173,7 +1173,7 @@ frobulator.log () {
 
 	if [ -z "${script}" ]
 	then
-		script="${0}"
+		script=$(basename -- "${BASH_SOURCE[0]}")
 	fi
 
 	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1

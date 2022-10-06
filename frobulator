@@ -1157,9 +1157,21 @@ frobulator.log () {
 	# wrap command execution and redirect all output to /var log file:
 	# provides logged and fully silent execution
 
+	if [ -z "${SUDO:-$HOME}" ]
+	then
+		log_directory="${PREFIX}"/var/log
+	else
+		if [ ! -d "${HOME}"/.local/var/log ]
+		then
+			mkdir -p "${HOME}"/.local/var/log
+		fi
+
+		log_directory="${HOME}"/.local/var/log
+	fi
+
 	command="${@}"
 
-	"${SHELL}" -c "${command}" >> "${PREFIX}"/var/log/"${script}"-"${stamp}".log 2>&1
+	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////

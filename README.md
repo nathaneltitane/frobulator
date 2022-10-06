@@ -12,10 +12,10 @@ Frobulator helps to streamline your scripting projects.
 
 Frobulator is easy to use and understand and can be found being used in the following projects:
 
-[[ Dextop ]](https://github.com/nathaneltitane/dextop)
+[[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
 
-[[ L²CU ]](https://github.com/nathaneltitane/l2cu)
+[[ L²CU // Project Page ]](https://github.com/nathaneltitane/l2cu)
 
-[[ Terminal ]](https://github.com/nathaneltitane/terminal)
+[[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
 

@@ -18,4 +18,17 @@ Frobulator is easy to use and understand and can be found being used in the foll
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
+Frobulator provides POSIX-compliant and BASH-based scripting commands and functions, amongst which you will find:
+
+- Colorized prompts
+- Line header markers for various message types
+- Standardized 80 charcter line parsing and splitting
+- Standardized user input promppts
+- Streamlined file and directory commands
+- Customized Debian-based system commands (i.e.: apt/aptitude package commands)
+   - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
+- Countdown and progress items to ad to your scripts
+- Customizable password obfuscation prompts
+- Logging, redirection and silencing functions for pretty execution and informed debugging
+
 

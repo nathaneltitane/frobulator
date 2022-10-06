@@ -4,6 +4,8 @@
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 10-05-2022 ]
 
+---
+
 Welcome to Frobulator!
 
 A shell scripting function library: Frobulate all the things.

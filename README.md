@@ -6,7 +6,7 @@
 
 ---
 
-Welcome to Frobulator!
+### Welcome to Frobulator!
 
 A shell scripting function library: Frobulate all the things.
 

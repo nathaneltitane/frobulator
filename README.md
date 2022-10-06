@@ -8,12 +8,14 @@ Welcome to Frobulator!
 
 A shell scripting function library: Frobulate all the things.
 
-Currently being used in:
+Frobulator helps to streamline your scripting projects.
 
-[[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
+Frobulator is easy to use and understand and can be found being used in the following projects:
 
-[[ L²CU // Project Page ]](https://github.com/nathaneltitane/l2cu)
+[[ Dextop ]](https://github.com/nathaneltitane/dextop)
 
-[[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
+[[ L²CU ]](https://github.com/nathaneltitane/l2cu)
+
+[[ Terminal ]](https://github.com/nathaneltitane/terminal)
 
 

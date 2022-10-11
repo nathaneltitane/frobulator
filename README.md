@@ -17,7 +17,7 @@ Frobulator provides POSIX-compliant and BASH-based scripting commands and functi
 - Colorized prompts
 - Line header markers for various message types
 - Standardized 80 charcter line parsing and splitting
-- Standardized user input promppts
+- Standardized user input prompts
 - Streamlined file and directory commands
 - Customized Debian-based system commands (i.e.: apt/aptitude package commands)
    - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands

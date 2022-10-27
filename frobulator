@@ -1754,8 +1754,6 @@ frobulator.escalate () {
 		if [ -z "${SUDO:-$HOME}" ]
 		then
 			SUDO_HOME="${SUDO:-$HOME}"
-		else
-			SUDO_HOME=/root
 		fi
 
 		USER="${SUDO_USER}"

@@ -656,9 +656,9 @@ frobulator.bar () {
 
 	seconds="0.1"
 
-	span=80
-	before=8
-	after=11
+	span=80		# total characters for line
+	before=8	# maximum characters for header:	 	'[ x ] [ '
+	after=12	# maximum characters for percentage:	' ] [ xxx % ]'
 
 	let buffer=${span}-${before}-${after}
 
@@ -676,8 +676,8 @@ frobulator.bar () {
 	done="${magenta}${done// //}${reset}"
 	left="${yellow}${left// /-}${reset}"
 
-	bar="${done}${left}"
-	percentage="${progress}%"
+	header="${marker_fwd}"
+	bar=" [ ${done}${left} ] "
 
 	# padding
 
@@ -685,14 +685,20 @@ frobulator.bar () {
 	then
 		# handle number spacing for entries 1-9
 
-		percentage="${percentage} "
-	else
-		# handle number spacing for entries 10+
+		percentage="[ ${percentage}   % ]"
 
-		percentage="${percentage}"
+	elif (( ${1} >= 10 && ${1} <= 99 ))
+	then
+		# handle number spacing for entries 10-99
+
+		percentage="[ ${percentage}  % ]"
+	else
+		# handle number spacing for 100
+
+		percentage="[ ${percentage} % ]"
 	fi
 
-	echo -ne "\rfrobulator.fwd [ ${bar} ] [ ${percentage} ]\c"
+	echo -ne "\r${header}${bar}${percentage}\c"
 
 	sleep "${seconds}"
 }

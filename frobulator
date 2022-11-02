@@ -644,6 +644,56 @@ frobulator.progress () {
 	echo
 }
 
+# gauge ////////////////////////////////////////////////////////////////////////
+
+frobulator.gauge () {
+
+	current="${1}"
+	total="${2}"
+
+	seconds="0.1"
+
+	span=80
+	before=8
+	after=11
+
+	let buffer=${span}-${before}-${after}
+
+	let ratio=(${current}*100/${total}*100)
+	let progress=${ratio}/100
+
+	let done=(${progress}*${buffer})/100
+	let left=${buffer}-${done}
+
+	done=$(printf "%${done}s")
+	left=$(printf "%${left}s")
+
+	# substitutions
+
+	done="${done// //}"
+	left="${left// /-}"
+
+	bar="${done}${left}"
+	percentage="${progress}%"
+
+	# padding
+
+	if (( ${1} >= 0 && ${1} <= 9 ))
+	then
+		# handle number spacing for entries 1-9
+
+		percentage="${percentage} "
+	else
+		# handle number spacing for entries 10+
+
+		percentage="${percentage}"
+	fi
+
+	echo -ne "\rfrobulator.fwd [ ${bar} ] [ ${percentage} ]\c"
+
+	sleep "${seconds}"
+}
+
 # directory ////////////////////////////////////////////////////////////////////
 
 frobulator.directory () {

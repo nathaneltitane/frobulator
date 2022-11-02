@@ -663,9 +663,9 @@ frobulator.bar () {
 	let buffer=${span}-${before}-${after}
 
 	let ratio=(${current}*100/${total}*100)
-	let progress=${ratio}/100
+	let percentage=${ratio}/100
 
-	let done=(${progress}*${buffer})/100
+	let done=(${percentage}*${buffer})/100
 	let left=${buffer}-${done}
 
 	done=$(printf "%${done}s")

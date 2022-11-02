@@ -644,9 +644,12 @@ frobulator.progress () {
 	echo
 }
 
-# gauge ////////////////////////////////////////////////////////////////////////
+# bar //////////////////////////////////////////////////////////////////////////
 
-frobulator.gauge () {
+frobulator.bar () {
+	# catch PID of last command
+
+	PID=$!
 
 	current="${1}"
 	total="${2}"
@@ -670,8 +673,8 @@ frobulator.gauge () {
 
 	# substitutions
 
-	done="${done// //}"
-	left="${left// /-}"
+	done="${magenta}${done// //}${reset}"
+	left="${yellow}${left// /-}${reset}"
 
 	bar="${done}${left}"
 	percentage="${progress}%"

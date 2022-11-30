@@ -1,6 +1,6 @@
 ![frobulator](https://raw.githubusercontent.com/nathaneltitane/frobulator/main/frobulator.svg)
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=QG58TMRHNSZAU)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=2WZT7PCW3XDX6)
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 10-05-2022 ]
 
@@ -45,4 +45,4 @@ Frobulator is easy to use and understand and can be found being used in the foll
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=QG58TMRHNSZAU)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=2WZT7PCW3XDX6)

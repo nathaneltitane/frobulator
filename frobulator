@@ -1579,17 +1579,18 @@ frobulator.require () {
 			else
 				list+=("${command_query}")
 
-				# install
-
-				if [[ -n "${#list[@]}" ]]
-				then
-					frobulator.install ${list[@]}
-				fi
-
-				# unset array
-
-				list=()
 			fi
+
+			# install
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				frobulator.install ${list[@]}
+			fi
+
+			# unset array
+
+			list=()
 		fi
 	done
 }

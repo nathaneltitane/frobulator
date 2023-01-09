@@ -1552,13 +1552,30 @@ frobulator.require () {
 	for command in ${list[@]}
 	do
 		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
+		package_query-=$(apt-cache search ^"${command}"$)
 
 		if [[ -z $(command -v "${command}") ]]
 		then
 			if [[ -z "${command_query}" ]]
 			then
-				frobulator.err "No package found that provides command" "[ '${command}' ]"
+				frobulator.wrn "No package found that provides command" "[ '${command}' ]"
 				echo
+
+				frobulator.inf "Looking up packages for dependency" "[ '${command}' ]"
+				echo
+
+				if [[ -z "${package_query}" ]]
+				then
+					frobulator.wrn "No package found that provides dependency" "[ '${command}' ]"
+					echo
+
+					frobulator.fwd "Exiting..."
+					echo
+
+					exit 1
+				else
+					list+=("${package_query}")
+				fi
 			else
 				list+=("${command_query}")
 

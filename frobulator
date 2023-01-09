@@ -1096,6 +1096,8 @@ frobulator.link () {
 			echo
 
 			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
+
+			chown "${uid}":"${gid}" -R "${target}"/"${file}"
 		fi
 	done
 

@@ -1552,7 +1552,7 @@ frobulator.require () {
 	for command in ${list[@]}
 	do
 		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
-		package_query=$(apt-cache search ^"${command}"$)
+		package_query=$(apt-cache search "${command}")
 
 		if [[ -z $(command -v "${command}") ]]
 		then
@@ -1578,7 +1578,6 @@ frobulator.require () {
 				fi
 			else
 				list+=("${command_query}")
-
 			fi
 
 			# install
@@ -1591,6 +1590,14 @@ frobulator.require () {
 			# unset array
 
 			list=()
+		else
+			frobulator.wrn "No match found that provides command or dependency" "[ '${command}' ]"
+			echo
+
+			frobulator.fwd "Exiting..."
+			echo
+
+			exit 1
 		fi
 	done
 }

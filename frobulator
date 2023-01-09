@@ -1495,7 +1495,9 @@ frobulator.install () {
 
 	for package in ${list[@]}
 	do
-		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)" ]
+		package_query="$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)"
+
+		if [ -z "${package_query}" ]
 		then
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
@@ -1551,29 +1553,27 @@ frobulator.require () {
 
 	for command in ${list[@]}
 	do
-		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
+		package_query=$(apt-file -l search "${command}" | grep ^"${command}"$)
 
-		if [[ -z $(command -v "${command}") ]]
+		if [[ -z "${package_query}" ]]
 		then
-			if [[ -z "${command_query}" ]]
-			then
-				frobulator.err "No package found that provides command" "[ '${command}' ]"
-				echo
-			else
-				list+=("${command_query}")
-
-				# install
-
-				if [[ -n "${#list[@]}" ]]
-				then
-					frobulator.install ${list[@]}
-				fi
-
-				# unset array
-
-				list=()
-			fi
+			frobulator.err "No package found that provides command" "[ '${command}' ]"
+			echo
+		else
+			install_list+=("${package_query}")
 		fi
+
+		# install
+
+		if [[ -n "${#install_list[@]}" ]]
+		then
+			frobulator.install ${install_list[@]}
+		fi
+
+		# unset array
+
+		list=()
+
 	done
 }
 

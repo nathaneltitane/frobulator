@@ -1552,7 +1552,7 @@ frobulator.require () {
 	for command in ${list[@]}
 	do
 		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
-		package_query-=$(apt-cache search ^"${command}"$)
+		package_query=$(apt-cache search ^"${command}"$)
 
 		if [[ -z $(command -v "${command}") ]]
 		then

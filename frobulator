@@ -1951,7 +1951,7 @@ frobulator.extract () {
 			;;
 
 			*.zip)
-				unzip "${archive}" -d "${directory}"
+				unzip -o -qq "${archive}" -d "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo

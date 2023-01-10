@@ -1506,6 +1506,11 @@ frobulator.install () {
 
 			frobulator.progress "Installing..."
 			echo
+
+			# cleanup
+
+			frobulator.clean
+
 		else
 			frobulator.scs "Package installed" "[ '${package}' ]"
 			echo
@@ -1520,10 +1525,6 @@ frobulator.install () {
 	# unset array
 
 	list=()
-
-	# cleanup
-
-	frobulator.clean
 }
 
 # require //////////////////////////////////////////////////////////////////////
@@ -1809,7 +1810,7 @@ frobulator.user () {
 frobulator.escalate () {
 	if [[ $(id -u -n) = "root" ]]
 	then
-		frobulator.inf "Setting up privileged execution" "[ ${HOME} ]"
+		frobulator.inf "Setting up privileged execution" "[ ${USER} ]"
 		echo
 
 		USER="${SUDO_USER}"

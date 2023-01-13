@@ -721,14 +721,19 @@ frobulator.directory () {
 		list+=("${directory}")
 	fi
 
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		directory="${1}"
+
+		list=()
+
+		list+=("${directory}")
+	fi
+
 	for directory in ${list[@]}
 	do
-		if [ $# -eq 1 ]
-		then
-			path="${PWD}"
-			directory="${1}"
-		fi
-
 		frobulator.add "Creating directory" "[ ${directory} ]"
 		echo
 

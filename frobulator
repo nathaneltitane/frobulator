@@ -723,6 +723,12 @@ frobulator.directory () {
 
 	for directory in ${list[@]}
 	do
+		if [ $# -eq 1 ]
+		then
+			path="${PWD}"
+			directory="${1}"
+		fi
+
 		frobulator.add "Creating directory" "[ ${directory} ]"
 		echo
 
@@ -1834,6 +1840,7 @@ frobulator.escalate () {
 		# restart as superuser
 
 		exec sudo "${SHELL}" "${self}" "${command}"
+		echo
 	fi
 }
 

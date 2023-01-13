@@ -1538,57 +1538,6 @@ frobulator.install () {
 	list=()
 }
 
-# require //////////////////////////////////////////////////////////////////////
-
-frobulator.require () {
-	export DEBIAN_FRONTEND=noninteractive
-
-	frobulator.failsafe apt-file
-
-	frobulator.log "apt-file update"
-
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${1} - array
-
-		list=(${@:1})
-	else
-		command="${1}"
-
-		list=()
-
-		list+=("${command}")
-	fi
-
-	frobulator.fwd "Validating requirements..."
-	echo
-
-	for command in ${list[@]}
-	do
-		package_query=$(apt-file -l search "${command}" | grep ^"${command}"$)
-
-		if [[ -z "${package_query}" ]]
-		then
-			frobulator.err "No package found that provides command" "[ '${command}' ]"
-			echo
-		else
-			install_list+=("${package_query}")
-		fi
-
-		# install
-
-		if [[ -n "${#install_list[@]}" ]]
-		then
-			frobulator.install ${install_list[@]}
-		fi
-
-		# unset array
-
-		list=()
-
-	done
-}
-
 # reinstall ////////////////////////////////////////////////////////////////////
 
 frobulator.reinstall () {
@@ -1816,7 +1765,100 @@ frobulator.user () {
 	sleep 1
 }
 
+# require //////////////////////////////////////////////////////////////////////
+
+frobulator.require () {
+	export DEBIAN_FRONTEND=noninteractive
+
+	frobulator.failsafe apt-file
+
+	frobulator.log "apt-file update"
+
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		command="${1}"
+
+		list=()
+
+		list+=("${command}")
+	fi
+
+	frobulator.fwd "Validating requirements..."
+	echo
+
+	for command in ${list[@]}
+	do
+		package_query=$(apt-file -l search "${command}" | grep ^"${command}"$)
+
+		if [[ -z "${package_query}" ]]
+		then
+			frobulator.err "No package found that provides command" "[ '${command}' ]"
+			echo
+		else
+			install_list+=("${package_query}")
+		fi
+
+		# install
+
+		if [[ -n "${#install_list[@]}" ]]
+		then
+			frobulator.install ${install_list[@]}
+		fi
+
+		# unset array
+
+		list=()
+
+	done
+}
+
 # superuser ////////////////////////////////////////////////////////////////////
+
+frobulator.assess () {
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		command="${1}"
+
+		list=()
+
+		list+=("${command}")
+	fi
+
+	if [[ $(id -u -n) = "root" ]]
+	then
+		frobulator.require ${list[@]}
+
+		frobulator.msg "${script} requirements installed."
+		echo
+
+		frobulator.inf "Run ${script} as 'user' to proceed."
+		echo
+
+		exit
+	else
+		for requirement in ${list[@]}
+		do
+			if [[ -z $(command -v "${requirement}") ]]
+			then
+				frobulator.err "Missing" "[ '${requirement}' ]"
+				echo
+
+				frobulator.wrn "Start ${script} as 'root' to install requirements."
+				echo
+
+				exit 1
+			fi
+		done
+	fi
+}
 
 frobulator.escalate () {
 	if [[ $(id -u -n) = "root" ]]

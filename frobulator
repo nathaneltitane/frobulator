@@ -1556,7 +1556,8 @@ frobulator.install () {
 }
 
 # require //////////////////////////////////////////////////////////////////////
-frobulator.require ()
+
+frobulator.require () {
 	export DEBIAN_FRONTEND=noninteractive
 
 	frobulator.failsafe apt-file
@@ -1712,7 +1713,7 @@ frobulator.update () {
 frobulator.upgrade () {
 	export DEBIAN_FRONTEND=noninteractive
 
-	command_upgrade="apt-get --assume-yes upgrade"
+	command_upgrade="apt-get --assume-yes dist-upgrade"
 
 	frobulator.inf "Processing installed packages."
 	echo

@@ -969,6 +969,17 @@ frobulator.delete () {
 		list+=("${file}")
 	fi
 
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		file="${1}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
 	for file in ${list[@]}
 	do
 		frobulator.rem "Deleting" "[ ${file} ]"

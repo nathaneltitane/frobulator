@@ -1233,8 +1233,7 @@ frobulator.silence () {
 
 	command="${@}"
 
-#	"${SHELL}" -c "${command}" >> /dev/null 2>&1
-	"${command}" >> /dev/null 2>&1
+	"${SHELL}" -c "${command}" >> /dev/null 2>&1
 }
 
 # log //////////////////////////////////////////////////////////////////////////
@@ -1262,8 +1261,7 @@ frobulator.log () {
 		script=$(basename -- "${BASH_SOURCE[0]}")
 	fi
 
-#	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
-	"${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////
@@ -1532,7 +1530,7 @@ frobulator.install () {
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			"${command_install} ${package}" &
+			frobulator.log "${command_install} ${package}" &
 
 			frobulator.progress "Installing..."
 			echo

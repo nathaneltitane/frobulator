@@ -1233,7 +1233,8 @@ frobulator.silence () {
 
 	command="${@}"
 
-	"${SHELL}" -c "${command}" >> /dev/null 2>&1
+#	"${SHELL}" -c "${command}" >> /dev/null 2>&1
+	"${command}" >> /dev/null 2>&1
 }
 
 # log //////////////////////////////////////////////////////////////////////////
@@ -1261,7 +1262,8 @@ frobulator.log () {
 		script=$(basename -- "${BASH_SOURCE[0]}")
 	fi
 
-	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+#	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	"${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////
@@ -1530,7 +1532,7 @@ frobulator.install () {
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			frobulator.log "${command_install} ${package}" &
+			"${command_install} ${package}" &
 
 			frobulator.progress "Installing..."
 			echo
@@ -1858,8 +1860,6 @@ frobulator.assess () {
 
 		frobulator.inf "Run '${script}' as 'user' to proceed."
 		echo
-
-		exit
 	else
 		for requirement in ${list[@]}
 		do
@@ -1870,8 +1870,6 @@ frobulator.assess () {
 
 				frobulator.wrn "Launch '${script}' as 'root' to install requirements."
 				echo
-
-				exit 1
 			fi
 		done
 	fi

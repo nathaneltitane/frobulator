@@ -558,7 +558,6 @@ frobulator.script () {
 	fi
 
 	frobulator.msg "${description}" "[ ${message} ]"
-
 }
 
 # wait /////////////////////////////////////////////////////////////////////////
@@ -811,6 +810,10 @@ frobulator.write () {
 
 		chmod a+rx "${path}"/"${file}"
 	done
+
+	# unset array
+
+	list=()
 }
 
 # flag / ///////////////////////////////////////////////////////////////////////
@@ -1220,7 +1223,6 @@ frobulator.upload () {
 	echo
 
 	frobulator.put
-
 }
 
 # silence //////////////////////////////////////////////////////////////////////
@@ -1490,6 +1492,10 @@ frobulator.failsafe () {
 			frobulator.log "${command_update}"
 		done
 	done
+
+	# unset array
+
+	list=()
 }
 
 # install //////////////////////////////////////////////////////////////////////
@@ -1869,6 +1875,10 @@ frobulator.assess () {
 			fi
 		done
 	fi
+
+	# unset array
+
+	list=()
 }
 
 # escalate /////////////////////////////////////////////////////////////////////
@@ -1907,7 +1917,7 @@ frobulator.escalate () {
 # extract //////////////////////////////////////////////////////////////////////
 
 frobulator.extract () {
-	list=(
+	list+=(
 		tar
 		bunzip2
 		unrar
@@ -1918,6 +1928,10 @@ frobulator.extract () {
 	)
 
 	frobulator.require ${list[@]}
+
+	# unset array
+
+	list=()
 
 	archive="${1}"
 	directory="${2}"

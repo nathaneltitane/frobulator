@@ -1261,7 +1261,7 @@ frobulator.log () {
 
 	command="${@}"
 
-	"${SHELL}" -c "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	"${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////
@@ -1556,7 +1556,7 @@ frobulator.install () {
 }
 
 # require //////////////////////////////////////////////////////////////////////
-
+frobulator.require ()
 	export DEBIAN_FRONTEND=noninteractive
 
 	frobulator.failsafe apt-file

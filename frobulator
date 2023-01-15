@@ -12,7 +12,7 @@ stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
 # defaults /////////////////////////////////////////////////////////////////////
 
-if [[ -z "${SHELL}" ]]
+if [ -z "${SHELL}" ]
 then
 	shell=/bin/bash
 else
@@ -23,7 +23,7 @@ fi
 
 self="${0}"
 
-if [ "${script}" = "" ]
+if [ -z "${script}" ]
 then
 	script="${self}"
 fi

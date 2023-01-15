@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=2WZT7PCW3XDX6)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 10-05-2022 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-14-2022 ]
 
 ---
 
@@ -27,6 +27,10 @@ Frobulator helps streamline your shell scripting projects while providing you wi
    - Streamlined archive detection and extraction routines
    - Clean ogging, redirection and silencing functions for pretty execution and informed debugging
 
+### Note:
+
+Frobulator is meant to be used (for now) within scripts only, as the currrent set of assertions it is built upon will not permit it to function outside of one.
+
 Frobulator is easy to use and understand and can be found being used in the following projects:
 
 [[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)
@@ -41,7 +45,7 @@ Frobulator is easy to use and understand and can be found being used in the foll
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 10-05-2022 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-14-2022 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

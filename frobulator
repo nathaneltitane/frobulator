@@ -1786,6 +1786,7 @@ frobulator.purge () {
 	for package in ${list[@]}
 	do
 		if [[ ! -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
+		then
 			frobulator.wrn "Selected package" "[ '${package}' ]"
 			echo
 

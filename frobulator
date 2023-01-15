@@ -19,7 +19,7 @@ else
 	shell="${SHELL}"
 fi
 
-# provide fallback for non root assessments
+# provide fallback for non 'root' assessments
 
 self="${0}"
 

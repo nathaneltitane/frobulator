@@ -19,6 +19,15 @@ else
 	shell="${SHELL}"
 fi
 
+# provide fallback for non root assessments
+
+self="${0}"
+
+if [ "${script}" = "" ]
+then
+	script="${self}"
+fi
+
 # colors ///////////////////////////////////////////////////////////////////////
 
 if [ -z "$(command -v tput)" ]

@@ -1246,8 +1246,8 @@ frobulator.silence () {
 # log //////////////////////////////////////////////////////////////////////////
 
 frobulator.log () {
-	# wrap command execution and redirect all output to /var log file:
-	# provides logged and fully silent execution
+	# wrap command and redirect all output to "${script}"-"${stamp}".log file:
+	# provides logging and fully silent execution
 
 	if [ -z "${SUDO:-$HOME}" ]
 	then

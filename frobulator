@@ -1539,9 +1539,7 @@ frobulator.install () {
 
 	for package in ${list[@]}
 	do
-		package_query="$(apt search ${package} 2> /dev/null | grep -i -o installed)"
-
-		if [ -z "${package_query}" ]
+		if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
 		then
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
@@ -1598,11 +1596,9 @@ frobulator.require () {
 
 	for command in ${list[@]}
 	do
-		command_query=$(apt-file search -l "${PREFIX}"/bin/"${command}")
-
 		if [[ -z $(command -v "${command}") ]]
 		then
-			if [[ -z "${command_query}" ]]
+			if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
 			then
 				frobulator.err "No package found that provides command" "[ '${command}' ]"
 				echo
@@ -1778,10 +1774,7 @@ frobulator.purge () {
 
 	for package in ${list[@]}
 	do
-		package_query="$(apt search ${package} 2> /dev/null | grep -i -o installed)"
-
-		if [ ! -z "${package_query}" ]
-		then
+		if [[ ! -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
 			frobulator.wrn "Selected package" "[ '${package}' ]"
 			echo
 

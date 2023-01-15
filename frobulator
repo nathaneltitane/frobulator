@@ -1650,15 +1650,17 @@ frobulator.assess () {
 		frobulator.inf "Run '${script}' as 'user' to proceed."
 		echo
 	else
-		for requirement in ${list[@]}
+		for command in ${list[@]}
 		do
-			if [[ -z $(command -v "${requirement}") ]]
+			if [[ -z $(command -v "${command}") ]]
 			then
-				frobulator.err "Missing" "[ '${requirement}' ]"
+				frobulator.err "Missing" "[ '${command}' ]"
 				echo
 
 				frobulator.wrn "Launch '${script}' as 'root' to install requirements."
 				echo
+
+				frobulator.escalate
 			fi
 		done
 	fi

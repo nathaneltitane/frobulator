@@ -1232,6 +1232,15 @@ frobulator.upload () {
 	frobulator.put
 }
 
+# command //////////////////////////////////////////////////////////////////////
+
+frobulator.command () {
+	self="${0}"
+	command="${@}"
+
+	"${shell}" -c "$(echo ${command})"
+}
+
 # silence //////////////////////////////////////////////////////////////////////
 
 frobulator.silence () {
@@ -1240,7 +1249,7 @@ frobulator.silence () {
 
 	command="${@}"
 
-	"${shell}" -c "$(echo ${command})" >> /dev/null 2>&1
+	frobulator.command "${command}" >> /dev/null 2>&1
 }
 
 # log //////////////////////////////////////////////////////////////////////////
@@ -1268,7 +1277,7 @@ frobulator.log () {
 
 	command="${@}"
 
-	"${shell}" -c "$(echo ${command})" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	frobulator.command "${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////

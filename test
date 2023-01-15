@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo $0
+
+exit
+
 source /media/internal/Git/frobulator/frobulator
 
 apt-get --assume-yes purge testdisk

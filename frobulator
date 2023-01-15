@@ -1411,7 +1411,18 @@ frobulator.clean () {
 frobulator.hold () {
 	export DEBIAN_FRONTEND=noninteractive
 
-	list=($@)
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
 
 	command_hold="apt-mark hold"
 

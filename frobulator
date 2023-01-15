@@ -12,6 +12,13 @@ stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
 # defaults /////////////////////////////////////////////////////////////////////
 
+if [[ -z "${SHELL}" ]]
+then
+	shell=/bin/bash
+else
+	shell="${SHELL}"
+fi
+
 # colors ///////////////////////////////////////////////////////////////////////
 
 if [ -z "$(command -v tput)" ]
@@ -1233,7 +1240,7 @@ frobulator.silence () {
 
 	command="${@}"
 
-	"${SHELL}" -c "${command}" >> /dev/null 2>&1
+	"${shell}" -c "$(echo ${command})" >> /dev/null 2>&1
 }
 
 # log //////////////////////////////////////////////////////////////////////////
@@ -1261,7 +1268,7 @@ frobulator.log () {
 
 	command="${@}"
 
-	"${command}" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	"${shell}" -c "$(echo ${command})" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////
@@ -1523,21 +1530,21 @@ frobulator.install () {
 
 	for package in ${list[@]}
 	do
-		package_query="$(dpkg -s ${package} 2> /dev/null | grep -i -o installed)"
+		package_query="$(apt search ${package} 2> /dev/null | grep -i -o installed)"
 
 		if [ -z "${package_query}" ]
 		then
 			frobulator.wrn "Package not installed" "[ '${package}' ]"
 			echo
 
-			frobulator.log "${command_install} ${package}" &
+			frobulator.log "$(echo ${command_install} ${package})" &
 
-			frobulator.progress "Installing..."
+ 			frobulator.progress "Installing..."
 			echo
 
 			# cleanup
 
-			frobulator.clean
+		#	frobulator.clean
 
 		else
 			frobulator.scs "Package installed" "[ '${package}' ]"
@@ -1742,19 +1749,21 @@ frobulator.purge () {
 		list+=("${package}")
 	fi
 
-	command_purge="sudo apt-get --assume-yes purge"
+	command_purge="apt-get --assume-yes purge"
 
 	frobulator.inf "Purging selected packages."
 	echo
 
 	for package in ${list[@]}
 	do
-		if [ -z "$(dpkg -s ${package} 2> /dev/null | grep -o installed)" ]
+		package_query="$(apt search ${package} 2> /dev/null | grep -i -o installed)"
+
+		if [ ! -z "${package_query}" ]
 		then
 			frobulator.wrn "Selected package" "[ '${package}' ]"
 			echo
 
-			frobulator.log "${command_purge} ${package}" &
+			frobulator.log "$(echo ${command_purge} ${package})" &
 
 			frobulator.progress "Purging..."
 			echo
@@ -1775,7 +1784,7 @@ frobulator.purge () {
 
 	# cleanup
 
-	frobulator.clean
+	# frobulator.clean
 }
 
 # dialog ///////////////////////////////////////////////////////////////////////
@@ -1849,7 +1858,7 @@ frobulator.exit () {
 
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
-	frobulator.kill "${SHELL}"
+	frobulator.kill "${shell}"
 }
 
 # result ///////////////////////////////////////////////////////////////////////
@@ -1907,7 +1916,7 @@ frobulator.escalate () {
 
 		# restart as superuser
 
-		exec sudo "${SHELL}" "${self}" "${command}"
+		exec sudo "${shell}" "${self}" "${command}"
 		echo
 	fi
 }

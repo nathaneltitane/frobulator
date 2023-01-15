@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source /media/internal/Git/frobulator/frobulator
+
+apt-get --assume-yes purge testdisk
+
+sleep 5
+
+list+=(
+	testdisk
+)
+
+frobulator.install ${list[@]}
+
+sudo apt search testdisk
+
+sleep 5
+
+list+=(
+	testdisk
+)
+
+frobulator.purge ${list[@]}
+
+
+sudo apt search testdisk

@@ -1657,10 +1657,21 @@ frobulator.assess () {
 				frobulator.err "Missing" "[ '${command}' ]"
 				echo
 
-				frobulator.wrn "Launch '${script}' as 'root' to install requirements."
+				frobulator.wrn "Need 'root' rivilege to install requirement(s)."
 				echo
 
-				frobulator.escalate
+				frobulator.ask "Launch '${script}' as 'root'?"
+
+				read reply
+				echo
+
+				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
+				then
+					frobulator.escalate
+				else
+					frobulator.wrn "Launch '${script}' as 'root' to install requirements."
+					echo
+				fi
 			fi
 		done
 	fi
@@ -1795,7 +1806,7 @@ frobulator.purge () {
 
 	# cleanup
 
-	# frobulator.clean
+	frobulator.clean
 }
 
 # dialog ///////////////////////////////////////////////////////////////////////

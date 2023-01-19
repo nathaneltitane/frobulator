@@ -1595,40 +1595,117 @@ frobulator.require () {
 
 		list=(${@:1})
 	else
-		command="${1}"
+		package="${1}"
 
 		list=()
 
 		list+=("${command}")
 	fi
 
+	system_binary_directory=/usr/bin
+
 	frobulator.fwd "Validating requirements..."
 	echo
 
 	for command in ${list[@]}
 	do
-		if [[ -z $(command -v "${command}") ]]
+		command_query=$(command -v "${command}")
+
+		if [[ ! -z "${command_query}" ]]
 		then
-			if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
+			requirement="${command_query}"
+
+			requirement_list+=("${requirement}")
+
+			:
+		else
+			command_query=$(apt-file --package-only list "${system_binary_directory}/${command}" | grep -i -o ^"${command}"$)
+
+			if [[ ! -z "${command_query}" ]]
 			then
-				frobulator.err "No package found that provides command" "[ '${command}' ]"
-				echo
+				requirement="${command_query}"
+
+				requirement_list+=("${requirement}")
+
+				:
 			else
-				list+=("${command_query}")
+				command_query=$(apt-file --package-only search "${system_binary_directory}/${command}" | grep -i -o ^"${command}"$)
 
-				# install
-
-				if [[ -n "${#list[@]}" ]]
+				if [[ ! -z "${command_query}" ]]
 				then
-					frobulator.install ${list[@]}
+					requirement="${command_query}"
+
+					requirement_list+=("${requirement}")
+
+					:
+				else
+					command_query=$(apt-file --package-only list "${system_binary_directory}/${command}")
+
+					if [[ ! -z "${command_query}" ]]
+					then
+						requirement="${command_query}"
+
+						requirement_list+=("${requirement}")
+
+						:
+					else
+						command_query=$(apt-file --package-only search "${system_binary_directory}/${command}")
+
+						if [[ ! -z "${command_query}" ]]
+						then
+							requirement="${command_query}"
+
+							requirement_list+=("${requirement}")
+
+							:
+
+						else
+							command_query=$(apt-file --package-only list "${command}" | grep -i -o ^"${command}"$)
+
+							if [[ ! -z "${command_query}" ]]
+							then
+								requirement="${command_query}"
+
+								requirement_list+=("${requirement}")
+
+								:
+							else
+								command_query=$(apt-file --package-only search "${command}" | grep -i -o ^"${command}"$)
+
+								if [[ ! -z "${command_query}" ]]
+								then
+									:
+								else
+									frobulator.err "No requirement match found" "[ '${command}' ]"
+									echo
+
+									:
+								fi
+							fi
+						fi
+					fi
 				fi
-
-				# unset array
-
-				list=()
 			fi
 		fi
+
+		if [[ -n "${#install_list[@]}" ]]
+		then
+			frobulator.inf "Requirement match found for '${requirement}'" "[ ${command} ]"
+			echo
+
+			frobulator.fwd "Proceeding..."
+			echo
+
+			frobulator.install ${requirement_list[@]}
+			echo
+
+			requirement_list=()
+		fi
 	done
+
+	# unset array
+
+	list=()
 }
 
 # assess ///////////////////////////////////////////////////////////////////////

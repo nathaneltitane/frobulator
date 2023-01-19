@@ -1562,7 +1562,7 @@ frobulator.install () {
 
 			# cleanup
 
-		#	frobulator.clean
+			frobulator.clean
 
 		else
 			frobulator.scs "Package installed" "[ '${package}' ]"
@@ -1595,45 +1595,50 @@ frobulator.require () {
 
 		list=(${@:1})
 	else
-		command="${1}"
+		package="${1}"
 
 		list=()
 
-		list+=("${command}")
+		list+=("${package}")
 	fi
+
+	command_install="apt-get --assume-yes install"
 
 	frobulator.fwd "Validating requirements..."
 	echo
 
-	for command in ${list[@]}
+	for package in ${list[@]}
 	do
-		if [[ -z $(command -v "${command}") ]]
+		if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
 		then
-			if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
-			then
-				frobulator.err "No package found that provides command" "[ '${command}' ]"
-				echo
-			else
-				list+=("${command_query}")
+			frobulator.wrn "Package not installed" "[ '${package}' ]"
+			echo
 
-				# install
+			frobulator.install "${package}"
 
-				if [[ -n "${#list[@]}" ]]
-				then
-					frobulator.install ${list[@]}
-				fi
+ 			frobulator.progress "Installing..."
+			echo
 
-				# unset array
+		else
+			frobulator.scs "Package installed" "[ '${package}' ]"
+			echo
 
-				list=()
-			fi
+			frobulator.fwd "Continuing..."
+			echo
+
+			:
 		fi
 	done
+
+	# unset array
+
+	list=()
 }
 
 # assess ///////////////////////////////////////////////////////////////////////
 
 frobulator.assess () {
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array

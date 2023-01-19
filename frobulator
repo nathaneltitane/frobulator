@@ -1562,7 +1562,7 @@ frobulator.install () {
 
 			# cleanup
 
-		#	frobulator.clean
+			frobulator.clean
 
 		else
 			frobulator.scs "Package installed" "[ '${package}' ]"
@@ -1690,7 +1690,7 @@ frobulator.require () {
 
 		if [[ -n "${#install_list[@]}" ]]
 		then
-			frobulator.inf "Requirement match found for '${requirement}'" "[ ${command} ]"
+			frobulator.inf "Requirement match found for '${command}'" "[ ${requirement} ]"
 			echo
 
 			frobulator.fwd "Proceeding..."
@@ -1711,6 +1711,7 @@ frobulator.require () {
 # assess ///////////////////////////////////////////////////////////////////////
 
 frobulator.assess () {
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array

@@ -858,7 +858,7 @@ frobulator.flag () {
 
 	for file in ${list[@]}
 	do
-		frobulator.add "Writing" "[ ${file} ]"
+		frobulator.add "Flagging" "[ ${file} ]"
 		echo
 
 		# write to file and set permissions
@@ -1389,7 +1389,7 @@ frobulator.clean () {
 
 	frobulator.log "${command_autoremove}" &
 
-	frobulator.progress "Flushing packages..."
+	frobulator.progress "Flushing package(s)..."
 	echo
 
 	frobulator.log "${command_clean}" &
@@ -1426,7 +1426,7 @@ frobulator.hold () {
 
 	command_hold="apt-mark hold"
 
-	frobulator.inf "Holding packages."
+	frobulator.inf "Holding package(s)."
 	echo
 
 	for package in ${list[@]}
@@ -1465,7 +1465,7 @@ frobulator.release () {
 
 	command_unhold="apt-mark unhold"
 
-	frobulator.inf "Releasing packages."
+	frobulator.inf "Releasing package(s)."
 	echo
 
 	for package in ${list[@]}
@@ -1508,7 +1508,9 @@ frobulator.failsafe () {
 
 	for package in ${list[@]}
 	do
-		while [[ -z $(command -v "${package}") ]]
+		query_command="$(command -v "${package}")"
+
+		while [[ -z "${query_command}" ]]
 		do
 			frobulator.log "${command_update}"
 
@@ -1545,14 +1547,16 @@ frobulator.install () {
 
 	command_install="apt-get --assume-yes install"
 
-	frobulator.inf "Installing packages."
+	frobulator.inf "Installing package(s)."
 	echo
 
 	for package in ${list[@]}
 	do
-		if [[ -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
+		query_filter="$(apt  search "${package}" 2> /dev/null | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+
+		if [[ -z "${query_filter}" ]]
 		then
-			frobulator.wrn "Package not installed" "[ '${package}' ]"
+			frobulator.wrn "Absent on system" "[ '${package}' ]"
 			echo
 
 			frobulator.log "$(echo ${command_install} ${package})" &
@@ -1565,7 +1569,7 @@ frobulator.install () {
 			frobulator.clean
 
 		else
-			frobulator.scs "Package installed" "[ '${package}' ]"
+			frobulator.scs "Present on system" "[ '${package}' ]"
 			echo
 
 			frobulator.fwd "Continuing..."
@@ -1595,117 +1599,98 @@ frobulator.require () {
 
 		list=(${@:1})
 	else
-		package="${1}"
+		command="${1}"
 
 		list=()
 
 		list+=("${command}")
 	fi
 
-	system_binary_directory=/usr/bin
-
-	frobulator.fwd "Validating requirements..."
+	frobulator.fwd "Validating requirement(s)..."
 	echo
 
 	for command in ${list[@]}
 	do
-		command_query=$(command -v "${command}")
+		frobulator.fwd "Probing..."
+		echo
 
-		if [[ ! -z "${command_query}" ]]
+		list=()
+
+		system_binary_directory=/usr/bin
+
+		query_filter="$(apt-file search "${command}" | sed 's/ //' | sort -u | grep "${system_binary_directory}"/"${command}"$)"
+
+		IFS=$'\n'
+
+		query_filter=(${query_filter})
+
+		IFS=''
+
+		query_package="$(echo "${query_filter}" | cut -d ':' -f 1)"
+		query_content="$(echo "${query_filter}" | cut -d ':' -f 2)"
+
+		query_command="${system_binary_directory}"/"${command}"
+
+		if [ "${query_command}" == "${query_content}" ] && [ "${command}" == "${query_package}" ]
 		then
-			requirement="${command_query}"
+			frobulator.ins "Command provision found as package" "[ '${query_package}' ]"
+			echo
 
-			requirement_list+=("${requirement}")
+			install_list+=("${query_package}")
+
+		elif [ "${query_command}" == "${query_content}" ] && [ "${command}" != "${query_package}" ]
+		then
+			frobulator.ins "Command provision found as reverse match" "[ '${query_package}' ]"
+			echo
+
+			install_list+=("${query_package}")
+
+		else
+			query_filter="$(apt-file search "${command}" | sed 's/ //' | sort -u | grep ^"${command}")"
+
+			IFS=$'\n'
+
+			query_filter=(${query_filter})
+
+			IFS=''
+
+			for selection in ${query_filter[@]}
+			do
+				query_filter="${selection}"
+
+				query_package="$(echo "${query_filter}" | cut -d ':' -f 1)"
+				query_content="$(echo "${query_filter}" | cut -d ':' -f 2)"
+
+				query_command="${command}"
+
+				if [ "${query_command}" != "${query_content}" ] && [ "${command}" = "${query_package}" ]
+				then
+					frobulator.ins "Command provision found as metapackage" "[ '${query_package}' ]"
+					echo
+
+					install_list+=("${query_package}")
+				fi
+			done
+		fi
+
+		# install
+
+		if [[ "${#install_list[@]}" -ge 1 ]]
+		then
+			frobulator.install ${install_list[@]}
+
+			install_list=()
+		else
+			frobulator.err "Command provision not found" "[ '${command}' ]"
+			echo
 
 			:
-		else
-			command_query=$(apt-file --package-only list "${system_binary_directory}/${command}" | grep -i -o ^"${command}"$)
-
-			if [[ ! -z "${command_query}" ]]
-			then
-				requirement="${command_query}"
-
-				requirement_list+=("${requirement}")
-
-				:
-			else
-				command_query=$(apt-file --package-only search "${system_binary_directory}/${command}" | grep -i -o ^"${command}"$)
-
-				if [[ ! -z "${command_query}" ]]
-				then
-					requirement="${command_query}"
-
-					requirement_list+=("${requirement}")
-
-					:
-				else
-					command_query=$(apt-file --package-only list "${system_binary_directory}/${command}")
-
-					if [[ ! -z "${command_query}" ]]
-					then
-						requirement="${command_query}"
-
-						requirement_list+=("${requirement}")
-
-						:
-					else
-						command_query=$(apt-file --package-only search "${system_binary_directory}/${command}")
-
-						if [[ ! -z "${command_query}" ]]
-						then
-							requirement="${command_query}"
-
-							requirement_list+=("${requirement}")
-
-							:
-
-						else
-							command_query=$(apt-file --package-only list "${command}" | grep -i -o ^"${command}"$)
-
-							if [[ ! -z "${command_query}" ]]
-							then
-								requirement="${command_query}"
-
-								requirement_list+=("${requirement}")
-
-								:
-							else
-								command_query=$(apt-file --package-only search "${command}" | grep -i -o ^"${command}"$)
-
-								if [[ ! -z "${command_query}" ]]
-								then
-									:
-								else
-									frobulator.err "No requirement match found" "[ '${command}' ]"
-									echo
-
-									:
-								fi
-							fi
-						fi
-					fi
-				fi
-			fi
 		fi
 
-		if [[ -n "${#install_list[@]}" ]]
-		then
-			frobulator.inf "Requirement match found for '${command}'" "[ ${requirement} ]"
-			echo
+		# unset array
 
-			frobulator.fwd "Proceeding..."
-			echo
-
-			frobulator.install ${requirement_list[@]}
-			echo
-
-			requirement_list=()
-		fi
+		list=()
 	done
-
-	# unset array
-
-	list=()
 }
 
 # assess ///////////////////////////////////////////////////////////////////////
@@ -1729,7 +1714,7 @@ frobulator.assess () {
 	then
 		frobulator.require ${list[@]}
 
-		frobulator.msg "Requirements installed" "[ ${script} ]"
+		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
 		echo
 
 		frobulator.inf "Run '${script}' as 'user' to proceed."
@@ -1742,7 +1727,7 @@ frobulator.assess () {
 				frobulator.err "Missing" "[ '${command}' ]"
 				echo
 
-				frobulator.wrn "Need 'root' rivilege to install requirement(s)."
+				frobulator.wrn "Privileged execution rights needed to proceed."
 				echo
 
 				frobulator.ask "Launch '${script}' as 'root'?"
@@ -1754,7 +1739,7 @@ frobulator.assess () {
 				then
 					frobulator.escalate
 				else
-					frobulator.wrn "Launch '${script}' as 'root' to install requirements."
+					frobulator.wrn "Launch '${script}' as 'root' to install requirement(s)."
 					echo
 				fi
 			fi
@@ -1786,7 +1771,7 @@ frobulator.reinstall () {
 
 	command_reinstall="apt-get --assume-yes install --reinstall"
 
-	frobulator.inf "Reinstalling packages."
+	frobulator.inf "Reinstalling package(s)."
 	echo
 
 	for package in ${list[@]}
@@ -1829,7 +1814,7 @@ frobulator.upgrade () {
 
 	command_upgrade="apt-get --assume-yes dist-upgrade"
 
-	frobulator.inf "Processing installed packages."
+	frobulator.inf "Processing installed package(s)."
 	echo
 
 	frobulator.log "${command_upgrade}" &
@@ -1858,14 +1843,14 @@ frobulator.purge () {
 
 	command_purge="apt-get --assume-yes purge"
 
-	frobulator.inf "Purging selected packages."
+	frobulator.inf "Purging selected package(s)."
 	echo
 
 	for package in ${list[@]}
 	do
 		if [[ ! -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
 		then
-			frobulator.wrn "Selected package" "[ '${package}' ]"
+			frobulator.wrn "Selecting" "[ '${package}' ]"
 			echo
 
 			frobulator.log "$(echo ${command_purge} ${package})" &
@@ -1873,7 +1858,7 @@ frobulator.purge () {
 			frobulator.progress "Purging..."
 			echo
 		else
-			frobulator.scs "Package not installed" "[ '${package}' ]"
+			frobulator.scs "Absent on system" "[ '${package}' ]"
 			echo
 
 			frobulator.fwd "Continuing..."

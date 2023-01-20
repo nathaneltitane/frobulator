@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-000000.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=2WZT7PCW3XDX6)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-14-2022 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-20-2023 ]
 
 ---
 
@@ -45,7 +45,7 @@ Frobulator is easy to use and understand and can be found being used in the foll
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-14-2022 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 01-20-2023 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

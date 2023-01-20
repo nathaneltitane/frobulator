@@ -672,7 +672,7 @@ frobulator.bar () {
 	seconds="0.1"
 
 	span=80		# total characters for line
-	before=8	# maximum characters for header:	 	'[ x ] [ '
+	before=8	# maximum characters for header:		'[ x ] [ '
 	after=12	# maximum characters for percentage:	' ] [ xxx % ]'
 
 	let buffer=${span}-${before}-${after}

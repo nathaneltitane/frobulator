@@ -6,6 +6,8 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
+# Version="01-20-2023"
+
 # variables ////////////////////////////////////////////////////////////////////
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
@@ -385,14 +387,14 @@ frobulator.inf () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
-	echo -e "${blue}${marker_inf} ${value}${reset}"
+	echo -e "${magenta}${marker_inf} ${value}${reset}"
 }
 
 frobulator.msg () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
-	echo -e "${cyan}${marker_msg} ${value}${reset}"
+	echo -e "${blue}${marker_msg} ${value}${reset}"
 }
 
 frobulator.wrn () {
@@ -406,7 +408,7 @@ frobulator.add () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
-	echo -e "${blue}${marker_add} ${value}${reset}"
+	echo -e "${magenta}${marker_add} ${value}${reset}"
 }
 
 frobulator.rem () {
@@ -427,7 +429,7 @@ frobulator.rel () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
-	echo -e "${magenta}${marker_rel} ${value}${reset}"
+	echo -e "${blue}${marker_rel} ${value}${reset}"
 }
 
 frobulator.fwd () {
@@ -562,8 +564,6 @@ frobulator.separate () {
 }
 
 # script ///////////////////////////////////////////////////////////////////////
-
-# generic title from script name
 
 frobulator.script () {
 	description="${1}"

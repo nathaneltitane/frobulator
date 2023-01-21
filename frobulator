@@ -704,7 +704,7 @@ frobulator.bar () {
 
 		percentage="[ ${percentage}   % ]"
 
-	elif (( ${1} >= 10 && ${1} <= 99 ))
+	elif (( ${current} >= 10 && ${total} <= 99 ))
 	then
 		# handle number spacing for entries 10-99
 
@@ -718,6 +718,33 @@ frobulator.bar () {
 	echo -ne "\r${header}${bar}${percentage}\c"
 
 	sleep "${seconds}"
+}
+
+# temporary ////////////////////////////////////////////////////////////////////
+
+frobulator.temporary () {
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		directory="${1}"
+
+		list=()
+
+		list+=("${directory}")
+	fi
+
+	for directory in ${list[@]}
+	do
+		frobulator.add "Creating temporary directory" "[ ${directory} ]"
+		echo
+
+		mktemp -d -t frobulator.temporary.XXXXXX
+
+		trap 'rm -rf "${directory}"' EXIT
+	done
 }
 
 # directory ////////////////////////////////////////////////////////////////////

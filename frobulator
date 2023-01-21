@@ -271,7 +271,7 @@ frobulator.prompt () {
 
 	# print first argument
 
-	span_begin=$(echo -ne "${begin}")
+	span_begin=$(echo -n -e "${begin}")
 
 	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
@@ -567,7 +567,8 @@ frobulator.ins () {
 
 # user input prompt ////////////////////////////////////////////////////////////
 
-# no new line after prompt: keeps user input beside prompt
+# note:
+# use 'echo -nno new line after prompt: keeps user input beside prompt
 # includes space after value to separate input
 # use for questions, input, user values
 
@@ -577,7 +578,7 @@ frobulator.ask () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
-	echo -ne "${magenta}${marker_ask} ${value} ${reset}"
+	echo -n -e "${magenta}${marker_ask} ${value} ${reset}"
 }
 
 # input line marker
@@ -586,7 +587,7 @@ frobulator.ipt () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
-	echo -ne "${magenta}${marker_add} ${value} ${reset}"
+	echo -n -e "${magenta}${marker_add} ${value} ${reset}"
 }
 
 # user line marker
@@ -595,7 +596,7 @@ frobulator.usr () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
-	echo -ne "${magenta}${marker_usr} ${value} ${reset}"
+	echo -n -e "${magenta}${marker_usr} ${value} ${reset}"
 }
 
 # numbering ////////////////////////////////////////////////////////////////////
@@ -696,7 +697,7 @@ frobulator.countdown () {
 
 	while [ "${seconds}" -ge 0 ]
 	do
-		echo -ne "\r${before}${red}$((seconds--))${reset}${after} ${value}\c"
+		echo -n -e "\r${before}${red}$((seconds--))${reset}${after} ${value}\c"
 
 		sleep 1
 	done
@@ -726,7 +727,7 @@ frobulator.progress () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -ne "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
 
 		sleep 0.25
 	done
@@ -791,7 +792,7 @@ frobulator.bar () {
 		percentage="[ ${percentage} % ]"
 	fi
 
-	echo -ne "\r${header}${bar}${percentage}\c"
+	echo -n -e "\r${header}${bar}${percentage}\c"
 
 	sleep "${seconds}"
 }

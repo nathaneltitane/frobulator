@@ -6,7 +6,7 @@
 
 ---
 
-### Welcome to Frobulator!
+### Welcome to [Frobulator](https://frobulator.app)
 
 Frobulator is a custom shell parser and scripting function library: Frobulate all the things!
 

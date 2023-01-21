@@ -668,6 +668,7 @@ frobulator.script () {
 # use to emulate typing on prompts
 
 frobulator.type () {
+	string=${#1}
 	count="${2}"
 
 	if [ -z "${count}" ]
@@ -675,7 +676,7 @@ frobulator.type () {
 		count=5
 	fi
 
-	for (( character=0; character<=${#1}; character++ ))
+	for (( character=0; character<=${string}; character++ ))
 	do
 		interval=$(( (RANDOM % ${count}) + 1 ))
 
@@ -726,7 +727,7 @@ frobulator.countdown () {
 	before="[ "
 	after=" ]"
 
-	seconds="$1"
+	seconds="${1}"
 
 	shift
 

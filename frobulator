@@ -388,20 +388,20 @@ frobulator.cyan () {
 # prompt marking /////////////////////////////////////////////////////////////
 
 # colored string highlights with built-in prompt arguments, line padding and line markers
-#
+
 # usage:      frobulator.[color] "[string]" "[string]" "[span character]"
-#
+
 # command:    frobulator.[color] "[string]"
 # result:     string
-#
+
 # command:    frobulator.[color] "[string]" "[string]"
 # result:     string ///////////////////////////////////////////////////////////// string
-#
+
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
-#
+
 # line markers:
-#
+
 # top         [ ⋀ ]
 # bottom      [ ⋁ ]
 # forward     [ > ]
@@ -567,10 +567,12 @@ frobulator.ins () {
 
 # user input prompt ////////////////////////////////////////////////////////////
 
+# use for questions, input, user input dependant inquiries
+
 # note:
-# use 'echo -nno new line after prompt: keeps user input beside prompt
-# includes space after value to separate input
-# use for questions, input, user values
+# use 'echo -n -e' to prevent addin new line after prompt:
+# keeps user input beside prompt
+# also includes space after value to separate input
 
 # ask line marker
 
@@ -601,7 +603,7 @@ frobulator.usr () {
 
 # numbering ////////////////////////////////////////////////////////////////////
 
-# use to mark directives or instructions
+# use to indicate numbered steps, directives or instructions
 
 frobulator.num () {
 	before="[ "
@@ -619,8 +621,10 @@ frobulator.num () {
 
 # separator ////////////////////////////////////////////////////////////////////
 
-# no marker:
 # use to separate notices and messages from execution blocks
+
+# note:
+# no line marker
 
 frobulator.sep () {
 	frobulator.prompt "${@}"
@@ -631,8 +635,10 @@ frobulator.sep () {
 
 # separate /////////////////////////////////////////////////////////////////////
 
-# predefined separator:
 # use to separate instructions or warnings from prompts
+
+# note:
+# set up as predefined separator
 
 frobulator.separate () {
 
@@ -641,6 +647,8 @@ frobulator.separate () {
 }
 
 # script ///////////////////////////////////////////////////////////////////////
+
+# use to mark the beginning of a script process
 
 frobulator.script () {
 	description="${1}"
@@ -655,7 +663,28 @@ frobulator.script () {
 	frobulator.msg "${description}" "[ ${message} ]"
 }
 
+# type /////////////////////////////////////////////////////////////////////////
+
+# use to emulate typing on prompts
+
+frobulator.type () {
+	for (( character=0; character<=${#1}; character++ ))
+	do
+		interval=$(( (RANDOM % 5) + 1 ))
+		sleep="0.${interval}"
+
+		printf "%s" "${1:${character}:1}"
+
+		sleep "${sleep}"
+	done
+
+	printf '\n'
+}
+
 # wait /////////////////////////////////////////////////////////////////////////
+
+# use to mark timeout in between commands:
+# can allow process return values to be caught
 
 frobulator.wait () {
 	# wait in seconds
@@ -681,6 +710,9 @@ frobulator.clear () {
 }
 
 # countdown ////////////////////////////////////////////////////////////////////
+
+# use as countdown marker before next command runs:
+# leaves preset time for long interaction with prompts and other long strings
 
 frobulator.countdown () {
 	before="[ "
@@ -709,6 +741,8 @@ frobulator.countdown () {
 }
 
 # progress /////////////////////////////////////////////////////////////////////
+
+# use as process ticker marker
 
 frobulator.progress () {
 	# catch PID of last command
@@ -739,6 +773,8 @@ frobulator.progress () {
 }
 
 # bar //////////////////////////////////////////////////////////////////////////
+
+# WIP
 
 frobulator.bar () {
 	# catch PID of last command
@@ -798,6 +834,8 @@ frobulator.bar () {
 }
 
 # temporary ////////////////////////////////////////////////////////////////////
+
+# use to generate temporary directory for builds and process transfer features
 
 frobulator.temporary () {
 	if [[ -n "${#list[@]}" ]]
@@ -873,22 +911,6 @@ frobulator.directory () {
 	# unset array
 
 	list=()
-}
-
-# type /////////////////////////////////////////////////////////////////////////
-
-frobulator.type () {
-	for (( character=0; character<=${#1}; character++ ))
-	do
-		interval=$(( (RANDOM % 5) + 1 ))
-		sleep="0.${interval}"
-
-		printf "%s" "${1:${character}:1}"
-
-		sleep "${sleep}"
-	done
-
-	printf '\n'
 }
 
 # write ////////////////////////////////////////////////////////////////////////

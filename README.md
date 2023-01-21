@@ -31,6 +31,10 @@ Frobulator helps streamline your shell scripting projects while providing you wi
 
 Frobulator is meant to be used (for now) within scripts only, as the currrent set of assertions it is built upon will not permit it to function outside of one.
 
+### Usage:
+
+In progress...
+
 Frobulator is easy to use and understand and can be found being used in the following projects:
 
 [[ Dextop // Project Page ]](https://github.com/nathaneltitane/dextop)

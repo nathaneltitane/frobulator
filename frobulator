@@ -668,9 +668,16 @@ frobulator.script () {
 # use to emulate typing on prompts
 
 frobulator.type () {
+	count="${@}"
+
+	if [ -z "${count}" ]
+	then
+		count=5
+	fi
+
 	for (( character=0; character<=${#1}; character++ ))
 	do
-		interval=$(( (RANDOM % 5) + 1 ))
+		interval=$(( (RANDOM % ${count}) + 1 ))
 		sleep="0.${interval}"
 
 		printf "%s" "${1:${character}:1}"

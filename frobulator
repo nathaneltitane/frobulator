@@ -351,7 +351,7 @@ frobulator.cyan () {
 	echo -e "${cyan}${value}${reset}"
 }
 
-# prompts //////////////////////////////////////////////////////////////////////
+# prompt messaging /////////////////////////////////////////////////////////////
 
 frobulator.maru () {
 	frobulator.prompt "$@"
@@ -381,7 +381,7 @@ frobulator.sankaku () {
 	echo -e "${cyan}${marker_sankaku} ${value}${reset}"
 }
 
-frobulator.inf() {
+frobulator.inf () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
 
@@ -561,7 +561,7 @@ frobulator.separate () {
 	echo
 }
 
-# prompt script title
+# script ///////////////////////////////////////////////////////////////////////
 
 # generic title from script name
 

@@ -191,9 +191,11 @@ frobulator.prompt () {
 	begin="${1}"
 	end="${2}"
 
+	# provide fallback for line character count
+
 	if [ -z "${count}" ]
 	then
-		count="80"
+		count=80
 	fi
 
 	# set span width
@@ -207,25 +209,30 @@ frobulator.prompt () {
 
 	# parse arguments
 
-	# 0 argument   - full dash line
+	# 0 argument - full dash line
 
 	if [ $# -ge 0 ]
 	then
 		span_character="/"
 	fi
 
-	# 1 argument   - pad to end of line
+	# 1 argument - pad to end of line
 
 	if [ $# -eq 1 ]
 	then
 		span_character="/"
 	fi
 
-	# 3 arguments  - replace span character with argument 3
+	# 3 arguments - replace span character with argument 3
 
 	if [ $# -eq 3 ]
 	then
 		span_character="${3}"
+
+		if [ ${#span_character} -gt 1 ]
+		then
+			count=$((${count} / ${#span_character}))
+		fi
 	fi
 
 	# 2+ arguments - reduce span by 6 characters:
@@ -311,12 +318,29 @@ frobulator.prompt () {
 
 # highlights ///////////////////////////////////////////////////////////////////
 
+# colored string highlights with built-in prompt arguments and line padding
+#
+# usage:      frobulator.[color] "[string]" "[string]" "[span character]"
+#
+# command:    frobulator.[color] "[string]"
+# result:     string
+#
+# command:    frobulator.[color] "[string]" "[string]"
+# result:     string ///////////////////////////////////////////////////////////// string
+#
+# command:    frobulator.[color] "[string]" "[string]" "[\]"
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+
+# red string highlight
+
 frobulator.red () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${red}${value}${reset}"
 }
+
+# green string highlight
 
 frobulator.green () {
 	frobulator.prompt "$@"
@@ -325,12 +349,16 @@ frobulator.green () {
 	echo -e "${green}${value}${reset}"
 }
 
+# yellow string highlight
+
 frobulator.yellow () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${yellow}${value}${reset}"
 }
+
+# blue string highlight
 
 frobulator.blue () {
 	frobulator.prompt "$@"
@@ -339,12 +367,16 @@ frobulator.blue () {
 	echo -e "${blue}${value}${reset}"
 }
 
+# magenta string highlight
+
 frobulator.magenta () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${value}${reset}"
 }
+
+# cyan string highlight
 
 frobulator.cyan () {
 	frobulator.prompt "$@"
@@ -353,35 +385,43 @@ frobulator.cyan () {
 	echo -e "${cyan}${value}${reset}"
 }
 
-# prompt messaging /////////////////////////////////////////////////////////////
+# prompt marking /////////////////////////////////////////////////////////////
 
-frobulator.maru () {
-	frobulator.prompt "$@"
-	value="${frobulate_str[@]}"
+# colored string highlights with built-in prompt arguments, line padding and line markers
+#
+# usage:      frobulator.[color] "[string]" "[string]" "[span character]"
+#
+# command:    frobulator.[color] "[string]"
+# result:     string
+#
+# command:    frobulator.[color] "[string]" "[string]"
+# result:     string ///////////////////////////////////////////////////////////// string
+#
+# command:    frobulator.[color] "[string]" "[string]" "[\]"
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+#
+# line markers:
+#
+# top         [ ⋀ ]
+# bottom      [ ⋁ ]
+# forward     [ > ]
+# reverse     [ < ]
+# stop        [ / ]
+# add         [ + ]
+# remove      [ - ]
+# retain      [ ⬢ ]
+# release     [ ⬡ ]
+# ask         [ ? ]
+# information [ i ]
+# input       [ ± ]
+# message=    [ ¤ ]
+# warning     [ ! ]
+# user        [ • ]
+# yes         [ ✓ ]
+# not         [ ⨉ ]
+#null        '     '
 
-	echo -e "${green}${marker_maru} ${value}${reset}"
-}
-
-frobulator.batsu () {
-	value="${frobulate_str[@]}"
-	frobulator.prompt "$@"
-
-	echo -e "${red}${marker_batsu} ${value}${reset}"
-}
-
-frobulator.bako () {
-	frobulator.prompt "$@"
-	value="${frobulate_str[@]}"
-
-	echo -e "${white}${marker_bako} ${value}${reset}"
-}
-
-frobulator.sankaku () {
-	frobulator.prompt "$@"
-	value="${frobulate_str[@]}"
-
-	echo -e "${cyan}${marker_sankaku} ${value}${reset}"
-}
+# information line marker
 
 frobulator.inf () {
 	frobulator.prompt "${@}"
@@ -390,12 +430,16 @@ frobulator.inf () {
 	echo -e "${magenta}${marker_inf} ${value}${reset}"
 }
 
+# message line marker
+
 frobulator.msg () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${blue}${marker_msg} ${value}${reset}"
 }
+
+# information line marker
 
 frobulator.wrn () {
 	frobulator.prompt "$@"
@@ -404,12 +448,16 @@ frobulator.wrn () {
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
 }
 
+# add line marker
+
 frobulator.add () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_add} ${value}${reset}"
 }
+
+# remove line marker
 
 frobulator.rem () {
 	frobulator.prompt "$@"
@@ -418,12 +466,16 @@ frobulator.rem () {
 	echo -e "${red}${marker_rem} ${value}${reset}"
 }
 
+# retain line marker
+
 frobulator.ret () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
 }
+
+# release line marker
 
 frobulator.rel () {
 	frobulator.prompt "$@"
@@ -432,12 +484,16 @@ frobulator.rel () {
 	echo -e "${blue}${marker_rel} ${value}${reset}"
 }
 
+# forward line marker
+
 frobulator.fwd () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_fwd} ${value}${reset}"
 }
+
+# reverse line marker
 
 frobulator.rev () {
 	frobulator.prompt "$@"
@@ -446,12 +502,16 @@ frobulator.rev () {
 	echo -e "${white}${marker_rev} ${value}${reset}"
 }
 
+# stop line marker
+
 frobulator.stp () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${white}${marker_stp} ${value}${reset}"
 }
+
+# download line marker
 
 frobulator.dwl () {
 	frobulator.prompt "$@"
@@ -460,12 +520,16 @@ frobulator.dwl () {
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 }
 
+# upload line marker
+
 frobulator.upl () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
 }
+
+# link line marker
 
 frobulator.lnk () {
 	frobulator.prompt "$@"
@@ -474,12 +538,16 @@ frobulator.lnk () {
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
 }
 
+# success line marker
+
 frobulator.scs () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 }
+
+# error line marker
 
 frobulator.err () {
 	frobulator.prompt "$@"
@@ -488,6 +556,8 @@ frobulator.err () {
 	echo -e "${red}${marker_not} ${value}${reset}"
 }
 
+# insert line marker
+
 frobulator.ins () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
@@ -495,11 +565,13 @@ frobulator.ins () {
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
 
-# prompt inputs ////////////////////////////////////////////////////////////////
+# user input prompt ////////////////////////////////////////////////////////////
 
 # no new line after prompt: keeps user input beside prompt
 # includes space after value to separate input
 # use for questions, input, user values
+
+# ask line marker
 
 frobulator.ask () {
 	frobulator.prompt "$@"
@@ -508,12 +580,16 @@ frobulator.ask () {
 	echo -ne "${magenta}${marker_ask} ${value} ${reset}"
 }
 
+# input line marker
+
 frobulator.ipt () {
 	frobulator.prompt "$@"
 	value="${frobulate_str[@]}"
 
 	echo -ne "${magenta}${marker_add} ${value} ${reset}"
 }
+
+# user line marker
 
 frobulator.usr () {
 	frobulator.prompt "$@"

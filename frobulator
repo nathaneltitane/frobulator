@@ -226,7 +226,8 @@ frobulator.prompt () {
 		span_character="${3}"
 	fi
 
-	# 2+ arguments - reduce span by 6 characters: compensate for line marker + space
+	# 2+ arguments - reduce span by 6 characters:
+	# compensate for line marker + space
 
 	if [ $# -ge 2 ]
 	then
@@ -263,13 +264,12 @@ frobulator.prompt () {
 
 	span_begin=$(echo -ne "${begin}")
 
-	# print other arguments as fixed width prompt if present
-
+	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
 
 	span_count=$(( ${#span} - ${#begin} - ${#end} ))
 
-	# set new padding width
+	# set new padding width ///////////////////////////////////////// # FIX ME #
 
 	if [ ${#begin} -le "${count}" ]
 	then
@@ -277,6 +277,8 @@ frobulator.prompt () {
 	else
 		span=""
 	fi
+
+	# /////////////////////////////////////////////////////////////// # FIX ME #
 
 	span_middle="${span}"
 

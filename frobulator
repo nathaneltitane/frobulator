@@ -673,7 +673,7 @@ frobulator.type () {
 
 	if [ -z "${count}" ]
 	then
-		count=5
+		count=3
 	fi
 
 	for (( character=0; character<=${string}; character++ ))

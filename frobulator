@@ -712,6 +712,9 @@ frobulator.wait () {
 
 # clear ////////////////////////////////////////////////////////////////////////
 
+# use for script process 'paging':
+# clears previous step when all checkpoint markers are met
+
 frobulator.clear () {
 	frobulator.wait
 

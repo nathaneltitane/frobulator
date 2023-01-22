@@ -754,7 +754,7 @@ frobulator.countdown () {
 
 # progress /////////////////////////////////////////////////////////////////////
 
-# use as process ticker marker
+# use as process ticker line marker
 
 frobulator.progress () {
 	# catch PID of last command
@@ -835,7 +835,7 @@ frobulator.bar () {
 
 		percentage="[ ${percentage}  % ]"
 	else
-		# handle number spacing for 100
+		# handle number spacing for 100-999
 
 		percentage="[ ${percentage} % ]"
 	fi
@@ -877,7 +877,12 @@ frobulator.temporary () {
 # directory ////////////////////////////////////////////////////////////////////
 
 frobulator.directory () {
-	path="${1}"
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+	else
+		path="${1}"
+	fi
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -886,17 +891,6 @@ frobulator.directory () {
 		list=(${@:2})
 	else
 		directory="${2}"
-
-		list=()
-
-		list+=("${directory}")
-	fi
-
-	if [ $# -eq 1 ]
-	then
-		path="${PWD}"
-
-		directory="${1}"
 
 		list=()
 
@@ -929,19 +923,43 @@ frobulator.directory () {
 
 frobulator.write () {
 	content="${1}"
-	path="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [ $# -eq 2 ]
 	then
-		# ${2} - array
+		path="${PWD}"
 
-		list=(${@:3})
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
-		file="${3}"
+		path="${2}"
 
-		list=()
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
 
-		list+=("${file}")
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	fi
 
 	if [ ! -d "${path}" ]
@@ -976,26 +994,49 @@ frobulator.write () {
 
 frobulator.flag () {
 	content="${1}"
-	path="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [ $# -eq 2 ]
 	then
-		# ${2} - array
+		path="${PWD}"
 
-		list=(${@:3})
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
-		file="${3}"
+		path="${2}"
 
-		list=()
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
 
-		list+=("${file}")
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	fi
 
 	if [ ! -d "${path}" ]
 	then
 		mkdir -p "${path}"
 	fi
-
 	for file in ${list[@]}
 	do
 		frobulator.add "Flagging" "[ ${file} ]"

@@ -1037,6 +1037,7 @@ frobulator.flag () {
 	then
 		mkdir -p "${path}"
 	fi
+
 	for file in ${list[@]}
 	do
 		frobulator.add "Flagging" "[ ${file} ]"
@@ -1059,7 +1060,12 @@ frobulator.flag () {
 # file /////////////////////////////////////////////////////////////////////////
 
 frobulator.file () {
-	path="${1}"
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+	else
+		path="${1}"
+	fi
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1104,7 +1110,12 @@ frobulator.file () {
 # keep /////////////////////////////////////////////////////////////////////////
 
 frobulator.keep () {
-	path="${1}"
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+	else
+		path="${1}"
+	fi
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1154,7 +1165,12 @@ frobulator.keep () {
 # delete ///////////////////////////////////////////////////////////////////////
 
 frobulator.delete () {
-	path="${1}"
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+	else
+		path="${1}"
+	fi
 
 	if [[ -n "${#list[@]}" ]]
 	then
@@ -1163,17 +1179,6 @@ frobulator.delete () {
 		list=(${@:2})
 	else
 		file="${2}"
-
-		list=()
-
-		list+=("${file}")
-	fi
-
-	if [ $# -eq 1 ]
-	then
-		path="${PWD}"
-
-		file="${1}"
 
 		list=()
 
@@ -1406,7 +1411,7 @@ frobulator.put () {
 	curl									\
 		-X POST "${destination}/${file}"	\
 		-H "Content-Type: ${type}"			\
-		-d "${file}" &
+		-d 									"${file}" &
 
 	frobulator.progress "Uploading" "[ ${file} ]"
 	echo

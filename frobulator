@@ -754,14 +754,19 @@ frobulator.countdown () {
 
 # progress /////////////////////////////////////////////////////////////////////
 
-# use as process ticker line marker
+# use as ticker line marker to mark process wait progress
 
 frobulator.progress () {
 	# catch PID of last command
 
 	PID=$!
 
-	spinner="\/"
+	if [ $# -ge 2 ]
+	then
+		spinner="⬒◩◧⬕⬓◪◨⬔"
+	else
+		spinner="\/"
+	fi
 
 	before="[ "
 	after=" ]"
@@ -787,6 +792,8 @@ frobulator.progress () {
 # bar //////////////////////////////////////////////////////////////////////////
 
 # WIP
+
+# use to mark process progress
 
 frobulator.bar () {
 	# catch PID of last command
@@ -847,7 +854,8 @@ frobulator.bar () {
 
 # temporary ////////////////////////////////////////////////////////////////////
 
-# use to generate temporary directory for builds and process transfer features
+# use to generate temporary directory from argument or array list
+# usefult for program builds and process transfer features
 
 frobulator.temporary () {
 	if [[ -n "${#list[@]}" ]]
@@ -875,6 +883,8 @@ frobulator.temporary () {
 }
 
 # directory ////////////////////////////////////////////////////////////////////
+
+# use to generate directory from argument or array list
 
 frobulator.directory () {
 	if [ $# -eq 1 ]
@@ -920,6 +930,9 @@ frobulator.directory () {
 }
 
 # write ////////////////////////////////////////////////////////////////////////
+
+# use to generate and write to file(s) from argument or array list
+# appends content to file
 
 frobulator.write () {
 	content="${1}"
@@ -992,6 +1005,9 @@ frobulator.write () {
 
 # flag / ///////////////////////////////////////////////////////////////////////
 
+# use to generate and write to file(s) from argument or array list
+# overwrites content to file
+
 frobulator.flag () {
 	content="${1}"
 
@@ -1059,6 +1075,8 @@ frobulator.flag () {
 
 # file /////////////////////////////////////////////////////////////////////////
 
+# use to generate file(s) from argument or array list
+
 frobulator.file () {
 	if [ $# -eq 1 ]
 	then
@@ -1108,6 +1126,9 @@ frobulator.file () {
 }
 
 # keep /////////////////////////////////////////////////////////////////////////
+
+# use to reverse-select file(s) for deletion from argument or array list
+# keeps selected files in directory
 
 frobulator.keep () {
 	if [ $# -eq 1 ]
@@ -1164,6 +1185,9 @@ frobulator.keep () {
 
 # delete ///////////////////////////////////////////////////////////////////////
 
+# use to delete file(s) from argument or array list
+# removes selected file in directory
+
 frobulator.delete () {
 	if [ $# -eq 1 ]
 	then
@@ -1202,6 +1226,8 @@ frobulator.delete () {
 
 # copy /////////////////////////////////////////////////////////////////////////
 
+# use to copy file(s) and/or diretories from argument or array list
+
 frobulator.copy () {
 	source="${1}"
 	target="${2}"
@@ -1238,6 +1264,8 @@ frobulator.copy () {
 }
 
 # move /////////////////////////////////////////////////////////////////////////
+
+# use to move file(s) and/or diretories from argument or array list
 
 frobulator.move () {
 	source="${1}"
@@ -1280,6 +1308,8 @@ frobulator.move () {
 }
 
 # link /////////////////////////////////////////////////////////////////////////
+
+# use to link file(s) and/or diretories from argument or array list
 
 frobulator.link () {
 	source="${1}"
@@ -1335,17 +1365,18 @@ frobulator.link () {
 
 # get //////////////////////////////////////////////////////////////////////////
 
+# use to download file(s) with url status verification
+
 frobulator.get () {
-	# parse url and download file according to source concatenation
 
 	command_get () {
 		# verify url status
 
-		url_status=$(curl						\
-				--write-out "%{http_code}\n"	\
-				--silent						\
-				--output /dev/null				\
-												"${source}"/"${file}"
+		url_status=$(curl								\
+						--write-out "%{http_code}\n"	\
+						--silent						\
+						--output /dev/null				\
+														"${source}"/"${file}"
 					)
 
 		if [[ "${url_status}" = [145][0-9][0-9] ]]
@@ -1368,21 +1399,48 @@ frobulator.get () {
 
 # download /////////////////////////////////////////////////////////////////////
 
+# use to download file(s) with url status verification from argument or array list
+
 frobulator.download () {
+
 	source="${1}"
-	path="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [ $# -eq 2 ]
 	then
-		# ${3} - array
+		path="${PWD}"
 
-		list=(${@:3})
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
-		file="${3}"
+		path="${2}"
 
-		list=()
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
 
-		list+=("${file}")
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	fi
 
 	if [ ! -d "${path}" ]
@@ -1405,6 +1463,8 @@ frobulator.download () {
 
 # put //////////////////////////////////////////////////////////////////////////
 
+# WIP
+
 frobulator.put () {
 	type="${1}"
 
@@ -1419,6 +1479,8 @@ frobulator.put () {
 
 # upload ///////////////////////////////////////////////////////////////////////
 
+# WIP
+
 frobulator.upload () {
 
 	frobulator.upl "Loading..."
@@ -1429,10 +1491,10 @@ frobulator.upload () {
 
 # silence //////////////////////////////////////////////////////////////////////
 
-frobulator.silence () {
-	# wrap command execution and redirect all output to null sink:
-	# provides fully silent execution
+# use to wrap command execution and redirect all output to null sink
+# provides fully silent execution
 
+frobulator.silence () {
 	command="${@}"
 
 	"${shell}" -c "$(echo ${command})" >> /dev/null 2>&1
@@ -1440,10 +1502,10 @@ frobulator.silence () {
 
 # log //////////////////////////////////////////////////////////////////////////
 
-frobulator.log () {
-	# wrap command and redirect all output to "${script}"-"${stamp}".log file:
-	# provides logging and fully silent execution
+# use to wrap command and redirect all output to "${script}"-"${stamp}".log file
+# provides fully silent execution
 
+frobulator.log () {
 	if [ -z "${SUDO:-$HOME}" ]
 	then
 		log_directory="${PREFIX}"/var/log
@@ -1468,9 +1530,9 @@ frobulator.log () {
 
 # password /////////////////////////////////////////////////////////////////////
 
-frobulator.password () {
-	# obfuscate password input with custom mask
+# use to obfuscate password input with custom mask character
 
+frobulator.password () {
 	mask_character="•"
 
 	while  read -p "${mask}" -r -s -n 1 input_character
@@ -1512,6 +1574,8 @@ frobulator.password () {
 }
 
 # input ////////////////////////////////////////////////////////////////////////
+
+# use to capture user input
 
 frobulator.input () {
 	list=($@)
@@ -1569,6 +1633,8 @@ frobulator.input () {
 
 # clean ////////////////////////////////////////////////////////////////////////
 
+# use to run package and installer post-install cleanup
+
 frobulator.clean () {
 	command_autoremove="apt-get autoremove"
 	command_clean="apt-get clean"
@@ -1583,16 +1649,19 @@ frobulator.clean () {
 	frobulator.progress "Cleaning..."
 	echo
 
-	# fix dpkg lock and errors:
+	# fix 'dpkg' lock and errors:
 	# remove all post-install logs - prevent package configuration errors
 
 	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
 	then
-		rm -rf "${PREFIX}"/var/lib/dpkg/info/*.postinst
+		rm -r -f "${PREFIX}"/var/lib/dpkg/info/*.postinst >> /dev/null 2>&1
 	fi
 }
 
 # hold /////////////////////////////////////////////////////////////////////////
+
+# use to hold package(s) from argument or array list
+# marks package(s) for version freeze
 
 frobulator.hold () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1633,6 +1702,9 @@ frobulator.hold () {
 
 # release //////////////////////////////////////////////////////////////////////
 
+# use to release package(s) from argument or array list
+# unmarks package(s) for version freeze
+
 frobulator.release () {
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -1671,6 +1743,9 @@ frobulator.release () {
 }
 
 # failsafe /////////////////////////////////////////////////////////////////////
+
+# use to install package(s) and update system to avoid 'ignore' or 'not found' errors
+# useful as failsafe to fetch all up-to-date content before batch install
 
 frobulator.failsafe () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1714,6 +1789,8 @@ frobulator.failsafe () {
 }
 
 # install //////////////////////////////////////////////////////////////////////
+
+# use to install package(s) from argument or array list
 
 frobulator.install () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1771,6 +1848,9 @@ frobulator.install () {
 }
 
 # require //////////////////////////////////////////////////////////////////////
+
+# use to install required package(s) from argument or array list
+# use to search and validate required package dependencies for operations
 
 frobulator.require () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -1881,6 +1961,9 @@ frobulator.require () {
 
 # assess ///////////////////////////////////////////////////////////////////////
 
+# use to assess 'superuser' status and prompt for priviledged execution
+# useful for in-script dependency assessment and installation
+
 frobulator.assess () {
 
 	if [[ -n "${#list[@]}" ]]
@@ -1939,6 +2022,8 @@ frobulator.assess () {
 
 # reinstall ////////////////////////////////////////////////////////////////////
 
+# use to reinstall package(s) from argument or array list
+
 frobulator.reinstall () {
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -1979,6 +2064,8 @@ frobulator.reinstall () {
 
 # update ///////////////////////////////////////////////////////////////////////
 
+# use to update system package(s)
+
 frobulator.update () {
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -1995,6 +2082,8 @@ frobulator.update () {
 
 # upgrade //////////////////////////////////////////////////////////////////////
 
+# use to upgrade system packages
+
 frobulator.upgrade () {
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -2010,6 +2099,8 @@ frobulator.upgrade () {
 }
 
 # purge ////////////////////////////////////////////////////////////////////////
+
+# use to purge package(s) from argument or array list
 
 frobulator.purge () {
 	export DEBIAN_FRONTEND=noninteractive
@@ -2156,7 +2247,7 @@ frobulator.result () {
 	fi
 }
 
-# user  ////////////////////////////////////////////////////////////////////////
+# user /////////////////////////////////////////////////////////////////////////
 
 frobulator.user () {
 	frobulator.inf "Current user name is ${SUDO_USER:-$USER}."

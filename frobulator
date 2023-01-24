@@ -2249,13 +2249,20 @@ frobulator.result () {
 
 # user /////////////////////////////////////////////////////////////////////////
 
+# use to identify 'user' name
+# usefule for priviledged execution status checks
+
 frobulator.user () {
-	frobulator.inf "Current user name is ${SUDO_USER:-$USER}."
+	frobulator.msg "Current shell user name is ${SUDO_USER:-$USER}."
+	echo
 
 	sleep 1
 }
 
 # escalate /////////////////////////////////////////////////////////////////////
+
+# use to provide priviledged execution
+# restarts script process as 'superuser' once the status is granted
 
 frobulator.escalate () {
 	if [[ $(id -u -n) = "root" ]]
@@ -2289,6 +2296,8 @@ frobulator.escalate () {
 }
 
 # extract //////////////////////////////////////////////////////////////////////
+
+# use to extract known archive types for script dependency or process resolution
 
 frobulator.extract () {
 	list+=(

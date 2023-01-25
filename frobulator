@@ -604,6 +604,18 @@ frobulator.usr () {
 # numbering ////////////////////////////////////////////////////////////////////
 
 # use to indicate numbered steps, directives or instructions
+# number value is inserted as line marker
+
+# usage:      frobulator.num "[number]" "[string]" "[string]" "[span character]"
+
+# command:    frobulator.num "[number]" "[string]"
+# result:     [ n ] string
+
+# command:    frobulator.num "[number]" "[string]" "[string]"
+# result:     [ n ] string ///////////////////////////////////////////////////////////// string
+
+# command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
+# result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
 
 frobulator.num () {
 	before="[ "
@@ -626,6 +638,11 @@ frobulator.num () {
 # note:
 # no line marker
 
+# usage:      frobulator.sep
+
+# command:    frobulator.sep
+# result:     ////////////////////////////////////////////////////////////////////////////////
+
 frobulator.sep () {
 	frobulator.prompt "${@}"
 	value="${frobulate_str[@]}"
@@ -640,6 +657,12 @@ frobulator.sep () {
 # note:
 # set up as predefined separator
 
+# usage:      frobulator.separate
+
+# command:    frobulator.separate
+# result:     ////////////////////////////////////////////////////////////////////////////////
+#
+
 frobulator.separate () {
 
 	frobulator.sep
@@ -649,6 +672,13 @@ frobulator.separate () {
 # script ///////////////////////////////////////////////////////////////////////
 
 # use to mark the beginning of a script process
+# derives title from script name:
+# script name must be separated with '-' character as 'script-name'
+
+# usage:      frobulator.script
+
+# command:    frobulator.script "Setting up ${script#*-}"
+# result:     [ ¤ ] Setting up 'script' ///////////////////////////////////////////// [ name ]
 
 frobulator.script () {
 	description="${1}"
@@ -666,19 +696,22 @@ frobulator.script () {
 # type /////////////////////////////////////////////////////////////////////////
 
 # use to emulate typing on prompts
+#timeout is randomized to create human-like typing effect
+
+# usage:      frobulator.type [string] [seconds]
 
 frobulator.type () {
 	string=${#1}
-	count="${2}"
+	seconds="${2}"
 
-	if [ -z "${count}" ]
+	if [ -z "${seconds}" ]
 	then
-		count=3
+		seconds=3
 	fi
 
 	for (( character=0; character<=${string}; character++ ))
 	do
-		interval=$(( (RANDOM % ${count}) + 1 ))
+		interval=$(( (RANDOM % ${seconds}) + 1 ))
 
 		sleep="0.${interval}"
 

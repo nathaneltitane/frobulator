@@ -570,7 +570,7 @@ frobulator.ins () {
 # use for questions, input, user input dependant inquiries
 
 # note:
-# use 'echo -n -e' to prevent addin new line after prompt:
+# use 'echo -n -e' to prevent adding new line after prompt:
 # keeps user input beside prompt
 # also includes space after value to separate input
 

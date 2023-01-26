@@ -186,7 +186,7 @@ marker_nul='     '
 frobulator.prompt () {
 	# initialize string return array
 
-	frobulate_str=()
+	frobulator_string=()
 
 	begin="${1}"
 	end="${2}"
@@ -297,22 +297,22 @@ frobulator.prompt () {
 
 	if [ $# -ge 0 ]
 	then
-		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
 	if [ $# -eq 1 ]
 	then
-		frobulate_str=("${span_begin}")
+		frobulator_string=("${span_begin}")
 	fi
 
 	if [ $# -ge 2 ]
 	then
-		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
 	if [ $# -eq 3 ]
 	then
-		frobulate_str=("${span_begin}""${span_middle}""${span_end}")
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 }
 
@@ -335,7 +335,7 @@ frobulator.prompt () {
 
 frobulator.red () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${red}${value}${reset}"
 }
@@ -344,7 +344,7 @@ frobulator.red () {
 
 frobulator.green () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${green}${value}${reset}"
 }
@@ -353,7 +353,7 @@ frobulator.green () {
 
 frobulator.yellow () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${yellow}${value}${reset}"
 }
@@ -362,7 +362,7 @@ frobulator.yellow () {
 
 frobulator.blue () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${value}${reset}"
 }
@@ -371,7 +371,7 @@ frobulator.blue () {
 
 frobulator.magenta () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${value}${reset}"
 }
@@ -380,7 +380,7 @@ frobulator.magenta () {
 
 frobulator.cyan () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${cyan}${value}${reset}"
 }
@@ -425,7 +425,7 @@ frobulator.cyan () {
 
 frobulator.inf () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_inf} ${value}${reset}"
 }
@@ -434,7 +434,7 @@ frobulator.inf () {
 
 frobulator.msg () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${marker_msg} ${value}${reset}"
 }
@@ -443,7 +443,7 @@ frobulator.msg () {
 
 frobulator.wrn () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
 }
@@ -452,7 +452,7 @@ frobulator.wrn () {
 
 frobulator.add () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_add} ${value}${reset}"
 }
@@ -461,7 +461,7 @@ frobulator.add () {
 
 frobulator.rem () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${red}${marker_rem} ${value}${reset}"
 }
@@ -470,7 +470,7 @@ frobulator.rem () {
 
 frobulator.ret () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
 }
@@ -479,7 +479,7 @@ frobulator.ret () {
 
 frobulator.rel () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${marker_rel} ${value}${reset}"
 }
@@ -488,7 +488,7 @@ frobulator.rel () {
 
 frobulator.fwd () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${white}${marker_fwd} ${value}${reset}"
 }
@@ -497,7 +497,7 @@ frobulator.fwd () {
 
 frobulator.rev () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${white}${marker_rev} ${value}${reset}"
 }
@@ -506,7 +506,7 @@ frobulator.rev () {
 
 frobulator.stp () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${white}${marker_stp} ${value}${reset}"
 }
@@ -515,7 +515,7 @@ frobulator.stp () {
 
 frobulator.dwl () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 }
@@ -524,7 +524,7 @@ frobulator.dwl () {
 
 frobulator.upl () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
 }
@@ -533,7 +533,7 @@ frobulator.upl () {
 
 frobulator.lnk () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
 }
@@ -542,7 +542,7 @@ frobulator.lnk () {
 
 frobulator.scs () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 }
@@ -551,7 +551,7 @@ frobulator.scs () {
 
 frobulator.err () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
 }
@@ -560,7 +560,7 @@ frobulator.err () {
 
 frobulator.ins () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
@@ -578,7 +578,7 @@ frobulator.ins () {
 
 frobulator.ask () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_ask} ${value} ${reset}"
 }
@@ -587,7 +587,7 @@ frobulator.ask () {
 
 frobulator.ipt () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_add} ${value} ${reset}"
 }
@@ -596,7 +596,7 @@ frobulator.ipt () {
 
 frobulator.usr () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_usr} ${value} ${reset}"
 }
@@ -626,7 +626,7 @@ frobulator.num () {
 	shift
 
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${before}${number}${after} ${value}"
 }
@@ -645,7 +645,7 @@ frobulator.num () {
 
 frobulator.sep () {
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	echo -e "${value}"
 }
@@ -771,7 +771,7 @@ frobulator.countdown () {
 	shift
 
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	shift
 
@@ -822,7 +822,7 @@ frobulator.progress () {
 	after=" ]"
 
 	frobulator.prompt "${@}"
-	value="${frobulate_str[@]}"
+	value="${frobulator_string[@]}"
 
 	i=1
 
@@ -1681,7 +1681,7 @@ frobulator.input () {
 
 		value=${label,}
 
-		frobulate_rtn+=("${value}=${input}")
+		frobulator_return+=("${value}=${input}")
 
 	done
 

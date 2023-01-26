@@ -905,7 +905,7 @@ frobulator.bar () {
 # temporary ////////////////////////////////////////////////////////////////////
 
 # use to generate temporary directory from argument or array list
-# usefult for program builds and process transfer features
+# useful for program builds and process transfer features
 
 frobulator.temporary () {
 	if [[ -n "${#list[@]}" ]]

@@ -929,7 +929,10 @@ frobulator.temporary () {
 		frobulator.add "Creating temporary directory" "[ ${directory} ]"
 		echo
 
-		mktemp -d -t "frobulator.temporary.XXXXXX"
+		temporary_directory=$(mktemp -d -t "frobulator.temporary.XXXXXX")
+
+		eval "${directory}"="${temporary_directory}"
+
 	done
 }
 

@@ -908,54 +908,38 @@ frobulator.bar () {
 # generates directory template as 'frobulator_temporary_XXXXXX'
 # useful for program builds and process transfer features
 
-# usage:      frobulator.temporary "[template]" "[directory name]" | "[array name]"
-# usage:      frobulator.temporary "[directory name]" | "[array name]"
+#             frobulator.temporary "[directory name]" | "[array name]"
 
 frobulator.temporary () {
-
-	if [ $# -eq 1 ]
+	if [[ -n "${#list[@]}" ]]
 	then
-		template="frobulator_temporary"
+		# ${1} - array
 
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${1} - array
-
-			list=(${@:1})
-		else
-			directory="${1}"
-
-			list=()
-
-			list+=("${directory}")
-		fi
+		list=(${@:1})
 	else
-		template="${1}"
+		directory="${1}"
 
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${2} - array
+		list=()
 
-			list=(${@:2})
-		else
-			directory="${2}"
-
-			list=()
-
-			list+=("${directory}")
-		fi
+		list+=("${directory}")
 	fi
 
 	for directory in ${list[@]}
 	do
-
 		frobulator.add "Creating temporary directory" "[ ${directory} ]"
 		echo
 
-		mktemp -d -t "${template}_XXXXXX"
-
-		trap 'rm -rf "${directory}"' EXIT
+		mktemp -d -t "frobulator.temporary.XXXXXX"
 	done
+}
+
+# trap /////////////////////////////////////////////////////////////////////////
+
+frobulator.trap () {
+	directory="${1}"
+
+	trap "exit 1"					HUP INT PIPE QUIT TERM
+	trap 'rm -rf "${directory}"'	EXIT
 }
 
 # directory ////////////////////////////////////////////////////////////////////

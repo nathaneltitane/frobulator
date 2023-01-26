@@ -905,28 +905,54 @@ frobulator.bar () {
 # temporary ////////////////////////////////////////////////////////////////////
 
 # use to generate temporary directory from argument or array list
+# generates directory template as 'frobulator_temporary_XXXXXX'
 # useful for program builds and process transfer features
 
+# usage:      frobulator.temporary "[template]" "[directory name]" | "[array name]"
+# usage:      frobulator.temporary "[directory name]" | "[array name]"
+
 frobulator.temporary () {
-	if [[ -n "${#list[@]}" ]]
+
+	if [ $# -eq 1 ]
 	then
-		# ${1} - array
+		template="frobulator_temporary"
 
-		list=(${@:1})
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			directory="${1}"
+
+			list=()
+
+			list+=("${directory}")
+		fi
 	else
-		directory="${1}"
+		template="${1}"
 
-		list=()
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
 
-		list+=("${directory}")
+			list=(${@:2})
+		else
+			directory="${2}"
+
+			list=()
+
+			list+=("${directory}")
+		fi
 	fi
 
 	for directory in ${list[@]}
 	do
+
 		frobulator.add "Creating temporary directory" "[ ${directory} ]"
 		echo
 
-		mktemp -d -t frobulator.temporary.XXXXXX
+		mktemp -d -t "${template}_XXXXXX"
 
 		trap 'rm -rf "${directory}"' EXIT
 	done

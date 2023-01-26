@@ -725,13 +725,12 @@ frobulator.type () {
 
 # wait /////////////////////////////////////////////////////////////////////////
 
-# use to mark timeout in between commands:
-# can allow process return values to be caught
+# use to mark timeout in between commands in seconds
 
 # usage:      frobulator.timeout "[seconds]"
 
 frobulator.timeout () {
-	# wait in seconds
+	# timeout in seconds
 
 	seconds="${1}"
 
@@ -761,6 +760,8 @@ frobulator.clear () {
 # use as countdown marker before next command runs:
 # leaves preset time for long interaction with prompts and other long strings
 
+# usage:      frobulator.countdown "[seconds]" "[string]" "[string]"
+
 frobulator.countdown () {
 	before="[ "
 	after=" ]"
@@ -776,9 +777,19 @@ frobulator.countdown () {
 
 	while [ "${seconds}" -ge 0 ]
 	do
-		echo -n -e "\r${before}${red}$((seconds--))${reset}${after} ${value}\c"
+		if [ "${seconds}" -eq 0 ]
+		then
+			ticker="-"
+
+			echo -n -e "\r${before}${yellow}${ticker}${reset}${after} ${value}\c"
+
+			break
+		else
+			echo -n -e "\r${before}${red}$((seconds--))${reset}${after} ${value}\c"
+		fi
 
 		sleep 1
+
 	done
 
 	# normalize line spacing:

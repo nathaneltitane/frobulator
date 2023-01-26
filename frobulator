@@ -801,6 +801,10 @@ frobulator.countdown () {
 # progress /////////////////////////////////////////////////////////////////////
 
 # use as ticker line marker to mark process wait progress
+# use after process marked to for in background
+
+# usage:      process &
+#             frobulator.progress "[string]"
 
 frobulator.progress () {
 	# catch PID of last command

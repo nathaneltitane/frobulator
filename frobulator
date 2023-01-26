@@ -908,7 +908,7 @@ frobulator.bar () {
 # generates directory template as 'frobulator_temporary_XXXXXX'
 # useful for program builds and process transfer features
 
-#             frobulator.temporary "[directory name]" | "[array name]"
+# usage:      frobulator.temporary "[directory name]" | "[array name]"
 
 frobulator.temporary () {
 	if [[ -n "${#list[@]}" ]]
@@ -931,23 +931,46 @@ frobulator.temporary () {
 
 		temporary_directory=$(mktemp -d -t "frobulator.temporary.XXXXXX")
 
-		eval "${directory}"="${temporary_directory}"
-
+		frobulator_return+=("${directory}"="${temporary_directory}")
 	done
 }
 
 # trap /////////////////////////////////////////////////////////////////////////
 
-frobulator.trap () {
-	directory="${1}"
+# use to cleanup temporary directory or other process driven execution
+# handles exit codes and signals to ensure proper cleanup
+# specify directory name as variable returned from 'eval' in frobulator.temporary
 
-	trap "exit 1"					HUP INT PIPE QUIT TERM
-	trap 'rm -rf "${directory}"'	EXIT
+# usage:      frobulator.temporary "[directory name]" | "[array name]"
+#             frobulator.trap "${directory name}"
+
+frobulator.trap () {
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		directory="${1}"
+
+		list=()
+
+		list+=("${directory}")
+	fi
+
+	for directory in ${list[@]}
+	do
+		trap "exit 1"					HUP INT PIPE QUIT TERM
+		trap 'rm -r -f "${directory}"'	EXIT
+	done
 }
 
 # directory ////////////////////////////////////////////////////////////////////
 
 # use to generate directory from argument or array list
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.directory "[path]" "[directory name]" | "[array name]"
 
 frobulator.directory () {
 	if [ $# -eq 1 ]
@@ -996,6 +1019,10 @@ frobulator.directory () {
 
 # use to generate and write to file(s) from argument or array list
 # appends content to file
+
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.write "[content]" "[path]" "[file]"
 
 frobulator.write () {
 	content="${1}"
@@ -1070,6 +1097,10 @@ frobulator.write () {
 
 # use to generate and write to file(s) from argument or array list
 # overwrites content to file
+
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.flag "[content]" "[path]" "[file]"
 
 frobulator.flag () {
 	content="${1}"

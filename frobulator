@@ -1310,7 +1310,7 @@ frobulator.delete () {
 
 		# remove file
 
-		rm -rf "${path}"/"${file}"
+		rm -r -f "${path}"/"${file}"
 	done
 
 	# unset array

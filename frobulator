@@ -811,12 +811,7 @@ frobulator.progress () {
 
 	PID=$!
 
-	if [ $# -ge 2 ]
-	then
-		spinner="⬒◩◧⬕⬓◪◨⬔"
-	else
-		spinner="\/"
-	fi
+	spinner="⎺⎻⎼⎽⎼⎻"
 
 	before="[ "
 	after=" ]"

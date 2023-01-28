@@ -976,21 +976,34 @@ frobulator.directory () {
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
 		path="${1}"
-	fi
 
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${2} - array
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
 
-		list=(${@:2})
-	else
-		directory="${2}"
+			list=(${@:2})
+		else
+			file="${2}"
 
-		list=()
+			list=()
 
-		list+=("${directory}")
+			list+=("${file}")
+		fi
 	fi
 
 	for directory in ${list[@]}
@@ -1175,21 +1188,34 @@ frobulator.file () {
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
 		path="${1}"
-	fi
 
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${2} - array
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
 
-		list=(${@:2})
-	else
-		file="${2}"
+			list=(${@:2})
+		else
+			file="${2}"
 
-		list=()
+			list=()
 
-		list+=("${file}")
+			list+=("${file}")
+		fi
 	fi
 
 	if [ ! -d "${path}" ]
@@ -1228,21 +1254,34 @@ frobulator.keep () {
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
 		path="${1}"
-	fi
 
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${2} - array
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
 
-		list=(${@:2})
-	else
-		file="${2}"
+			list=(${@:2})
+		else
+			file="${2}"
 
-		list=()
+			list=()
 
-		list+=("${file}")
+			list+=("${file}")
+		fi
 	fi
 
 	cd "${path}" || exit 1
@@ -1286,21 +1325,34 @@ frobulator.delete () {
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	else
 		path="${1}"
-	fi
 
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${2} - array
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
 
-		list=(${@:2})
-	else
-		file="${2}"
+			list=(${@:2})
+		else
+			file="${2}"
 
-		list=()
+			list=()
 
-		list+=("${file}")
+			list+=("${file}")
+		fi
 	fi
 
 	for file in ${list[@]}

@@ -1958,6 +1958,9 @@ frobulator.install () {
 	do
 		if [[ "${package}" = "*.deb" ]]
 		then
+			frobulator.msg "Local package(s) selected."
+			echo
+
 			frobulator.log "$(echo ${command_install} ${package})" &
 
 			frobulator.progress "Installing..."

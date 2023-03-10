@@ -1956,30 +1956,38 @@ frobulator.install () {
 
 	for package in ${list[@]}
 	do
-		query_filter="$(apt  search "${package}" 2> /dev/null | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
-
-		if [[ -z "${query_filter}" ]]
+		if [[ "${package}" = "*.deb" ]]
 		then
-			frobulator.wrn "Absent on system" "[ '${package}' ]"
-			echo
-
 			frobulator.log "$(echo ${command_install} ${package})" &
 
- 			frobulator.progress "Installing..."
+			frobulator.progress "Installing..."
 			echo
-
-			# cleanup
-
-			frobulator.clean
-
 		else
-			frobulator.scs "Present on system" "[ '${package}' ]"
-			echo
+			query_filter="$(apt  search "${package}" 2> /dev/null | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
-			frobulator.fwd "Continuing..."
-			echo
+			if [[ -z "${query_filter}" ]]
+			then
+				frobulator.wrn "Absent on system" "[ '${package}' ]"
+				echo
 
-			:
+				frobulator.log "$(echo ${command_install} ${package})" &
+
+				frobulator.progress "Installing..."
+				echo
+
+				# cleanup
+
+				frobulator.clean
+
+			else
+				frobulator.scs "Present on system" "[ '${package}' ]"
+				echo
+
+				frobulator.fwd "Continuing..."
+				echo
+
+				:
+			fi
 		fi
 	done
 

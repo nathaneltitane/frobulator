@@ -2048,14 +2048,14 @@ frobulator.require () {
 
 		if [ "${query_command}" == "${query_content}" ] && [ "${command}" == "${query_package}" ]
 		then
-			frobulator.ins "Command provision found as package" "[ '${query_package}' ]"
+			frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
 			echo
 
 			install_list+=("${query_package}")
 
 		elif [ "${query_command}" == "${query_content}" ] && [ "${command}" != "${query_package}" ]
 		then
-			frobulator.ins "Command provision found as reverse match" "[ '${query_package}' ]"
+			frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
 			echo
 
 			install_list+=("${query_package}")
@@ -2080,7 +2080,7 @@ frobulator.require () {
 
 				if [ "${query_command}" != "${query_content}" ] && [ "${command}" = "${query_package}" ]
 				then
-					frobulator.ins "Command provision found as metapackage" "[ '${query_package}' ]"
+					frobulator.scs "Command provision found as metapackage" "[ '${query_package}' ]"
 					echo
 
 					install_list+=("${query_package}")

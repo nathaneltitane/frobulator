@@ -2135,7 +2135,7 @@ frobulator.assess () {
 		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
 		echo
 
-		frobulator.inf "Run '${script}' as 'user' to proceed."
+		frobulator.inf "Run '${script}' as '${USER}' to proceed."
 		echo
 	else
 		for command in ${list[@]}

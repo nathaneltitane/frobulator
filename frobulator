@@ -2108,67 +2108,6 @@ frobulator.require () {
 	done
 }
 
-# assess ///////////////////////////////////////////////////////////////////////
-
-# use to assess 'superuser' status and prompt for priviledged execution
-# useful for in-script dependency assessment and installation
-
-frobulator.assess () {
-
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${1} - array
-
-		list=(${@:1})
-	else
-		command="${1}"
-
-		list=()
-
-		list+=("${command}")
-	fi
-
-	if [[ $(id -u -n) = "root" ]]
-	then
-		frobulator.require ${list[@]}
-
-		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
-		echo
-
-		frobulator.inf "Run '${script}' as '${USER}' to proceed."
-		echo
-	else
-		for command in ${list[@]}
-		do
-			if [[ -z $(command -v "${command}") ]]
-			then
-				frobulator.err "Missing" "[ '${command}' ]"
-				echo
-
-				frobulator.wrn "Privileged execution rights needed to proceed."
-				echo
-
-				frobulator.ask "Launch '${script}' as 'root'?"
-
-				read reply
-				echo
-
-				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
-				then
-					frobulator.escalate
-				else
-					frobulator.wrn "Launch '${script}' as 'root' to install requirement(s)."
-					echo
-				fi
-			fi
-		done
-	fi
-
-	# unset array
-
-	list=()
-}
-
 # reinstall ////////////////////////////////////////////////////////////////////
 
 # use to reinstall package(s) from argument or array list
@@ -2408,6 +2347,67 @@ frobulator.user () {
 	sleep 1
 }
 
+# assess ///////////////////////////////////////////////////////////////////////
+
+# use to assess 'superuser' status and prompt for priviledged execution
+# useful for in-script dependency assessment and installation
+
+frobulator.assess () {
+
+	if [[ -n "${#list[@]}" ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		command="${1}"
+
+		list=()
+
+		list+=("${command}")
+	fi
+
+	if [[ $(id -u -n) = "root" ]]
+	then
+		frobulator.require ${list[@]}
+
+		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
+		echo
+
+		frobulator.inf "Run '${script}' as '${USER}' to proceed."
+		echo
+	else
+		for command in ${list[@]}
+		do
+			if [[ -z $(command -v "${command}") ]]
+			then
+				frobulator.err "Missing" "[ '${command}' ]"
+				echo
+
+				frobulator.wrn "Privileged execution rights needed to proceed."
+				echo
+
+				frobulator.ask "Launch '${script}' as 'root'?"
+
+				read reply
+				echo
+
+				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
+				then
+					frobulator.escalate
+				else
+					frobulator.wrn "Launch '${script}' as 'root' to install requirement(s)."
+					echo
+				fi
+			fi
+		done
+	fi
+
+	# unset array
+
+	list=()
+}
+
 # escalate /////////////////////////////////////////////////////////////////////
 
 # use to provide priviledged execution
@@ -2428,7 +2428,10 @@ frobulator.escalate () {
 		frobulator.wrn "Restarting command as 'root'."
 		echo
 
-		frobulator.require sudo
+		if [[ -z $(command -v sudo) ]]
+		then
+			frobulator.require sudo
+		fi
 
 		self="${0}"
 		command="${@}"

@@ -2259,7 +2259,7 @@ frobulator.purge () {
 		list+=("${package}")
 	fi
 
-	command_purge="apt-get --assume-yes purge"
+	command_purge="apt-get --assume-yes purge --autoremove"
 
 	frobulator.inf "Purging selected package(s)."
 	echo

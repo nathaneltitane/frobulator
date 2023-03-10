@@ -2344,7 +2344,7 @@ frobulator.result () {
 # usefule for priviledged execution status checks
 
 frobulator.user () {
-	frobulator.msg "Current shell user name is ${SUDO_USER:-$USER}."
+	frobulator.msg "Current shell user name" "[ '${SUDO_USER:-$USER}' ]"
 	echo
 
 	sleep 1
@@ -2377,7 +2377,7 @@ frobulator.assess () {
 		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
 		echo
 
-		frobulator.inf "Restart '${script}' as '${USER}' to proceed."
+		frobulator.inf "Restart as '${USER}' to proceed." "[ '${script}' ]"
 		echo
 	else
 		for command in ${list[@]}
@@ -2387,10 +2387,10 @@ frobulator.assess () {
 				frobulator.err "Missing" "[ '${command}' ]"
 				echo
 
-				frobulator.wrn "Privilege escalation required to proceed."
+				frobulator.wrn "Privilege escalation required to proceed." "[ '${script}' ]"
 				echo
 
-				frobulator.ask "Launch '${script}' as 'root'?"
+				frobulator.ask "Launch as 'root'?"
 
 				read reply
 				echo
@@ -2399,7 +2399,7 @@ frobulator.assess () {
 				then
 					frobulator.escalate
 				else
-					frobulator.wrn "Launch '${script}' as 'root' to install requirement(s)."
+					frobulator.wrn "Launch as 'root' to install requirement(s)." "[ '${script}' ]"
 					echo
 				fi
 			fi

@@ -1458,7 +1458,7 @@ frobulator.link () {
 
 	if [[ -n "${#list[@]}" ]]
 	then
-		# ${2} - array
+		# ${3} - array
 
 		list=(${@:3})
 	else

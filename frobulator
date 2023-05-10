@@ -2453,6 +2453,15 @@ frobulator.escalate () {
 # use to archive content and for backup procedures
 
 frobulator.archive () {
+	list+=(
+		bzip2
+		gzip
+		tar
+		zip
+	)
+
+	frobulator.require ${list[@]}
+
 	# unset array
 
 	list=()
@@ -2581,13 +2590,13 @@ frobulator.archive () {
 
 frobulator.extract () {
 	list+=(
-		tar
-		bunzip2
-		unrar
-		gunzip
-		unzip
-		uncompress
 		7z
+		bunzip2
+		gunzip
+		tar
+		uncompress
+		unrar
+		unzip
 	)
 
 	frobulator.require ${list[@]}

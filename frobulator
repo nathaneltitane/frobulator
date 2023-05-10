@@ -2456,7 +2456,9 @@ frobulator.archive () {
 	list+=(
 		7zip
 		bzip2
+		compress
 		gzip
+		rar
 		tar
 		zip
 	)

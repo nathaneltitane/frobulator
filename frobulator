@@ -2454,6 +2454,7 @@ frobulator.escalate () {
 
 frobulator.archive () {
 	list+=(
+		7zip
 		bzip2
 		gzip
 		tar

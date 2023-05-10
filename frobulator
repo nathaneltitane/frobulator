@@ -2453,18 +2453,125 @@ frobulator.escalate () {
 # use to archive content and for backup procedures
 
 frobulator.archive () {
+	# unset array
 
-	extension="zip"
+	list=()
 
 	archive="${1}"
 	directory="${2}"
 
-	zip						\
-		--quiet 			\
-		--recurse-paths		\
-		--system-hidden		\
-							"${archive}"."${extension}" "${directory}"
+	if [ -z "${directory}" ]
+	then
+		directory="${PWD}"
+	fi
 
+	if [ ! -d "${directory}" ]
+	then
+		echo
+		frobulator.err "Unavailable" "[ '${directory}' ]"
+		echo
+
+		exit 1
+	fi
+
+	case "${archive}"
+		in
+# 			*.tar.bz2|*.tbz2)
+# 				tar						\
+# 					--extract			\
+# 					--bzip2				\
+# 					--file="${archive}" \
+# 					--directory="${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.tar.gz|*.tgz)
+# 				tar						\
+# 					--extract			\
+# 					--gzip				\
+# 					--file="${archive}" \
+# 					--directory="${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.tar)
+# 				tar						\
+# 					--extract			\
+# 					--file="${archive}" \
+# 					--directory="${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.bz2)
+# 				bzip					\
+# 					--stdout			\
+# 					--keep				\
+# 					--decompress "${archive}" > "${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.gz)
+# 				gzip					\
+# 					--stdout			\
+# 					--keep				\
+# 					--decompress "${archive}" > "${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.Z)
+# 				uncompress 				\
+# 					--stdout 			\
+# 					--keep "${archive}" > "${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.7z)
+# 				7z x "${archive}" -o "${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+# 			*.rar)
+# 				unrar e "${archive}" "${directory}"
+#
+# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					echo
+# 			;;
+#
+			*.zip)
+				extension="zip"
+
+				archive="${archive}.${extension}"
+
+				zip						\
+					--quiet 			\
+					--recurse-paths		\
+					--system-hidden		\
+										"${archive}" "${directory}"
+
+					frobulator.inf "Archiving" "[ ${archive} ]"
+					echo
+			;;
+
+			*)
+				echo
+				frobulator.err "Unsupported archive type" "[ '${archive}' ]"
+				echo
+			;;
+		esac
 }
 
 
@@ -2526,7 +2633,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.tar)
@@ -2548,7 +2654,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.gz)
@@ -2559,7 +2664,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.Z)
@@ -2569,7 +2673,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.7z)
@@ -2577,7 +2680,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.rar)
@@ -2585,7 +2687,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*.zip)
@@ -2593,7 +2694,6 @@ frobulator.extract () {
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
-
 			;;
 
 			*)

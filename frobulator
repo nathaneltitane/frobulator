@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="01-20-2023"
+# version="05-09-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2356,7 +2356,6 @@ frobulator.user () {
 # useful for in-script dependency assessment and installation
 
 frobulator.assess () {
-
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array
@@ -2447,6 +2446,27 @@ frobulator.escalate () {
 		echo
 	fi
 }
+
+
+# archive //////////////////////////////////////////////////////////////////////
+
+# use to archive content and for backup procedures
+
+frobulator.archive () {
+
+	extension="zip"
+
+	archive="${1}"
+	directory="${2}"
+
+	zip						\
+		--quiet 			\
+		--recurse-paths		\
+		--system-hidden		\
+							"${archive}"."${extension}" "${directory}"
+
+}
+
 
 # extract //////////////////////////////////////////////////////////////////////
 

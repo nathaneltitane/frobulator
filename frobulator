@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="05-09-2023"
+# version="06-20-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2247,6 +2247,11 @@ frobulator.purge () {
 
 # dialog ///////////////////////////////////////////////////////////////////////
 
+# use to generate standard dialogs using desktop environement plugins:
+# supports:
+# gnome - zenity
+# kde - kdialog
+
 frobulator.dialog () {
 	# dialog window title
 
@@ -2297,6 +2302,8 @@ frobulator.dialog () {
 
 # terminate ////////////////////////////////////////////////////////////////////
 
+# use to forcefully terminate rogue processes
+
 frobulator.terminate () {
 	process_name="${1}"
 
@@ -2311,6 +2318,8 @@ frobulator.terminate () {
 
 # exit /////////////////////////////////////////////////////////////////////////
 
+# use to exit process or program instance
+
 frobulator.exit () {
 	instance="${1}"
 
@@ -2320,6 +2329,8 @@ frobulator.exit () {
 }
 
 # result ///////////////////////////////////////////////////////////////////////
+
+# use to flag process checkpoint results such as installations and deployments
 
 frobulator.result () {
 	checkpoint="${1}"

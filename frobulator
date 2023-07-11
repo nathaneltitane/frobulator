@@ -2480,9 +2480,11 @@ frobulator.archive () {
 
 	list=()
 
-	archive="${1}"
+	file="${1}"
 	extension="${2}"
 	directory="${3}"
+
+	archive="${file}.${extension}"
 
 	if [ -z "${directory}" ]
 	then
@@ -2499,38 +2501,38 @@ frobulator.archive () {
 	fi
 
 	case "${extension}"
-		in
- 			tar.bz2|tbz2)
- 				tar								\
- 					--create					\
- 					--bzip						\
- 					--file="${archive}"			\
- 					--directory="${directory}"
+	in
+		tar.bz2|tbz2)
+			tar								\
+				--create					\
+				--bzip						\
+				--file="${archive}"			\
+				--directory="${directory}"
 
- 					frobulator.inf "Archiving" "[ ${archive} ]"
- 					echo
- 			;;
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
 
- 			tar.gz|tgz)
- 				tar								\
- 					--create					\
- 					--gzip						\
- 					--file="${archive}"			\
- 					--directory="${directory}"
+		tar.gz|tgz)
+			tar								\
+				--create					\
+				--gzip						\
+				--file="${archive}"			\
+				--directory="${directory}"
 
- 					frobulator.inf "Archiving" "[ ${archive} ]"
- 					echo
- 			;;
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
 
- 			*.tar)
- 				tar								\
- 					--create					\
- 					--file="${archive}"			\
- 					--directory="${directory}"
+		*.tar)
+			tar								\
+				--create					\
+				--file="${archive}"			\
+				--directory="${directory}"
 
- 					frobulator.inf "Archiving" "[ ${archive} ]"
- 					echo
- 			;;
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
 #
 # 			*.bz2)
 # 				bzip					\
@@ -2561,12 +2563,12 @@ frobulator.archive () {
 # 					echo
 # 			;;
 
- 			*.7z)
- 				7z a "${archive}" -o "${directory}"
+		*.7z)
+			7z a "${archive}" -o "${directory}"
 
- 					frobulator.inf "Archiving" "[ ${archive} ]"
- 					echo
- 			;;
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
 
 # 			*.rar)
 # 				unrar e "${archive}" "${directory}"
@@ -2575,27 +2577,27 @@ frobulator.archive () {
 # 					echo
 # 			;;
 #
-			*.zip)
-				extension="zip"
+		*.zip)
+			extension="zip"
 
-				archive="${archive}.${extension}"
+			archive="${archive}.${extension}"
 
-				zip						\
-					--quiet 			\
-					--recurse-paths		\
-					--system-hidden		\
-										"${archive}" "${directory}"
+			zip						\
+				--quiet 			\
+				--recurse-paths		\
+				--system-hidden		\
+									"${archive}" "${directory}"
 
-					frobulator.inf "Archiving" "[ ${archive} ]"
-					echo
-			;;
-
-			*)
+				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
-				frobulator.err "Unsupported archive type" "[ '${archive}' ]"
-				echo
-			;;
-		esac
+		;;
+
+		*)
+			echo
+			frobulator.err "Unsupported archive type" "[ '${archive}' ]"
+			echo
+		;;
+	esac
 }
 
 

@@ -2481,7 +2481,8 @@ frobulator.archive () {
 	list=()
 
 	archive="${1}"
-	directory="${2}"
+	extension="${2}"
+	directory="${3}"
 
 	if [ -z "${directory}" ]
 	then
@@ -2497,9 +2498,9 @@ frobulator.archive () {
 		exit 1
 	fi
 
-	case "${archive}"
+	case "${extension}"
 		in
- 			*.tar.bz2|*.tbz2)
+ 			tar.bz2|tbz2)
  				tar								\
  					--create					\
  					--bzip						\
@@ -2510,7 +2511,7 @@ frobulator.archive () {
  					echo
  			;;
 
- 			*.tar.gz|*.tgz)
+ 			tar.gz|tgz)
  				tar								\
  					--create					\
  					--gzip						\

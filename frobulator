@@ -2544,6 +2544,7 @@ frobulator.archive () {
 # 				gzip					\
 # 					--stdout			\
 # 					--keep				\
+#					--quiet				\
 # 					--decompress "${archive}" > "${directory}"
 #
 # 					frobulator.inf "Extracting" "[ ${archive} ]"
@@ -2660,6 +2661,7 @@ frobulator.extract () {
 				bzip							\
 					--stdout					\
 					--keep						\
+					--quiet						\
 					--decompress "${archive}"	> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
@@ -2670,6 +2672,7 @@ frobulator.extract () {
 				gzip							\
 					--stdout					\
 					--keep						\
+					--quiet						\
 					--decompress "${archive}"	> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"

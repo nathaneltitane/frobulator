@@ -2560,12 +2560,15 @@ frobulator.archive () {
 			*.rar)
  				rar a "${archive}" "${directory}"
 
- 					frobulator.inf "Extracting" "[ ${archive} ]"
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
  					echo
  			;;
 
 		zip)
-			zip -r "${archive}" "${directory}"
+			zip								\
+				-f							\
+				-qq 						\
+				-r "${archive}"				"${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2598,10 +2601,13 @@ frobulator.extract () {
 
 	# unset array
 
-	list=()
+		list=()
 
-	archive="${1}"
-	directory="${2}"
+	file="${1}"
+	extension="${2}"
+	directory="${3}"
+
+	archive="${file}.${extension}"
 
 	if [ -z "${directory}" ]
 	then
@@ -2615,7 +2621,7 @@ frobulator.extract () {
 
 	if [ -f "${archive}" ]
 	then
-		case "${archive}"
+		case "${extension}"
 		in
 			*.tar.bz2|*.tbz2)
 				tar								\
@@ -2628,7 +2634,7 @@ frobulator.extract () {
 					echo
 			;;
 
-			*.tar.gz|*.tgz)
+			tar.gz|*.tgz)
 				tar								\
 					--extract					\
 					--gzip						\
@@ -2639,7 +2645,7 @@ frobulator.extract () {
 					echo
 			;;
 
-			*.tar)
+			tar)
 				tar								\
 					--extract					\
 					--file="${archive}" 		\
@@ -2650,7 +2656,7 @@ frobulator.extract () {
 
 			;;
 
-			*.bz2)
+			bz2)
 				bzip							\
 					--stdout					\
 					--keep						\
@@ -2660,7 +2666,7 @@ frobulator.extract () {
 					echo
 			;;
 
-			*.gz)
+			gz)
 				gzip							\
 					--stdout					\
 					--keep						\
@@ -2670,7 +2676,7 @@ frobulator.extract () {
 					echo
 			;;
 
-			*.7z)
+			7z)
 				7z								\
 					x "${archive}" 				\
 					-o "${directory}"
@@ -2679,14 +2685,14 @@ frobulator.extract () {
 					echo
 			;;
 
-			*.rar)
+			rar)
 				unrar e "${archive}" "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
 			;;
 
-			*.zip)
+			zip)
 				unzip							\
 					-o							\
 					-qq "${archive}"			\

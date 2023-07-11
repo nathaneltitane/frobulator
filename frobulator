@@ -2529,25 +2529,24 @@ frobulator.archive () {
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
 		;;
-#
+
 # 			bz2)
 # 				bzip					\
 # 					--stdout			\
 # 					--keep				\
-# 					--decompress "${archive}" > "${directory}"
+# 					--quiet				"${directory}" > "${archive}"
 #
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					frobulator.inf "Archiving" "[ ${archive} ]"
 # 					echo
 # 			;;
-#
+
 # 			gz)
 # 				gzip					\
 # 					--stdout			\
 # 					--keep				\
-#					--quiet				\
-# 					--decompress "${archive}" > "${directory}"
+# 					--quiet				"${directory}" > "${archive}"
 #
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
+# 					frobulator.inf "Archiving" "[ ${archive} ]"
 # 					echo
 # 			;;
 

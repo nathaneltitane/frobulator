@@ -2467,7 +2467,6 @@ frobulator.archive () {
 	list+=(
 		7zip
 		bzip2
-		compress
 		gzip
 		rar
 		tar
@@ -2524,7 +2523,7 @@ frobulator.archive () {
 				echo
 		;;
 
-		*.tar)
+		tar)
 			tar								\
 				--create					\
 				--file="${archive}"			\
@@ -2534,7 +2533,7 @@ frobulator.archive () {
 				echo
 		;;
 #
-# 			*.bz2)
+# 			bz2)
 # 				bzip					\
 # 					--stdout			\
 # 					--keep				\
@@ -2544,7 +2543,7 @@ frobulator.archive () {
 # 					echo
 # 			;;
 #
-# 			*.gz)
+# 			gz)
 # 				gzip					\
 # 					--stdout			\
 # 					--keep				\
@@ -2553,17 +2552,8 @@ frobulator.archive () {
 # 					frobulator.inf "Extracting" "[ ${archive} ]"
 # 					echo
 # 			;;
-#
-# 			*.Z)
-# 				uncompress 				\
-# 					--stdout 			\
-# 					--keep "${archive}" > "${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
 
-		*.7z)
+		7z)
 			7z a "${archive}" -o "${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
@@ -2577,7 +2567,7 @@ frobulator.archive () {
 # 					echo
 # 			;;
 #
-		*.zip)
+		zip)
 			extension="zip"
 
 			archive="${archive}.${extension}"
@@ -2611,7 +2601,6 @@ frobulator.extract () {
 		bunzip2
 		gunzip
 		tar
-		uncompress
 		unrar
 		unzip
 	)
@@ -2687,15 +2676,6 @@ frobulator.extract () {
 					--stdout					\
 					--keep						\
 					--decompress "${archive}"	> "${directory}"
-
-					frobulator.inf "Extracting" "[ ${archive} ]"
-					echo
-			;;
-
-			*.Z)
-				uncompress 						\
-					--stdout 					\
-					--keep "${archive}"			> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo

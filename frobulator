@@ -2557,23 +2557,15 @@ frobulator.archive () {
 				echo
 		;;
 
-# 			*.rar)
-# 				unrar e "${archive}" "${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
-#
+			*.rar)
+ 				rar a "${archive}" "${directory}"
+
+ 					frobulator.inf "Extracting" "[ ${archive} ]"
+ 					echo
+ 			;;
+
 		zip)
-			extension="zip"
-
-			archive="${archive}.${extension}"
-
-			zip						\
-				--quiet 			\
-				--recurse-paths		\
-				--system-hidden		\
-									"${archive}" "${directory}"
+			zip -r "${archive}" "${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo

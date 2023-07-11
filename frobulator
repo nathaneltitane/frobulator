@@ -2505,8 +2505,7 @@ frobulator.archive () {
 			tar								\
 				--create					\
 				--bzip						\
-				--file="${archive}"			\
-				--directory="${directory}"
+				--file="${archive}"			"${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2516,8 +2515,7 @@ frobulator.archive () {
 			tar								\
 				--create					\
 				--gzip						\
-				--file="${archive}"			\
-				--directory="${directory}"
+				--file="${archive}"			"${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2526,8 +2524,7 @@ frobulator.archive () {
 		tar)
 			tar								\
 				--create					\
-				--file="${archive}"			\
-				--directory="${directory}"
+				--file="${archive}"			"${directory}"
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo

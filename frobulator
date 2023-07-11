@@ -2510,16 +2510,16 @@ frobulator.archive () {
 # 					echo
 # 			;;
 #
-# 			*.tar.gz|*.tgz)
-# 				tar						\
-# 					--extract			\
-# 					--gzip				\
-# 					--file="${archive}" \
-# 					--directory="${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
+ 			*.tar.gz|*.tgz)
+ 				tar								\
+ 					--create					\
+ 					--gzip						\
+ 					--file="${archive}"			\
+ 					--directory="${directory}"
+
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
+ 					echo
+ 			;;
 #
 # 			*.tar)
 # 				tar						\

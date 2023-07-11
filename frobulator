@@ -2474,7 +2474,7 @@ frobulator.archive () {
 		zip
 	)
 
-	frobulator.require ${list[@]}
+	frobulator.install ${list[@]}
 
 	# unset array
 
@@ -2499,17 +2499,17 @@ frobulator.archive () {
 
 	case "${archive}"
 		in
-# 			*.tar.bz2|*.tbz2)
-# 				tar						\
-# 					--extract			\
-# 					--bzip2				\
-# 					--file="${archive}" \
-# 					--directory="${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
-#
+ 			*.tar.bz2|*.tbz2)
+ 				tar								\
+ 					--create					\
+ 					--bzip						\
+ 					--file="${archive}"			\
+ 					--directory="${directory}"
+
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
+ 					echo
+ 			;;
+
  			*.tar.gz|*.tgz)
  				tar								\
  					--create					\
@@ -2520,16 +2520,16 @@ frobulator.archive () {
  					frobulator.inf "Archiving" "[ ${archive} ]"
  					echo
  			;;
-#
-# 			*.tar)
-# 				tar						\
-# 					--extract			\
-# 					--file="${archive}" \
-# 					--directory="${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
+
+ 			*.tar)
+ 				tar								\
+ 					--create					\
+ 					--file="${archive}"			\
+ 					--directory="${directory}"
+
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
+ 					echo
+ 			;;
 #
 # 			*.bz2)
 # 				bzip					\
@@ -2559,14 +2559,14 @@ frobulator.archive () {
 # 					frobulator.inf "Extracting" "[ ${archive} ]"
 # 					echo
 # 			;;
-#
-# 			*.7z)
-# 				7z x "${archive}" -o "${directory}"
-#
-# 					frobulator.inf "Extracting" "[ ${archive} ]"
-# 					echo
-# 			;;
-#
+
+ 			*.7z)
+ 				7z a "${archive}" -o "${directory}"
+
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
+ 					echo
+ 			;;
+
 # 			*.rar)
 # 				unrar e "${archive}" "${directory}"
 #
@@ -2637,10 +2637,10 @@ frobulator.extract () {
 		case "${archive}"
 		in
 			*.tar.bz2|*.tbz2)
-				tar						\
-					--extract			\
-					--bzip2				\
-					--file="${archive}" \
+				tar								\
+					--extract					\
+					--bzip2						\
+					--file="${archive}" 		\
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
@@ -2648,10 +2648,10 @@ frobulator.extract () {
 			;;
 
 			*.tar.gz|*.tgz)
-				tar						\
-					--extract			\
-					--gzip				\
-					--file="${archive}" \
+				tar								\
+					--extract					\
+					--gzip						\
+					--file="${archive}" 		\
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
@@ -2659,9 +2659,9 @@ frobulator.extract () {
 			;;
 
 			*.tar)
-				tar						\
-					--extract			\
-					--file="${archive}" \
+				tar								\
+					--extract					\
+					--file="${archive}" 		\
 					--directory="${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
@@ -2670,36 +2670,38 @@ frobulator.extract () {
 			;;
 
 			*.bz2)
-				bzip					\
-					--stdout			\
-					--keep				\
-					--decompress "${archive}" > "${directory}"
+				bzip							\
+					--stdout					\
+					--keep						\
+					--decompress "${archive}"	> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
 			;;
 
 			*.gz)
-				gzip					\
-					--stdout			\
-					--keep				\
-					--decompress "${archive}" > "${directory}"
+				gzip							\
+					--stdout					\
+					--keep						\
+					--decompress "${archive}"	> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
 			;;
 
 			*.Z)
-				uncompress 				\
-					--stdout 			\
-					--keep "${archive}" > "${directory}"
+				uncompress 						\
+					--stdout 					\
+					--keep "${archive}"			> "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
 			;;
 
 			*.7z)
-				7z x "${archive}" -o "${directory}"
+				7z								\
+					x "${archive}" 				\
+					-o "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo
@@ -2713,7 +2715,10 @@ frobulator.extract () {
 			;;
 
 			*.zip)
-				unzip -o -qq "${archive}" -d "${directory}"
+				unzip							\
+					-o							\
+					-qq "${archive}"			\
+					-d "${directory}"
 
 					frobulator.inf "Extracting" "[ ${archive} ]"
 					echo

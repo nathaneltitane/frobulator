@@ -2347,7 +2347,7 @@ frobulator.result () {
 		instance="${3}"
 	fi
 
-	if [[ $(command -v "${path}/${checkpoint}") ]]
+	if [ -f "${path}"/"${checkpoint}" ]
 	then
 		frobulator.scs "Setup complete" "[ ${instance} ]"
 		echo

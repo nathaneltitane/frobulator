@@ -2333,15 +2333,26 @@ frobulator.exit () {
 # use to flag process checkpoint results such as installations and deployments
 
 frobulator.result () {
-	checkpoint="${1}"
-	instance="${2}"
 
-	if [[ $(command -v "${checkpoint}") ]]
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		checkpoint="${1}"
+		instance="${2}"
+	else
+		path="${1}"
+
+		checkpoint="${2}"
+		instance="${3}"
+	fi
+
+	if [[ $(command -v "${path}/${checkpoint}") ]]
 	then
 		frobulator.scs "Setup complete" "[ ${instance} ]"
 		echo
 	else
-		frobulator.err "Setup errors were encountered" "[ ${instance} ]"
+		frobulator.err "Setup errors may have been encountered" "[ ${instance} ]"
 		echo
 
 		frobulator.inf "Review setup logs for details" '[ ${PREFIX}/var/log/ ]'

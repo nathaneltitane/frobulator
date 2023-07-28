@@ -1547,6 +1547,24 @@ frobulator.download () {
 			fi
 		fi
 
+		if [ $# -eq 3 ]
+		then
+			path="${2}"
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+		fi
+
 		if [ $# -eq 4 ]
 		then
 			source_file="${2}"
@@ -1579,6 +1597,13 @@ frobulator.download () {
 		for file in ${list[@]}
 		do
 			if [ $# -eq 2 ]
+			then
+				curl			\
+					--silent	\
+					--location	"${source}" > "${path}"/"${file}" &
+			fi
+
+			if [ $# -eq 3 ]
 			then
 				curl			\
 					--silent	\

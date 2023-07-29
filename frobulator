@@ -1510,7 +1510,7 @@ frobulator.link () {
 
 frobulator.download () {
 
-	source="${1}"
+source="${1}"
 
 	status_code="%{http_code}\n"
 
@@ -1525,7 +1525,9 @@ frobulator.download () {
 	then
 		frobulator.err "Error" "[ Status // ${url_status} ]"
 		echo
-	else
+
+	elif [[ "${url_status}" = [23][0-9][0-9] ]]
+	then
 		frobulator.scs "Found" "[ Status // ${url_status} ]"
 		echo
 
@@ -1545,11 +1547,10 @@ frobulator.download () {
 
 				list+=("${file}")
 			fi
-		fi
-
-		if [ $# -eq 3 ]
+		elif [ $# -eq 3 ]
 		then
-			path="${2}"
+			source_file="${2}"
+			path="${PWD}"
 
 			if [[ -n "${#list[@]}" ]]
 			then
@@ -1563,9 +1564,8 @@ frobulator.download () {
 
 				list+=("${file}")
 			fi
-		fi
 
-		if [ $# -eq 4 ]
+		elif [ $# -eq 4 ]
 		then
 			source_file="${2}"
 			path="${3}"
@@ -1587,6 +1587,26 @@ frobulator.download () {
 
 				list+=("${file}")
 			fi
+		else
+			path="${2}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
 		fi
 
 		if [ ! -d "${path}" ]
@@ -1601,20 +1621,23 @@ frobulator.download () {
 				curl			\
 					--silent	\
 					--location	"${source}" > "${path}"/"${file}" &
-			fi
 
-			if [ $# -eq 3 ]
+			elif [ $# -eq 3 ]
 			then
 				curl			\
 					--silent	\
-					--location	"${source}" > "${path}"/"${file}" &
-			fi
+					--location	"${source}"/"${source_file}"  > "${path}"/"${file}" &
 
-			if [ $# -eq 4 ]
+			elif [ $# -eq 4 ]
 			then
 				curl			\
 					--silent	\
-					--location	"${source}"/"${source_file}" > "${path}"/"${file}" &
+					--location	"${source}"/"${source_file}"  > "${path}"/"${file}" &
+
+			else
+				curl			\
+					--silent	\
+					--location	"${source}"/"${file}" > "${path}"/"${file}" &
 			fi
 
 			frobulator.progress "Downloading" "[ ${file} ]"
@@ -1626,6 +1649,10 @@ frobulator.download () {
 		# unset array
 
 		list=()
+
+	else
+		frobulator.err "Status unknown"
+		echo
 	fi
 }
 

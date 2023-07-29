@@ -1549,8 +1549,7 @@ source="${1}"
 			fi
 		elif [ $# -eq 3 ]
 		then
-			source_file="${2}"
-			path="${PWD}"
+			path="${2}"
 
 			if [[ -n "${#list[@]}" ]]
 			then
@@ -1626,7 +1625,7 @@ source="${1}"
 			then
 				curl			\
 					--silent	\
-					--location	"${source}"/"${source_file}"  > "${path}"/"${file}" &
+					--location	"${source}"  > "${path}"/"${file}" &
 
 			elif [ $# -eq 4 ]
 			then

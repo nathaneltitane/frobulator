@@ -172,7 +172,7 @@ marker_rel='[ ○ ]'
 marker_ask='[ ? ]'
 marker_inf='[ i ]'
 marker_ipt='[ # ]'
-marker_msg='[ m ]'
+marker_msg='[ ¤ ]'
 marker_wrn='[ ! ]'
 marker_usr='[ ~ ]'
 
@@ -418,7 +418,7 @@ frobulator.cyan () {
 # ask [ ? ]
 # inf [ i ]
 # ipt [ # ]
-# msg [ m ]
+# msg [ ¤ ]
 # wrn [ ! ]
 # usr [ ~ ]
 

@@ -655,7 +655,7 @@ frobulator.nul () {
 
 	color="${color::-1}"
 
-	echo -e "${color}${marker_nul} ${value}${reset}"
+	echo -e "\n${color}${marker_nul} ${value}${reset}"
 }
 
 # numbering ////////////////////////////////////////////////////////////////////

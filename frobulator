@@ -38,14 +38,28 @@ then
 
 	if [[ -t 1 ]]
 	then
+		# define colors
+
 		black=$(echo -e \\e\[30m)
-		red=$(echo -e \\e\[31m)
+		maroon=$(echo -e \\e\[31m)
 		green=$(echo -e \\e\[32m)
-		yellow=$(echo -e \\e\[33m)
-		blue=$(echo -e \\e\[34m)
-		magenta=$(echo -e \\e\[35m)
-		cyan=$(echo -e \\e\[36m)
-		grey=$(echo -e \\e\[97m)
+		olive=$(echo -e \\e\[33m)
+		navy=$(echo -e \\e\[34m)
+		purple=$(echo -e \\e\[35m)
+		teal=$(echo -e \\e\[36m)
+		silver=$(echo -e \\e\[37m)
+
+		grey=$(echo -e \\e\[90m)
+		red=$(echo -e \\e\[91m)
+		lime=$(echo -e \\e\[92m)
+		yellow=$(echo -e \\e\[93m)
+		blue=$(echo -e \\e\[94m)
+		fuschia=$(echo -e \\e\[95m)
+		aqua=$(echo -e \\e\[96m)
+		white=$(echo -e \\e\[97m)
+
+		# reset color
+
 		reset=$(echo -e \\e\[39m)
 	fi
 else
@@ -56,13 +70,22 @@ else
 		# define colors
 
 		black=$(tput setaf 0)
-		red=$(tput setaf 1)
+		maroon=$(tput setaf 1)
 		green=$(tput setaf 2)
-		yellow=$(tput setaf 3)
-		blue=$(tput setaf 4)
-		magenta=$(tput setaf 5)
-		cyan=$(tput setaf 6)
-		grey=$(tput setaf 7)
+		olive=$(tput setaf 3)
+		navy=$(tput setaf 4)
+		purple=$(tput setaf 5)
+		teal=$(tput setaf 6)
+		silver=$(tput setaf 7)
+
+		grey=$(tput setaf 8)
+		red=$(tput setaf 9)
+		lime=$(tput setaf 10)
+		yellow=$(tput setaf 11)
+		blue=$(tput setaf 12)
+		fuschia=$(tput setaf 13)
+		aqua=$(tput setaf 14)
+		white=$(tput setaf 15)
 
 		# define formatting
 

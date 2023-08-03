@@ -32,6 +32,8 @@ fi
 
 # colors ///////////////////////////////////////////////////////////////////////
 
+# 256 colors [0-255]
+
 if [ -z "$(command -v tput)" ]
 then
 	# ansi color escapes
@@ -56,7 +58,7 @@ then
 		lime=$(echo -e \\e\[92m)
 		yellow=$(echo -e \\e\[93m)
 		blue=$(echo -e \\e\[94m)
-		fuschia=$(echo -e \\e\[95m)
+		magenta=$(echo -e \\e\[95m)
 		aqua=$(echo -e \\e\[96m)
 		white=$(echo -e \\e\[97m)
 
@@ -69,38 +71,32 @@ else
 
 	if [[ -t 1 ]]
 	then
-		# dark colors
+		# monochromatic colors
 
-		black=$(tput setaf 0)
-		maroon=$(tput setaf 1)
+		white=$(tput setaf 255)
+		silver=$(tput setaf 246)
+		grey=$(tput setaf 240)
+		black=$(tput setaf 236)
+
+		# standard colors by sturation offset
+
+		red=$(tput setaf 1)
+		crimson=$(tput setaf 52)
+
 		green=$(tput setaf 2)
-		olive=$(tput setaf 3)
-		navy=$(tput setaf 19)
-		purple=$(tput setaf 5)
-		teal=$(tput setaf 6)
-		silver=$(tput setaf 7)
+		lime=$(tput setaf 22)
 
-		# bright colors
-
-		grey=$(tput setaf 8)
-		red=$(tput setaf 9)
-		lime=$(tput setaf 10)
 		yellow=$(tput setaf 11)
-		blue=$(tput setaf 12)
-		fuschia=$(tput setaf 13)
-		aqua=$(tput setaf 14)
-		white=$(tput setaf 15)
+		orange=$(tput setaf 3)
 
-		# define formatting
+		blue=$(tput setaf 4)
+		navy=$(tput setaf 18)
 
-		bold=$(tput bold)
-		underline_start=$(tput smul)
-		underline_stop=$(tput rmul)
-		reverse=$(tput rev)
-		blink=$(tput blink)
-		invisible=$(tput invis)
-		standout_start=$(tput smso)
-		standout_stop=$(tput rmso)
+		magenta=$(tput setaf 5)
+		purple=$(tput setaf 53)
+
+		aqua=$(tput setaf 6)
+		teal=$(tput setaf 23)
 
 		# reset all attributes
 
@@ -358,70 +354,12 @@ frobulator.prompt () {
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
 
-# 00 - black string highlight
-
 frobulator.black () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
 	echo -e "${black}${value}${reset}"
 }
-
-# 01 - maroon string highlight
-
-frobulator.maroon () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${maroon}${value}${reset}"
-}
-
-# 02 - green string highlight
-
-frobulator.green () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${green}${value}${reset}"
-}
-
-# 03 - olive string highlight
-
-frobulator.olive () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${olive}${value}${reset}"
-}
-
-# 04 - navy string highlight
-
-frobulator.navy () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${navy}${value}${reset}"
-}
-
-# 05 - purple string highlight
-
-frobulator.purple () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${purple}${value}${reset}"
-}
-
-# 06 - teal string highlight
-
-frobulator.teal () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${teal}${value}${reset}"
-}
-
-# 07 - silver string highlight
 
 frobulator.silver () {
 	frobulator.prompt "${@}"
@@ -430,8 +368,6 @@ frobulator.silver () {
 	echo -e "${silver}${value}${reset}"
 }
 
-# 08 - grey string highlight
-
 frobulator.grey () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
@@ -439,7 +375,12 @@ frobulator.grey () {
 	echo -e "${grey}${value}${reset}"
 }
 
-# 09 - red string highlight
+frobulator.white () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${white}${value}${reset}"
+}
 
 frobulator.red () {
 	frobulator.prompt "${@}"
@@ -448,7 +389,19 @@ frobulator.red () {
 	echo -e "${red}${value}${reset}"
 }
 
-# 10 - lime string highlight
+frobulator.crimson () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${crimson}${value}${reset}"
+}
+
+frobulator.green () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${green}${value}${reset}"
+}
 
 frobulator.lime () {
 	frobulator.prompt "${@}"
@@ -457,8 +410,6 @@ frobulator.lime () {
 	echo -e "${lime}${value}${reset}"
 }
 
-# 11 - yellow string highlight
-
 frobulator.yellow () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
@@ -466,7 +417,12 @@ frobulator.yellow () {
 	echo -e "${yellow}${value}${reset}"
 }
 
-# 12 - blue string highlight
+frobulator.orange () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${olive}${value}${reset}"
+}
 
 frobulator.blue () {
 	frobulator.prompt "${@}"
@@ -475,16 +431,26 @@ frobulator.blue () {
 	echo -e "${blue}${value}${reset}"
 }
 
-# 13 - fuschia string highlight
-
-frobulator.fuschia () {
+frobulator.navy () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${fuschia}${value}${reset}"
+	echo -e "${navy}${value}${reset}"
 }
 
-# 14 - aqua string highlight
+frobulator.magenta () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${magenta}${value}${reset}"
+}
+
+frobulator.purple () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${purple}${value}${reset}"
+}
 
 frobulator.aqua () {
 	frobulator.prompt "${@}"
@@ -493,13 +459,11 @@ frobulator.aqua () {
 	echo -e "${aqua}${value}${reset}"
 }
 
-# 15 - white string highlight
-
-frobulator.white () {
+frobulator.teal () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${white}${value}${reset}"
+	echo -e "${teal}${value}${reset}"
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////
@@ -715,7 +679,7 @@ frobulator.ins () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${fuschia}${marker_ipt} ${value}${reset}"
+	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 
 	color=($_)
 }

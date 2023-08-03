@@ -437,7 +437,7 @@ frobulator.inf () {
 
 	color=$(echo !:2)
 
-	echo $color
+	echo "${color}"
 }
 
 # message line marker

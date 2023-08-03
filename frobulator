@@ -550,7 +550,7 @@ frobulator.inf () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${purple}${marker_inf} ${value}${reset}"
+	echo -e "${blue}${marker_inf} ${value}${reset}"
 
 	color=($_)
 }
@@ -773,7 +773,6 @@ frobulator.nul () {
 	color="${color::-1}"
 
 	echo -e "${color}${marker_nul} ${value}${reset}"
-
 }
 
 # numbering ////////////////////////////////////////////////////////////////////

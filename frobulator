@@ -435,7 +435,7 @@ frobulator.inf () {
 
 	echo -e "${magenta}${marker_inf} ${value}${reset}"
 
-	color=$(echo !:1)
+	color=$(echo !:2)
 
 	echo $color
 }

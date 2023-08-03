@@ -571,13 +571,6 @@ frobulator.ins () {
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
 }
 
-frobulator.nul () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${color}${marker_nul} ${value}${reset}"
-}
-
 # user input prompt ////////////////////////////////////////////////////////////
 
 # use for questions, input, user input dependant inquiries
@@ -612,6 +605,15 @@ frobulator.usr () {
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_usr} ${value} ${reset}"
+}
+
+# null /////////////////////////////////////////////////////////////////////////
+
+frobulator.nul () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${color}${marker_nul} ${value}${reset}"
 }
 
 # numbering ////////////////////////////////////////////////////////////////////

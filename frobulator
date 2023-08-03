@@ -435,9 +435,7 @@ frobulator.inf () {
 
 	echo -e "${magenta}${marker_inf} ${value}${reset}"
 
-	color=!:2
-
-	echo "${color}"
+	color=($_)
 }
 
 # message line marker
@@ -447,6 +445,8 @@ frobulator.msg () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${marker_msg} ${value}${reset}"
+
+	color=($_)
 }
 
 # information line marker
@@ -456,6 +456,8 @@ frobulator.wrn () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${yellow}${marker_wrn} ${value}${reset}"
+
+	color=($_)
 }
 
 # add line marker
@@ -465,6 +467,8 @@ frobulator.add () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_add} ${value}${reset}"
+
+	color=($_)
 }
 
 # remove line marker
@@ -474,6 +478,8 @@ frobulator.rem () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${red}${marker_rem} ${value}${reset}"
+
+	color=($_)
 }
 
 # retain line marker
@@ -483,6 +489,8 @@ frobulator.ret () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${cyan}${marker_ret} ${value}${reset}"
+
+	color=($_)
 }
 
 # release line marker
@@ -492,6 +500,8 @@ frobulator.rel () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${marker_rel} ${value}${reset}"
+
+	color=($_)
 }
 
 # forward line marker
@@ -501,6 +511,8 @@ frobulator.fwd () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${grey}${marker_fwd} ${value}${reset}"
+
+	color=($_)
 }
 
 # reverse line marker
@@ -510,6 +522,8 @@ frobulator.rev () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${grey}${marker_rev} ${value}${reset}"
+
+	color=($_)
 }
 
 # stop line marker
@@ -519,6 +533,8 @@ frobulator.stp () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${grey}${marker_stp} ${value}${reset}"
+
+	color=($_)
 }
 
 # download line marker
@@ -528,6 +544,8 @@ frobulator.dwl () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
+
+	color=($_)
 }
 
 # upload line marker
@@ -537,6 +555,8 @@ frobulator.upl () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_top} ${value}${reset}"
+
+	color=($_)
 }
 
 # link line marker
@@ -546,6 +566,8 @@ frobulator.lnk () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_stp} ${value}${reset}"
+
+	color=($_)
 }
 
 # success line marker
@@ -555,6 +577,8 @@ frobulator.scs () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
+
+	color=($_)
 }
 
 # error line marker
@@ -564,6 +588,8 @@ frobulator.err () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
+
+	color=($_)
 }
 
 # insert line marker
@@ -573,9 +599,11 @@ frobulator.ins () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_ipt} ${value}${reset}"
+
+	color=($_)
 }
 
-# user input prompt ////////////////////////////////////////////////////////////
+# user input prompts ///////////////////////////////////////////////////////////
 
 # use for questions, input, user input dependant inquiries
 
@@ -591,6 +619,8 @@ frobulator.ask () {
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_ask} ${value} ${reset}"
+
+	color=($_)
 }
 
 # input line marker
@@ -600,6 +630,8 @@ frobulator.ipt () {
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_add} ${value} ${reset}"
+
+	color=($_)
 }
 
 # user line marker
@@ -609,15 +641,17 @@ frobulator.usr () {
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${magenta}${marker_usr} ${value} ${reset}"
+
+	color=($_)
 }
 
 # null /////////////////////////////////////////////////////////////////////////
 
 frobulator.nul () {
-	color="${color}"
-
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
+
+	color="${color::-1}"
 
 	echo -e "${color}${marker_nul} ${value}${reset}"
 }

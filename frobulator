@@ -104,7 +104,7 @@ else
 
 		# 'tput' terminal control
 
-		# full description of terminal
+		# full description of terminal capacity
 
 		terminal_info=$(tput longname)
 

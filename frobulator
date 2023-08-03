@@ -643,8 +643,6 @@ frobulator.usr () {
 	echo -n -e "${magenta}${marker_usr} ${value} ${reset}"
 
 	color=($_)
-
-	color="${color::-2}"
 }
 
 # null /////////////////////////////////////////////////////////////////////////
@@ -655,7 +653,7 @@ frobulator.nul () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	color="${color}"
+	color="${color::-1}"
 
 	echo -e "${color}${marker_nul} ${value}${reset}"
 }

@@ -38,7 +38,7 @@ then
 
 	if [[ -t 1 ]]
 	then
-		# define colors
+		# dark colors
 
 		black=$(echo -e \\e\[30m)
 		maroon=$(echo -e \\e\[31m)
@@ -48,6 +48,8 @@ then
 		purple=$(echo -e \\e\[35m)
 		teal=$(echo -e \\e\[36m)
 		silver=$(echo -e \\e\[37m)
+
+		# bright colors
 
 		grey=$(echo -e \\e\[90m)
 		red=$(echo -e \\e\[91m)
@@ -67,7 +69,7 @@ else
 
 	if [[ -t 1 ]]
 	then
-		# define colors
+		# dark colors
 
 		black=$(tput setaf 0)
 		maroon=$(tput setaf 1)
@@ -77,6 +79,8 @@ else
 		purple=$(tput setaf 5)
 		teal=$(tput setaf 6)
 		silver=$(tput setaf 7)
+
+		# bright colors
 
 		grey=$(tput setaf 8)
 		red=$(tput setaf 9)

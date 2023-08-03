@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-28-2023"
+# version="08-03-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -402,24 +402,30 @@ frobulator.cyan () {
 
 # line markers:
 
-# top         [ ⋀ ]
-# bottom      [ ⋁ ]
-# forward     [ > ]
-# reverse     [ < ]
-# stop        [ / ]
-# add         [ + ]
-# remove      [ - ]
-# retain      [ ⬢ ]
-# release     [ ⬡ ]
-# ask         [ ? ]
-# information [ i ]
-# input       [ ± ]
-# message=    [ ¤ ]
-# warning     [ ! ]
-# user        [ • ]
-# yes         [ ✓ ]
-# not         [ ⨉ ]
-#null        '     '
+# top [ △ ]
+# bot [ ▽ ]
+
+# fwd [ > ]
+# rev [ < ]
+# stp [ / ]
+
+# add [ + ]
+# rem [ - ]
+
+# ret [ ● ]
+# rel [ ○ ]
+
+# ask [ ? ]
+# inf [ i ]
+# ipt [ # ]
+# msg [ m ]
+# wrn [ ! ]
+# usr [ ~ ]
+
+# yes [ - ]
+# not [ 𐄂 ]
+
+# nul '     '
 
 # information line marker
 

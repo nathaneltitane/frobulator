@@ -84,7 +84,7 @@ else
 		crimson=$(tput setaf 88)
 
 		green=$(tput setaf 2)
-		lime=$(tput setaf 22)
+		lime=$(tput setaf 28)
 
 		yellow=$(tput setaf 11)
 		orange=$(tput setaf 130)

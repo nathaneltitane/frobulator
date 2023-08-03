@@ -430,14 +430,14 @@ frobulator.cyan () {
 # information line marker
 
 frobulator.inf () {
-	unset color
-
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_inf} ${value}${reset}"
 
 	color=${!:1}
+
+	echo $color
 }
 
 # message line marker

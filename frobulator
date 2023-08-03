@@ -421,7 +421,7 @@ frobulator.orange () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${olive}${value}${reset}"
+	echo -e "${orange}${value}${reset}"
 }
 
 frobulator.blue () {

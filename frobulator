@@ -75,7 +75,7 @@ else
 		maroon=$(tput setaf 1)
 		green=$(tput setaf 2)
 		olive=$(tput setaf 3)
-		navy=$(tput setaf 017)
+		navy=$(tput setaf 17)
 		purple=$(tput setaf 5)
 		teal=$(tput setaf 6)
 		silver=$(tput setaf 7)

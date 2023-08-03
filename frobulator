@@ -81,7 +81,7 @@ else
 		# standard colors by sturation offset
 
 		red=$(tput setaf 1)
-		crimson=$(tput setaf 52)
+		crimson=$(tput setaf 88)
 
 		green=$(tput setaf 2)
 		lime=$(tput setaf 22)

@@ -647,7 +647,7 @@ frobulator.usr () {
 
 # null /////////////////////////////////////////////////////////////////////////
 
-# use to carry over prompts while retaining color without adding the line marker
+# use to carry over prompts without adding a line marker while retaining color
 
 frobulator.nul () {
 	frobulator.prompt "${@}"

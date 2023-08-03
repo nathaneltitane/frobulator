@@ -575,7 +575,7 @@ frobulator.nul () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${color}${marker_ipt} ${value}${reset}"
+	echo -e "${color}${marker_nul} ${value}${reset}"
 }
 
 # user input prompt ////////////////////////////////////////////////////////////

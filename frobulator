@@ -131,7 +131,7 @@ else
 
 		terminal_restore_cursor=$(tput rc)
 
-		# move cursor to upper left corner (0,0) - same as 'tput cup 0 0'
+		# move cursor to upper left corner (0,0) - equivalent: 'tput cup 0 0'
 
 		terminal_home_cursor=$(tput home)
 

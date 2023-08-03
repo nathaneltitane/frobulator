@@ -45,7 +45,7 @@ then
 		blue=$(echo -e \\e\[34m)
 		magenta=$(echo -e \\e\[35m)
 		cyan=$(echo -e \\e\[36m)
-		white=$(echo -e \\e\[97m)
+		grey=$(echo -e \\e\[97m)
 		reset=$(echo -e \\e\[39m)
 	fi
 else
@@ -62,7 +62,7 @@ else
 		blue=$(tput setaf 4)
 		magenta=$(tput setaf 5)
 		cyan=$(tput setaf 6)
-		white=$(tput setaf 7)
+		grey=$(tput setaf 7)
 
 		# define formatting
 
@@ -496,7 +496,7 @@ frobulator.fwd () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${white}${marker_fwd} ${value}${reset}"
+	echo -e "${grey}${marker_fwd} ${value}${reset}"
 }
 
 # reverse line marker
@@ -505,7 +505,7 @@ frobulator.rev () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${white}${marker_rev} ${value}${reset}"
+	echo -e "${grey}${marker_rev} ${value}${reset}"
 }
 
 # stop line marker
@@ -514,7 +514,7 @@ frobulator.stp () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${white}${marker_stp} ${value}${reset}"
+	echo -e "${grey}${marker_stp} ${value}${reset}"
 }
 
 # download line marker

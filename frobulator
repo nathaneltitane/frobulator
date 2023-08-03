@@ -696,6 +696,8 @@ frobulator.script () {
 		message="${script}"
 	fi
 
+	echo
+
 	frobulator.msg "${description}" "[ ${message} ]"
 }
 

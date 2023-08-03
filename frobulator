@@ -614,6 +614,8 @@ frobulator.usr () {
 # null /////////////////////////////////////////////////////////////////////////
 
 frobulator.nul () {
+	color="${color}"
+
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 

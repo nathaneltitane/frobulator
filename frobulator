@@ -156,8 +156,8 @@ fi
 
 # markers //////////////////////////////////////////////////////////////////////
 
-marker_top='[ ⋀ ]'
-marker_bot='[ ⋁ ]'
+marker_top='[ △ ]'
+marker_bot='[ ▽ ]'
 
 marker_fwd='[ > ]'
 marker_rev='[ < ]'
@@ -166,18 +166,18 @@ marker_stp='[ / ]'
 marker_add='[ + ]'
 marker_rem='[ - ]'
 
-marker_ret='[ ⬢ ]'
-marker_rel='[ ⬡ ]'
+marker_ret='[ ● ]'
+marker_rel='[ ○ ]'
 
 marker_ask='[ ? ]'
 marker_inf='[ i ]'
-marker_ipt='[ ± ]'
-marker_msg='[ ¤ ]'
+marker_ipt='[ # ]'
+marker_msg='[ m ]'
 marker_wrn='[ ! ]'
-marker_usr='[ • ]'
+marker_usr='[ ~ ]'
 
-marker_yes='[ ✓ ]'
-marker_not='[ ⨉ ]'
+marker_yes='[ - ]'
+marker_not='[ 𐄂 ]'
 
 marker_nul='     '
 

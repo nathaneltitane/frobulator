@@ -995,16 +995,17 @@ frobulator.progress () {
 # use to mark process progress
 
 frobulator.bar () {
+	current="${1}"
+	total="${2}"
+
 	# catch PID of last command
 
 	PID=$!
 
-	current="${1}"
-	total="${2}"
-
 	seconds="0.1"
 
 	span=80		# total characters for line
+
 	before=8	# maximum characters for header:		'[ x ] [ '
 	after=12	# maximum characters for percentage:	' ] [ xxx % ]'
 

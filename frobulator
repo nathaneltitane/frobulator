@@ -208,10 +208,10 @@ marker_ask='[ ? ]'
 marker_inf='[ i ]'
 marker_ipt='[ # ]'
 marker_msg='[ ¤ ]'
-marker_wrn='[ ! ]'
 marker_usr='[ ~ ]'
 
 marker_yes='[ ✓ ]'
+marker_wrn='[ ! ]'
 marker_not='[ 𐄂 ]'
 
 marker_nul='     '
@@ -512,10 +512,10 @@ frobulator.teal () {
 # inf [ i ]
 # ipt [ # ]
 # msg [ ¤ ]
-# wrn [ ! ]
 # usr [ ~ ]
 
 # yes [ ✓ ]
+# wrn [ ! ]
 # not [ 𐄂 ]
 
 # nul '     '
@@ -538,17 +538,6 @@ frobulator.msg () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${navy}${marker_msg} ${value}${reset}"
-
-	color=($_)
-}
-
-# information line marker //////////////////////////////////////////////////////
-
-frobulator.wrn () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	echo -e "${orange}${marker_wrn} ${value}${reset}"
 
 	color=($_)
 }
@@ -670,6 +659,17 @@ frobulator.scs () {
 	value="${frobulator_string[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
+
+	color=($_)
+}
+
+# warning line marker //////////////////////////////////////////////////////////
+
+frobulator.wrn () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	echo -e "${orange}${marker_wrn} ${value}${reset}"
 
 	color=($_)
 }

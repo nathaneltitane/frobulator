@@ -1663,13 +1663,13 @@ frobulator.link () {
 # use to validate http status code prior to download / upload operations
 
 frobulator.status () {
-	url="${1}"
+	url="${@}"
 
 	status_code="%{http_code}\n"
 
 	url_status=$(curl								\
 				--silent							\
-				--output					\
+				--output		"${sink}"			\
 				--write-out 	"${status_code}"	\
 													"${url}"
 				)
@@ -1680,7 +1680,9 @@ frobulator.status () {
 # use to download file(s) with url status verification from argument or array list
 
 frobulator.download () {
-	frobulator.status "${source}"
+	url="${1}"
+
+	frobulator.status "${url}"
 
 	if [[ "${url_status}" = [0145][0-9][0-9] ]]
 	then
@@ -1691,8 +1693,6 @@ frobulator.download () {
 	then
 		frobulator.scs "Found" "[ Status // ${url_status} ]"
 		echo
-
-		source="${url}"
 
 		if [ $# -eq 2 ]
 		then
@@ -1782,24 +1782,24 @@ frobulator.download () {
 			then
 				curl			\
 					--silent	\
-					--location	"${source}" > "${path}"/"${file}" &
+					--location	"${url}" > "${path}"/"${file}" &
 
 			elif [ $# -eq 3 ]
 			then
 				curl			\
 					--silent	\
-					--location	"${source}"  > "${path}"/"${file}" &
+					--location	"${url}"  > "${path}"/"${file}" &
 
 			elif [ $# -eq 4 ]
 			then
 				curl			\
 					--silent	\
-					--location	"${source}"/"${source_file}"  > "${path}"/"${file}" &
+					--location	"${url}"/"${source_file}"  > "${path}"/"${file}" &
 
 			else
 				curl			\
 					--silent	\
-					--location	"${source}"/"${file}" > "${path}"/"${file}" &
+					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 			fi
 
 			frobulator.progress "Downloading" "[ ${file} ]"

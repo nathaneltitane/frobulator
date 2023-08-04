@@ -513,7 +513,7 @@ frobulator.teal () {
 
 # nul '     '
 
-# information line marker
+# information line marker //////////////////////////////////////////////////////
 
 frobulator.inf () {
 	frobulator.prompt "${@}"
@@ -524,7 +524,7 @@ frobulator.inf () {
 	color=($_)
 }
 
-# message line marker
+# message line marker //////////////////////////////////////////////////////////
 
 frobulator.msg () {
 	frobulator.prompt "${@}"
@@ -535,7 +535,7 @@ frobulator.msg () {
 	color=($_)
 }
 
-# information line marker
+# information line marker //////////////////////////////////////////////////////
 
 frobulator.wrn () {
 	frobulator.prompt "${@}"
@@ -546,7 +546,7 @@ frobulator.wrn () {
 	color=($_)
 }
 
-# add line marker
+# add line marker //////////////////////////////////////////////////////////////
 
 frobulator.add () {
 	frobulator.prompt "${@}"
@@ -557,7 +557,7 @@ frobulator.add () {
 	color=($_)
 }
 
-# remove line marker
+# remove line marker ///////////////////////////////////////////////////////////
 
 frobulator.rem () {
 	frobulator.prompt "${@}"
@@ -568,7 +568,7 @@ frobulator.rem () {
 	color=($_)
 }
 
-# retain line marker
+# retain line marker ///////////////////////////////////////////////////////////
 
 frobulator.ret () {
 	frobulator.prompt "${@}"
@@ -579,7 +579,7 @@ frobulator.ret () {
 	color=($_)
 }
 
-# release line marker
+# release line marker //////////////////////////////////////////////////////////
 
 frobulator.rel () {
 	frobulator.prompt "${@}"
@@ -590,7 +590,7 @@ frobulator.rel () {
 	color=($_)
 }
 
-# forward line marker
+# forward line marker //////////////////////////////////////////////////////////
 
 frobulator.fwd () {
 	frobulator.prompt "${@}"
@@ -601,7 +601,7 @@ frobulator.fwd () {
 	color=($_)
 }
 
-# reverse line marker
+# reverse line marker //////////////////////////////////////////////////////////
 
 frobulator.rev () {
 	frobulator.prompt "${@}"
@@ -612,7 +612,7 @@ frobulator.rev () {
 	color=($_)
 }
 
-# stop line marker
+# stop line marker /////////////////////////////////////////////////////////////
 
 frobulator.stp () {
 	frobulator.prompt "${@}"
@@ -623,7 +623,7 @@ frobulator.stp () {
 	color=($_)
 }
 
-# download line marker
+# download line marker /////////////////////////////////////////////////////////
 
 frobulator.dwl () {
 	frobulator.prompt "${@}"
@@ -634,7 +634,7 @@ frobulator.dwl () {
 	color=($_)
 }
 
-# upload line marker
+# upload line marker ///////////////////////////////////////////////////////////
 
 frobulator.upl () {
 	frobulator.prompt "${@}"
@@ -645,7 +645,7 @@ frobulator.upl () {
 	color=($_)
 }
 
-# link line marker
+# link line marker /////////////////////////////////////////////////////////////
 
 frobulator.lnk () {
 	frobulator.prompt "${@}"
@@ -656,7 +656,7 @@ frobulator.lnk () {
 	color=($_)
 }
 
-# success line marker
+# success line marker //////////////////////////////////////////////////////////
 
 frobulator.scs () {
 	frobulator.prompt "${@}"
@@ -667,7 +667,7 @@ frobulator.scs () {
 	color=($_)
 }
 
-# error line marker
+# error line marker ////////////////////////////////////////////////////////////
 
 frobulator.err () {
 	frobulator.prompt "${@}"
@@ -678,7 +678,7 @@ frobulator.err () {
 	color=($_)
 }
 
-# insert line marker
+# insert line marker ///////////////////////////////////////////////////////////
 
 frobulator.ins () {
 	frobulator.prompt "${@}"
@@ -698,7 +698,7 @@ frobulator.ins () {
 # keeps user input beside prompt
 # also includes space after value to separate input
 
-# ask line marker
+# ask line marker //////////////////////////////////////////////////////////////
 
 frobulator.ask () {
 	frobulator.prompt "${@}"
@@ -709,7 +709,7 @@ frobulator.ask () {
 	color=($_)
 }
 
-# input line marker
+# input line marker ////////////////////////////////////////////////////////////
 
 frobulator.ipt () {
 	frobulator.prompt "${@}"
@@ -720,7 +720,7 @@ frobulator.ipt () {
 	color=($_)
 }
 
-# user line marker
+# user line marker /////////////////////////////////////////////////////////////
 
 frobulator.usr () {
 	frobulator.prompt "${@}"
@@ -744,7 +744,8 @@ frobulator.nul () {
 	echo -e "${color}${marker_nul} ${value}${reset}"
 }
 
-# numbering ////////////////////////////////////////////////////////////////////
+# number line marker ///////////////////////////////////////////////////////////
+
 
 # use to indicate numbered steps, directives or instructions
 # number value is inserted as line marker
@@ -774,7 +775,7 @@ frobulator.num () {
 	echo -e "${before}${number}${after} ${value}"
 }
 
-# separator ////////////////////////////////////////////////////////////////////
+# separator line marker ////////////////////////////////////////////////////////
 
 # use to separate notices and messages from execution blocks
 

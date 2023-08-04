@@ -30,6 +30,13 @@ then
 	script="${self}"
 fi
 
+# provide null sink for argument / error / output silencing
+
+if [ -e /dev/null ]
+then
+	sink="/dev/null"
+fi
+
 # colors ///////////////////////////////////////////////////////////////////////
 
 # 256 colors [0-255]
@@ -1651,22 +1658,29 @@ frobulator.link () {
 	list=()
 }
 
-# download /////////////////////////////////////////////////////////////////////
+# status ///////////////////////////////////////////////////////////////////////
 
-# use to download file(s) with url status verification from argument or array list
+# use to validate http status code prior to download / upload operations
 
-frobulator.download () {
-
-source="${1}"
+frobulator.status () {
+	url="${1}"
 
 	status_code="%{http_code}\n"
 
 	url_status=$(curl								\
 				--silent							\
-				--output		/dev/null			\
+				--output					\
 				--write-out 	"${status_code}"	\
-													"${source}"
+													"${url}"
 				)
+}
+
+# download /////////////////////////////////////////////////////////////////////
+
+# use to download file(s) with url status verification from argument or array list
+
+frobulator.download () {
+	frobulator.status "${source}"
 
 	if [[ "${url_status}" = [0145][0-9][0-9] ]]
 	then
@@ -1677,6 +1691,8 @@ source="${1}"
 	then
 		frobulator.scs "Found" "[ Status // ${url_status} ]"
 		echo
+
+		source="${url}"
 
 		if [ $# -eq 2 ]
 		then
@@ -1810,7 +1826,7 @@ frobulator.put () {
 	type="${1}"
 
 	curl									\
-		-X POST "${destination}/${file}"	\
+		-X PUT "${destination}/${file}"	\
 		-H "Content-Type: ${type}"			\
 		-d 									"${file}" &
 
@@ -1838,7 +1854,7 @@ frobulator.upload () {
 frobulator.silence () {
 	command="${@}"
 
-	"${shell}" -c "$(echo ${command})" >> /dev/null 2>&1
+	"${shell}" -c "$(echo ${command})" >> "${sink}" 2>&1
 }
 
 # log //////////////////////////////////////////////////////////////////////////
@@ -1995,7 +2011,7 @@ frobulator.clean () {
 
 	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
 	then
-		rm -r -f "${PREFIX}"/var/lib/dpkg/info/*.postinst >> /dev/null 2>&1
+		rm -r -f "${PREFIX}"/var/lib/dpkg/info/*.postinst >> "${sink}" 2>&1
 	fi
 }
 
@@ -2166,7 +2182,7 @@ frobulator.install () {
 			frobulator.progress "Installing..."
 			echo
 		else
-			query_filter="$(apt  search "${package}" 2> /dev/null | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			query_filter="$(apt  search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
 			if [[ -z "${query_filter}" ]]
 			then
@@ -2416,7 +2432,7 @@ frobulator.purge () {
 
 	for package in ${list[@]}
 	do
-		if [[ ! -z $(apt search "${package}" 2> /dev/null | grep -i -o installed) ]]
+		if [[ ! -z $(apt search "${package}" 2> "${sink}" | grep -i -o installed) ]]
 		then
 			frobulator.wrn "Selecting" "[ '${package}' ]"
 			echo
@@ -2716,7 +2732,7 @@ frobulator.archive () {
 			tar								\
 				--create					\
 				--bzip						\
-				--file="${archive}"			"${directory}" > /dev/null 2>&1
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2726,7 +2742,7 @@ frobulator.archive () {
 			tar								\
 				--create					\
 				--gzip						\
-				--file="${archive}"			"${directory}" > /dev/null 2>&1
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2735,7 +2751,7 @@ frobulator.archive () {
 		tar)
 			tar								\
 				--create					\
-				--file="${archive}"			"${directory}" > /dev/null 2>&1
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
@@ -2762,14 +2778,14 @@ frobulator.archive () {
 # 			;;
 
 		7z)
-			7z a "${archive}" -o "${directory}" > /dev/null 2>&1
+			7z a "${archive}" -o "${directory}" > "${sink}" 2>&1
 
 				frobulator.inf "Archiving" "[ ${archive} ]"
 				echo
 		;;
 
 			*.rar)
- 				rar a "${archive}" "${directory}" > /dev/null 2>&1
+ 				rar a "${archive}" "${directory}" > "${sink}" 2>&1
 
  					frobulator.inf "Archiving" "[ ${archive} ]"
  					echo

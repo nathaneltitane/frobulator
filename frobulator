@@ -1433,32 +1433,40 @@ frobulator.keep () {
 		fi
 	fi
 
-	cd "${path}" || exit 1
+	if [ -d "${path}" ]
+	then
+		# enter path and parse items
 
-	for item in *
-	do
-		keep=0
+		cd "${path}"
 
-		for file in ${list[@]}
+		for item in *
 		do
-			# mark for keeping
+			keep=0
 
-			if [[ "${path}"/"$file" = "${path}"/"$item" ]]
+			for file in ${list[@]}
+			do
+				# mark for keeping
+
+				if [[ "${path}"/"$file" = "${path}"/"$item" ]]
+				then
+					keep=1
+
+					frobulator.ret "Keeping" "[ ${file} ]"
+					echo
+				fi
+			done
+
+			# remove unmarked items
+
+			if [[ "$keep" = 0 ]]
 			then
-				keep=1
-
-				frobulator.ret "Keeping" "[ ${file} ]"
-				echo
+				rm -rf "${item}"
 			fi
 		done
-
-		# remove unmarked items
-
-		if [[ "$keep" = 0 ]]
-		then
-			rm -rf "${item}"
-		fi
-	done
+	else
+		frobulator.error "Path does not exist" "[ ${path} ]"
+		echo
+	fi
 
 	# unset array
 

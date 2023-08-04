@@ -553,8 +553,10 @@ frobulator.prompt () {
 		end=" ${end}"
 	fi
 
-	# fold paragraph if character count is above 80
+	# character count is above 80:
+	# fold paragraph using word detection
 	# indent second line onward (6 spaces) to match line marker
+	# detect newline character and indent onward (6 spaces) to match line marker
 
 	if [ $# -eq 1 ] && [ "${#begin}" -ge "${count}" ]
 	then

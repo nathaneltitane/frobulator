@@ -476,6 +476,9 @@ marker_nul='     '
 
 # prompt ///////////////////////////////////////////////////////////////////////
 
+# standard prompt with 80 charcters width:
+# uses line folding with word detection for strings over 80 characters long
+
 frobulator.prompt () {
 	# initialize string return array
 

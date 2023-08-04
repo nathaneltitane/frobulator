@@ -40,27 +40,32 @@ then
 
 	if [[ -t 1 ]]
 	then
-		# dark colors
+		# monochromatic colors
 
-		black=$(echo -e \\e\[30m)
-		maroon=$(echo -e \\e\[31m)
-		green=$(echo -e \\e\[32m)
-		olive=$(echo -e \\e\[33m)
-		navy=$(echo -e \\e\[34m)
-		purple=$(echo -e \\e\[35m)
-		teal=$(echo -e \\e\[36m)
-		silver=$(echo -e \\e\[37m)
-
-		# bright colors
-
-		grey=$(echo -e \\e\[90m)
-		red=$(echo -e \\e\[91m)
-		lime=$(echo -e \\e\[92m)
-		yellow=$(echo -e \\e\[93m)
-		blue=$(echo -e \\e\[94m)
-		magenta=$(echo -e \\e\[95m)
-		aqua=$(echo -e \\e\[96m)
 		white=$(echo -e \\e\[97m)
+		silver=$(echo -e \\e\[37m)
+		grey=$(echo -e \\e\[90m)
+		black=$(echo -e \\e\[30m)
+
+		# standard colors by sturation offset
+
+		red=$(echo -e \\e\[91m)
+		crimson=$(echo -e \\e\[31m)
+
+		green=$(echo -e \\e\[32m)
+		lime=$(echo -e \\e\[92m)
+
+		yellow=$(echo -e \\e\[93m)
+		orange=$(echo -e \\e\[33m)
+
+		blue=$(echo -e \\e\[94m)
+		navy=$(echo -e \\e\[34m)
+
+		magenta=$(echo -e \\e\[95m)
+		purple=$(echo -e \\e\[35m)
+
+		aqua=$(echo -e \\e\[96m)
+		teal=$(echo -e \\e\[36m)
 
 		# reset color
 
@@ -536,7 +541,7 @@ frobulator.wrn () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${olive}${marker_wrn} ${value}${reset}"
+	echo -e "${orange}${marker_wrn} ${value}${reset}"
 
 	color=($_)
 }

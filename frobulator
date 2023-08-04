@@ -548,7 +548,7 @@ frobulator.add () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${purple}${marker_add} ${value}${reset}"
+	echo -e "${lime}${marker_add} ${value}${reset}"
 
 	color=($_)
 }
@@ -559,7 +559,7 @@ frobulator.rem () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${maroon}${marker_rem} ${value}${reset}"
+	echo -e "${crimson}${marker_rem} ${value}${reset}"
 
 	color=($_)
 }
@@ -570,7 +570,7 @@ frobulator.ret () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${teal}${marker_ret} ${value}${reset}"
+	echo -e "${aqua}${marker_ret} ${value}${reset}"
 
 	color=($_)
 }
@@ -581,7 +581,7 @@ frobulator.rel () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${navy}${marker_rel} ${value}${reset}"
+	echo -e "${teal}${marker_rel} ${value}${reset}"
 
 	color=($_)
 }
@@ -592,7 +592,7 @@ frobulator.fwd () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${grey}${marker_fwd} ${value}${reset}"
+	echo -e "${silver}${marker_fwd} ${value}${reset}"
 
 	color=($_)
 }
@@ -603,7 +603,7 @@ frobulator.rev () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${grey}${marker_rev} ${value}${reset}"
+	echo -e "${silver}${marker_rev} ${value}${reset}"
 
 	color=($_)
 }
@@ -625,7 +625,7 @@ frobulator.dwl () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${purple}${marker_bot} ${value}${reset}"
+	echo -e "${magenta}${marker_bot} ${value}${reset}"
 
 	color=($_)
 }
@@ -647,7 +647,7 @@ frobulator.lnk () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${purple}${marker_stp} ${value}${reset}"
+	echo -e "${yellow}${marker_stp} ${value}${reset}"
 
 	color=($_)
 }
@@ -663,7 +663,7 @@ frobulator.scs () {
 	color=($_)
 }
 
-# warning line marker //////////////////////////////////////////////////////////
+# warning line marker //////////////////////////////////////////////////////
 
 frobulator.wrn () {
 	frobulator.prompt "${@}"
@@ -691,7 +691,7 @@ frobulator.ins () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -e "${magenta}${marker_ipt} ${value}${reset}"
+	echo -e "${teal}${marker_ipt} ${value}${reset}"
 
 	color=($_)
 }
@@ -736,6 +736,19 @@ frobulator.usr () {
 	echo -n -e "${purple}${marker_usr} ${value} ${reset}"
 
 	color=($_)
+}
+
+# null /////////////////////////////////////////////////////////////////////////
+
+# use to carry over prompts without adding a line marker while retaining color
+
+frobulator.nul () {
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	color="${color::-1}"
+
+	echo -e "${color}${marker_nul} ${value}${reset}"
 }
 
 # null /////////////////////////////////////////////////////////////////////////

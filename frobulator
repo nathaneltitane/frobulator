@@ -1460,7 +1460,7 @@ frobulator.keep () {
 
 # delete ///////////////////////////////////////////////////////////////////////
 
-# use to delete file(s) from argument or array list
+# use to select file(s) for deletion from argument or array list
 # removes selected file in directory
 
 frobulator.delete () {

@@ -211,7 +211,7 @@ marker_msg='[ ¤ ]'
 marker_wrn='[ ! ]'
 marker_usr='[ ~ ]'
 
-marker_yes='[ - ]'
+marker_yes='[ ✓ ]'
 marker_not='[ 𐄂 ]'
 
 marker_nul='     '
@@ -515,7 +515,7 @@ frobulator.teal () {
 # wrn [ ! ]
 # usr [ ~ ]
 
-# yes [ - ]
+# yes [ ✓ ]
 # not [ 𐄂 ]
 
 # nul '     '

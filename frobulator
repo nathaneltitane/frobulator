@@ -584,7 +584,7 @@ frobulator.prompt () {
 
 	span_count=$(( ${#span} - ${#begin} - ${#end} ))
 
-	# set new padding width /////////////////////////////////////////# FIX ME#
+	# set new padding width ///////////////////////////////////////// # FIX ME #
 
 	if [ ${#begin} -le "${count}" ]
 	then
@@ -593,7 +593,7 @@ frobulator.prompt () {
 		span=""
 	fi
 
-	# ///////////////////////////////////////////////////////////////# FIX ME#
+	# /////////////////////////////////////////////////////////////// # FIX ME #
 
 	span_middle="${span}"
 

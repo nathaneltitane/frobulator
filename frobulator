@@ -381,6 +381,7 @@ else
 		terminal_info=$(tput longname)
 
 		# number of lines in terminal
+
 		terminal_height=$(tput lines)
 
 		# number of columns in terminal

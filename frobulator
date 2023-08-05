@@ -991,7 +991,7 @@ frobulator.ask () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -n -e "${purple}${marker_ask} ${value} ${reset}"
+	echo -n -e "${fuschia}${marker_ask} ${value} ${reset}"
 
 	color=($_)
 }
@@ -1002,7 +1002,7 @@ frobulator.ipt () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -n -e "${purple}${marker_add} ${value} ${reset}"
+	echo -n -e "${pink}${marker_add} ${value} ${reset}"
 
 	color=($_)
 }
@@ -1013,7 +1013,7 @@ frobulator.usr () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	echo -n -e "${purple}${marker_usr} ${value} ${reset}"
+	echo -n -e "${grey}${marker_usr} ${value} ${reset}"
 
 	color=($_)
 }

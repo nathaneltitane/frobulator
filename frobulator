@@ -556,8 +556,9 @@ frobulator.prompt () {
 		end=" ${end}"
 	fi
 
-	# 75+ characters:
-	# fold paragraph using word detection
+	# 75+ characters per single string:
+	# fold string using word detection at limit
+	# to prevent overstepping 80 characters overall limit
 	# indent second line onward (6 spaces) to match line marker
 	# detect newline character and indent onward (6 spaces) to match line marker
 

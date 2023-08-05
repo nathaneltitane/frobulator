@@ -2090,13 +2090,13 @@ frobulator.download () {
 			then
 				curl			\
 					--silent	\
-					--location	"${url}"  > "${path}"/"${file}" &
+					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 
 			elif [ $# -eq 4 ]
 			then
 				curl			\
 					--silent	\
-					--location	"${url}"/"${source_file}"  > "${path}"/"${file}" &
+					--location	"${url}"/"${source_file}" > "${path}"/"${file}" &
 
 			else
 				curl			\

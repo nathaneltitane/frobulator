@@ -365,7 +365,7 @@ else
 		purple=$(tput setaf 53)
 
 		fuschia=$(tput setaf 132)
-		pink=$(tput setaf 160)
+		pink=$(tput setaf 200)
 
 		aqua=$(tput setaf 6)
 		teal=$(tput setaf 23)

@@ -356,7 +356,7 @@ else
 		lime=$(tput setaf 28)
 
 		yellow=$(tput setaf 11)
-		orange=$(tput setaf 130)
+		orange=$(tput setaf 178)
 
 		blue=$(tput setaf 4)
 		navy=$(tput setaf 20)

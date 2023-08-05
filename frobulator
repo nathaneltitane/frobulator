@@ -561,7 +561,7 @@ frobulator.prompt () {
 	# indent second line onward (6 spaces) to match line marker
 	# detect newline character and indent onward (6 spaces) to match line marker
 
-	if [ $# -eq 1 ] && [ "${#begin}" -ge "${count}" ]
+	if [ $# -eq 1 ] && [ "${#begin}" -ge ( "${count}" - 5 ) ]
 	then
 		begin=$(echo "${begin}" | fold -s -w "${count}" | sed -e '2,$s/^/      /g' | sed 's/ \\n	/\\n\n      /g' | sed 's/ \\n /\\n\n      /g')
 	fi

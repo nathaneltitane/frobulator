@@ -358,8 +358,8 @@ else
 		yellow=$(tput setaf 11)
 		orange=$(tput setaf 202)
 
-		blue=$(tput setaf 4)
-		navy=$(tput setaf 20)
+		blue=$(tput setaf 111)
+		navy=$(tput setaf 4)
 
 		magenta=$(tput setaf 5)
 		purple=$(tput setaf 53)

@@ -470,7 +470,7 @@ marker_inf='[ i ]'
 marker_wrn='[ ! ]'
 
 marker_ipt='[ > ]'
-marker_msg='[# ]'
+marker_msg='[ # ]'
 marker_usr='[ ~ ]'
 
 marker_yes='[ ✓ ]'

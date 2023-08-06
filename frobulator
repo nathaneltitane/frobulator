@@ -784,9 +784,9 @@ frobulator.teal () {
 # top [ △ ]
 # bot [ ▽ ]
 
-# fwd [ > ]
-# rev [ < ]
-# stp [ / ]
+# fwd [ ▷ ]
+# rev [ ◁ ]
+# stp [ □ ]
 
 # add [ + ]
 # rem [ - ]
@@ -796,12 +796,13 @@ frobulator.teal () {
 
 # ask [ ? ]
 # inf [ i ]
-# ipt [# ]
-# msg [ ¤ ]
+# wrn [ ! ]
+
+# ipt [ > ]
+# msg [ # ]
 # usr [ ~ ]
 
 # yes [ ✓ ]
-# wrn [ ! ]
 # not [ 𐄂 ]
 
 # nul '     '

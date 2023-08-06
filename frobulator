@@ -2138,7 +2138,7 @@ frobulator.put () {
 		-H "Content-Type: ${type}"			\
 		-d 									"${file}" &
 
-	frobulator.progress "Uploading" "[ ${file} ]"
+	frobulator.progress "Uploading" "[ '${file}' ]"
 	echo
 }
 

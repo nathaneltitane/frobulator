@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="08-05-2023"
+# version="08-06-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -358,8 +358,8 @@ else
 		yellow=$(tput setaf 11)
 		orange=$(tput setaf 202)
 
-		blue=$(tput setaf 111)
-		navy=$(tput setaf 4)
+		blue=$(tput setaf 4)
+		navy=$(tput setaf 31)
 
 		magenta=$(tput setaf 5)
 		purple=$(tput setaf 53)
@@ -368,7 +368,7 @@ else
 		pink=$(tput setaf 200)
 
 		aqua=$(tput setaf 6)
-		teal=$(tput setaf 23)
+		teal=$(tput setaf 30)
 
 		# reset all attributes
 

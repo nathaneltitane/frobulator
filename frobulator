@@ -2134,7 +2134,7 @@ frobulator.put () {
 	type="${1}"
 
 	curl									\
-		-X PUT "${destination}/${file}"	\
+		-X PUT "${destination}/${file}"		\
 		-H "Content-Type: ${type}"			\
 		-d 									"${file}" &
 

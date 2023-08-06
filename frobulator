@@ -2110,7 +2110,7 @@ frobulator.download () {
 					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 			fi
 
-			frobulator.progress "Downloading" "[ ${file} ]"
+			frobulator.progress "Downloading" "[ '${file}' ]"
 			echo
 
 			chmod a+rx "${path}"/"${file}"
@@ -2121,7 +2121,7 @@ frobulator.download () {
 		list=()
 
 	else
-		frobulator.err "Status unknown"
+		frobulator.err "Status unknown" "[ Status // N/A ]"
 		echo
 	fi
 }

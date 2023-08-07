@@ -300,7 +300,7 @@ fi
 
 # set colors selection
 
-
+colors_selection=(
 	white="255"
 	silver="248"
 	grey="243"
@@ -326,7 +326,7 @@ fi
 
 	aqua="6"
 	teal="30"
-
+)
 
 if [ -z "$(command -v tput)" ]
 then
@@ -394,6 +394,20 @@ then
 		reset=$(echo -e \\e\[39m)
 	fi
 else
+
+	# handle color digit length for ansi fallback method
+
+	for color in ${colors_selection[@]}
+	do
+		IFS='='
+
+		read color_name color_value <<< "${color}"
+
+		IFS=''
+
+		eval "${color_name}=${color_value}"
+	done
+
 	# 'tput' colors and attributes
 
 	if [[ -t 1 ]]

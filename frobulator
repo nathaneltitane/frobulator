@@ -640,7 +640,7 @@ frobulator.prompt () {
 
 	if [ $# -eq 1 ] && [ "${#begin}" -ge "${fold}" ]
 	then
-		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
+		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g')
 	fi
 
 	# substitute span character

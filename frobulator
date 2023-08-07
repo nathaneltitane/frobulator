@@ -298,38 +298,94 @@ fi
 # 254	Grey89				#e4e4e4	rgb(228,228,228)	hsl(0,0%,89%)
 # 255	Grey93				#eeeeee	rgb(238,238,238)	hsl(0,0%,93%)
 
+# set colors selection
+
+white="255"
+silver="248"
+grey="243"
+black="238"
+
+red="1"
+crimson="88"
+
+green="2"
+lime="28"
+
+yellow="11"
+orange="202"
+
+blue="4"
+navy="26"
+
+magenta="5"
+purple="53"
+
+fuschia="126"
+pink="200"
+
+aqua="6"
+teal="30"
+
 if [ -z "$(command -v tput)" ]
 then
-	# ansi color escapes
+	for color in ${colors_selection[@]}
+	do
+		IFS='='
+
+		read color_name color_value <<< "${color}"
+
+		if [ ${#color_value} = 2 ]
+		then
+			color_value="0${color_value}"
+		fi
+
+		if [ ${#color_value} = 1 ]
+		then
+			color_value="00${color_value}"
+		fi
+
+		IFS=''
+
+		unset color
+
+		color="${color_name}=${color_value}"
+
+		echo "${color}"
+	done
+fi
+
+if [ -z "$(command -v tput)" ]
+then
+	# ansi color attributes
 
 	if [[ -t 1 ]]
 	then
 		# monochromatic colors
 
-		white=$(echo -e \\e\[38;5;255m)
-		silver=$(echo -e \\e\[38;5;248m)
-		grey=$(echo -e \\e\[38;5;243m)
-		black=$(echo -e \\e\[38;5;238m)
+		white=$(echo -e \\e\[38\;5\;255m)
+		silver=$(echo -e \\e\[38\;5\;248m)
+		grey=$(echo -e \\e\[38\;5\;243m)
+		black=$(echo -e \\e\[38\;5\;238m)
 
 		# standard colors by sturation offset
 
-		red=$(echo -e \\e\[38;5;001m)
-		crimson=$(echo -e \\e\[38;5;088m)
+		red=$(echo -e \\e\[38\;5\;001m)
+		crimson=$(echo -e \\e\[38\;5\;088m)
 
-		green=$(echo -e \\e\[38;5;002m)
-		lime=$(echo -e \\e\[38;5;028m)
+		green=$(echo -e \\e\[38\;5\;002m)
+		lime=$(echo -e \\e\[38\;5\;028m)
 
-		yellow=$(echo -e \\e\[38;5;011m)
-		orange=$(echo -e \\e\[38;5;202m)
+		yellow=$(echo -e \\e\[38\;5\;011m)
+		orange=$(echo -e \\e\[38\;5\;202m)
 
-		blue=$(echo -e \\e\[38;5;004m)
-		navy=$(echo -e \\e\[38;5;026m)
+		blue=$(echo -e \\e\[38\;5\;004m)
+		navy=$(echo -e \\e\[38\;5\;026m)
 
-		magenta=$(echo -e \\e\[38;5;005m)
-		purple=$(echo -e \\e\[38;5;053m)
+		magenta=$(echo -e \\e\[38\;5\;005m)
+		purple=$(echo -e \\e\[38\;5\;053m)
 
-		aqua=$(echo -e \\e\[38;5;006m)
-		teal=$(echo -e \\e\[38;5;030m)
+		aqua=$(echo -e \\e\[38\;5\;006m)
+		teal=$(echo -e \\e\[38\;5\;030m)
 
 		# reset all attributes
 
@@ -342,33 +398,33 @@ else
 	then
 		# monochromatic colors
 
-		white=$(tput setaf 255)
-		silver=$(tput setaf 248)
-		grey=$(tput setaf 243)
-		black=$(tput setaf 238)
+		white=$(tput setaf "${white}")
+		silver=$(tput setaf "${silver}")
+		grey=$(tput setaf "${grey}")
+		black=$(tput setaf "${black}")
 
 		# standard colors by sturation offset
 
-		red=$(tput setaf 1)
-		crimson=$(tput setaf 88)
+		red=$(tput setaf "${red}")
+		crimson=$(tput setaf "${crimson}")
 
-		green=$(tput setaf 2)
-		lime=$(tput setaf 28)
+		green=$(tput setaf "${green}")
+		lime=$(tput setaf "${lime}")
 
-		yellow=$(tput setaf 11)
-		orange=$(tput setaf 202)
+		yellow=$(tput setaf "${yellow}")
+		orange=$(tput setaf "${orange}")
 
-		blue=$(tput setaf 4)
-		navy=$(tput setaf 26)
+		blue=$(tput setaf "${blue}")
+		navy=$(tput setaf "${navy}")
 
-		magenta=$(tput setaf 5)
-		purple=$(tput setaf 53)
+		magenta=$(tput setaf "${magenta}")
+		purple=$(tput setaf "${purple}")
 
-		fuschia=$(tput setaf 126)
-		pink=$(tput setaf 200)
+		fuschia=$(tput setaf "${fuschia}")
+		pink=$(tput setaf "${pink}")
 
-		aqua=$(tput setaf 6)
-		teal=$(tput setaf 30)
+		aqua=$(tput setaf "${aqua}")
+		teal=$(tput setaf "${teal}")
 
 		# reset all attributes
 
@@ -449,6 +505,8 @@ else
 		terminal_clear_all=$(tput clear)
 	fi
 fi
+
+exit
 
 # markers //////////////////////////////////////////////////////////////////////
 

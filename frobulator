@@ -343,9 +343,9 @@ else
 		# monochromatic colors
 
 		white=$(tput setaf 255)
-		silver=$(tput setaf 249)
-		grey=$(tput setaf 244)
-		black=$(tput setaf 239)
+		silver=$(tput setaf 248)
+		grey=$(tput setaf 243)
+		black=$(tput setaf 238)
 
 		# standard colors by sturation offset
 

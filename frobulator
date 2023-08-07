@@ -328,8 +328,10 @@ colors_selection=(
 	teal="30"
 )
 
-if [ ! -z "$(command -v tput)" ]
+if [ -z "$(command -v tput)" ]
 then
+	# handle color digit lenght for ansi fallback method
+
 	for color in ${colors_selection[@]}
 	do
 		IFS='='
@@ -355,10 +357,7 @@ then
 
 		eval "${color_name}=${color_value}"
 	done
-fi
 
-if [ -z "$(command -v tput)" ]
-then
 	# ansi color attributes
 
 	if [[ -t 1 ]]

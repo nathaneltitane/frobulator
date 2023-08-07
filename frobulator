@@ -890,7 +890,7 @@ frobulator.inf () {
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
 
-	color=($_)
+	color="${blue}"
 }
 
 # warning line marker //////////////////////////////////////////////////////
@@ -1121,7 +1121,7 @@ frobulator.nul () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	color="${color::-1}"
+	color="${color}"
 
 	echo -e "${color}${marker_nul} ${value}${reset}"
 }

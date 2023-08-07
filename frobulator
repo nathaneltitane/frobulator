@@ -394,8 +394,7 @@ then
 		reset=$(echo -e \\e\[39m)
 	fi
 else
-
-	# handle color digit length for ansi fallback method
+	# handle color selections
 
 	for color in ${colors_selection[@]}
 	do
@@ -887,7 +886,7 @@ frobulator.inf () {
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
 
-	color=($_)
+	used_color=($_)
 }
 
 # warning line marker //////////////////////////////////////////////////////
@@ -1118,9 +1117,9 @@ frobulator.nul () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	color="${color::-1}"
+	used_color="${used_color::-1}"
 
-	echo -e "${color}${marker_nul} ${value}${reset}"
+	echo -e "${used_color}${marker_nul} ${value}${reset}"
 }
 
 # number line marker ///////////////////////////////////////////////////////////

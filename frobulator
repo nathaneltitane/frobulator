@@ -901,7 +901,7 @@ frobulator.wrn () {
 
 	echo -e "${orange}${marker_wrn} ${value}${reset}"
 
-	color=($_)
+	color=("${orange}")
 }
 
 # message line marker //////////////////////////////////////////////////////////
@@ -912,7 +912,7 @@ frobulator.msg () {
 
 	echo -e "${navy}${marker_msg} ${value}${reset}"
 
-	color=($_)
+	color=("${navy}")
 }
 
 # add line marker //////////////////////////////////////////////////////////////
@@ -923,7 +923,7 @@ frobulator.add () {
 
 	echo -e "${lime}${marker_add} ${value}${reset}"
 
-	color=($_)
+	color=("${lime}")
 }
 
 # remove line marker ///////////////////////////////////////////////////////////
@@ -934,7 +934,7 @@ frobulator.rem () {
 
 	echo -e "${crimson}${marker_rem} ${value}${reset}"
 
-	color=($_)
+	color=("${crimson}")
 }
 
 # retain line marker ///////////////////////////////////////////////////////////
@@ -945,7 +945,7 @@ frobulator.ret () {
 
 	echo -e "${aqua}${marker_ret} ${value}${reset}"
 
-	color=($_)
+	color=("${aqua}")
 }
 
 # release line marker //////////////////////////////////////////////////////////
@@ -956,7 +956,7 @@ frobulator.rel () {
 
 	echo -e "${teal}${marker_rel} ${value}${reset}"
 
-	color=($_)
+	color=("${teal}")
 }
 
 # forward line marker //////////////////////////////////////////////////////////
@@ -967,7 +967,7 @@ frobulator.fwd () {
 
 	echo -e "${silver}${marker_fwd} ${value}${reset}"
 
-	color=($_)
+	color=("${silver}")
 }
 
 # reverse line marker //////////////////////////////////////////////////////////
@@ -978,7 +978,7 @@ frobulator.rev () {
 
 	echo -e "${silver}${marker_rev} ${value}${reset}"
 
-	color=($_)
+	color=("${silver}")
 }
 
 # stop line marker /////////////////////////////////////////////////////////////
@@ -989,7 +989,7 @@ frobulator.stp () {
 
 	echo -e "${grey}${marker_stp} ${value}${reset}"
 
-	color=($_)
+	color=("${grey}")
 }
 
 # download line marker /////////////////////////////////////////////////////////
@@ -1000,7 +1000,7 @@ frobulator.dwl () {
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
 
-	color=($_)
+	color=("${magenta}")
 }
 
 # upload line marker ///////////////////////////////////////////////////////////
@@ -1011,7 +1011,7 @@ frobulator.upl () {
 
 	echo -e "${purple}${marker_top} ${value}${reset}"
 
-	color=($_)
+	color=("${purple}")
 }
 
 # link line marker /////////////////////////////////////////////////////////////
@@ -1022,7 +1022,7 @@ frobulator.lnk () {
 
 	echo -e "${yellow}${marker_stp} ${value}${reset}"
 
-	color=($_)
+	color=("${yellow}")
 }
 
 # success line marker //////////////////////////////////////////////////////////
@@ -1033,7 +1033,7 @@ frobulator.scs () {
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
 
-	color=($_)
+	color=("${green}")
 }
 
 # error line marker ////////////////////////////////////////////////////////////
@@ -1044,7 +1044,7 @@ frobulator.err () {
 
 	echo -e "${red}${marker_not} ${value}${reset}"
 
-	color=($_)
+	color=("${red}")
 }
 
 # insert line marker ///////////////////////////////////////////////////////////
@@ -1055,7 +1055,7 @@ frobulator.ins () {
 
 	echo -e "${teal}${marker_ipt} ${value}${reset}"
 
-	color=($_)
+	color=("${teal}")
 }
 
 # user input prompts ///////////////////////////////////////////////////////////
@@ -1075,7 +1075,7 @@ frobulator.ask () {
 
 	echo -n -e "${fuschia}${marker_ask} ${value} ${reset}"
 
-	color=($_)
+	color=("${fuschia}")
 }
 
 # input line marker ////////////////////////////////////////////////////////////
@@ -1086,7 +1086,7 @@ frobulator.ipt () {
 
 	echo -n -e "${pink}${marker_add} ${value} ${reset}"
 
-	color=($_)
+	color=("${pink}")
 }
 
 # user line marker /////////////////////////////////////////////////////////////
@@ -1097,20 +1097,7 @@ frobulator.usr () {
 
 	echo -n -e "${grey}${marker_usr} ${value} ${reset}"
 
-	color=($_)
-}
-
-# null /////////////////////////////////////////////////////////////////////////
-
-# use to carry over prompts without adding a line marker while retaining color
-
-frobulator.nul () {
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
-	color="${color::-1}"
-
-	echo -e "${color}${marker_nul} ${value}${reset}"
+	color=("${grey}")
 }
 
 # null /////////////////////////////////////////////////////////////////////////

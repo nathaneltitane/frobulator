@@ -356,6 +356,8 @@ then
 		IFS=''
 
 		eval "${color_name}=${color_value}"
+
+		unset color
 	done
 
 	# ansi color attributes
@@ -405,6 +407,8 @@ else
 		IFS=''
 
 		eval "${color_name}=${color_value}"
+
+		unset color
 	done
 
 	# 'tput' colors and attributes

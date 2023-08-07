@@ -330,7 +330,7 @@ colors_selection=(
 
 if [ -z "$(command -v tput)" ]
 then
-	# handle color digit lenght for ansi fallback method
+	# handle color digit length for ansi fallback method
 
 	for color in ${colors_selection[@]}
 	do

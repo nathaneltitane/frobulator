@@ -1111,6 +1111,8 @@ frobulator.nul () {
 	color=${color[@]}
 
 	echo -e "${color}${marker_nul} ${value}${reset}"
+
+	unset color
 }
 
 # number line marker ///////////////////////////////////////////////////////////

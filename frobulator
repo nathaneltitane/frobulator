@@ -306,30 +306,30 @@ then
 	then
 		# monochromatic colors
 
-		white=$(echo -e \\e\[97m)
-		silver=$(echo -e \\e\[37m)
-		grey=$(echo -e \\e\[90m)
-		black=$(echo -e \\e\[30m)
+		white=$(echo -e \\e\[38;5;255m)
+		silver=$(echo -e \\e\[38;5;248m)
+		grey=$(echo -e \\e\[38;5;243m)
+		black=$(echo -e \\e\[38;5;238m)
 
 		# standard colors by sturation offset
 
-		red=$(echo -e \\e\[91m)
-		crimson=$(echo -e \\e\[31m)
+		red=$(echo -e \\e\[38;5;001m)
+		crimson=$(echo -e \\e\[38;5;088m)
 
-		green=$(echo -e \\e\[32m)
-		lime=$(echo -e \\e\[92m)
+		green=$(echo -e \\e\[38;5;002m)
+		lime=$(echo -e \\e\[38;5;028m)
 
-		yellow=$(echo -e \\e\[93m)
-		orange=$(echo -e \\e\[33m)
+		yellow=$(echo -e \\e\[38;5;011m)
+		orange=$(echo -e \\e\[38;5;202m)
 
-		blue=$(echo -e \\e\[94m)
-		navy=$(echo -e \\e\[34m)
+		blue=$(echo -e \\e\[38;5;004m)
+		navy=$(echo -e \\e\[38;5;026m)
 
-		magenta=$(echo -e \\e\[95m)
-		purple=$(echo -e \\e\[35m)
+		magenta=$(echo -e \\e\[38;5;005m)
+		purple=$(echo -e \\e\[38;5;053m)
 
-		aqua=$(echo -e \\e\[96m)
-		teal=$(echo -e \\e\[36m)
+		aqua=$(echo -e \\e\[38;5;006m)
+		teal=$(echo -e \\e\[38;5;030m)
 
 		# reset all attributes
 

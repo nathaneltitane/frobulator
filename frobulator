@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="08-06-2023"
+# version="08-07-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -359,7 +359,7 @@ else
 		orange=$(tput setaf 202)
 
 		blue=$(tput setaf 4)
-		navy=$(tput setaf 31)
+		navy=$(tput setaf 26)
 
 		magenta=$(tput setaf 5)
 		purple=$(tput setaf 53)

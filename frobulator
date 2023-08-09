@@ -1334,55 +1334,84 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	type="${1}"
+	notification="${@}"
 
-	if [[ "${type}" = "download" ]]
+	if [ $# -eq 1 ]
 	then
-		color="${magenta}"
+		type="${1}"
 
-		frobulator.prompt "Downloading..."
+		if [[ "${type}" = "download" ]]
+		then
+			color="${magenta}"
 
-	elif [[ "${type}" = "upload" ]]
-	then
-		color="${purple}"
+		elif [[ "${type}" = "upload" ]]
+		then
+			color="${purple}"
 
-		frobulator.prompt "Uploading..."
+		elif [[ "${type}" = "generate" ]]
+		then
+			color="${lime}"
 
-	elif [[ "${type}" = "generate" ]]
-	then
-		color="${lime}"
+		elif [[ "${type}" = "parse" ]]
+		then
+			color="${grey}"
 
-		frobulator.prompt "Generating..."
+		elif [[ "${type}" = "install" ]]
+		then
+			color="${silver}"
 
-	elif [[ "${type}" = "parse" ]]
-	then
-		color="${grey}"
+		elif [[ "${type}" = "reinstall" ]]
+		then
+			color="${silver}"
 
-		frobulator.prompt "Parsing..."
+		elif [[ "${type}" = "remove" ]]
+		then
+			color="${silver}"
 
-	elif [[ "${type}" = "proceed" ]]
-	then
-		color="${silver}"
+		elif [[ "${type}" = "purge" ]]
+		then
+			color="${silver}"
 
-		frobulator.prompt "Proceeding..."
+		elif [[ "${type}" = "update" ]]
+		then
+			color="${yellow}"
 
-	elif [[ "${type}" = "continue" ]]
-	then
-		color="${yellow}"
+		elif [[ "${type}" = "upgrade" ]]
+		then
+			color="${yellow}"
 
-		frobulator.prompt "Continuing..."
+		elif [[ "${type}" = "hold" ]]
+		then
+			color="${yellow}"
 
-	elif [[ "${type}" = "evaluate" ]]
-	then
-		color="${blue}"
+		elif [[ "${type}" = "upgrade" ]]
+		then
+			color="${yellow}"
 
-		frobulator.prompt "Evaluating..."
+		elif [[ "${type}" = "evaluate" ]]
+		then
+			color="${blue}"
 
+		elif [[ "${type}" = "clean" ]]
+		then
+			color="${blue}"
+		fi
+
+		notification="${type}"
 	else
 		color="${white}"
-
-		frobulator.prompt "${@}"
 	fi
+
+	notification="${notification^}"
+
+	if [ "${notification: -1}" = "e" ]
+	then
+		notification=${notification/%e/ing...}
+	else
+		notification=${notification/%/ing...}
+	fi
+
+	frobulator.prompt "${notification}"
 
 	value="${frobulator_string[@]}"
 

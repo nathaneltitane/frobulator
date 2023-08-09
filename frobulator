@@ -1334,40 +1334,38 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
 
 	type="${1}"
 
 	if [[ "${type}" = "download" ]]
 	then
 		frobulator.prompt "Downloading..."
-	fi
 
-	if [[ "${type}" = "upload" ]]
+	elif [[ "${type}" = "upload" ]]
 	then
 		frobulator.prompt "Uploading..."
-	fi
 
-	if [[ "${type}" = "generate" ]]
+	elif [[ "${type}" = "generate" ]]
 	then
 		frobulator.prompt "Generating..."
-	fi
 
-	if [[ "${type}" = "parse" ]]
+	elif [[ "${type}" = "parse" ]]
 	then
 		frobulator.prompt "Parsing..."
-	fi
 
-	if [[ "${type}" = "proceed" ]]
+	elif [[ "${type}" = "proceed" ]]
 	then
 		frobulator.prompt "Proceeding..."
-	fi
 
-	if [[ "${type}" = "continue" ]]
+	elif [[ "${type}" = "continue" ]]
 	then
 		frobulator.prompt "Continuing..."
+
+	else
+		frobulator.prompt "${@}"
 	fi
+
+	value="${frobulator_string[@]}"
 
 	i=1
 

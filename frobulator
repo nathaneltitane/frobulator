@@ -1339,9 +1339,11 @@ frobulator.progress () {
 	if [ "${type}" = "download" ]
 	then
 		frobulator.prompt "Downloading..."
+	else
+		frobulator.prompt "${@}"
+
 	fi
 
-	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
 	iteration=1

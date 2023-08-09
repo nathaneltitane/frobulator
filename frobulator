@@ -1338,39 +1338,45 @@ frobulator.progress () {
 
 	if [[ "${type}" = "download" ]]
 	then
-		color="${fuschia}"
+		color="${magenta}"
 
 		frobulator.prompt "Downloading..."
 
 	elif [[ "${type}" = "upload" ]]
 	then
-		color="${fuschia}"
+		color="${purple}"
 
 		frobulator.prompt "Uploading..."
 
 	elif [[ "${type}" = "generate" ]]
 	then
-		color="${fuschia}"
+		color="${lime}"
 
 		frobulator.prompt "Generating..."
 
 	elif [[ "${type}" = "parse" ]]
 	then
-		color="${fuschia}"
+		color="${grey}"
 
 		frobulator.prompt "Parsing..."
 
 	elif [[ "${type}" = "proceed" ]]
 	then
-		color="${fuschia}"
+		color="${silver}"
 
 		frobulator.prompt "Proceeding..."
 
 	elif [[ "${type}" = "continue" ]]
 	then
-		color="${fuschia}"
+		color="${yellow}"
 
 		frobulator.prompt "Continuing..."
+
+	elif [[ "${type}" = "evaluate" ]]
+	then
+		color="${blue}"
+
+		frobulator.prompt "Evaluating..."
 
 	else
 		color="${white}"

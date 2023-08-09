@@ -1341,7 +1341,7 @@ frobulator.progress () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
+		echo -n -e "\r${before}${purple} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
 
 		sleep 0.25
 	done
@@ -1450,6 +1450,23 @@ frobulator.temporary () {
 }
 
 # trap /////////////////////////////////////////////////////////////////////////
+
+# Signal     Value     Action   Comment
+# ------------------------------------------------------------------------------
+# SIGTERM      15       Term    Termination signal
+# SIGINT        2       Term    CONTROL+C interrupt from keyboard
+# SIGHUP        1       Term    Disconnected terminal or parent died
+# SIGPIPE      13       Term    Broken pipe
+# SIGALRM(*)   14       Term    Timer signal from alarm
+# SIGUSR2(*)   12       Term    User-defined signal 2
+# SIGUSR1(*)   10       Term    User-defined signal 1
+# SIGQUIT       3       Core    CONTRL+\ or quit from keyboard
+# SIGABRT       6       Core    Abort signal from abort(3)
+# SIGSEGV      11       Core    Invalid memory reference
+# SIGILL        4       Core    Illegal Instruction
+# SIGFPE        8       Core    Floating point exception
+# SIGKILL       9       Term    Kill signal
+# ------------------------------------------------------------------------------
 
 # use to cleanup temporary directory or other process driven execution
 # handles exit codes and signals to ensure proper cleanup

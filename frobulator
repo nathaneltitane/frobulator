@@ -1384,15 +1384,15 @@ frobulator.progress () {
 		then
 			color="${yellow}"
 
-		elif [[ "${type}" = "upgrade" ]]
+		elif [[ "${type}" = "release" ]]
 		then
 			color="${yellow}"
 
-		elif [[ "${type}" = "evaluate" ]]
+		elif [[ "${type}" = "clean" ]]
 		then
 			color="${blue}"
 
-		elif [[ "${type}" = "clean" ]]
+		elif [[ "${type}" = "evaluate" ]]
 		then
 			color="${blue}"
 		fi

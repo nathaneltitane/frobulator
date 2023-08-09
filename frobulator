@@ -1343,7 +1343,7 @@ frobulator.progress () {
 	do
 		if [ ! -d /proc/"${PID}" ]
         then
-                break
+			break
         fi
 
 		echo -n -e "\r${before}${purple} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "

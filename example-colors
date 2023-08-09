@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# dependencies /////////////////////////////////////////////////////////////////
+
+if [[ -z $(command -v frobulator) ]]
+then
+	if [[ $(id -u -n) = "root" ]]
+	then
+		SUDO_HOME=/root
+
+		USER="${SUDO_USER}"
+
+		HOME=/home/"${USER}"
+	fi
+
+	if [[ -z $(command -v curl) ]]
+	then
+		yes | apt-get install curl
+	fi
+
+	if [ ! -d "${HOME}"/.local/bin ]
+	then
+		mkdir -p "${HOME}"/.local/bin
+	fi
+
+	curl -s -L get.frbltr.app > "${HOME}"/.local/bin/frobulator
+
+	chmod +x "${HOME}"/.local/bin/frobulator
+fi
+
+. "${HOME}"/.local/bin/frobulator
+
+# script ///////////////////////////////////////////////////////////////////////
+
+script=$(basename -- "${BASH_SOURCE[0]}")
+
+# version //////////////////////////////////////////////////////////////////////
+
+version="08-08-2023"
+
+# usage ////////////////////////////////////////////////////////////////////////
+
+# prompt ///////////////////////////////////////////////////////////////////////
+
+frobulator.script "Setting up ${script#*-}"
+echo
+
+# variables ////////////////////////////////////////////////////////////////////
+
+frobulator.inf "Test line 1 - information"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.msg "Test line 1 - message"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.add "Test line 1 - add"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.rem "Test line 1 - remove"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.ret "Test line 1 - retain"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.rel "Test line 1 - release"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.fwd "Test line 1 - forward"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.rev "Test line 1 - reverse"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.stp "Test line 1 - stop"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.dwl "Test line 1 - download"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.upl "Test line 1 - upload"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.lnk "Test line 1 - link"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.scs "Test line 1 - success"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.wrn "Test line 1 - warning"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.err "Test line 1 - error"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.ins "Test line 1 - insert"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.ask "Test line 1 - question"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.ipt "Test line 1 - input"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.usr "Test line 1 - user"
+frobulator.nul "Test line 2"
+echo
+
+frobulator.separate
+
+frobulator.white "white"
+frobulator.silver "silver"
+frobulator.grey "grey"
+frobulator.black "black"
+echo
+
+frobulator.red "red"
+frobulator.crimson "crimson"
+echo
+
+frobulator.green "green"
+frobulator.lime "lime"
+echo
+
+frobulator.yellow "yellow"
+frobulator.orange "orange"
+echo
+
+frobulator.blue "blue"
+frobulator.navy "navy"
+echo
+
+frobulator.magenta "magenta"
+frobulator.purple "purple"
+echo
+
+frobulator.fuschia "fuschia"
+frobulator.pink "pink"
+echo
+
+frobulator.aqua "aqua"
+frobulator.teal "teal"
+echo
+

@@ -1337,6 +1337,13 @@ frobulator.progress () {
 	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
+	type="${1}"
+
+	if [ "${type}" = "download" ]
+	then
+		frobulator.prompt "Downloading..."
+	fi
+
 	i=1
 
 	while [ -d /proc/"${PID}" ]

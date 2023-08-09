@@ -1334,9 +1334,6 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	frobulator.prompt "${@}"
-	value="${frobulator_string[@]}"
-
 	type="${1}"
 
 	if [ "${type}" = "download" ]
@@ -1344,7 +1341,10 @@ frobulator.progress () {
 		frobulator.prompt "Downloading..."
 	fi
 
-	i=1
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	iteration=1
 
 	while [ -d /proc/"${PID}" ]
 	do
@@ -1353,7 +1353,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${fuschia} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
+		echo -n -e "\r${before}${fuschia} \b${spinner:iteration++%${#spinner}:1}${reset}${after} ${value}\c "
 
 		sleep 0.25
 	done

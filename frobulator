@@ -1334,34 +1334,47 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-
 	type="${1}"
 
 	if [[ "${type}" = "download" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Downloading..."
 
 	elif [[ "${type}" = "upload" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Uploading..."
 
 	elif [[ "${type}" = "generate" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Generating..."
 
 	elif [[ "${type}" = "parse" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Parsing..."
 
 	elif [[ "${type}" = "proceed" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Proceeding..."
 
 	elif [[ "${type}" = "continue" ]]
 	then
+		color="${fuschia}"
+
 		frobulator.prompt "Continuing..."
 
 	else
+		color="${white}"
+
 		frobulator.prompt "${@}"
 	fi
 
@@ -1376,7 +1389,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${fuschia} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
+		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
 
 		sleep 0.25
 	done

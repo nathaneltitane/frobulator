@@ -1334,19 +1334,42 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	type="${1}"
-
-	if [ "${type}" = "download" ]
-	then
-		frobulator.prompt "Downloading..."
-	else
-		frobulator.prompt "${@}"
-
-	fi
-
+	frobulator.prompt "${@}"
 	value="${frobulator_string[@]}"
 
-	iteration=1
+	type="${1}"
+
+	if [[ "${type}" = "download" ]]
+	then
+		frobulator.prompt "Downloading..."
+	fi
+
+	if [[ "${type}" = "upload" ]]
+	then
+		frobulator.prompt "Uploading..."
+	fi
+
+	if [[ "${type}" = "generate" ]]
+	then
+		frobulator.prompt "Generating..."
+	fi
+
+	if [[ "${type}" = "parse" ]]
+	then
+		frobulator.prompt "Parsing..."
+	fi
+
+	if [[ "${type}" = "proceed" ]]
+	then
+		frobulator.prompt "Proceeding..."
+	fi
+
+	if [[ "${type}" = "continue" ]]
+	then
+		frobulator.prompt "Continuing..."
+	fi
+
+	i=1
 
 	while [ -d /proc/"${PID}" ]
 	do
@@ -1355,10 +1378,12 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${fuschia} \b${spinner:iteration++%${#spinner}:1}${reset}${after} ${value}\c "
+		echo -n -e "\r${before}${fuschia} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
 
 		sleep 0.25
 	done
+
+	echo
 
 	# normalize line spacing:
 	# additional 'echo' required due to carriage return

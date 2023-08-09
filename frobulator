@@ -1339,7 +1339,7 @@ frobulator.progress () {
 
 	i=1
 
-	while [ $(ps -p "${PID}" > "${sink}") ]
+	while [ -d /proc/"${PID}" ]
 	do
 		echo -n -e "\r${before}${purple} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
 

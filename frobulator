@@ -1340,64 +1340,79 @@ frobulator.progress () {
 	then
 		type="${1}"
 
-		if [[ "${type}" = "download" ]]
+		if [[ "${type}" = [aA-zZ] ]]
 		then
-			color="${magenta}"
+			if [[ "${type}" = "download" ]]
+			then
+				color="${magenta}"
 
-		elif [[ "${type}" = "upload" ]]
-		then
-			color="${purple}"
+			elif [[ "${type}" = "upload" ]]
+			then
+				color="${purple}"
 
-		elif [[ "${type}" = "generate" ]]
-		then
-			color="${lime}"
+			elif [[ "${type}" = "generate" ]]
+			then
+				color="${lime}"
 
-		elif [[ "${type}" = "parse" ]]
-		then
+			elif [[ "${type}" = "parse" ]]
+			then
+				color="${grey}"
+
+			elif [[ "${type}" = "install" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "reinstall" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "remove" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "purge" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "update" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "upgrade" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "hold" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "release" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "clean" ]]
+			then
+				color="${blue}"
+
+			elif [[ "${type}" = "evaluate" ]]
+			then
+				color="${blue}"
+
+			elif [[ "${type}" = "process" ]]
+			then
+				color="${grey}"
+			fi
+
+		else
+			# set fallback for unwanted input type
+
+			type="process"
+
 			color="${grey}"
-
-		elif [[ "${type}" = "install" ]]
-		then
-			color="${silver}"
-
-		elif [[ "${type}" = "reinstall" ]]
-		then
-			color="${silver}"
-
-		elif [[ "${type}" = "remove" ]]
-		then
-			color="${silver}"
-
-		elif [[ "${type}" = "purge" ]]
-		then
-			color="${silver}"
-
-		elif [[ "${type}" = "update" ]]
-		then
-			color="${yellow}"
-
-		elif [[ "${type}" = "upgrade" ]]
-		then
-			color="${yellow}"
-
-		elif [[ "${type}" = "hold" ]]
-		then
-			color="${yellow}"
-
-		elif [[ "${type}" = "release" ]]
-		then
-			color="${yellow}"
-
-		elif [[ "${type}" = "clean" ]]
-		then
-			color="${blue}"
-
-		elif [[ "${type}" = "evaluate" ]]
-		then
-			color="${blue}"
 		fi
 
 		notification="${type}"
+
 	else
 		color="${white}"
 	fi

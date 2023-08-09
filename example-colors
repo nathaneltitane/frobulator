@@ -47,6 +47,130 @@ echo
 
 # variables ////////////////////////////////////////////////////////////////////
 
+frobulator.progress () {
+	# catch PID of last command
+
+	PID=$!
+
+	spinner="⎺⎻⎼⎽⎼⎻"
+
+	before="[ "
+	after=" ]"
+
+	notification="${@}"
+
+	if [ $# -eq 1 ]
+	then
+		type="${1}"
+
+
+if [[ "${type}" = [aA-zZ] ]]
+then
+			if [[ "${type}" = "download" ]]
+			then
+				color="${magenta}"
+
+			elif [[ "${type}" = "upload" ]]
+			then
+				color="${purple}"
+
+			elif [[ "${type}" = "generate" ]]
+			then
+				color="${lime}"
+
+			elif [[ "${type}" = "parse" ]]
+			then
+				color="${grey}"
+
+			elif [[ "${type}" = "install" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "reinstall" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "remove" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "purge" ]]
+			then
+				color="${silver}"
+
+			elif [[ "${type}" = "update" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "upgrade" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "hold" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "release" ]]
+			then
+				color="${yellow}"
+
+			elif [[ "${type}" = "clean" ]]
+			then
+				color="${blue}"
+
+			elif [[ "${type}" = "evaluate" ]]
+			then
+				color="${blue}"
+			fi
+
+		else
+			type="process"
+		fi
+
+		notification="${type}"
+
+	else
+		color="${white}"
+	fi
+
+	notification="${notification^}"
+
+	if [ "${notification: -1}" = "e" ]
+	then
+		notification=${notification/%e/ing...}
+	else
+		notification=${notification/%/ing...}
+	fi
+
+	frobulator.prompt "${notification}"
+
+	value="${frobulator_string[@]}"
+
+	i=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		if [ ! -d /proc/"${PID}" ]
+        then
+			break
+        fi
+
+		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
+
+		sleep 0.25
+	done
+
+	unset color
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
+
+
 frobulator.inf "Test line 1 - information"
 frobulator.nul "Test line 2"
 echo
@@ -163,4 +287,4 @@ frobulator.separate
 
 curl -s -L https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > /dev/null &
 
-frobulator.progress install
+frobulator.progress 0xxx00

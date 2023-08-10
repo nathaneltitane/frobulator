@@ -1334,13 +1334,13 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	notification="${@}"
-
 	if [ $# -eq 1 ]
 	then
-		type="${1}"
+		type="${@}"
 
-		if [[ "${type}" = [aA-zZ] ]]
+		# process alphabetical arguments only
+
+		if [[ "${type}" =~ [a-zA-Z] ]]
 		then
 			if [[ "${type}" = "download" ]]
 			then
@@ -1401,29 +1401,23 @@ frobulator.progress () {
 			elif [[ "${type}" = "process" ]]
 			then
 				color="${grey}"
+			else
+				# set fallback for unwanted input type
+
+				type="process"
+
+				color="${grey}"
 			fi
 
-		else
-			# set fallback for unwanted input type
+			notification="${type^}"
 
-			type="process"
-
-			color="${grey}"
+			if [ "${notification: -1}" = "e" ]
+			then
+				notification=${notification/%e/ing...}
+			else
+				notification=${notification/%/ing...}
+			fi
 		fi
-
-		notification="${type}"
-
-	else
-		color="${white}"
-	fi
-
-	notification="${notification^}"
-
-	if [ "${notification: -1}" = "e" ]
-	then
-		notification=${notification/%e/ing...}
-	else
-		notification=${notification/%/ing...}
 	fi
 
 	frobulator.prompt "${notification}"
@@ -2294,7 +2288,7 @@ frobulator.download () {
 					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 			fi
 
-			frobulator.progress "Downloading" "[ '${file}' ]"
+			frobulator.progress download "[ '${file}' ]"
 			echo
 
 			chmod a+rx "${path}"/"${file}"
@@ -2322,7 +2316,7 @@ frobulator.put () {
 		-H "Content-Type: ${type}"			\
 		-d 									"${file}" &
 
-	frobulator.progress "Uploading" "[ '${file}' ]"
+	frobulator.progress upload "[ '${file}' ]"
 	echo
 }
 
@@ -2490,12 +2484,12 @@ frobulator.clean () {
 
 	frobulator.log "${command_autoremove}" &
 
-	frobulator.progress "Flushing package(s)..."
+	frobulator.progress "flushing package(s)"
 	echo
 
 	frobulator.log "${command_clean}" &
 
-	frobulator.progress "Cleaning..."
+	frobulator.progress clean
 	echo
 
 	# fix 'dpkg' lock and errors:
@@ -2540,7 +2534,7 @@ frobulator.hold () {
 
 		frobulator.log "${command_hold} ${package}" &
 
-		frobulator.progress "Holding..."
+		frobulator.progress hold
 		echo
 	done
 
@@ -2582,7 +2576,7 @@ frobulator.release () {
 
 		frobulator.log "${command_unhold} ${package}" &
 
-		frobulator.progress "Releasing..."
+		frobulator.progress release
 		echo
 	done
 
@@ -2671,7 +2665,7 @@ frobulator.install () {
 
 			frobulator.log "$(echo ${command_install} ${package})" &
 
-			frobulator.progress "Installing..."
+			frobulator.progress install
 			echo
 		else
 			query_filter="$(apt  search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
@@ -2683,7 +2677,7 @@ frobulator.install () {
 
 				frobulator.log "$(echo ${command_install} ${package})" &
 
-				frobulator.progress "Installing..."
+				frobulator.progress install
 				echo
 
 				# cleanup
@@ -2848,7 +2842,7 @@ frobulator.reinstall () {
 	do
 		frobulator.log "${command_reinstall} ${package}" &
 
-		frobulator.progress "Reinstalling..."
+		frobulator.progress reinstall
 		echo
 	done
 
@@ -2875,7 +2869,7 @@ frobulator.update () {
 
 	frobulator.log "${command_update}" &
 
-	frobulator.progress "Updating..."
+	frobulator.progress update
 	echo
 }
 
@@ -2893,7 +2887,7 @@ frobulator.upgrade () {
 
 	frobulator.log "${command_upgrade}" &
 
-	frobulator.progress "Upgrading..."
+	frobulator.progress upgrade
 	echo
 }
 
@@ -2931,7 +2925,7 @@ frobulator.purge () {
 
 			frobulator.log "$(echo ${command_purge} ${package})" &
 
-			frobulator.progress "Purging..."
+			frobulator.progress purge
 			echo
 		else
 			frobulator.scs "Absent on system" "[ '${package}' ]"

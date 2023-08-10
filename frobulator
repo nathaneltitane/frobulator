@@ -1334,89 +1334,93 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	if [ $# -eq 1 ]
+	type="${@}"
+
+	if [ -z "${type}" ]
 	then
-		type="${@}"
+		type="process"
 
-		# process alphabetical arguments only
+		color="${grey}"
+	fi
 
-		if [[ "${type}" =~ [a-zA-Z] ]]
+	# process alphabetical arguments only
+
+	if [[ "${type}" =~ [a-zA-Z] ]]
+	then
+		if [[ "${type}" = "download" ]]
 		then
-			if [[ "${type}" = "download" ]]
-			then
-				color="${magenta}"
+			color="${magenta}"
 
-			elif [[ "${type}" = "upload" ]]
-			then
-				color="${purple}"
+		elif [[ "${type}" = "upload" ]]
+		then
+			color="${purple}"
 
-			elif [[ "${type}" = "generate" ]]
-			then
-				color="${lime}"
+		elif [[ "${type}" = "install" ]]
+		then
+			color="${aqua}"
 
-			elif [[ "${type}" = "parse" ]]
-			then
-				color="${grey}"
+		elif [[ "${type}" = "reinstall" ]]
+		then
+			color="${teal}"
 
-			elif [[ "${type}" = "install" ]]
-			then
-				color="${silver}"
+		elif [[ "${type}" = "remove" ]]
+		then
+			color="${red}"
 
-			elif [[ "${type}" = "reinstall" ]]
-			then
-				color="${silver}"
+		elif [[ "${type}" = "purge" ]]
+		then
+			color="${crimson}"
 
-			elif [[ "${type}" = "remove" ]]
-			then
-				color="${silver}"
+		elif [[ "${type}" = "update" ]]
+		then
+			color="${yellow}"
 
-			elif [[ "${type}" = "purge" ]]
-			then
-				color="${silver}"
+		elif [[ "${type}" = "upgrade" ]]
+		then
+			color="${orange}"
 
-			elif [[ "${type}" = "update" ]]
-			then
-				color="${yellow}"
+		elif [[ "${type}" = "hold" ]]
+		then
+			color="${aqua}"
 
-			elif [[ "${type}" = "upgrade" ]]
-			then
-				color="${yellow}"
+		elif [[ "${type}" = "release" ]]
+		then
+			color="${teal}"
 
-			elif [[ "${type}" = "hold" ]]
-			then
-				color="${yellow}"
+		elif [[ "${type}" = "clean" ]]
+		then
+			color="${fuschia}"
 
-			elif [[ "${type}" = "release" ]]
-			then
-				color="${yellow}"
+		elif [[ "${type}" = "parse" ]]
+		then
+			color="${green}"
 
-			elif [[ "${type}" = "clean" ]]
-			then
-				color="${blue}"
+		elif [[ "${type}" = "generate" ]]
+		then
+			color="${lime}"
 
-			elif [[ "${type}" = "evaluate" ]]
-			then
-				color="${blue}"
+		elif [[ "${type}" = "evaluate" ]]
+		then
+			color="${grey}"
 
-			elif [[ "${type}" = "process" ]]
-			then
-				color="${grey}"
-			else
-				# set fallback for unwanted input type
+		elif [[ "${type}" = "process" ]]
+		then
+			color="${grey}"
+		else
+			# set fallback for unwanted input type
 
-				type="process"
+			type="process"
 
-				color="${grey}"
-			fi
+			color="${grey}"
+		fi
 
-			notification="${type^}"
+		notification="${type^}"
 
-			if [ "${notification: -1}" = "e" ]
-			then
-				notification=${notification/%e/ing...}
-			else
-				notification=${notification/%/ing...}
-			fi
+		if [ "${notification: -1}" = "e" ]
+		then
+			notification=${notification/%e/ing...}
+		else
+			notification=${notification/%/ing...}
 		fi
 	fi
 

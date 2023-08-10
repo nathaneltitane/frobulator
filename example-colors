@@ -161,6 +161,6 @@ echo
 
 frobulator.separate
 
-curl -s -L https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > /dev/null &
+curl -s -L https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > "${sink}" &
 
 frobulator.progress download

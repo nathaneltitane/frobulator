@@ -1336,13 +1336,6 @@ frobulator.progress () {
 
 	type="${@}"
 
-	if [ -z "${type}" ]
-	then
-		type="frobulate"
-
-		color="${white}"
-	fi
-
 	# process alphabetical arguments only
 
 	if [[ "${type}" =~ [a-zA-Z] ]]
@@ -1406,6 +1399,7 @@ frobulator.progress () {
 		elif [[ "${type}" = "process" ]]
 		then
 			color="${grey}"
+
 		else
 			# set fallback for unwanted input type
 
@@ -1413,15 +1407,25 @@ frobulator.progress () {
 
 			color="${grey}"
 		fi
-
-		notification="${type^}"
-
-		if [ "${notification: -1}" = "e" ]
+	else
+		if [ -z "${type}" ]
 		then
-			notification=${notification/%e/ing...}
-		else
-			notification=${notification/%/ing...}
+			# set fallback for empty input type
+
+			type="frobulate"
+
+			color="${white}"
 		fi
+	fi
+
+	notification="${type^}"
+
+	if [ "${notification: -1}" = "e" ]
+	then
+		notification=${notification/%e/ing...}
+	else
+		notification=${notification/%/ing...}
+
 	fi
 
 	frobulator.prompt "${notification}"

@@ -47,6 +47,76 @@ echo
 
 # variables ////////////////////////////////////////////////////////////////////
 
+# bar //////////////////////////////////////////////////////////////////////////
+
+# WIP
+
+# use to mark process progress
+
+frobulator.bar () {
+	current="${1}"
+	total="${2}"
+
+	# catch PID of last command
+
+	PID=$!
+
+	seconds="0.1"
+
+	span=80		# total characters for line
+
+	before=8	# maximum characters for header:		'[ x ] [ '
+	after=12	# maximum characters for percentage:	' ] [ xxx % ]'
+
+	let buffer=${span}-${before}-${after}
+
+	let ratio=(${current}*100/${total}*100)
+	let percentage=${ratio}/100
+
+	let done=(${percentage}*${buffer})/100
+	let left=${buffer}-${done}
+
+	done=$(printf "%${done}s")
+	left=$(printf "%${left}s")
+
+	# substitutions
+
+	done="${purple}${done// //}${reset}"
+	left="${yellow}${left// /-}${reset}"
+
+	header="${marker_fwd}"
+	bar=" [ ${done}${left} ] "
+
+	# padding
+
+	if (( ${1} >= 0 && ${1} <= 9 ))
+	then
+		# handle number spacing for entries 1-9
+
+		percentage="[ ${percentage}   % ]"
+
+	elif (( ${current} >= 10 && ${total} <= 99 ))
+	then
+		# handle number spacing for entries 10-99
+
+		percentage="[ ${percentage}  % ]"
+	else
+		# handle number spacing for 100-999
+
+		percentage="[ ${percentage} % ]"
+	fi
+
+	echo -n -e "\r${header}${bar}${percentage}\c "
+
+	sleep "${seconds}"
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+
+}
+
 frobulator.inf "Test line 1 - information"
 frobulator.nul "Test line 2"
 echo
@@ -161,6 +231,6 @@ echo
 
 frobulator.separate
 
-curl -s -L https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > "${sink}" &
+curl -L https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > "${sink}" &
 
-frobulator.progress
+

@@ -1460,7 +1460,7 @@ frobulator.progress () {
 
 frobulator.bar () {
 	current="${1}"
-	total="${2}"
+	total="100"
 
 	# catch PID of last command
 
@@ -1511,7 +1511,9 @@ frobulator.bar () {
 		percentage="[ ${percentage} % ]"
 	fi
 
-	echo -n -e "\r${header}${bar}${percentage}\c"
+	echo -n -e "\r${header}${bar}${percentage}\c "
+
+	echo
 
 	sleep "${seconds}"
 }

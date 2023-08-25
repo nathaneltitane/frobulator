@@ -164,3 +164,22 @@ frobulator.separate
 curl --silent --location https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > "${sink}" &
 
 frobulator.progress download
+
+utilities_list+=(
+		termux-packages
+		termux-repositories
+		termux-update
+		termux-storage
+		termux-additions
+		container-expansion
+		container-image
+		container-packages
+		container-repositories
+		container-session
+		container-settings
+		container-user
+	)
+
+	frobulator.download get.dxtp.app "${HOME}"/test ${utilities_list[@]}
+
+	utilities_list=()

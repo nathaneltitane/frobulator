@@ -1334,7 +1334,80 @@ frobulator.progress () {
 	before="[ "
 	after=" ]"
 
-	notification="${@}"
+	notification=("${@}")
+
+	# process alphabetical arguments only
+
+	if [[ "${notification}" =~ [a-zA-Z] ]]
+	then
+		if [[ "${notification}" = "download" ]]
+		then
+			color="${magenta}"
+
+		elif [[ "${notification}" = "upload" ]]
+		then
+			color="${purple}"
+
+		elif [[ "${notification}" = "install" ]]
+		then
+			color="${blue}"
+
+		elif [[ "${notification}" = "reinstall" ]]
+		then
+			color="${navy}"
+
+		elif [[ "${notification}" = "remove" ]]
+		then
+			color="${red}"
+
+		elif [[ "${notification}" = "purge" ]]
+		then
+			color="${crimson}"
+
+		elif [[ "${notification}" = "update" ]]
+		then
+			color="${yellow}"
+
+		elif [[ "${notification}" = "upgrade" ]]
+		then
+			color="${orange}"
+
+		elif [[ "${notification}" = "hold" ]]
+		then
+			color="${aqua}"
+
+		elif [[ "${notification}" = "release" ]]
+		then
+			color="${teal}"
+
+		elif [[ "${notification}" = "clean" ]]
+		then
+			color="${black}"
+
+		elif [[ "${notification}" = "parse" ]]
+		then
+			color="${green}"
+
+		elif [[ "${notification}" = "generate" ]]
+		then
+			color="${lime}"
+
+		elif [[ "${notification}" = "evaluate" ]]
+		then
+			color="${silver}"
+
+		elif [[ "${notification}" = "process" ]]
+		then
+			color="${grey}"
+
+		else
+			# set fallback for unwanted input notification
+
+			notification="process"
+
+			color="${grey}"
+		fi
+	fi
 
 	if [ -z "${notification}" ]
 	then
@@ -1345,99 +1418,38 @@ frobulator.progress () {
 		color="${white}"
 	fi
 
-	if [ $# -ge 2 ]
-	then
-		frobulator.prompt "${@}"
-	fi
+	# select notification index for transformation
 
-	if [ $# -eq 1 ]
-	then
-		# process alphabetical arguments only
+	notification=${notification[0]}
 
-		if [[ "${notification}" =~ [a-zA-Z] ]]
-		then
-			if [[ "${notification}" = "download" ]]
-			then
-				color="${magenta}"
-
-			elif [[ "${notification}" = "upload" ]]
-			then
-				color="${purple}"
-
-			elif [[ "${notification}" = "install" ]]
-			then
-				color="${blue}"
-
-			elif [[ "${notification}" = "reinstall" ]]
-			then
-				color="${navy}"
-
-			elif [[ "${notification}" = "remove" ]]
-			then
-				color="${red}"
-
-			elif [[ "${notification}" = "purge" ]]
-			then
-				color="${crimson}"
-
-			elif [[ "${notification}" = "update" ]]
-			then
-				color="${yellow}"
-
-			elif [[ "${notification}" = "upgrade" ]]
-			then
-				color="${orange}"
-
-			elif [[ "${notification}" = "hold" ]]
-			then
-				color="${aqua}"
-
-			elif [[ "${notification}" = "release" ]]
-			then
-				color="${teal}"
-
-			elif [[ "${notification}" = "clean" ]]
-			then
-				color="${black}"
-
-			elif [[ "${notification}" = "parse" ]]
-			then
-				color="${green}"
-
-			elif [[ "${notification}" = "generate" ]]
-			then
-				color="${lime}"
-
-			elif [[ "${notification}" = "evaluate" ]]
-			then
-				color="${silver}"
-
-			elif [[ "${notification}" = "process" ]]
-			then
-				color="${grey}"
-			fi
-		else
-			# set fallback for unwanted input notification
-
-			notification="process"
-
-			color="${grey}"
-		fi
-
-		frobulator.prompt "${notification}"
-|	fi
-
-	# set first prompt letter to uppercase
+	# set notification to first letter uppercase
 
 	notification="${notification^}"
 
-	if [ "${notification: -1}" = "e" ]
+	if [ $# -eq 0 ] || [ $# -eq 1 ]
 	then
-		notification="${notification/%e/ing...}"
-	else
-		notification="${notification/%/ing...}"
+		if [ "${notification: -1}" = "e" ]
+		then
+			notification="${notification/%e/ing...}"
+		else
+			notification="${notification/%/ing...}"
 
+		fi
+
+	elif [ $# -eq 2 ]
+	then
+			if [ "${notification: -1}" = "e" ]
+		then
+			notification="${notification/%e/ing}"
+		else
+			notification="${notification/%/ing}"
+
+		fi
 	fi
+
+	notification[0]="${notification}"
+
+	frobulator.prompt ${notification[@]}
 
 	value="${frobulator_string[@]}"
 

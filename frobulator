@@ -1336,18 +1336,24 @@ frobulator.progress () {
 
 	notification="${@}"
 
-	# process alphabetical arguments only
+	if [ -z "${notification}" ]
+	then
+		# set fallback for empty input notification
+
+		notification="frobulate"
+
+		color="${white}"
+	fi
 
 	if [ $# -ge 2 ]
 	then
-		notification="${notification/%/...}"
-
 		frobulator.prompt "${@}"
-
 	fi
 
-	if [ $# -le 1 ]
+	if [ $# -eq 1 ]
 	then
+		# process alphabetical arguments only
+
 		if [[ "${notification}" =~ [a-zA-Z] ]]
 		then
 			if [[ "${notification}" = "download" ]]
@@ -1409,41 +1415,29 @@ frobulator.progress () {
 			elif [[ "${notification}" = "process" ]]
 			then
 				color="${grey}"
-
-			else
-				# set fallback for unwanted input notification
-
-				notification="process"
-
-				color="${grey}"
 			fi
 		else
-			if [ -z "${notification}" ]
-			then
-				# set fallback for empty input notification
+			# set fallback for unwanted input notification
 
-				notification="frobulate"
+			notification="process"
 
-				color="${white}"
-			fi
+			color="${grey}"
 		fi
 
-		# set first prompt letter to uppercase
+		frobulator.prompt "${notification}"
+|	fi
 
-		notification="${notification^}"
+	# set first prompt letter to uppercase
 
-		if [ "${notification: -1}" = "e" ]
-		then
-			notification="${notification/%e/ing...}"
-		else
-			notification="${notification/%/ing...}"
+	notification="${notification^}"
 
-		fi
-			frobulator.prompt "${notification}"
-
+	if [ "${notification: -1}" = "e" ]
+	then
+		notification="${notification/%e/ing...}"
+	else
+		notification="${notification/%/ing...}"
 
 	fi
-
 
 	value="${frobulator_string[@]}"
 

@@ -1435,10 +1435,11 @@ frobulator.progress () {
 			notification="${notification/%/ing...}"
 
 		fi
+	fi
 
-	elif [ $# -eq 2 ]
+	if [ $# -eq 2 ]
 	then
-			if [ "${notification: -1}" = "e" ]
+		if [ "${notification: -1}" = "e" ]
 		then
 			notification="${notification/%e/ing}"
 		else

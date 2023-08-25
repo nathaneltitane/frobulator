@@ -1426,7 +1426,7 @@ frobulator.progress () {
 
 	notification="${notification^}"
 
-	if [ $# -eq 0 ] || [ $# -eq 1 ]
+	if [ $# -le 1 ]
 	then
 		if [ "${notification: -1}" = "e" ]
 		then
@@ -1437,7 +1437,7 @@ frobulator.progress () {
 		fi
 	fi
 
-	if [ $# -eq 2 ]
+	if [ $# -ge 2 ]
 	then
 		if [ "${notification: -1}" = "e" ]
 		then
@@ -2321,7 +2321,6 @@ frobulator.download () {
 			fi
 
 			frobulator.progress download "[ '${file}' ]"
-			echo
 
 			chmod a+rx "${path}"/"${file}"
 		done
@@ -2332,7 +2331,6 @@ frobulator.download () {
 
 	else
 		frobulator.err "Status unknown" "[ Status // N/A ]"
-		echo
 	fi
 }
 

@@ -1364,7 +1364,8 @@ frobulator.progress () {
 		then
 			color="${crimson}"
 
-		elif [[ "${notification}" = "update" ]]
+		elif [[ "${notification}" = "update" ]] || \
+		     [[ "${notification}" = "clone"  ]]
 		then
 			color="${yellow}"
 
@@ -1376,7 +1377,8 @@ frobulator.progress () {
 		then
 			color="${aqua}"
 
-		elif [[ "${notification}" = "release" ]]
+		elif [[ "${notification}" = "release" ]] || \
+		     [[ "${notification}" = "build"   ]]
 		then
 			color="${teal}"
 

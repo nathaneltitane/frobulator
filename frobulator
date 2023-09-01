@@ -1315,6 +1315,45 @@ frobulator.countdown () {
 
 	echo
 }
+# process //////////////////////////////////////////////////////////////////////
+
+# progress /////////////////////////////////////////////////////////////////////
+
+# use as ticker line marker to mark process completion or progress
+# use after process marked  for background operation
+
+# usage:      process &
+#             frobulator.process "[string]"
+
+frobulator.process () {
+	# catch PID of last command
+
+	PID=$!
+
+	spinner='/\'
+
+	before="[ "
+	after=" ]"
+
+	frobulator.prompt "${@}"
+	value="${frobulator_string[@]}"
+
+	i=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
+
+		sleep 0.25
+	done
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
 
 # progress /////////////////////////////////////////////////////////////////////
 
@@ -1329,7 +1368,7 @@ frobulator.progress () {
 
 	PID=$!
 
-	spinner="⎺⎻⎼⎽⎼⎻"
+	spinner='⎺⎻⎼⎽⎼⎻'
 
 	before="[ "
 	after=" ]"
@@ -2517,12 +2556,12 @@ frobulator.clean () {
 
 	frobulator.log "${command_autoremove}" &
 
-	frobulator.progress "flushing package(s)"
+	frobulator.process "flushing package(s)"
 	echo
 
 	frobulator.log "${command_clean}" &
 
-	frobulator.progress clean
+	frobulator.progress "clean"
 	echo
 
 	# fix 'dpkg' lock and errors:

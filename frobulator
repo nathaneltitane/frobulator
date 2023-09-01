@@ -588,7 +588,6 @@ frobulator.prompt () {
 
 	if [ $# -ge 0 ]
 	then
-		count=74
 		span_character="/"
 	fi
 
@@ -614,7 +613,7 @@ frobulator.prompt () {
 	# 2+ arguments - reduce span by 6 characters:
 	# compensate for line marker + space
 
-	if [ $# -ge 2 ]
+	if [ $# -eq 0 ] || [ $# -ge 2 ]
 	then
 		span=${span::-6}
 	fi

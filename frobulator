@@ -588,6 +588,7 @@ frobulator.prompt () {
 
 	if [ $# -ge 0 ]
 	then
+		count=74
 		span_character="/"
 	fi
 
@@ -1322,7 +1323,7 @@ frobulator.countdown () {
 # use as ticker line marker to mark process completion or progress
 # use after process marked  for background operation
 
-# usage:      process &
+# usage:      [process] &
 #             frobulator.process "[string]"
 
 frobulator.process () {
@@ -1360,7 +1361,7 @@ frobulator.process () {
 # use as ticker line marker to mark process wait progress
 # use after process marked to for in background
 
-# usage:      process &
+# usage:      [process] &
 #             frobulator.progress "[string]"
 
 frobulator.progress () {

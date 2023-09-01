@@ -45,6 +45,12 @@ version="08-13-2023"
 frobulator.script "Setting up ${script#*-}"
 echo
 
+	if [ ${#begin} -eq 0 ]
+	then
+		span_count=6
+		span=${span:0:$span_count}
+	fi
+
 # variables ////////////////////////////////////////////////////////////////////
 
 frobulator.inf "Test line 1 - information"
@@ -163,7 +169,7 @@ frobulator.separate
 
 curl --silent --location https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04-base-arm64.tar.gz > "${sink}" &
 
-frobulator.process "Stopping display server..."
+frobulator.process
 
 exit
 

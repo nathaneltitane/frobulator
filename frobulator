@@ -613,7 +613,7 @@ frobulator.prompt () {
 	# 2+ arguments - reduce span by 6 characters:
 	# compensate for line marker + space
 
-	if [ $# -eq 0 ] || [ $# -ge 2 ]
+	if [ $# -ge 2 ]
 	then
 		span=${span::-6}
 	fi
@@ -661,6 +661,13 @@ frobulator.prompt () {
 	span_count=$(( ${#span} - ${#begin} - ${#end} ))
 
 	# set new padding width ///////////////////////////////////////// # FIX ME #
+
+	if [ ${#begin} -eq 0 ]
+	then
+		span=${span::-6}
+	else
+		span=""
+	fi
 
 	if [ ${#begin} -le "${count}" ]
 	then

@@ -1394,7 +1394,8 @@ frobulator.progress () {
 		then
 			color="${lime}"
 
-		elif [[ "${notification}" = "evaluate" ]]
+		elif [[ "${notification}" = "evaluate" ]] || \
+		     [[ "${notification}" = "probe"    ]]
 		then
 			color="${silver}"
 

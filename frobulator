@@ -583,21 +583,9 @@ frobulator.prompt () {
 		span=""
 	fi
 
-	# parse arguments
+	# set span character default
 
-	# 0 argument - full dash line
-
-	if [ $# -ge 0 ]
-	then
-		span_character="/"
-	fi
-
-	# 1 argument - pad to end of line
-
-	if [ $# -eq 1 ]
-	then
-		span_character="/"
-	fi
+	span_character="/"
 
 	# 3 arguments - replace span character with argument 3
 
@@ -1242,11 +1230,15 @@ frobulator.num () {
 
 frobulator.sep () {
 
+	# set line header compensation override
+
+	separation_marker="//////"
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
 
-	echo -e "${value}"
+	echo -e "${separation_marker}${value}"
 }
 
 # separate /////////////////////////////////////////////////////////////////////

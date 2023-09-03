@@ -1257,6 +1257,7 @@ frobulator.sep () {
 frobulator.separate () {
 
 	frobulator.sep
+
 	echo
 }
 

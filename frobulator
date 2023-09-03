@@ -624,7 +624,6 @@ frobulator.prompt () {
 		span=${span::-6}
 	fi
 
-
 	# 2+ arguments - append space to 'begin' value
 
 	if [ $# -ge 2 ]
@@ -667,7 +666,7 @@ frobulator.prompt () {
 
 	span_count=$(( ${#span} - ${#begin} - ${#end} ))
 
-	# set new padding width ///////////////////////////////////////// # FIX ME #
+	# set new padding width
 
  	if [ ${#begin} -lt "${count}" ]
  	then
@@ -675,8 +674,6 @@ frobulator.prompt () {
  	else
  		span=""
  	fi
-
-	# /////////////////////////////////////////////////////////////// # FIX ME #
 
 	span_middle="${span}"
 
@@ -1266,7 +1263,6 @@ frobulator.sep () {
 #
 
 frobulator.separate () {
-
 
 	frobulator.sep
 	echo

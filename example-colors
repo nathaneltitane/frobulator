@@ -2,31 +2,31 @@
 
 # dependencies /////////////////////////////////////////////////////////////////
 
-if [[ -z $(command -v frobulator) ]]
-then
-	if [[ $(id -u -n) = "root" ]]
-	then
-		SUDO_HOME=/root
-
-		USER="${SUDO_USER}"
-
-		HOME=/home/"${USER}"
-	fi
-
-	if [[ -z $(command -v curl) ]]
-	then
-		yes | apt-get install curl
-	fi
-
-	if [ ! -d "${HOME}"/.local/bin ]
-	then
-		mkdir -p "${HOME}"/.local/bin
-	fi
-
-	curl -s -L get.frbltr.app > "${HOME}"/.local/bin/frobulator
-
-	chmod +x "${HOME}"/.local/bin/frobulator
-fi
+# if [[ -z $(command -v frobulator) ]]
+# then
+# 	if [[ $(id -u -n) = "root" ]]
+# 	then
+# 		SUDO_HOME=/root
+#
+# 		USER="${SUDO_USER}"
+#
+# 		HOME=/home/"${USER}"
+# 	fi
+#
+# 	if [[ -z $(command -v curl) ]]
+# 	then
+# 		yes | apt-get install curl
+# 	fi
+#
+# 	if [ ! -d "${HOME}"/.local/bin ]
+# 	then
+# 		mkdir -p "${HOME}"/.local/bin
+# 	fi
+#
+# 	curl -s -L get.frbltr.app > "${HOME}"/.local/bin/frobulator
+#
+# 	chmod +x "${HOME}"/.local/bin/frobulator
+# fi
 
 . "${HOME}"/.local/bin/frobulator
 
@@ -40,130 +40,316 @@ version="08-13-2023"
 
 # usage ////////////////////////////////////////////////////////////////////////
 
+# functions ////////////////////////////////////////////////////////////////////
+
+
+frobulator.prompt () {
+
+	# initialize string return array
+
+	frobulator_string=(${@})
+
+		echo ${frobulator_string[@]}
+
+		echo $#
+
+		echo ${begin}
+
+	begin="${1}"
+	end="${2}"
+
+	# provide fallback for line character count
+
+	if [ -z "${count}" ]
+	then
+		count=80
+	fi
+
+	# set span width
+
+	if [ ${#begin} -le "${count}" ]
+	then
+		span="--------------------------------------------------------------------------------"
+	else
+		span=""
+	fi
+
+	# parse arguments
+
+	# 0 argument - full dash line
+
+	if [ $# -ge 0 ]
+	then
+		span_character="/"
+	fi
+
+	# 1 argument - pad to end of line
+
+	if [ $# -eq 1 ]
+	then
+		span_character="/"
+	fi
+
+	# 3 arguments - replace span character with argument 3
+
+	if [ $# -eq 3 ]
+	then
+		span_character="${3}"
+
+		if [ ${#span_character} -gt 1 ]
+		then
+			count=$((${count} / ${#span_character}))
+		fi
+	fi
+
+	# 2+ arguments - reduce span by 6 characters:
+	# compensate for line marker + space
+
+	if [ $# -ge 2 ]
+	then
+		span=${span::-6}
+	fi
+
+	if [[ $value = "" ]]
+	then
+		span=${span::-6}
+	fi
+
+	# 2+ arguments - append space to 'begin' value
+
+	if [ $# -ge 2 ]
+	then
+		begin="${begin} "
+	fi
+
+	# 2+ arguments - prepend space to 'end' value
+
+	if [ $# -ge 2 ]
+	then
+		end=" ${end}"
+	fi
+
+	# 75+ characters per single string:
+	# fold string using word detection at limit
+	# to prevent overstepping 80 characters overall limit
+	# indent second line onward (6 spaces) to match line marker
+	# detect newline character and indent onward (6 spaces) to match line marker
+
+	margin=5
+
+	fold=$(( "${count}" - "${margin}" ))
+
+	if [ $# -eq 1 ] && [ "${#begin}" -ge "${fold}" ]
+	then
+		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
+	fi
+
+	# substitute span character
+
+	span="${span//-/$span_character}"
+
+	# print first argument
+
+	span_begin=$(echo -n -e "${begin}")
+
+	# print other arguments as fixed width prompt if present:
+	# calculate span width - remove 6 characters for prompt header
+
+	span_count=$(( ${#span} - ${#begin} - ${#end} ))
+
+	echo ${#begin}
+
+	# set new padding width ///////////////////////////////////////// # FIX ME #
+
+ 	if [ ${#begin} -lt "${count}" ]
+ 	then
+ 		span=${span:0:$span_count}
+ 	else
+ 		span=""
+ 	fi
+
+	# /////////////////////////////////////////////////////////////// # FIX ME #
+
+	span_middle="${span}"
+
+	span_end=$(echo -e "${end}")
+
+	# populate array at end to avoid integrating spaces
+
+	if [ $# -ge 0 ]
+	then
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 1 ]
+	then
+		frobulator_string=("${span_begin}")
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 3 ]
+	then
+		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+}
+
+frobulator.process () {
+
+	# catch PID of last command
+
+	PID=$!
+
+	spinner='/\'
+
+	before="[ "
+	after=" ]"
+
+	frobulator.prompt "${@}"
+
+	value=${frobulator_string[@]}
+
+	i=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
+
+		sleep 0.25
+	done
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+
+	echo $value
+}
+
+
 # prompt ///////////////////////////////////////////////////////////////////////
 
-frobulator.script "Setting up ${script#*-}"
-echo
-
-	if [ ${#begin} -eq 0 ]
-	then
-		span_count=6
-		span=${span:0:$span_count}
-	fi
+# frobulator.script "Setting up ${script#*-}"
+# echo
 
 # variables ////////////////////////////////////////////////////////////////////
 
-frobulator.inf "Test line 1 - information"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.msg "Test line 1 - message"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.add "Test line 1 - add"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.rem "Test line 1 - remove"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.ret "Test line 1 - retain"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.rel "Test line 1 - release"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.fwd "Test line 1 - forward"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.rev "Test line 1 - reverse"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.stp "Test line 1 - stop"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.dwl "Test line 1 - download"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.upl "Test line 1 - upload"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.lnk "Test line 1 - link"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.scs "Test line 1 - success"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.wrn "Test line 1 - warning"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.err "Test line 1 - error"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.ins "Test line 1 - insert"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.ask "Test line 1 - question"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.ipt "Test line 1 - input"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.usr "Test line 1 - user"
-frobulator.nul "Test line 2"
-echo
-
-frobulator.separate
-
-frobulator.white "white"
-frobulator.silver "silver"
-frobulator.grey "grey"
-frobulator.black "black"
-echo
-
-frobulator.red "red"
-frobulator.crimson "crimson"
-echo
-
-frobulator.green "green"
-frobulator.lime "lime"
-echo
-
-frobulator.yellow "yellow"
-frobulator.orange "orange"
-echo
-
-frobulator.blue "blue"
-frobulator.navy "navy"
-echo
-
-frobulator.magenta "magenta"
-frobulator.purple "purple"
-echo
-
-frobulator.fuschia "fuschia"
-frobulator.pink "pink"
-echo
-
-frobulator.aqua "aqua"
-frobulator.teal "teal"
-echo
+# frobulator.inf "Test line 1 - information"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.msg "Test line 1 - message"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.add "Test line 1 - add"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.rem "Test line 1 - remove"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.ret "Test line 1 - retain"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.rel "Test line 1 - release"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.fwd "Test line 1 - forward"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.rev "Test line 1 - reverse"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.stp "Test line 1 - stop"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.dwl "Test line 1 - download"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.upl "Test line 1 - upload"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.lnk "Test line 1 - link"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.scs "Test line 1 - success"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.wrn "Test line 1 - warning"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.err "Test line 1 - error"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.ins "Test line 1 - insert"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.ask "Test line 1 - question"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.ipt "Test line 1 - input"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.usr "Test line 1 - user"
+# frobulator.nul "Test line 2"
+# echo
+#
+# frobulator.separate
+#
+# frobulator.white "white"
+# frobulator.silver "silver"
+# frobulator.grey "grey"
+# frobulator.black "black"
+# echo
+#
+# frobulator.red "red"
+# frobulator.crimson "crimson"
+# echo
+#
+# frobulator.green "green"
+# frobulator.lime "lime"
+# echo
+#
+# frobulator.yellow "yellow"
+# frobulator.orange "orange"
+# echo
+#
+# frobulator.blue "blue"
+# frobulator.navy "navy"
+# echo
+#
+# frobulator.magenta "magenta"
+# frobulator.purple "purple"
+# echo
+#
+# frobulator.fuschia "fuschia"
+# frobulator.pink "pink"
+# echo
+#
+# frobulator.aqua "aqua"
+# frobulator.teal "teal"
+# echo
 
 frobulator.separate
 
@@ -171,23 +357,3 @@ curl --silent --location https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/r
 
 frobulator.process
 
-exit
-
-utilities_list+=(
-		termux-packages
-		termux-repositories
-		termux-update
-		termux-storage
-		termux-additions
-		container-expansion
-		container-image
-		container-packages
-		container-repositories
-		container-session
-		container-settings
-		container-user
-	)
-
-	frobulator.download get.dxtp.app "${HOME}"/test ${utilities_list[@]}
-
-	utilities_list=()

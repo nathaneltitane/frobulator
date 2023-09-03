@@ -612,18 +612,15 @@ frobulator.prompt () {
 		span=${span::-6}
 	fi
 
-	# 2+ arguments - append space to 'begin' value
+	# 2+ arguments:
+	# append space to 'begin' value
+	# prepend space to 'end' value
 
 	if [ $# -ge 2 ]
 	then
 		begin="${begin} "
-	fi
-
-	# 2+ arguments - prepend space to 'end' value
-
-	if [ $# -ge 2 ]
-	then
 		end=" ${end}"
+
 	fi
 
 	# 75+ characters per single string:

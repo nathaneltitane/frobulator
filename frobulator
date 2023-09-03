@@ -559,6 +559,7 @@ marker_nul='     '
 # uses line folding with word detection for strings over 80 characters long
 
 frobulator.prompt () {
+
 	# initialize string return array
 
 	frobulator_string=()
@@ -613,10 +614,16 @@ frobulator.prompt () {
 	# 2+ arguments - reduce span by 6 characters:
 	# compensate for line marker + space
 
-	if [ $# -ge 2 ] || [ $# -eq 0 ]
+	if [ $# -ge 2 ]
 	then
 		span=${span::-6}
 	fi
+
+	if [ $# -le 0 ]
+	then
+		span=${span::-6}
+	fi
+
 
 	# 2+ arguments - append space to 'begin' value
 
@@ -714,6 +721,7 @@ frobulator.prompt () {
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
 
 frobulator.black () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -722,6 +730,7 @@ frobulator.black () {
 }
 
 frobulator.silver () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -730,6 +739,7 @@ frobulator.silver () {
 }
 
 frobulator.grey () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -738,6 +748,7 @@ frobulator.grey () {
 }
 
 frobulator.white () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -746,6 +757,7 @@ frobulator.white () {
 }
 
 frobulator.red () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -754,6 +766,7 @@ frobulator.red () {
 }
 
 frobulator.crimson () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -762,6 +775,7 @@ frobulator.crimson () {
 }
 
 frobulator.green () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -770,6 +784,7 @@ frobulator.green () {
 }
 
 frobulator.lime () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -778,6 +793,7 @@ frobulator.lime () {
 }
 
 frobulator.yellow () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -786,6 +802,7 @@ frobulator.yellow () {
 }
 
 frobulator.orange () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -794,6 +811,7 @@ frobulator.orange () {
 }
 
 frobulator.blue () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -802,6 +820,7 @@ frobulator.blue () {
 }
 
 frobulator.navy () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -810,6 +829,7 @@ frobulator.navy () {
 }
 
 frobulator.magenta () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -818,6 +838,7 @@ frobulator.magenta () {
 }
 
 frobulator.purple () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -826,6 +847,7 @@ frobulator.purple () {
 }
 
 frobulator.fuschia () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -834,6 +856,7 @@ frobulator.fuschia () {
 }
 
 frobulator.pink () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -842,6 +865,7 @@ frobulator.pink () {
 }
 
 frobulator.aqua () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -850,6 +874,7 @@ frobulator.aqua () {
 }
 
 frobulator.teal () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -903,6 +928,7 @@ frobulator.teal () {
 # information line marker //////////////////////////////////////////////////////
 
 frobulator.inf () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -915,6 +941,7 @@ frobulator.inf () {
 # warning line marker //////////////////////////////////////////////////////
 
 frobulator.wrn () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -927,6 +954,7 @@ frobulator.wrn () {
 # message line marker //////////////////////////////////////////////////////////
 
 frobulator.msg () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -939,6 +967,7 @@ frobulator.msg () {
 # add line marker //////////////////////////////////////////////////////////////
 
 frobulator.add () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -951,6 +980,7 @@ frobulator.add () {
 # remove line marker ///////////////////////////////////////////////////////////
 
 frobulator.rem () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -963,6 +993,7 @@ frobulator.rem () {
 # retain line marker ///////////////////////////////////////////////////////////
 
 frobulator.ret () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -975,6 +1006,7 @@ frobulator.ret () {
 # release line marker //////////////////////////////////////////////////////////
 
 frobulator.rel () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -987,6 +1019,7 @@ frobulator.rel () {
 # forward line marker //////////////////////////////////////////////////////////
 
 frobulator.fwd () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -999,6 +1032,7 @@ frobulator.fwd () {
 # reverse line marker //////////////////////////////////////////////////////////
 
 frobulator.rev () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1011,6 +1045,7 @@ frobulator.rev () {
 # stop line marker /////////////////////////////////////////////////////////////
 
 frobulator.stp () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1023,6 +1058,7 @@ frobulator.stp () {
 # download line marker /////////////////////////////////////////////////////////
 
 frobulator.dwl () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1035,6 +1071,7 @@ frobulator.dwl () {
 # upload line marker ///////////////////////////////////////////////////////////
 
 frobulator.upl () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1047,6 +1084,7 @@ frobulator.upl () {
 # link line marker /////////////////////////////////////////////////////////////
 
 frobulator.lnk () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1059,6 +1097,7 @@ frobulator.lnk () {
 # success line marker //////////////////////////////////////////////////////////
 
 frobulator.scs () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1071,6 +1110,7 @@ frobulator.scs () {
 # error line marker ////////////////////////////////////////////////////////////
 
 frobulator.err () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1083,6 +1123,7 @@ frobulator.err () {
 # insert line marker ///////////////////////////////////////////////////////////
 
 frobulator.ins () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1104,6 +1145,7 @@ frobulator.ins () {
 # ask line marker //////////////////////////////////////////////////////////////
 
 frobulator.ask () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1116,6 +1158,7 @@ frobulator.ask () {
 # input line marker ////////////////////////////////////////////////////////////
 
 frobulator.ipt () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1128,6 +1171,7 @@ frobulator.ipt () {
 # user line marker /////////////////////////////////////////////////////////////
 
 frobulator.usr () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1142,6 +1186,7 @@ frobulator.usr () {
 # use to carry over prompts without adding a line marker while retaining color
 
 frobulator.nul () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1171,6 +1216,7 @@ frobulator.nul () {
 # result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
 
 frobulator.num () {
+
 	before="[ "
 	after=" ]"
 
@@ -1198,6 +1244,7 @@ frobulator.num () {
 # result:     ////////////////////////////////////////////////////////////////////////////////
 
 frobulator.sep () {
+
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
@@ -1220,6 +1267,7 @@ frobulator.sep () {
 
 frobulator.separate () {
 
+
 	frobulator.sep
 	echo
 }
@@ -1236,6 +1284,7 @@ frobulator.separate () {
 # result:     [ ¤ ] Setting up 'script' ///////////////////////////////////////////// [ name ]
 
 frobulator.script () {
+
 	description="${1}"
 
 	if [[ "${script}" = *-* ]]
@@ -1259,6 +1308,7 @@ frobulator.script () {
 # usage:      frobulator.type "[string]" "[seconds]"
 
 frobulator.type () {
+
 	string=${#1}
 	seconds="${2}"
 
@@ -1288,6 +1338,7 @@ frobulator.type () {
 # usage:      frobulator.timeout "[seconds]"
 
 frobulator.timeout () {
+
 	# timeout in seconds
 
 	seconds="${1}"
@@ -1308,6 +1359,7 @@ frobulator.timeout () {
 # clears previous step when all checkpoint markers are met
 
 frobulator.clear () {
+
 	frobulator.timeout
 
 	clear
@@ -1321,6 +1373,7 @@ frobulator.clear () {
 # usage:      frobulator.countdown "[seconds]" "[string]" "[string]"
 
 frobulator.countdown () {
+
 	before="[ "
 	after=" ]"
 
@@ -1367,6 +1420,7 @@ frobulator.countdown () {
 #             frobulator.process "[string]"
 
 frobulator.process () {
+
 	# catch PID of last command
 
 	PID=$!
@@ -1406,6 +1460,7 @@ frobulator.process () {
 #             frobulator.progress "[string]"
 
 frobulator.progress () {
+
 	# catch PID of last command
 
 	PID=$!
@@ -1569,6 +1624,7 @@ frobulator.progress () {
 # use to mark process progress
 
 frobulator.bar () {
+
 	current="${1}"
 	total="100"
 
@@ -1637,6 +1693,7 @@ frobulator.bar () {
 # usage:      frobulator.temporary "[directory name]" | "[array name]"
 
 frobulator.temporary () {
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array
@@ -1688,6 +1745,7 @@ frobulator.temporary () {
 #             frobulator.trap "${directory name}"
 
 frobulator.trap () {
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array
@@ -1716,6 +1774,7 @@ frobulator.trap () {
 # usage:      frobulator.directory "[path]" "[directory name]" | "[array name]"
 
 frobulator.directory () {
+
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
@@ -1781,6 +1840,7 @@ frobulator.directory () {
 # usage:      frobulator.write "[content]" "[path]" "[file]"
 
 frobulator.write () {
+
 	content="${1}"
 
 	if [ $# -eq 2 ]
@@ -1859,6 +1919,7 @@ frobulator.write () {
 # usage:      frobulator.flag "[content]" "[path]" "[file]"
 
 frobulator.flag () {
+
 	content="${1}"
 
 	if [ $# -eq 2 ]
@@ -1928,6 +1989,7 @@ frobulator.flag () {
 # use to generate file(s) from argument or array list
 
 frobulator.file () {
+
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
@@ -1994,6 +2056,7 @@ frobulator.file () {
 # keeps selected files in directory
 
 frobulator.keep () {
+
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
@@ -2073,6 +2136,7 @@ frobulator.keep () {
 # removes selected file in directory
 
 frobulator.delete () {
+
 	if [ $# -eq 1 ]
 	then
 		path="${PWD}"
@@ -2126,6 +2190,7 @@ frobulator.delete () {
 # use to copy file(s) and/or diretories from argument or array list
 
 frobulator.copy () {
+
 	source="${1}"
 	target="${2}"
 
@@ -2165,6 +2230,7 @@ frobulator.copy () {
 # use to move file(s) and/or diretories from argument or array list
 
 frobulator.move () {
+
 	source="${1}"
 	target="${2}"
 
@@ -2209,6 +2275,7 @@ frobulator.move () {
 # use to link file(s) and/or diretories from argument or array list
 
 frobulator.link () {
+
 	source="${1}"
 	target="${2}"
 
@@ -2265,6 +2332,7 @@ frobulator.link () {
 # use to validate http status code prior to download / upload operations
 
 frobulator.status () {
+
 	url="${@}"
 
 	status_code="%{http_code}\n"
@@ -2282,6 +2350,7 @@ frobulator.status () {
 # use to download file(s) with url status verification from argument or array list
 
 frobulator.download () {
+
 	url="${1}"
 
 	frobulator.status "${url}"
@@ -2423,6 +2492,7 @@ frobulator.download () {
 # WIP
 
 frobulator.put () {
+
 	type="${1}"
 
 	curl									\
@@ -2452,6 +2522,7 @@ frobulator.upload () {
 # provides fully silent execution
 
 frobulator.silence () {
+
 	command="${@}"
 
 	"${shell}" -c "$(echo ${command})" >> "${sink}" 2>&1
@@ -2463,6 +2534,7 @@ frobulator.silence () {
 # provides fully silent execution
 
 frobulator.log () {
+
 	if [ -z "${SUDO:-$HOME}" ]
 	then
 		log_directory="${PREFIX}"/var/log
@@ -2490,6 +2562,7 @@ frobulator.log () {
 # use to obfuscate password input with custom mask character
 
 frobulator.password () {
+
 	mask_character="•"
 
 	while  read -p "${mask}" -r -s -n 1 input_character
@@ -2535,6 +2608,7 @@ frobulator.password () {
 # use to capture user input
 
 frobulator.input () {
+
 	list=($@)
 
 	for value in "${list[@]}"
@@ -2593,6 +2667,7 @@ frobulator.input () {
 # use to run package and installer post-install cleanup
 
 frobulator.clean () {
+
 	command_autoremove="apt-get autoremove"
 	command_clean="apt-get clean"
 
@@ -2621,6 +2696,7 @@ frobulator.clean () {
 # marks package(s) for version freeze
 
 frobulator.hold () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -2663,6 +2739,7 @@ frobulator.hold () {
 # unmarks package(s) for version freeze
 
 frobulator.release () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -2705,6 +2782,7 @@ frobulator.release () {
 # useful as failsafe to fetch all up-to-date content before batch install
 
 frobulator.failsafe () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -2750,6 +2828,7 @@ frobulator.failsafe () {
 # use to install package(s) from argument or array list
 
 frobulator.install () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -2821,6 +2900,7 @@ frobulator.install () {
 # use to search and validate required package dependencies for operations
 
 frobulator.require () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	frobulator.failsafe apt-file
@@ -2932,6 +3012,7 @@ frobulator.require () {
 # use to reinstall package(s) from argument or array list
 
 frobulator.reinstall () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -2974,6 +3055,7 @@ frobulator.reinstall () {
 # use to update system package(s)
 
 frobulator.update () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_update="apt-get update"
@@ -2992,6 +3074,7 @@ frobulator.update () {
 # use to upgrade system packages
 
 frobulator.upgrade () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	command_upgrade="apt-get --assume-yes dist-upgrade"
@@ -3010,6 +3093,7 @@ frobulator.upgrade () {
 # use to purge package(s) from argument or array list
 
 frobulator.purge () {
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -3069,6 +3153,7 @@ frobulator.purge () {
 # kde - kdialog
 
 frobulator.dialog () {
+
 	# dialog window title
 
 	title="${script%.sh} - ${1}"
@@ -3078,6 +3163,7 @@ frobulator.dialog () {
 	# gtk dialog - zenity
 
 	g_dialog () {
+
 		zenity						\
 			--file-selection		\
 			--multiple				\
@@ -3089,6 +3175,7 @@ frobulator.dialog () {
 	# kde dialog - kdialog
 
 	k_dialog () {
+
 		kdialog						\
 			--getopenfilename		\
 			--multiple				\
@@ -3121,6 +3208,7 @@ frobulator.dialog () {
 # use to forcefully terminate rogue processes
 
 frobulator.terminate () {
+
 	process_name="${1}"
 
 	if [[ $(command -v pgrep) ]] && [[ $(command -v pkill) ]]
@@ -3137,6 +3225,7 @@ frobulator.terminate () {
 # use to exit process or program instance
 
 frobulator.exit () {
+
 	instance="${1}"
 
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
@@ -3149,6 +3238,7 @@ frobulator.exit () {
 # use to flag process checkpoint results such as installations and deployments
 
 frobulator.result () {
+
 
 	if [ $# -eq 1 ]
 	then
@@ -3182,6 +3272,7 @@ frobulator.result () {
 # usefule for priviledged execution status checks
 
 frobulator.user () {
+
 	frobulator.msg "Current shell user name" "[ '${SUDO_USER:-$USER}' ]"
 	echo
 
@@ -3194,6 +3285,7 @@ frobulator.user () {
 # useful for in-script dependency assessment and installation
 
 frobulator.assess () {
+
 	if [[ -n "${#list[@]}" ]]
 	then
 		# ${1} - array
@@ -3254,6 +3346,7 @@ frobulator.assess () {
 # restarts script process as 'superuser' once the status is granted
 
 frobulator.escalate () {
+
 	if [[ $(id -u -n) = "root" ]]
 	then
 		frobulator.inf "Setting up privileged execution" "[ '${USER}' ]"
@@ -3291,6 +3384,7 @@ frobulator.escalate () {
 # use to archive content and for backup procedures
 
 frobulator.archive () {
+
 	list+=(
 		7zip
 		bzip2
@@ -3415,6 +3509,7 @@ frobulator.archive () {
 # use to extract known archive types for script dependency or process resolution
 
 frobulator.extract () {
+
 	list+=(
 		7z
 		bunzip2

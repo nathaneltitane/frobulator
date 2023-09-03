@@ -371,7 +371,7 @@ then
 		grey=$(echo -e \\e\[38\;5\;"${grey}"m)
 		black=$(echo -e \\e\[38\;5\;"${black}"m)
 
-		# standard colors by sturation offset
+		# standard colors by saturation offset
 
 		red=$(echo -e \\e\[38\;5\;"${red}"m)
 		crimson=$(echo -e \\e\[38\;5\;"${crimson}"m)
@@ -422,7 +422,7 @@ else
 		grey=$(tput setaf "${grey}")
 		black=$(tput setaf "${black}")
 
-		# standard colors by sturation offset
+		# standard colors by saturation offset
 
 		red=$(tput setaf "${red}")
 		crimson=$(tput setaf "${crimson}")

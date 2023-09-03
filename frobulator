@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="08-13-2023"
+# version="09-02-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -662,19 +662,12 @@ frobulator.prompt () {
 
 	# set new padding width ///////////////////////////////////////// # FIX ME #
 
-	if [ ${#begin} -eq 0 ]
-	then
-		span=${span::-6}
-	else
-		span=""
-	fi
-
-	if [ ${#begin} -le "${count}" ]
-	then
-		span=${span:0:$span_count}
-	else
-		span=""
-	fi
+# 	if [ ${#begin} -le "${count}" ]
+# 	then
+# 		span=${span:0:$span_count}
+# 	else
+# 		span=""
+# 	fi
 
 	# /////////////////////////////////////////////////////////////// # FIX ME #
 
@@ -722,6 +715,7 @@ frobulator.prompt () {
 
 frobulator.black () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${black}${value}${reset}"
@@ -729,6 +723,7 @@ frobulator.black () {
 
 frobulator.silver () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${silver}${value}${reset}"
@@ -736,6 +731,7 @@ frobulator.silver () {
 
 frobulator.grey () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${grey}${value}${reset}"
@@ -743,6 +739,7 @@ frobulator.grey () {
 
 frobulator.white () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${white}${value}${reset}"
@@ -750,6 +747,7 @@ frobulator.white () {
 
 frobulator.red () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${red}${value}${reset}"
@@ -757,6 +755,7 @@ frobulator.red () {
 
 frobulator.crimson () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${crimson}${value}${reset}"
@@ -764,6 +763,7 @@ frobulator.crimson () {
 
 frobulator.green () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${green}${value}${reset}"
@@ -771,6 +771,7 @@ frobulator.green () {
 
 frobulator.lime () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${lime}${value}${reset}"
@@ -778,6 +779,7 @@ frobulator.lime () {
 
 frobulator.yellow () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${yellow}${value}${reset}"
@@ -785,6 +787,7 @@ frobulator.yellow () {
 
 frobulator.orange () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${orange}${value}${reset}"
@@ -792,6 +795,7 @@ frobulator.orange () {
 
 frobulator.blue () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${value}${reset}"
@@ -799,6 +803,7 @@ frobulator.blue () {
 
 frobulator.navy () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${navy}${value}${reset}"
@@ -806,6 +811,7 @@ frobulator.navy () {
 
 frobulator.magenta () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${value}${reset}"
@@ -813,6 +819,7 @@ frobulator.magenta () {
 
 frobulator.purple () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${purple}${value}${reset}"
@@ -820,6 +827,7 @@ frobulator.purple () {
 
 frobulator.fuschia () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${fuschia}${value}${reset}"
@@ -827,6 +835,7 @@ frobulator.fuschia () {
 
 frobulator.pink () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${pink}${value}${reset}"
@@ -834,6 +843,7 @@ frobulator.pink () {
 
 frobulator.aqua () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${aqua}${value}${reset}"
@@ -841,6 +851,7 @@ frobulator.aqua () {
 
 frobulator.teal () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${teal}${value}${reset}"
@@ -893,6 +904,7 @@ frobulator.teal () {
 
 frobulator.inf () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${blue}${marker_inf} ${value}${reset}"
@@ -904,6 +916,7 @@ frobulator.inf () {
 
 frobulator.wrn () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${orange}${marker_wrn} ${value}${reset}"
@@ -915,6 +928,7 @@ frobulator.wrn () {
 
 frobulator.msg () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${navy}${marker_msg} ${value}${reset}"
@@ -926,6 +940,7 @@ frobulator.msg () {
 
 frobulator.add () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${lime}${marker_add} ${value}${reset}"
@@ -937,6 +952,7 @@ frobulator.add () {
 
 frobulator.rem () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${crimson}${marker_rem} ${value}${reset}"
@@ -948,6 +964,7 @@ frobulator.rem () {
 
 frobulator.ret () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${aqua}${marker_ret} ${value}${reset}"
@@ -959,6 +976,7 @@ frobulator.ret () {
 
 frobulator.rel () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${teal}${marker_rel} ${value}${reset}"
@@ -970,6 +988,7 @@ frobulator.rel () {
 
 frobulator.fwd () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${silver}${marker_fwd} ${value}${reset}"
@@ -981,6 +1000,7 @@ frobulator.fwd () {
 
 frobulator.rev () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${silver}${marker_rev} ${value}${reset}"
@@ -992,6 +1012,7 @@ frobulator.rev () {
 
 frobulator.stp () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${grey}${marker_stp} ${value}${reset}"
@@ -1003,6 +1024,7 @@ frobulator.stp () {
 
 frobulator.dwl () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${magenta}${marker_bot} ${value}${reset}"
@@ -1014,6 +1036,7 @@ frobulator.dwl () {
 
 frobulator.upl () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${purple}${marker_top} ${value}${reset}"
@@ -1025,6 +1048,7 @@ frobulator.upl () {
 
 frobulator.lnk () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${yellow}${marker_stp} ${value}${reset}"
@@ -1036,6 +1060,7 @@ frobulator.lnk () {
 
 frobulator.scs () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${green}${marker_yes} ${value}${reset}"
@@ -1047,6 +1072,7 @@ frobulator.scs () {
 
 frobulator.err () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${red}${marker_not} ${value}${reset}"
@@ -1058,6 +1084,7 @@ frobulator.err () {
 
 frobulator.ins () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${teal}${marker_ipt} ${value}${reset}"
@@ -1078,6 +1105,7 @@ frobulator.ins () {
 
 frobulator.ask () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${fuschia}${marker_ask} ${value} ${reset}"
@@ -1089,6 +1117,7 @@ frobulator.ask () {
 
 frobulator.ipt () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${pink}${marker_add} ${value} ${reset}"
@@ -1100,6 +1129,7 @@ frobulator.ipt () {
 
 frobulator.usr () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -n -e "${grey}${marker_usr} ${value} ${reset}"
@@ -1113,6 +1143,7 @@ frobulator.usr () {
 
 frobulator.nul () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	color=${color[@]}
@@ -1148,6 +1179,7 @@ frobulator.num () {
 	shift
 
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${before}${number}${after} ${value}"
@@ -1167,6 +1199,7 @@ frobulator.num () {
 
 frobulator.sep () {
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	echo -e "${value}"
@@ -1296,6 +1329,7 @@ frobulator.countdown () {
 	shift
 
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	shift
@@ -1343,6 +1377,7 @@ frobulator.process () {
 	after=" ]"
 
 	frobulator.prompt "${@}"
+
 	value="${frobulator_string[@]}"
 
 	i=1

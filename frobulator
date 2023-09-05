@@ -600,10 +600,13 @@ frobulator.prompt () {
 	if [ $# -eq 3 ]
 	then
 		span_character="${3}"
+		span_character_length=${#span_character}
 
-		if [ ${#span_character} -gt 1 ]
+		if [ ${span_character_length} -ge 2 ]
 		then
-			count=$((${count} / ${#span_character}))
+			count=$((${count} / ${span_character_length}))
+
+			span_length=${count}
 		fi
 	fi
 
@@ -613,11 +616,13 @@ frobulator.prompt () {
 	if [ $# -ge 2 ]
 	then
 		span=${span::-6}
+		span_length=${#span}
 	fi
 
 	if [ $# -le 0 ]
 	then
 		span=${span::-6}
+		span_length=${#span}
 	fi
 
 	# 2+ arguments:
@@ -630,6 +635,11 @@ frobulator.prompt () {
 		end=" ${end}"
 	fi
 
+	# define parsing calculation lengths
+
+	begin_length=${#begin}
+	end_length=${#end}
+
 	# 75+ characters per string:
 	# fold string using word detection at limit
 	# to prevent overstepping 80 characters overall limit
@@ -640,7 +650,7 @@ frobulator.prompt () {
 
 	fold=$(( "${count}" - "${margin}" ))
 
-	if [ $# -eq 1 ] && [ "${#begin}" -ge "${fold}" ]
+	if [ "${begin_length}" -ge "${fold}" ]
 	then
 		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
 	fi
@@ -657,11 +667,11 @@ frobulator.prompt () {
 	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
 
-	span_count=$(( ${#span} - ${#begin} - ${#end} ))
+	span_count=$(( ${span_length} - ${begin_length} - ${end_length} ))
 
 	# set new padding width
 
- 	if [ ${#begin} -lt "${count}" ]
+ 	if [ ${begin_length} -lt "${count}" ]
  	then
  		span=${span:0:$span_count}
  	else
@@ -698,6 +708,10 @@ frobulator.prompt () {
 	then
 		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
+
+	# reset line string counter
+
+	unset count
 }
 
 # highlights ///////////////////////////////////////////////////////////////////

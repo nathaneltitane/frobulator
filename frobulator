@@ -591,7 +591,8 @@ frobulator.prompt () {
 		span=""
 	fi
 
-	# set span character default
+	# set span character default:
+	# cannot use '\' character as span //////////////////////////////// FIX ME #
 
 	span_character="/"
 

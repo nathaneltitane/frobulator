@@ -40,156 +40,6 @@ version="08-13-2023"
 
 # usage ////////////////////////////////////////////////////////////////////////
 
-frobulator.prompt () {
-
-	# initialize string return array
-
-	frobulator_string=()
-
-	# define input arguments
-
-	begin="${1}"
-	end="${2}"
-
-	# provide fallback for line character count
-
-	if [ -z "${count}" ]
-	then
-		count=80
-	fi
-
-	# set span width
-
-	if [ ${#begin} -le "${count}" ]
-	then
-		span="--------------------------------------------------------------------------------"
-	else
-		span=""
-	fi
-
-	# set span character default
-
-	span_character="/"
-
-	# 3 arguments - replace span character with argument 3
-
-	if [ $# -eq 3 ]
-	then
-		span_character="${3}"
-		span_character_length=${#span_character}
-
-		if [ ${span_character_length} -ge 2 ]
-		then
-			count=$((${count} / ${span_character_length}))
-
-			span_length=${count}
-		fi
-	fi
-
-	# 2+ arguments - reduce span by 6 characters:
-	# compensate for line marker + space
-
-	if [ $# -ge 2 ]
-	then
-		span=${span::-6}
-		span_length=${#span}
-	fi
-
-	if [ $# -le 0 ]
-	then
-		span=${span::-6}
-		span_length=${#span}
-	fi
-
-	# 2+ arguments:
-	# append space to 'begin' value
-	# prepend space to 'end' value
-
-	if [ $# -ge 2 ]
-	then
-		begin="${begin} "
-		end=" ${end}"
-	fi
-
-	# define parsing calculation lengths
-
-	begin_length=${#begin}
-	end_length=${#end}
-
-	# 75+ characters per string:
-	# fold string using word detection at limit
-	# to prevent overstepping 80 characters overall limit
-	# indent second line onward (6 spaces) to match line marker
-	# detect newline character and indent onward (6 spaces) to match line marker
-
-	margin=5
-
-	fold=$(( "${count}" - "${margin}" ))
-
-	if [ "${begin_length}" -ge "${fold}" ]
-	then
-		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
-	fi
-
-	# substitute span character
-
-	span="${span//-/$span_character}"
-
-	# print first argument:
-	# remove newline for continuous string arguments
-
-	span_begin=$(echo -n -e "${begin}")
-
-	# print other arguments as fixed width prompt if present:
-	# calculate span width - remove 6 characters for prompt header
-
-	span_count=$(( ${span_length} - ${begin_length} - ${end_length} ))
-
-	# set new padding width
-
- 	if [ ${begin_length} -lt "${count}" ]
- 	then
- 		span=${span:0:$span_count}
- 	else
- 		span=""
- 	fi
-
- 	# define user input aor automatic fill
-
-	span_middle="${span}"
-
-	# print last argument:
-	# carry newline and jump to next block
-
-	span_end=$(echo -e "${end}")
-
-	# populate array at end to avoid integrating spaces
-
-	if [ $# -ge 0 ]
-	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
-	fi
-
-	if [ $# -eq 1 ]
-	then
-		frobulator_string=("${span_begin}")
-	fi
-
-	if [ $# -ge 2 ]
-	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
-	fi
-
-	if [ $# -eq 3 ]
-	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
-	fi
-
-	# reset line string counter
-
-	unset count
-}
-
 # variables ////////////////////////////////////////////////////////////////////
 
 frobulator.inf "Test line 1 - information"
@@ -304,12 +154,15 @@ frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
 
+frobulator.inf "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Fringilla urna porttitor rhoncus dolor purus non enim praesent. Venenatis urna cursus eget nunc. Morbi tincidunt ornare massa eget. Ac orci phasellus egestas tellus rutrum tellus pellentesque eu. Velit egestas dui id ornare. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui. Nam aliquam sem et tortor. Platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Aenean et tortor at risus viverra adipiscing at in. Iaculis at erat pellentesque adipiscing commodo. Commodo nulla facilisi nullam vehicula. Et netus et malesuada fames ac. Vitae proin sagittis nisl rhoncus mattis rhoncus. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Id diam vel quam elementum pulvinar etiam non. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet. Ipsum a arcu cursus vitae. Leo integer malesuada nunc vel risus commodo viverra maecenas accumsan. Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec. Eros donec ac odio tempor orci dapibus ultrices in. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Turpis egestas pretium aenean pharetra magna. Id cursus metus aliquam eleifend. Adipiscing at in tellus integer feugiat scelerisque varius morbi. Tempor orci eu lobortis elementum. Pharetra pharetra massa massa ultricies. Turpis cursus in hac habitasse platea dictumst. Molestie at elementum eu facilisis sed odio morbi quis. Enim lobortis scelerisque fermentum dui. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Imperdiet sed euismod nisi porta. Morbi quis commodo odio aenean sed. Amet nulla facilisi morbi tempus iaculis urna id volutpat. Iaculis nunc sed augue lacus viverra. Risus viverra adipiscing at in tellus integer feugiat. Interdum velit euismod in pellentesque massa. Adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum. Vulputate mi sit amet mauris. Eleifend quam adipiscing vitae proin. Faucibus et molestie ac feugiat sed lectus vestibulum. Euismod elementum nisi quis eleifend quam. Elit ullamcorper dignissim cras tincidunt lobortis. Nec feugiat in fermentum posuere urna nec tincidunt praesent. Nibh tellus molestie nunc non blandit massa enim nec. Diam in arcu cursus euismod quis viverra nibh cras. Facilisis sed odio morbi quis commodo odio aenean. Sit amet facilisis magna etiam tempor orci. Mattis nunc sed blandit libero volutpat sed. Non quam lacus suspendisse faucibus interdum posuere. In hac habitasse platea dictumst quisque sagittis purus sit amet. Sit amet facilisis magna etiam tempor orci eu lobortis. Feugiat nisl pretium fusce id velit ut tortor. Vel quam elementum pulvinar etiam non quam. Magna fringilla urna porttitor rhoncus dolor purus non. Ac turpis egestas sed tempus urna et. Eu facilisis sed odio morbi quis. Nam libero justo laoreet sit amet. Pellentesque dignissim enim sit amet venenatis urna cursus eget nunc. Pulvinar pellentesque habitant morbi tristique senectus et netus. Pulvinar elementum integer enim neque volutpat ac. Nisl pretium fusce id velit ut tortor pretium. Sit amet risus nullam eget felis eget nunc lobortis. In egestas erat imperdiet sed euismod nisi porta lorem. Aliquet eget sit amet tellus cras adipiscing enim. Rhoncus aenean vel elit scelerisque. Blandit turpis cursus in hac habitasse platea dictumst quisque sagittis. Enim tortor at auctor urna nunc id cursus metus aliquam."
+echo
+
 frobulator.separate
 
 frobulator.num 0
 echo
 
-frobulator.num 1 "string" "string" '+-'
+frobulator.num 1 "string" "string" '+-*'
 echo
 
 frobulator.num 1 "string" "string" '+'
@@ -323,5 +176,3 @@ frobulator.num 3 string
 echo
 
 frobulator.separate
-
-frobulator.inf "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Fringilla urna porttitor rhoncus dolor purus non enim praesent. Venenatis urna cursus eget nunc. Morbi tincidunt ornare massa eget. Ac orci phasellus egestas tellus rutrum tellus pellentesque eu. Velit egestas dui id ornare. Etiam dignissim diam quis enim lobortis scelerisque fermentum dui. Nam aliquam sem et tortor. Platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Aenean et tortor at risus viverra adipiscing at in. Iaculis at erat pellentesque adipiscing commodo. Commodo nulla facilisi nullam vehicula. Et netus et malesuada fames ac. Vitae proin sagittis nisl rhoncus mattis rhoncus. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis. Id diam vel quam elementum pulvinar etiam non. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet. Ipsum a arcu cursus vitae. Leo integer malesuada nunc vel risus commodo viverra maecenas accumsan. Sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec. Eros donec ac odio tempor orci dapibus ultrices in. Eu tincidunt tortor aliquam nulla facilisi cras fermentum. Viverra mauris in aliquam sem fringilla ut morbi tincidunt. Turpis egestas pretium aenean pharetra magna. Id cursus metus aliquam eleifend. Adipiscing at in tellus integer feugiat scelerisque varius morbi. Tempor orci eu lobortis elementum. Pharetra pharetra massa massa ultricies. Turpis cursus in hac habitasse platea dictumst. Molestie at elementum eu facilisis sed odio morbi quis. Enim lobortis scelerisque fermentum dui. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Imperdiet sed euismod nisi porta. Morbi quis commodo odio aenean sed. Amet nulla facilisi morbi tempus iaculis urna id volutpat. Iaculis nunc sed augue lacus viverra. Risus viverra adipiscing at in tellus integer feugiat. Interdum velit euismod in pellentesque massa. Adipiscing diam donec adipiscing tristique risus nec feugiat in fermentum. Vulputate mi sit amet mauris. Eleifend quam adipiscing vitae proin. Faucibus et molestie ac feugiat sed lectus vestibulum. Euismod elementum nisi quis eleifend quam. Elit ullamcorper dignissim cras tincidunt lobortis. Nec feugiat in fermentum posuere urna nec tincidunt praesent. Nibh tellus molestie nunc non blandit massa enim nec. Diam in arcu cursus euismod quis viverra nibh cras. Facilisis sed odio morbi quis commodo odio aenean. Sit amet facilisis magna etiam tempor orci. Mattis nunc sed blandit libero volutpat sed. Non quam lacus suspendisse faucibus interdum posuere. In hac habitasse platea dictumst quisque sagittis purus sit amet. Sit amet facilisis magna etiam tempor orci eu lobortis. Feugiat nisl pretium fusce id velit ut tortor. Vel quam elementum pulvinar etiam non quam. Magna fringilla urna porttitor rhoncus dolor purus non. Ac turpis egestas sed tempus urna et. Eu facilisis sed odio morbi quis. Nam libero justo laoreet sit amet. Pellentesque dignissim enim sit amet venenatis urna cursus eget nunc. Pulvinar pellentesque habitant morbi tristique senectus et netus. Pulvinar elementum integer enim neque volutpat ac. Nisl pretium fusce id velit ut tortor pretium. Sit amet risus nullam eget felis eget nunc lobortis. In egestas erat imperdiet sed euismod nisi porta lorem. Aliquet eget sit amet tellus cras adipiscing enim. Rhoncus aenean vel elit scelerisque. Blandit turpis cursus in hac habitasse platea dictumst quisque sagittis. Enim tortor at auctor urna nunc id cursus metus aliquam."

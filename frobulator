@@ -918,8 +918,6 @@ frobulator.teal () {
 # yes [ ✓ ]
 # not [ 𐄂 ]
 
-# nul '     '
-
 # information line marker //////////////////////////////////////////////////////
 
 frobulator.inf () {
@@ -1193,8 +1191,39 @@ frobulator.nul () {
 	unset color
 }
 
-# number line marker ///////////////////////////////////////////////////////////
+# letter line marker ///////////////////////////////////////////////////////////
 
+# use to indicate lettered steps, directives or instructions
+# letter value is inserted as line marker
+
+# usage:      frobulator.ltr "[letter]" "[string]" "[string]" "[span character]"
+
+# command:    frobulator.num "[letter]" "[string]"
+# result:     [ l ] string
+
+# command:    frobulator.num "[letter]" "[string]" "[string]"
+# result:     [ l ] string ///////////////////////////////////////////////////////////// string
+
+# command:    frobulator.num "[letter]" "[string]" "[string]" "[\]"
+# result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+
+frobulator.ltr () {
+
+	before="[ "
+	after=" ]"
+
+	letter="${1}"
+
+	shift
+
+	frobulator.prompt "${@}"
+
+	value="${frobulator_string[@]}"
+
+	echo -e "${before}${letter}${after}${marker_spc}${value}"
+}
+
+# number line marker ///////////////////////////////////////////////////////////
 
 # use to indicate numbered steps, directives or instructions
 # number value is inserted as line marker

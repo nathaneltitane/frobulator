@@ -1421,11 +1421,11 @@ frobulator.countdown () {
 		then
 			ticker="-"
 
-			echo -n -e "\r${before}${yellow}${ticker}${reset}${after} ${value}\c"
+			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${value}\c"
 
 			break
 		else
-			echo -n -e "\r${before}${red}$((seconds--))${reset}${after} ${value}\c"
+			echo -n -e "\r${before}${red}$((seconds--))${reset}${after}${marker_spc}${value}\c"
 		fi
 
 		sleep 1
@@ -1466,7 +1466,7 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after} ${value}\c "
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${value}\c "
 
 		sleep 0.25
 	done
@@ -1630,7 +1630,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after} ${value}\c "
+		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after}${marker_spc}${value}\c "
 
 		sleep 0.25
 	done

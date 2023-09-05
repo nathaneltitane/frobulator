@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="09-02-2023"
+# version="09-05-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -569,6 +569,8 @@ frobulator.prompt () {
 	# initialize string return array
 
 	frobulator_string=()
+
+	# define input arguments
 
 	begin="${1}"
 	end="${2}"

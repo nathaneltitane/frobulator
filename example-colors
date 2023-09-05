@@ -157,15 +157,8 @@ echo
 frobulator.separate
 
 frobulator.num 0
-frobulator.num 1
-frobulator.num 2
-frobulator.num 3
-frobulator.num 4
-frobulator.num 5
-frobulator.num 6
-frobulator.num 7
-frobulator.num 8
-frobulator.num 9
+frobulator.num 1 string
+frobulator.num 2 string string
 
 frobulator.separate
 

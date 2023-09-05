@@ -1220,7 +1220,7 @@ frobulator.ltr () {
 
 	value="${frobulator_string[@]}"
 
-	echo -e "${before}${letter}${after}${marker_spc}${value}"
+	echo -e "${before}${aqua}${letter}${reset}${after}${marker_spc}${value}"
 }
 
 # number line marker ///////////////////////////////////////////////////////////
@@ -1252,7 +1252,7 @@ frobulator.num () {
 
 	value="${frobulator_string[@]}"
 
-	echo -e "${before}${number}${after}${marker_spc}${value}"
+	echo -e "${before}${teal}${number}${reset}${after}${marker_spc}${value}"
 }
 
 # separator line marker ////////////////////////////////////////////////////////
@@ -1291,7 +1291,6 @@ frobulator.sep () {
 
 # command:    frobulator.separate
 # result:     ////////////////////////////////////////////////////////////////////////////////
-#
 
 frobulator.separate () {
 
@@ -1345,7 +1344,7 @@ frobulator.type () {
 		seconds=3
 	fi
 
-	for (( character=0; character<=${string}; character++ ))
+	for (( character=0 ; character<=${string} ; character++ ))
 	do
 		decimal=$(( (RANDOM % ${seconds}) + 1 ))
 

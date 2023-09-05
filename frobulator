@@ -630,7 +630,7 @@ frobulator.prompt () {
 		end=" ${end}"
 	fi
 
-	# 75+ characters per single string:
+	# 75+ characters per string:
 	# fold string using word detection at limit
 	# to prevent overstepping 80 characters overall limit
 	# indent second line onward (6 spaces) to match line marker

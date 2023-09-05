@@ -620,7 +620,6 @@ frobulator.prompt () {
 	then
 		begin="${begin} "
 		end=" ${end}"
-
 	fi
 
 	# 75+ characters per single string:
@@ -1227,15 +1226,17 @@ frobulator.num () {
 
 frobulator.sep () {
 
-	# set line header compensation override
-
-	separation_marker="//////"
+	marker_sep='//////'
 
 	frobulator.prompt "${@}"
 
 	value="${frobulator_string[@]}"
 
-	echo -e "${separation_marker}${value}"
+	color=${color[@]}
+
+	echo -e "${color}${marker_sep}${value}${reset}"
+
+	unset color
 }
 
 # separate /////////////////////////////////////////////////////////////////////
@@ -1283,6 +1284,8 @@ frobulator.script () {
 	echo
 
 	frobulator.msg "${description}" "[ ${message} ]"
+
+	echo
 }
 
 # type /////////////////////////////////////////////////////////////////////////

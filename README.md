@@ -37,8 +37,7 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 
 ### Note:
 
-Frobulator is meant to be used (for now) within scripts only, as the currrent set of assertions it is built upon will not permit it to function outside of one.
-
+The current set of assertions upon which Frobulator is built restricts its functionality to scripts exclusively, at least for the time being.
 
 ### Usage:
 

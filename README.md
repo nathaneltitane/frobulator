@@ -17,7 +17,7 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 - Intractive counters and timers
 - Interactive progress and process feedback
 - Standardized 80 character line parsing
-- Standardized 80+ characer line splitting and paragraph formatting
+- Character limit overflow handling and line splitting with paragraph formatting
 - Standardized user input prompts
 - Standardized alphabetical input prompts
 - Standardized numerical input prompts

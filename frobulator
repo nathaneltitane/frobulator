@@ -1343,9 +1343,9 @@ frobulator.script () {
 
 # type /////////////////////////////////////////////////////////////////////////
 
-# use to emulate typing on prompts
+# use to emulate typing on prompts:
 # timeout is randomized to create human-like typing effect
-# seconds must be an integer
+# seconds value must be an integer
 
 # usage:      frobulator.type "[string]" "[seconds]"
 

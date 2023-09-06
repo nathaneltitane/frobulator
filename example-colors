@@ -42,6 +42,8 @@ version="08-13-2023"
 
 # process //////////////////////////////////////////////////////////////////////
 
+# process //////////////////////////////////////////////////////////////////////
+
 # progress /////////////////////////////////////////////////////////////////////
 
 # use as ticker line marker to mark process completion or progress
@@ -49,6 +51,8 @@ version="08-13-2023"
 
 # usage:      [process] &
 #             frobulator.process "[string]"
+
+marker_elp='...'
 
 frobulator.process () {
 
@@ -69,7 +73,7 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}\c "
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}${marker_elp}\c "
 
 		sleep 0.25
 	done

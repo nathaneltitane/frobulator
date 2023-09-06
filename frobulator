@@ -557,6 +557,7 @@ marker_nul='     '
 
 marker_sep='//////'
 
+marker_elp='...'
 marker_spc=' '
 
 # prompt management tool (pmt) /////////////////////////////////////////////////
@@ -1483,7 +1484,7 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}\c "
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}${marker_elp}\c "
 
 		sleep 0.25
 	done
@@ -1614,9 +1615,9 @@ frobulator.progress () {
 	then
 		if [ "${notification: -1}" = "e" ]
 		then
-			notification="${notification/%e/ing...}"
+			notification="${notification/%e/ing${marker_elp}}"
 		else
-			notification="${notification/%/ing...}"
+			notification="${notification/%/ing${marker_elp}}"
 
 		fi
 	fi
@@ -2554,7 +2555,7 @@ frobulator.put () {
 
 frobulator.upload () {
 
-	frobulator.upl "Loading..."
+	frobulator.upl "Loading${marker_elp}"
 	echo
 
 	frobulator.put
@@ -2919,7 +2920,7 @@ frobulator.install () {
 				frobulator.scs "Present on system" "[ '${package}' ]"
 				echo
 
-				frobulator.fwd "Continuing..."
+				frobulator.fwd "Continuing${marker_elp}"
 				echo
 
 				:
@@ -2958,12 +2959,12 @@ frobulator.require () {
 		list+=("${command}")
 	fi
 
-	frobulator.fwd "Validating requirement(s)..."
+	frobulator.fwd "Validating requirement(s)${marker_elp}"
 	echo
 
 	for command in ${list[@]}
 	do
-		frobulator.fwd "Probing..."
+		frobulator.fwd "Probing${marker_elp}"
 		echo
 
 		list=()
@@ -3163,7 +3164,7 @@ frobulator.purge () {
 			frobulator.scs "Absent on system" "[ '${package}' ]"
 			echo
 
-			frobulator.fwd "Continuing..."
+			frobulator.fwd "Continuing${marker_elp}"
 			echo
 
 			:
@@ -3230,7 +3231,7 @@ frobulator.dialog () {
 		frobulator.wrn "This utility must be run using the 'directory' option."
 		echo
 
-		frobulator.fwd "Exiting..."
+		frobulator.fwd "Exiting${marker_elp}"
 		echo
 
 		exit 1

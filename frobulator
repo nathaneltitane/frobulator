@@ -1351,21 +1351,23 @@ frobulator.script () {
 
 frobulator.type () {
 
-	string=${#1}
+	string="${1}"
 	seconds="${2}"
+
+	string_length=${#string}
 
 	if [ -z "${seconds}" ]
 	then
 		seconds=3
 	fi
 
-	for (( character=0 ; character<=${string} ; character++ ))
+	for (( characters=0 ; characters<=${string_length} ; characters++ ))
 	do
 		decimal=$(( (RANDOM % ${seconds}) + 1 ))
 
 		sleep="0.${decimal}"
 
-		echo -n -e "${1:${character}:1}"
+		echo -n -e "${1:${characters}:1}"
 
 		sleep "${sleep}"
 	done

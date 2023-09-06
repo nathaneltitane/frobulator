@@ -1323,7 +1323,7 @@ frobulator.separate () {
 # usage:      frobulator.script
 
 # command:    frobulator.script "Setting up ${script#*-}"
-# result:     [ ¤ ] Setting up 'script' ///////////////////////////////////////////// [ name ]
+# result:     [ # ] Setting up 'script' ///////////////////////////////////////////// [ name ]
 
 frobulator.script () {
 

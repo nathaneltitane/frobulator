@@ -14,10 +14,16 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 
 - Colorized prompts
 - Line header markers for various message types
-- Standardized 80 charcter line parsing and splitting
+- Intractive counters and timers
+- Interactive progress and process feedback
+- Standardized 80 character line parsing
+- Standardized 80+ characer line splitting and paragraph formatting
 - Standardized user input prompts
+- Standardized alphabetical input prompts
+- Standardized numerical input prompts
 - Streamlined file and directory commands
-- POSIX-compliant and BASH-based scripting commands and functions
+- POSIX-compliant/compatible
+- BASH-centric scripting commands and functions:
    - Customized Debian-based system commands (i.e.: apt/apt-get package commands)
    - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
    - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
@@ -27,7 +33,7 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
    - Streamlined archive detection and extraction routines
    - Clean ogging, redirection and silencing functions for pretty execution and informed debugging
 
-...all while making redundant and complex code bits a thing of the past!
+**...all while making redundant and complex code bits a thing of the past!**
 
 ### Note:
 

@@ -2517,7 +2517,7 @@ frobulator.download () {
 					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 			fi
 
-			frobulator.progress download "[ '${file}' ]"
+			frobulator.progress "download" "[ '${file}' ]"
 
 			chmod a+rx "${path}"/"${file}"
 		done
@@ -2544,8 +2544,7 @@ frobulator.put () {
 		-H "Content-Type: ${type}"			\
 		-d 									"${file}" &
 
-	frobulator.progress upload "[ '${file}' ]"
-	echo
+	frobulator.progress "upload" "[ '${file}' ]"
 }
 
 # upload ///////////////////////////////////////////////////////////////////////
@@ -2717,13 +2716,11 @@ frobulator.clean () {
 
 	frobulator.log "${command_autoremove}" &
 
-	frobulator.process "flushing package(s)"
-	echo
+	frobulator.process "Flushing package(s)"
 
 	frobulator.log "${command_clean}" &
 
 	frobulator.progress "clean"
-	echo
 
 	# fix 'dpkg' lock and errors:
 	# remove all post-install logs - prevent package configuration errors
@@ -2768,8 +2765,7 @@ frobulator.hold () {
 
 		frobulator.log "${command_hold} ${package}" &
 
-		frobulator.progress hold
-		echo
+		frobulator.progress "hold"
 	done
 
 	# unset array
@@ -2811,8 +2807,7 @@ frobulator.release () {
 
 		frobulator.log "${command_unhold} ${package}" &
 
-		frobulator.progress release
-		echo
+		frobulator.progress "release"
 	done
 
 	# unset array
@@ -2902,8 +2897,7 @@ frobulator.install () {
 
 			frobulator.log "$(echo ${command_install} ${package})" &
 
-			frobulator.progress install
-			echo
+			frobulator.progress "install"
 		else
 			query_filter="$(apt  search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
@@ -2914,8 +2908,7 @@ frobulator.install () {
 
 				frobulator.log "$(echo ${command_install} ${package})" &
 
-				frobulator.progress install
-				echo
+				frobulator.progress "install"
 
 				# cleanup
 
@@ -3081,8 +3074,7 @@ frobulator.reinstall () {
 	do
 		frobulator.log "${command_reinstall} ${package}" &
 
-		frobulator.progress reinstall
-		echo
+		frobulator.progress "reinstall"
 	done
 
 	# unset array
@@ -3109,8 +3101,7 @@ frobulator.update () {
 
 	frobulator.log "${command_update}" &
 
-	frobulator.progress update
-	echo
+	frobulator.progress "update"
 }
 
 # upgrade //////////////////////////////////////////////////////////////////////
@@ -3128,8 +3119,7 @@ frobulator.upgrade () {
 
 	frobulator.log "${command_upgrade}" &
 
-	frobulator.progress upgrade
-	echo
+	frobulator.progress "upgrade"
 }
 
 # purge ////////////////////////////////////////////////////////////////////////
@@ -3167,8 +3157,7 @@ frobulator.purge () {
 
 			frobulator.log "$(echo ${command_purge} ${package})" &
 
-			frobulator.progress purge
-			echo
+			frobulator.progress "purge"
 		else
 			frobulator.scs "Absent on system" "[ '${package}' ]"
 			echo

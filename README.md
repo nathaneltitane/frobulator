@@ -18,7 +18,7 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 - Standardized user input prompts
 - Streamlined file and directory commands
 - POSIX-compliant and BASH-based scripting commands and functions
-   - Customized Debian-based system commands (i.e.: apt/aptitude package commands)
+   - Customized Debian-based system commands (i.e.: apt/apt-get package commands)
    - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
    - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
    - Countdown and progress items to add to your scripts

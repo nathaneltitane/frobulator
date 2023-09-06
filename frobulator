@@ -559,16 +559,16 @@ marker_sep='//////'
 
 marker_spc=' '
 
-# prompt ///////////////////////////////////////////////////////////////////////
+# prompt management tool (pmt) /////////////////////////////////////////////////
 
-# standard prompt with 80 charcters width:
-# uses line folding with word detection for strings over 80 characters long
+# prompt management and standardizing with 80 charcters width:
+# adds line folding with word detection for strings over 80 characters long
 
-frobulator.prompt () {
+frobulator.pmt () {
 
 	# initialize string return array
 
-	frobulator_string=()
+	prompt_string=()
 
 	# define input arguments
 
@@ -692,22 +692,22 @@ frobulator.prompt () {
 
 	if [ $# -ge 0 ]
 	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
 	if [ $# -eq 1 ]
 	then
-		frobulator_string=("${span_begin}")
+		prompt_string=("${span_begin}")
 	fi
 
 	if [ $# -ge 2 ]
 	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
 	if [ $# -eq 3 ]
 	then
-		frobulator_string=("${span_begin}""${span_middle}""${span_end}")
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
 	# reset line string counter
@@ -732,164 +732,164 @@ frobulator.prompt () {
 
 frobulator.black () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${black}${value}${reset}"
+	echo -e "${black}${prompt}${reset}"
 }
 
 frobulator.silver () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${silver}${value}${reset}"
+	echo -e "${silver}${prompt}${reset}"
 }
 
 frobulator.grey () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${grey}${value}${reset}"
+	echo -e "${grey}${prompt}${reset}"
 }
 
 frobulator.white () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${white}${value}${reset}"
+	echo -e "${white}${prompt}${reset}"
 }
 
 frobulator.red () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${red}${value}${reset}"
+	echo -e "${red}${prompt}${reset}"
 }
 
 frobulator.crimson () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${crimson}${value}${reset}"
+	echo -e "${crimson}${prompt}${reset}"
 }
 
 frobulator.green () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${green}${value}${reset}"
+	echo -e "${green}${prompt}${reset}"
 }
 
 frobulator.lime () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${lime}${value}${reset}"
+	echo -e "${lime}${prompt}${reset}"
 }
 
 frobulator.yellow () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${yellow}${value}${reset}"
+	echo -e "${yellow}${prompt}${reset}"
 }
 
 frobulator.orange () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${orange}${value}${reset}"
+	echo -e "${orange}${prompt}${reset}"
 }
 
 frobulator.blue () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${blue}${value}${reset}"
+	echo -e "${blue}${prompt}${reset}"
 }
 
 frobulator.navy () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${navy}${value}${reset}"
+	echo -e "${navy}${prompt}${reset}"
 }
 
 frobulator.magenta () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${magenta}${value}${reset}"
+	echo -e "${magenta}${prompt}${reset}"
 }
 
 frobulator.purple () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${purple}${value}${reset}"
+	echo -e "${purple}${prompt}${reset}"
 }
 
 frobulator.fuschia () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${fuschia}${value}${reset}"
+	echo -e "${fuschia}${prompt}${reset}"
 }
 
 frobulator.pink () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${pink}${value}${reset}"
+	echo -e "${pink}${prompt}${reset}"
 }
 
 frobulator.aqua () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${aqua}${value}${reset}"
+	echo -e "${aqua}${prompt}${reset}"
 }
 
 frobulator.teal () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${teal}${value}${reset}"
+	echo -e "${teal}${prompt}${reset}"
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////
@@ -937,11 +937,11 @@ frobulator.teal () {
 
 frobulator.inf () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${blue}${marker_inf}${marker_spc}${value}${reset}"
+	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
 
 	color=("${blue}")
 }
@@ -950,11 +950,11 @@ frobulator.inf () {
 
 frobulator.wrn () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${orange}${marker_wrn}${marker_spc}${value}${reset}"
+	echo -e "${orange}${marker_wrn}${marker_spc}${prompt}${reset}"
 
 	color=("${orange}")
 }
@@ -963,11 +963,11 @@ frobulator.wrn () {
 
 frobulator.msg () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${navy}${marker_msg}${marker_spc}${value}${reset}"
+	echo -e "${navy}${marker_msg}${marker_spc}${prompt}${reset}"
 
 	color=("${navy}")
 }
@@ -976,11 +976,11 @@ frobulator.msg () {
 
 frobulator.add () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${lime}${marker_add}${marker_spc}${value}${reset}"
+	echo -e "${lime}${marker_add}${marker_spc}${prompt}${reset}"
 
 	color=("${lime}")
 }
@@ -989,11 +989,11 @@ frobulator.add () {
 
 frobulator.rem () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${crimson}${marker_rem}${marker_spc}${value}${reset}"
+	echo -e "${crimson}${marker_rem}${marker_spc}${prompt}${reset}"
 
 	color=("${crimson}")
 }
@@ -1002,11 +1002,11 @@ frobulator.rem () {
 
 frobulator.ret () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${aqua}${marker_ret}${marker_spc}${value}${reset}"
+	echo -e "${aqua}${marker_ret}${marker_spc}${prompt}${reset}"
 
 	color=("${aqua}")
 }
@@ -1015,11 +1015,11 @@ frobulator.ret () {
 
 frobulator.rel () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${teal}${marker_rel}${marker_spc}${value}${reset}"
+	echo -e "${teal}${marker_rel}${marker_spc}${prompt}${reset}"
 
 	color=("${teal}")
 }
@@ -1028,11 +1028,11 @@ frobulator.rel () {
 
 frobulator.fwd () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${silver}${marker_fwd}${marker_spc}${value}${reset}"
+	echo -e "${silver}${marker_fwd}${marker_spc}${prompt}${reset}"
 
 	color=("${silver}")
 }
@@ -1041,11 +1041,11 @@ frobulator.fwd () {
 
 frobulator.rev () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${silver}${marker_rev}${marker_spc}${value}${reset}"
+	echo -e "${silver}${marker_rev}${marker_spc}${prompt}${reset}"
 
 	color=("${silver}")
 }
@@ -1054,11 +1054,11 @@ frobulator.rev () {
 
 frobulator.stp () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${grey}${marker_stp}${marker_spc}${value}${reset}"
+	echo -e "${grey}${marker_stp}${marker_spc}${prompt}${reset}"
 
 	color=("${grey}")
 }
@@ -1067,11 +1067,11 @@ frobulator.stp () {
 
 frobulator.dwl () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${magenta}${marker_bot}${marker_spc}${value}${reset}"
+	echo -e "${magenta}${marker_bot}${marker_spc}${prompt}${reset}"
 
 	color=("${magenta}")
 }
@@ -1080,11 +1080,11 @@ frobulator.dwl () {
 
 frobulator.upl () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${purple}${marker_top}${marker_spc}${value}${reset}"
+	echo -e "${purple}${marker_top}${marker_spc}${prompt}${reset}"
 
 	color=("${purple}")
 }
@@ -1093,11 +1093,11 @@ frobulator.upl () {
 
 frobulator.lnk () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${yellow}${marker_stp}${marker_spc}${value}${reset}"
+	echo -e "${yellow}${marker_stp}${marker_spc}${prompt}${reset}"
 
 	color=("${yellow}")
 }
@@ -1106,11 +1106,11 @@ frobulator.lnk () {
 
 frobulator.scs () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${green}${marker_yes}${marker_spc}${value}${reset}"
+	echo -e "${green}${marker_yes}${marker_spc}${prompt}${reset}"
 
 	color=("${green}")
 }
@@ -1119,11 +1119,11 @@ frobulator.scs () {
 
 frobulator.err () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${red}${marker_not}${marker_spc}${value}${reset}"
+	echo -e "${red}${marker_not}${marker_spc}${prompt}${reset}"
 
 	color=("${red}")
 }
@@ -1132,11 +1132,11 @@ frobulator.err () {
 
 frobulator.ins () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${teal}${marker_ipt}${marker_spc}${value}${reset}"
+	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
 
 	color=("${teal}")
 }
@@ -1148,17 +1148,17 @@ frobulator.ins () {
 # note:
 # use 'echo -n -e' to prevent adding new line after prompt:
 # keeps user input beside prompt
-# also includes space after value to separate input
+# also includes space after prompt to separate input
 
 # ask line marker //////////////////////////////////////////////////////////////
 
 frobulator.ask () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -n -e "${fuschia}${marker_ask}${marker_spc}${value}${marker_spc}${reset}"
+	echo -n -e "${fuschia}${marker_ask}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color=("${fuschia}")
 }
@@ -1167,11 +1167,11 @@ frobulator.ask () {
 
 frobulator.ipt () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -n -e "${pink}${marker_add}${marker_spc}${value}${marker_spc}${reset}"
+	echo -n -e "${pink}${marker_add}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color=("${pink}")
 }
@@ -1180,11 +1180,11 @@ frobulator.ipt () {
 
 frobulator.usr () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -n -e "${grey}${marker_usr}${marker_spc}${value}${marker_spc}${reset}"
+	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color=("${grey}")
 }
@@ -1195,13 +1195,13 @@ frobulator.usr () {
 
 frobulator.nul () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
 	color=${color[@]}
 
-	echo -e "${color}${marker_nul}${marker_spc}${value}${reset}"
+	echo -e "${color}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	unset color
 }
@@ -1209,7 +1209,7 @@ frobulator.nul () {
 # letter line marker ///////////////////////////////////////////////////////////
 
 # use to indicate lettered steps, directives or instructions
-# letter value is inserted as line marker
+# letter prompt is inserted as line marker
 
 # usage:      frobulator.ltr "[letter]" "[string]" "[string]" "[span character]"
 
@@ -1231,17 +1231,17 @@ frobulator.ltr () {
 
 	shift
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${before}${aqua}${letter}${reset}${after}${marker_spc}${value}"
+	echo -e "${before}${aqua}${letter}${reset}${after}${marker_spc}${prompt}"
 }
 
 # number line marker ///////////////////////////////////////////////////////////
 
 # use to indicate numbered steps, directives or instructions
-# number value is inserted as line marker
+# number prompt is inserted as line marker
 
 # usage:      frobulator.num "[number]" "[string]" "[string]" "[span character]"
 
@@ -1263,11 +1263,11 @@ frobulator.num () {
 
 	shift
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
-	echo -e "${before}${teal}${number}${reset}${after}${marker_spc}${value}"
+	echo -e "${before}${teal}${number}${reset}${after}${marker_spc}${prompt}"
 }
 
 # separator line marker ////////////////////////////////////////////////////////
@@ -1284,13 +1284,13 @@ frobulator.num () {
 
 frobulator.sep () {
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
 	color=${color[@]}
 
-	echo -e "${color}${marker_sep}${value}${reset}"
+	echo -e "${color}${marker_sep}${prompt}${reset}"
 
 	unset color
 }
@@ -1375,7 +1375,7 @@ frobulator.type () {
 	echo
 }
 
-# wait /////////////////////////////////////////////////////////////////////////
+# timeout //////////////////////////////////////////////////////////////////////
 
 # use to mark timeout in between commands in seconds
 
@@ -1425,9 +1425,9 @@ frobulator.countdown () {
 
 	shift
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
 	shift
 
@@ -1437,11 +1437,11 @@ frobulator.countdown () {
 		then
 			ticker="-"
 
-			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${value}\c"
+			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${prompt}\c"
 
 			break
 		else
-			echo -n -e "\r${before}${red}$((seconds--))${reset}${after}${marker_spc}${value}\c"
+			echo -n -e "\r${before}${red}$((seconds--))${reset}${after}${marker_spc}${prompt}\c"
 		fi
 
 		sleep 1
@@ -1474,15 +1474,15 @@ frobulator.process () {
 	before="[ "
 	after=" ]"
 
-	frobulator.prompt "${@}"
+	frobulator.pmt "${@}"
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
 	i=1
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${value}\c "
+		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}\c "
 
 		sleep 0.25
 	done
@@ -1633,9 +1633,9 @@ frobulator.progress () {
 
 	notification[0]="${notification}"
 
-	frobulator.prompt ${notification[@]}
+	frobulator.pmt ${notification[@]}
 
-	value="${frobulator_string[@]}"
+	prompt="${prompt_string[@]}"
 
 	i=1
 
@@ -1646,7 +1646,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after}${marker_spc}${value}\c "
+		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after}${marker_spc}${prompt}\c "
 
 		sleep 0.25
 	done
@@ -2655,14 +2655,14 @@ frobulator.input () {
 
 	list=($@)
 
-	for value in "${list[@]}"
+	for prompt in "${list[@]}"
 	do
-		label=${value^}
+		label=${prompt^}
 		prompt="$(echo ${label} | sed 's/_/ /'):"
 
 		frobulator.ipt "${prompt}"
 
-		if [[ "${value}" = *password* ]]
+		if [[ "${prompt}" = *password* ]]
 		then
 			frobulator.password
 		else
@@ -2683,7 +2683,7 @@ frobulator.input () {
 
 				frobulator.ipt "${prompt}"
 
-				if [[ "${value}" = *password* ]]
+				if [[ "${prompt}" = *password* ]]
 				then
 					frobulator.password
 				else
@@ -2694,9 +2694,9 @@ frobulator.input () {
 			fi
 		done
 
-		value=${label,}
+		prompt=${label,}
 
-		frobulator_return+=("${value}=${input}")
+		frobulator_return+=("${prompt}=${input}")
 
 	done
 

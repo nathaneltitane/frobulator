@@ -200,4 +200,9 @@ frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
 
-frobulator.process "test"
+
+notifcation="poop"
+
+notificatio="${notification/%e/ing}"
+
+echo $notificatio

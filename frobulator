@@ -558,7 +558,9 @@ marker_nul='     '
 marker_sep='//////'
 
 marker_elp='...'
+marker_prc='%'
 marker_spc=' '
+
 
 # prompt management tool (pmt) /////////////////////////////////////////////////
 
@@ -1665,69 +1667,103 @@ frobulator.progress () {
 
 # bar //////////////////////////////////////////////////////////////////////////
 
-# WIP
-
 # use to mark process progress
 
 frobulator.bar () {
 
-	current="${1}"
-	total="100"
+	bar_progress () {
+
+		buffer=$((${span} - ${before} - ${after}))
+
+		ratio=$((${current}*100/${total}*100))
+		percentage=$((${ratio}/100))
+
+		done=$(((${percentage}*${buffer})/100))
+		left=$((${buffer}-${done}))
+
+		# substitutions
+
+		done=$(printf "%${done}s")
+		left=$(printf "%${left}s")
+
+		done="${done// //}${reset}"
+		left="${left// /-}${reset}"
+
+		progress="${done}${left}"
+	}
 
 	# catch PID of last command
 
 	PID=$!
 
-	seconds="0.1"
+	while [ -d /proc/"${PID}" ]
+	do
+		for (( current=1; current<=100; current++ ))
+		do
+			total="100"
 
-	span=80		# total characters for line
+			seconds="0.5"
 
-	before=8	# maximum characters for header:		'[ x ] [ '
-	after=12	# maximum characters for percentage:	' ] [ xxx % ]'
+			span=80		# total characters for line
 
-	let buffer=${span}-${before}-${after}
+			before=8	# maximum characters for header:		'[ x ] [ '
+			after=12	# maximum characters for percentage:	' ] [ xxx % ]'
 
-	let ratio=(${current}*100/${total}*100)
-	let percentage=${ratio}/100
+			bar_progress
 
-	let done=(${percentage}*${buffer})/100
-	let left=${buffer}-${done}
+			header="${marker_fwd}"
 
-	done=$(printf "%${done}s")
-	left=$(printf "%${left}s")
+			bar_before="${marker_spc}[${marker_spc}"
+			bar_after="${marker_spc}]"
 
-	# substitutions
+			bar="${bar_before}${progress}${bar_after}"
 
-	done="${purple}${done// //}${reset}"
-	left="${yellow}${left// /-}${reset}"
+			# completion marker padding
 
-	header="${marker_fwd}"
-	bar=" [ ${done}${left} ] "
+			if (( ${current} >= 0 && ${current} <= 9 ))
+			then
+				# handle number spacing: 1-9
 
-	# padding
+				percentage="00${percentage}"
 
-	if (( ${1} >= 0 && ${1} <= 9 ))
-	then
-		# handle number spacing for entries 1-9
+			elif (( ${current} >= 10 && ${current} <= 99 ))
+			then
+				# handle number spacing: 10-99
 
-		percentage="[ ${percentage}   % ]"
+				percentage="0${percentage}"
+			else
+				# handle number spacing: 100-999
 
-	elif (( ${current} >= 10 && ${total} <= 99 ))
-	then
-		# handle number spacing for entries 10-99
+				percentage="${percentage}"
+			fi
 
-		percentage="[ ${percentage}  % ]"
-	else
-		# handle number spacing for 100-999
+			percentage="${bar_before}${percentage}${marker_spc}${marker_prc}${bar_after}"
 
-		percentage="[ ${percentage} % ]"
-	fi
+			if [ ! -d /proc/"${PID}" ]
+			then
+				current="${total}"
 
-	echo -n -e "\r${header}${bar}${percentage}\c "
+				bar_progress
+
+				header="${marker_stp}"
+
+				bar="${bar_before}${progress}${bar_after}"
+
+				percentage="${bar_before}${percentage}${marker_spc}%${bar_after}"
+
+				echo -n -e "\r${header}${bar}${percentage}\c"
+
+				break
+			fi
+
+			echo -n -e "\r${header}${bar}${percentage}\c"
+
+			sleep "${seconds}"
+
+		done
+	done
 
 	echo
-
-	sleep "${seconds}"
 }
 
 # temporary ////////////////////////////////////////////////////////////////////

@@ -2775,7 +2775,9 @@ frobulator.clean () {
 
 	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
 	then
-		rm -r -f "${PREFIX}"/var/lib/dpkg/info/*.postinst >> "${sink}" 2>&1
+		rm					\
+			--recursive		\
+			--force			"${PREFIX}"/var/lib/dpkg/info/*.postinst >> "${sink}" 2>&1
 	fi
 }
 

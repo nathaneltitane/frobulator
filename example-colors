@@ -322,4 +322,4 @@ echo
 
 curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
 
-frobulator.progress
+frobulator.progress hold

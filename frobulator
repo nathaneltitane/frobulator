@@ -1473,8 +1473,8 @@ frobulator.process () {
 
 	spinner='/\'
 
-	before="[ "
-	after=" ]"
+	before="[${marker_spc}"
+	after="${marker_spc}]"
 
 	frobulator.pmt "${@}"
 
@@ -1513,8 +1513,8 @@ frobulator.progress () {
 
 	spinner='⎺⎻⎼⎽⎼⎻'
 
-	before="[ "
-	after=" ]"
+	before="[${marker_spc}"
+	after="${marker_spc}]"
 
 	notification=("${@}")
 

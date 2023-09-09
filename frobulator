@@ -1619,9 +1619,9 @@ frobulator.progress () {
 	then
 		if [ "${notification: -1}" = "e" ]
 		then
-			notification="${notification/%e/ing...}"
+			notification="${notification/%e/ing$marker_elp}"
 		else
-			notification="${notification/%/ing...}"
+			notification="${notification/%/ing$marker_elp}"
 		fi
 	fi
 

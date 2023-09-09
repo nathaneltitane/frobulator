@@ -45,12 +45,166 @@ version="08-13-2023"
 # process //////////////////////////////////////////////////////////////////////
 
 # progress /////////////////////////////////////////////////////////////////////
+marker_elp='...'
+marker_prc='%'
+marker_spc=' '
 
-# use as ticker line marker to mark process completion or progress
-# use after process marked  for background operation
+frobulator.progress () {
 
-# usage:      [process] &
-#             frobulator.process "[string]"
+	# catch PID of last command
+
+	PID=${PID}
+
+	ticker='⎺⎻⎼⎽⎼⎻'
+
+	before="[${marker_spc}"
+	after="${marker_spc}]"
+
+	notification=("${@}")
+
+	# process alphabetical arguments only
+
+	if [[ "${notification}" =~ [a-zA-Z] ]]
+	then
+		if [[ "${notification}" = "download" ]]
+		then
+			color="${magenta}"
+
+		elif [[ "${notification}" = "upload" ]]
+		then
+			color="${purple}"
+
+		elif [[ "${notification}" = "install" ]]
+		then
+			color="${blue}"
+
+		elif [[ "${notification}" = "reinstall" ]]
+		then
+			color="${navy}"
+
+		elif [[ "${notification}" = "remove" ]]
+		then
+			color="${red}"
+
+		elif [[ "${notification}" = "purge" ]]
+		then
+			color="${crimson}"
+
+		elif [[ "${notification}" = "update" ]] || \
+		     [[ "${notification}" = "clone"  ]]
+		then
+			color="${yellow}"
+
+		elif [[ "${notification}" = "upgrade" ]]
+		then
+			color="${orange}"
+
+		elif [[ "${notification}" = "hold" ]]
+		then
+			color="${aqua}"
+
+		elif [[ "${notification}" = "release" ]] || \
+		     [[ "${notification}" = "build"   ]]
+		then
+			color="${teal}"
+
+		elif [[ "${notification}" = "clean" ]]
+		then
+			color="${black}"
+
+		elif [[ "${notification}" = "parse" ]]
+		then
+			color="${green}"
+
+		elif [[ "${notification}" = "generate" ]]
+		then
+			color="${lime}"
+
+		elif [[ "${notification}" = "evaluate" ]] || \
+		     [[ "${notification}" = "probe"    ]]
+		then
+			color="${silver}"
+
+		elif [[ "${notification}" = "process" ]]
+		then
+			color="${grey}"
+
+		else
+			# set fallback for unwanted input notification
+
+			notification="process"
+
+			color="${grey}"
+		fi
+	fi
+
+	if [ -z "${notification}" ]
+	then
+		# set fallback for empty input notification
+
+		notification="frobulate"
+
+		color="${white}"
+	fi
+
+	# select notification index for transformation
+
+	notification=${notification[0]}
+
+	# set notification to first letter uppercase
+
+	notification="${notification^}"
+
+	if [ $# -le 1 ]
+	then
+		if [ "${notification: -1}" = "e" ]
+		then
+			notification="${notification/%e/ing$marker_elp}"
+		else
+			notification="${notification/%/ing$marker_elp}"
+		fi
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		if [ "${notification: -1}" = "e" ]
+		then
+			notification="${notification/%e/ing}"
+		else
+			notification="${notification/%/ing}"
+
+		fi
+	fi
+
+	notification[0]="${notification}"
+
+	frobulator.pmt ${notification[@]}
+
+	prompt="${prompt_string[@]}"
+
+	i=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		if [ ! -d /proc/"${PID}" ]
+        then
+			break
+        fi
+
+		echo -n -e "\r${before}${color} \b${ticker:i++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
+
+		sleep 0.25
+	done
+
+	unset color
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -165,3 +319,7 @@ echo
 frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
+
+curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
+
+frobulator.progress

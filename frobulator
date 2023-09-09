@@ -21,6 +21,10 @@ else
 	shell="${SHELL}"
 fi
 
+# provide terminal columns count
+
+terminal_columns=80
+
 # provide process identifiers
 
 PID=$!
@@ -586,7 +590,7 @@ frobulator.pmt () {
 
 	if [ -z "${count}" ]
 	then
-		count=80
+		count=${terminal_columns}
 	fi
 
 	# set span width
@@ -1672,9 +1676,13 @@ frobulator.progress () {
 
 frobulator.bar () {
 
-	count=80		# total characters for line
+	# total characters for line
+
+	count=${terminal_columns}
 
 	total="100"
+
+	# refresh interval
 
 	seconds="0.5"
 

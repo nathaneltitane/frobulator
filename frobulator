@@ -1471,7 +1471,7 @@ frobulator.process () {
 
 	PID=$!
 
-	spinner='/\'
+	ticker='/\'
 
 	before="[${marker_spc}"
 	after="${marker_spc}]"
@@ -1484,7 +1484,7 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${spinner:i++%${#spinner}:1}${after}${marker_spc}${prompt}${marker_elp}\c "
+		echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c "
 
 		sleep 0.25
 	done
@@ -1511,7 +1511,7 @@ frobulator.progress () {
 
 	PID=$!
 
-	spinner='⎺⎻⎼⎽⎼⎻'
+	ticker='⎺⎻⎼⎽⎼⎻'
 
 	before="[${marker_spc}"
 	after="${marker_spc}]"
@@ -1647,7 +1647,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${color} \b${spinner:i++%${#spinner}:1}${reset}${after}${marker_spc}${prompt}\c "
+		echo -n -e "\r${before}${color} \b${ticker:i++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c "
 
 		sleep 0.25
 	done

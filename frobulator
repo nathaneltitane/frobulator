@@ -21,6 +21,10 @@ else
 	shell="${SHELL}"
 fi
 
+# provide process identifiers
+
+PID=$!
+
 # provide fallback for non 'root' assessments
 
 self="${0}"
@@ -1421,8 +1425,8 @@ frobulator.clear () {
 
 frobulator.countdown () {
 
-	before="[ "
-	after=" ]"
+	before="[${marker_spc}"
+	after="${marker_spc}]"
 
 	seconds="${1}"
 
@@ -1469,7 +1473,7 @@ frobulator.process () {
 
 	# catch PID of last command
 
-	PID=$!
+	PID=${PID}
 
 	ticker='/\'
 
@@ -1484,7 +1488,7 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c "
+		echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
 
 		sleep 0.25
 	done
@@ -1509,7 +1513,7 @@ frobulator.progress () {
 
 	# catch PID of last command
 
-	PID=$!
+	PID=${PID}
 
 	ticker='⎺⎻⎼⎽⎼⎻'
 
@@ -1647,7 +1651,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${color} \b${ticker:i++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c "
+		echo -n -e "\r${before}${color} \b${ticker:i++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
 
 		sleep 0.25
 	done
@@ -1668,9 +1672,15 @@ frobulator.progress () {
 
 frobulator.bar () {
 
+	count=80		# total characters for line
+
+	total="100"
+
+	seconds="0.5"
+
 	bar_progress () {
 
-		buffer=$((${span} - ${before} - ${after}))
+		buffer=$((${count} - ${before} - ${after}))
 
 		ratio=$((${current}*100/${total}*100))
 		percentage=$((${ratio}/100))
@@ -1691,18 +1701,12 @@ frobulator.bar () {
 
 	# catch PID of last command
 
-	PID=$!
+	PID=${PID}
 
 	while [ -d /proc/"${PID}" ]
 	do
 		for (( current=1; current<=100; current++ ))
 		do
-			total="100"
-
-			seconds="0.5"
-
-			span=80		# total characters for line
-
 			before=8	# maximum characters for header:		'[ x ] [ '
 			after=12	# maximum characters for percentage:	' ] [ xxx % ]'
 

@@ -1394,8 +1394,6 @@ frobulator.type () {
 
 frobulator.timeout () {
 
-	# timeout in seconds
-
 	seconds="${1}"
 
 	# set defaults
@@ -1429,12 +1427,14 @@ frobulator.clear () {
 
 frobulator.countdown () {
 
-	before="[${marker_spc}"
-	after="${marker_spc}]"
-
-	seconds="${1}"
+	counter="${1}"
 
 	shift
+
+	seconds="1"
+
+	before="[${marker_spc}"
+	after="${marker_spc}]"
 
 	frobulator.pmt "${@}"
 
@@ -1442,20 +1442,20 @@ frobulator.countdown () {
 
 	shift
 
-	while [ "${seconds}" -ge 0 ]
+	while [ "${counter}" -ge 0 ]
 	do
-		if [ "${seconds}" -eq 0 ]
+		if [ "${counter}" -eq 0 ]
 		then
 			ticker="-"
 
-			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${prompt}\c"
+			echo -n -e "\r${before}${orange}${ticker}${reset}${after}${marker_spc}${prompt}\c"
 
 			break
 		else
-			echo -n -e "\r${before}${red}$((seconds--))${reset}${after}${marker_spc}${prompt}\c"
+			echo -n -e "\r${before}${red}$((counter--))${reset}${after}${marker_spc}${prompt}\c"
 		fi
 
-		sleep 1
+		sleep "${seconds}"
 
 	done
 

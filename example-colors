@@ -49,6 +49,47 @@ marker_elp='...'
 marker_prc='%'
 marker_spc=' '
 
+frobulator.countdown () {
+
+	counter="${1}"
+
+	shift
+
+	seconds="1"
+
+	before="[${marker_spc}"
+	after="${marker_spc}]"
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	shift
+
+	while [ "${counter}" -ge 0 ]
+	do
+		if [ "${counter}" -eq 0 ]
+		then
+			ticker="-"
+
+			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${prompt}\c"
+
+			break
+		else
+			echo -n -e "\r${before}${red}$((counter--))${reset}${after}${marker_spc}${prompt}\c"
+		fi
+
+		sleep "${seconds}"
+
+	done
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
+
+
 frobulator.progress () {
 
 	seconds="0.25"
@@ -322,6 +363,8 @@ frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
 
-curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
-
-frobulator.progress hold
+frobulator.countdown 5 text poop
+#
+# curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
+#
+# frobulator.progress hold

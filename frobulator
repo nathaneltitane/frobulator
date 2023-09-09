@@ -1356,31 +1356,31 @@ frobulator.script () {
 
 # use to emulate typing on prompts:
 # timeout is randomized to create human-like typing effect
-# seconds value must be an integer
+# interval value must be an integer
 
-# usage:      frobulator.type "[seconds]" "[string]"
+# usage:      frobulator.type "[interval]" "[string]"
 
 frobulator.type () {
 
 	string="${1}"
-	seconds="${2}"
+	interval="${2}"
 
 	string_length=${#string}
 
-	if [ -z "${seconds}" ]
+	if [ -z "${interval}" ]
 	then
-		seconds=3
+		interval=3
 	fi
 
 	for (( characters=0 ; characters<=${string_length} ; characters++ ))
 	do
-		decimal=$(( (RANDOM % ${seconds}) + 1 ))
+		decimal=$(( (RANDOM % ${interval}) + 1 ))
 
-		sleep="0.${decimal}"
+		seconds="0.${decimal}"
 
 		echo -n -e "${1:${characters}:1}"
 
-		sleep "${sleep}"
+		sleep "${seconds}"
 	done
 
 	echo

@@ -1618,7 +1618,6 @@ frobulator.progress () {
 			notification="${notification/%e/ing...}"
 		else
 			notification="${notification/%/ing...}"
-
 		fi
 	fi
 

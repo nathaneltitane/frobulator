@@ -1475,6 +1475,8 @@ frobulator.countdown () {
 
 frobulator.process () {
 
+	seconds="0.25"
+
 	# catch PID of last command
 
 	PID=${PID}
@@ -1494,7 +1496,7 @@ frobulator.process () {
 	do
 		echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
 
-		sleep 0.25
+		sleep "${seconds}"
 	done
 
 	echo
@@ -3358,10 +3360,12 @@ frobulator.result () {
 
 frobulator.user () {
 
+	seconds="1"
+
 	frobulator.msg "Current shell user name" "[ '${SUDO_USER:-$USER}' ]"
 	echo
 
-	sleep 1
+	sleep "${seconds}"
 }
 
 # assess ///////////////////////////////////////////////////////////////////////

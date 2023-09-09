@@ -2673,6 +2673,7 @@ frobulator.password () {
 			# remove input on 'BACKSPACE'/'DEL'
 
 			mask=$'\b \b'
+
 			password="${password%?}"
 		else
 			# set character mask

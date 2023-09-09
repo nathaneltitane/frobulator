@@ -1354,8 +1354,8 @@ frobulator.script () {
 
 frobulator.type () {
 
-	seconds="${1}"
-	string="${2}"
+	string="${1}"
+	seconds="${2}"
 
 	string_length=${#string}
 

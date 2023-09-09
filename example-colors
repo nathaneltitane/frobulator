@@ -49,47 +49,6 @@ marker_elp='...'
 marker_prc='%'
 marker_spc=' '
 
-frobulator.countdown () {
-
-	counter="${1}"
-
-	shift
-
-	seconds="1"
-
-	before="[${marker_spc}"
-	after="${marker_spc}]"
-
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	shift
-
-	while [ "${counter}" -ge 0 ]
-	do
-		if [ "${counter}" -eq 0 ]
-		then
-			ticker="-"
-
-			echo -n -e "\r${before}${yellow}${ticker}${reset}${after}${marker_spc}${prompt}\c"
-
-			break
-		else
-			echo -n -e "\r${before}${red}$((counter--))${reset}${after}${marker_spc}${prompt}\c"
-		fi
-
-		sleep "${seconds}"
-
-	done
-
-	# normalize line spacing:
-	# additional 'echo' required due to carriage return
-
-	echo
-}
-
-
 frobulator.progress () {
 
 	seconds="0.25"
@@ -105,70 +64,132 @@ frobulator.progress () {
 
 	notification=("${@}")
 
+	# dictionaries
+
+	magenta_list=(
+		download
+	)
+
+	magenta_list=(
+		upload
+	)
+
+	blue_list=(
+		install
+	)
+
+	blue_list=(
+		reinstall
+	)
+
+	red_list=(
+		remove
+	)
+
+	crimson_list=(
+		purge
+	)
+
+	yellow_list=(
+		update
+		clone
+	)
+
+	orange_list=(
+		upgrade
+	)
+
+	aqua_list=(
+		hold
+	)
+
+	teal_list=(
+		release
+		build
+	)
+
+	black_list=(
+		clean
+	)
+
+	green_list=(
+		parse
+	)
+
+	lime_list=(
+		generate
+	)
+
+	silver_list=(
+		evaluate
+		probe
+	)
+
+	grey_list=(
+		process
+	)
+
 	# process alphabetical arguments only
 
 	if [[ "${notification}" =~ [a-zA-Z] ]]
 	then
-		if [[ "${notification}" = "download" ]]
+		if [[ ${magenta_list[*]} =~ "${notification}" ]]
 		then
 			color="${magenta}"
 
-		elif [[ "${notification}" = "upload" ]]
+		elif [[ ${purple_list[*]} =~ "${notification}" ]]
 		then
 			color="${purple}"
 
-		elif [[ "${notification}" = "install" ]]
+		elif [[ ${blue_list[*]} =~ "${notification}" ]]
 		then
 			color="${blue}"
 
-		elif [[ "${notification}" = "reinstall" ]]
+		elif [[ ${navy_list[*]} =~ "${notification}" ]]
 		then
 			color="${navy}"
 
-		elif [[ "${notification}" = "remove" ]]
+		elif [[ ${red_list[*]} =~ "${notification}" ]]
 		then
 			color="${red}"
 
-		elif [[ "${notification}" = "purge" ]]
+		elif [[ ${crimson_list[*]} =~ "${notification}" ]]
 		then
 			color="${crimson}"
 
-		elif [[ "${notification}" = "update" ]] || \
-		     [[ "${notification}" = "clone"  ]]
+		elif [[ ${yellow_list[*]} =~ "${notification}" ]]
 		then
 			color="${yellow}"
 
-		elif [[ "${notification}" = "upgrade" ]]
+		elif [[ ${orange_list[*]} =~ "${notification}" ]]
 		then
 			color="${orange}"
 
-		elif [[ "${notification}" = "hold" ]]
+		elif [[ ${aqua_list[*]} =~ "${notification}" ]]
 		then
 			color="${aqua}"
 
-		elif [[ "${notification}" = "release" ]] || \
-		     [[ "${notification}" = "build"   ]]
+		elif [[ ${teal_list[*]} =~ "${notification}" ]]
 		then
 			color="${teal}"
 
-		elif [[ "${notification}" = "clean" ]]
+		elif [[ ${black_list[*]} =~ "${notification}" ]]
 		then
 			color="${black}"
 
-		elif [[ "${notification}" = "parse" ]]
+		elif [[ ${green_list[*]} =~ "${notification}" ]]
 		then
 			color="${green}"
 
-		elif [[ "${notification}" = "generate" ]]
+		elif [[ ${lime_list[*]} =~ "${notification}" ]]
 		then
 			color="${lime}"
 
-		elif [[ "${notification}" = "evaluate" ]] || \
-		     [[ "${notification}" = "probe"    ]]
+		elif [[ ${silver_list[*]} =~ "${notification}" ]]
 		then
 			color="${silver}"
 
-		elif [[ "${notification}" = "process" ]]
+		elif [[ ${grey_list[*]} =~ "${notification}" ]]
 		then
 			color="${grey}"
 
@@ -363,8 +384,7 @@ frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
 
-frobulator.countdown 5 text poop
-#
-# curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
-#
-# frobulator.progress hold
+
+curl -s -L https://cdimage.ubuntu.com/ubuntu/releases/22.04/release/ubuntu-22.04.3-preinstalled-desktop-arm64+raspi.img.xz > /home/nathanel/image.img.xz &
+
+frobulator.progress release

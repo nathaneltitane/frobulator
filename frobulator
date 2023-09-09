@@ -1530,70 +1530,132 @@ frobulator.progress () {
 
 	notification=("${@}")
 
+	# dictionaries
+
+	magenta_list=(
+		download
+	)
+
+	magenta_list=(
+		upload
+	)
+
+	blue_list=(
+		install
+	)
+
+	blue_list=(
+		reinstall
+	)
+
+	red_list=(
+		remove
+	)
+
+	crimson_list=(
+		purge
+	)
+
+	yellow_list=(
+		update
+		clone
+	)
+
+	orange_list=(
+		upgrade
+	)
+
+	aqua_list=(
+		hold
+	)
+
+	teal_list=(
+		release
+		build
+	)
+
+	black_list=(
+		clean
+	)
+
+	green_list=(
+		parse
+	)
+
+	lime_list=(
+		generate
+	)
+
+	silver_list=(
+		evaluate
+		probe
+	)
+
+	grey_list=(
+		process
+	)
+
 	# process alphabetical arguments only
 
 	if [[ "${notification}" =~ [a-zA-Z] ]]
 	then
-		if [[ "${notification}" = "download" ]]
+		if [[ ${magenta_list[*]} =~ "${notification}" ]]
 		then
 			color="${magenta}"
 
-		elif [[ "${notification}" = "upload" ]]
+		elif [[ ${purple_list[*]} =~ "${notification}" ]]
 		then
 			color="${purple}"
 
-		elif [[ "${notification}" = "install" ]]
+		elif [[ ${blue_list[*]} =~ "${notification}" ]]
 		then
 			color="${blue}"
 
-		elif [[ "${notification}" = "reinstall" ]]
+		elif [[ ${navy_list[*]} =~ "${notification}" ]]
 		then
 			color="${navy}"
 
-		elif [[ "${notification}" = "remove" ]]
+		elif [[ ${red_list[*]} =~ "${notification}" ]]
 		then
 			color="${red}"
 
-		elif [[ "${notification}" = "purge" ]]
+		elif [[ ${crimson_list[*]} =~ "${notification}" ]]
 		then
 			color="${crimson}"
 
-		elif [[ "${notification}" = "update" ]] || \
-		     [[ "${notification}" = "clone"  ]]
+		elif [[ ${yellow_list[*]} =~ "${notification}" ]]
 		then
 			color="${yellow}"
 
-		elif [[ "${notification}" = "upgrade" ]]
+		elif [[ ${orange_list[*]} =~ "${notification}" ]]
 		then
 			color="${orange}"
 
-		elif [[ "${notification}" = "hold" ]]
+		elif [[ ${aqua_list[*]} =~ "${notification}" ]]
 		then
 			color="${aqua}"
 
-		elif [[ "${notification}" = "release" ]] || \
-		     [[ "${notification}" = "build"   ]]
+		elif [[ ${teal_list[*]} =~ "${notification}" ]]
 		then
 			color="${teal}"
 
-		elif [[ "${notification}" = "clean" ]]
+		elif [[ ${black_list[*]} =~ "${notification}" ]]
 		then
 			color="${black}"
 
-		elif [[ "${notification}" = "parse" ]]
+		elif [[ ${green_list[*]} =~ "${notification}" ]]
 		then
 			color="${green}"
 
-		elif [[ "${notification}" = "generate" ]]
+		elif [[ ${lime_list[*]} =~ "${notification}" ]]
 		then
 			color="${lime}"
 
-		elif [[ "${notification}" = "evaluate" ]] || \
-		     [[ "${notification}" = "probe"    ]]
+		elif [[ ${silver_list[*]} =~ "${notification}" ]]
 		then
 			color="${silver}"
 
-		elif [[ "${notification}" = "process" ]]
+		elif [[ ${grey_list[*]} =~ "${notification}" ]]
 		then
 			color="${grey}"
 

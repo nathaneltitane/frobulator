@@ -1350,12 +1350,12 @@ frobulator.script () {
 # timeout is randomized to create human-like typing effect
 # seconds value must be an integer
 
-# usage:      frobulator.type "[string]" "[seconds]"
+# usage:      frobulator.type "[seconds]" "[string]"
 
 frobulator.type () {
 
-	string="${1}"
-	seconds="${2}"
+	seconds="${1}"
+	string="${2}"
 
 	string_length=${#string}
 

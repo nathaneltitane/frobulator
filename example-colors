@@ -82,7 +82,7 @@ frobulator.progress () {
 
 	# catch PID of last command
 
-	PID=${PID}
+	PID=$!
 
 	seconds="0.25"
 
@@ -222,12 +222,6 @@ frobulator.progress () {
 		then
 			color="${grey}"
 
-		else
-			# set fallback for unwanted input notification
-
-			notification="process"
-
-			color="${grey}"
 		fi
 	fi
 
@@ -423,7 +417,7 @@ frobulator.download () {
 					--location	"${url}"/"${file}" > "${path}"/"${file}" &
 			fi
 
-			frobulator.process "download" "[ '${file}' ]"
+			frobulator.progress "download" "[ '${file}' ]"
 
 			chmod a+rx "${path}"/"${file}"
 		done

@@ -1537,7 +1537,7 @@ frobulator.progress () {
 		download
 	)
 
-	magenta_list=(
+	purple_list=(
 		upload
 	)
 
@@ -1545,7 +1545,7 @@ frobulator.progress () {
 		install
 	)
 
-	blue_list=(
+	navy_list=(
 		reinstall
 	)
 

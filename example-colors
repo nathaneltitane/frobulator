@@ -99,7 +99,7 @@ frobulator.progress () {
 		download
 	)
 
-	magenta_list=(
+	purple_list=(
 		upload
 	)
 
@@ -107,7 +107,7 @@ frobulator.progress () {
 		install
 	)
 
-	blue_list=(
+	navy_list=(
 		reinstall
 	)
 
@@ -545,65 +545,21 @@ frobulator.aqua "aqua"
 frobulator.teal "teal"
 echo
 
-if [ -z "${utility}" ]
-then
-	utility="all"
-fi
+# load dextop utilities
 
+utilities_list+=(
+	termux-packages
+	termux-repositories
+	termux-update
+	termux-storage
+	termux-additions
+	container-expansion
+	container-image
+	container-packages
+	container-repositories
+	container-session
+	container-settings
+	container-user
+)
 
-
-utility_intent () {
-
-	# load dextop utilities
-
-	utilities_list+=(
-		termux-packages
-		termux-repositories
-		termux-update
-		termux-storage
-		termux-additions
-		container-expansion
-		container-image
-		container-packages
-		container-repositories
-		container-session
-		container-settings
-		container-user
-	)
-
-	if [[ ${utilities_list[@]} =~ "${utility}" ]]
-	then
-		frobulator.download get.dxtp.app "${HOME}"/.local/bin "${utility}"
-
-	elif [[ "${utility}" = "all" ]]
-	then
-		frobulator.download get.dxtp.app "${HOME}"/.local/bin ${utilities_list[@]}
-
-	else
-		frobulator.err "Unknown utility name" "[ ${utility} ]"
-		echo
-
-		frobulator.msg "Known upgradable utilities" "[ version // ${version} ]"
-		echo
-
-		IFS=$'\n'
-
-		printf "[ > ] %s\n" ${utilities_list[@]}
-
-		echo
-
-		IFS=''
-
-		frobulator.msg "Option: update all utilities using 'all' argument."
-		echo
-
-		frobulator.inf "Review utility name spelling and try again."
-		echo
-
-		exit 1
-	fi
-
-	utilities_list=()
-}
-
-utility_intent
+frobulator.download get.dxtp.app "${HOME}"/.local/bin ${utilities_list[@]}

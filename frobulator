@@ -25,10 +25,6 @@ fi
 
 terminal_columns=80
 
-# provide process identifiers
-
-PID=$!
-
 # provide fallback for non 'root' assessments
 
 self="${0}"
@@ -1494,7 +1490,12 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
-		echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
+		if [ $# -le 1 ]
+		then
+			echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
+		else
+			echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}\c"
+		fi
 
 		sleep "${seconds}"
 	done
@@ -1517,11 +1518,11 @@ frobulator.process () {
 
 frobulator.progress () {
 
-	seconds="0.25"
-
 	# catch PID of last command
 
-	PID=${PID}
+	PID=$!
+
+	seconds="0.25"
 
 	ticker='⎺⎻⎼⎽⎼⎻'
 

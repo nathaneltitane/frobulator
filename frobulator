@@ -1710,23 +1710,26 @@ frobulator.progress () {
 
 	if [ "${notification: -1}" = "e" ]
 	then
+		# remove end 'e'
+
 		notification="${notification/%e/}"
 
 	elif [ "${notification: -1}" = "b" ]
 	then
+		# double end 'b'
+
 		notification="${notification/%b/bb}"
 	fi
 
 	# append verb end
 
+	notification="${notification/%/ing}"
+
+	# append ellipsis
+
 	if [ $# -le 1 ]
 	then
-		notification="${notification/%/ing$marker_elp}"
-	fi
-
-	if [ $# -ge 2 ]
-	then
-		notification="${notification/%/ing}"
+		notification="${notification/%/$marker_elp}"
 	fi
 
 	notification[0]="${notification}"

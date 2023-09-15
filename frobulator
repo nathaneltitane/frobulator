@@ -1486,15 +1486,15 @@ frobulator.process () {
 
 	prompt="${prompt_string[@]}"
 
-	i=1
+	instance=1
 
 	while [ -d /proc/"${PID}" ]
 	do
 		if [ $# -le 1 ]
 		then
-			echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
+			echo -n -e "\r${before} \b${ticker:instance++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
 		else
-			echo -n -e "\r${before} \b${ticker:i++%${#ticker}:1}${after}${marker_spc}${prompt}\c"
+			echo -n -e "\r${before} \b${ticker:instance++%${#ticker}:1}${after}${marker_spc}${prompt}\c"
 		fi
 
 		sleep "${seconds}"
@@ -1738,7 +1738,7 @@ frobulator.progress () {
 
 	prompt="${prompt_string[@]}"
 
-	i=1
+	instance=1
 
 	while [ -d /proc/"${PID}" ]
 	do
@@ -1747,7 +1747,7 @@ frobulator.progress () {
 			break
         fi
 
-		echo -n -e "\r${before}${color} \b${ticker:i++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
+		echo -n -e "\r${before}${color} \b${ticker:instance++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
 
 		sleep "${seconds}"
 	done

@@ -1531,7 +1531,7 @@ frobulator.progress () {
 
 	notification=("${@}")
 
-	# dictionaries
+	# verb dictionaries
 
 	magenta_list=(
 		download
@@ -1545,43 +1545,55 @@ frobulator.progress () {
 
 	blue_list=(
 		install
+		export
+		convert
 	)
 
 	navy_list=(
 		reinstall
+		move
 	)
 
 	red_list=(
 		remove
+		exclude
+		clear
 	)
 
 	crimson_list=(
 		purge
+		expunge
+		sanitize
 	)
 
 	yellow_list=(
 		update
+		refresh
 		clone
 	)
 
 	orange_list=(
 		upgrade
 		enhance
+		optimize
 	)
 
 	aqua_list=(
 		hold
+		keep
 		wait
 	)
 
 	teal_list=(
 		release
+		deploy
 		build
 	)
 
 	black_list=(
 		clean
 		wipe
+		scrub
 	)
 
 	green_list=(
@@ -1694,25 +1706,27 @@ frobulator.progress () {
 
 	notification="${notification^}"
 
+	# set notification verb conjugation
+
+	if [ "${notification: -1}" = "e" ]
+	then
+		notification="${notification/%e/}"
+
+	elif [ "${notification: -1}" = "b" ]
+	then
+		notification="${notification/%b/bb}"
+	fi
+
+	# append verb end
+
 	if [ $# -le 1 ]
 	then
-		if [ "${notification: -1}" = "e" ]
-		then
-			notification="${notification/%e/ing$marker_elp}"
-		else
-			notification="${notification/%/ing$marker_elp}"
-		fi
+		notification="${notification/%/ing$marker_elp}"
 	fi
 
 	if [ $# -ge 2 ]
 	then
-		if [ "${notification: -1}" = "e" ]
-		then
-			notification="${notification/%e/ing}"
-		else
-			notification="${notification/%/ing}"
-
-		fi
+		notification="${notification/%/ing}"
 	fi
 
 	notification[0]="${notification}"

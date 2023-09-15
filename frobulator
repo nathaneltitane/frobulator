@@ -1535,10 +1535,12 @@ frobulator.progress () {
 
 	magenta_list=(
 		download
+		render
 	)
 
 	purple_list=(
 		upload
+		rasterize
 	)
 
 	blue_list=(
@@ -1564,10 +1566,12 @@ frobulator.progress () {
 
 	orange_list=(
 		upgrade
+		enhance
 	)
 
 	aqua_list=(
 		hold
+		wait
 	)
 
 	teal_list=(
@@ -1577,14 +1581,17 @@ frobulator.progress () {
 
 	black_list=(
 		clean
+		wipe
 	)
 
 	green_list=(
 		parse
+		resolve
 	)
 
 	lime_list=(
 		generate
+		spawn
 	)
 
 	silver_list=(
@@ -1594,6 +1601,7 @@ frobulator.progress () {
 
 	grey_list=(
 		process
+		procede
 	)
 
 	# process alphabetical arguments only

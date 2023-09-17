@@ -336,11 +336,11 @@ if [ -z "$(command -v tput)" ]
 then
 	# handle color digit length for ansi fallback method
 
-	for color_entry in ${colors_selection[@]}
+	for color in ${colors_selection[@]}
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color_entry}"
+		read color_name color_value <<< "${color}"
 
 		if [ ${#color_value} = 3 ]
 		then
@@ -406,7 +406,7 @@ else
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color_entry}"
+		read color_name color_value <<< "${color}"
 
 		IFS=''
 
@@ -744,6 +744,8 @@ frobulator.black () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${black}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.silver () {
@@ -753,6 +755,8 @@ frobulator.silver () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${silver}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.grey () {
@@ -762,6 +766,8 @@ frobulator.grey () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${grey}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.white () {
@@ -771,6 +777,8 @@ frobulator.white () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${white}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.red () {
@@ -780,6 +788,8 @@ frobulator.red () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${red}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.crimson () {
@@ -789,6 +799,8 @@ frobulator.crimson () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${crimson}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.green () {
@@ -798,6 +810,8 @@ frobulator.green () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${green}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.lime () {
@@ -807,6 +821,8 @@ frobulator.lime () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${lime}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.yellow () {
@@ -816,6 +832,8 @@ frobulator.yellow () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${yellow}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.orange () {
@@ -825,6 +843,8 @@ frobulator.orange () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${orange}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.blue () {
@@ -834,6 +854,8 @@ frobulator.blue () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${blue}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.navy () {
@@ -843,6 +865,8 @@ frobulator.navy () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${navy}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.magenta () {
@@ -852,6 +876,8 @@ frobulator.magenta () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${magenta}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.purple () {
@@ -861,6 +887,8 @@ frobulator.purple () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${purple}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.fuschia () {
@@ -870,6 +898,8 @@ frobulator.fuschia () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${fuschia}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.pink () {
@@ -879,6 +909,8 @@ frobulator.pink () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${pink}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.aqua () {
@@ -888,6 +920,8 @@ frobulator.aqua () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${aqua}${prompt}${reset}"
+
+	unset color
 }
 
 frobulator.teal () {
@@ -897,6 +931,8 @@ frobulator.teal () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${teal}${prompt}${reset}"
+
+	unset color
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////

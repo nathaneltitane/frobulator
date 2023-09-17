@@ -336,11 +336,11 @@ if [ -z "$(command -v tput)" ]
 then
 	# handle color digit length for ansi fallback method
 
-	for color in ${colors_selection[@]}
+	for color_entry in ${colors_selection[@]}
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color}"
+		read color_name color_value <<< "${color_entry}"
 
 		if [ ${#color_value} = 3 ]
 		then
@@ -361,7 +361,7 @@ then
 
 		eval "${color_name}=${color_value}"
 
-		unset color
+		unset color_entry
 	done
 
 	# ansi color attributes
@@ -402,17 +402,17 @@ then
 else
 	# handle color selections
 
-	for color in ${colors_selection[@]}
+	for color_entry in ${colors_selection[@]}
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color}"
+		read color_name color_value <<< "${color_entry}"
 
 		IFS=''
 
 		eval "${color_name}=${color_value}"
 
-		unset color
+		unset color_entry
 	done
 
 	# 'tput' colors and attributes
@@ -744,8 +744,6 @@ frobulator.black () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${black}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.silver () {
@@ -755,8 +753,6 @@ frobulator.silver () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${silver}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.grey () {
@@ -766,8 +762,6 @@ frobulator.grey () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${grey}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.white () {
@@ -777,8 +771,6 @@ frobulator.white () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${white}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.red () {
@@ -788,8 +780,6 @@ frobulator.red () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${red}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.crimson () {
@@ -799,8 +789,6 @@ frobulator.crimson () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${crimson}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.green () {
@@ -810,8 +798,6 @@ frobulator.green () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${green}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.lime () {
@@ -821,8 +807,6 @@ frobulator.lime () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${lime}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.yellow () {
@@ -832,8 +816,6 @@ frobulator.yellow () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${yellow}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.orange () {
@@ -843,8 +825,6 @@ frobulator.orange () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${orange}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.blue () {
@@ -854,8 +834,6 @@ frobulator.blue () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${blue}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.navy () {
@@ -865,8 +843,6 @@ frobulator.navy () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${navy}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.magenta () {
@@ -876,8 +852,6 @@ frobulator.magenta () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${magenta}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.purple () {
@@ -887,8 +861,6 @@ frobulator.purple () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${purple}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.fuschia () {
@@ -898,8 +870,6 @@ frobulator.fuschia () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${fuschia}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.pink () {
@@ -909,8 +879,6 @@ frobulator.pink () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${pink}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.aqua () {
@@ -920,8 +888,6 @@ frobulator.aqua () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${aqua}${prompt}${reset}"
-
-	unset color
 }
 
 frobulator.teal () {
@@ -931,8 +897,6 @@ frobulator.teal () {
 	prompt="${prompt_string[@]}"
 
 	echo -e "${teal}${prompt}${reset}"
-
-	unset color
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////
@@ -986,7 +950,7 @@ frobulator.inf () {
 
 	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
 
-	color=("${blue}")
+	color_entry=("${blue}")
 }
 
 # warning line marker //////////////////////////////////////////////////////
@@ -999,7 +963,7 @@ frobulator.wrn () {
 
 	echo -e "${orange}${marker_wrn}${marker_spc}${prompt}${reset}"
 
-	color=("${orange}")
+	color_entry=("${orange}")
 }
 
 # message line marker //////////////////////////////////////////////////////////
@@ -1012,7 +976,7 @@ frobulator.msg () {
 
 	echo -e "${navy}${marker_msg}${marker_spc}${prompt}${reset}"
 
-	color=("${navy}")
+	color_entry=("${navy}")
 }
 
 # add line marker //////////////////////////////////////////////////////////////
@@ -1025,7 +989,7 @@ frobulator.add () {
 
 	echo -e "${lime}${marker_add}${marker_spc}${prompt}${reset}"
 
-	color=("${lime}")
+	color_entry=("${lime}")
 }
 
 # remove line marker ///////////////////////////////////////////////////////////
@@ -1038,7 +1002,7 @@ frobulator.rem () {
 
 	echo -e "${crimson}${marker_rem}${marker_spc}${prompt}${reset}"
 
-	color=("${crimson}")
+	color_entry=("${crimson}")
 }
 
 # retain line marker ///////////////////////////////////////////////////////////
@@ -1051,7 +1015,7 @@ frobulator.ret () {
 
 	echo -e "${aqua}${marker_ret}${marker_spc}${prompt}${reset}"
 
-	color=("${aqua}")
+	color_entry=("${aqua}")
 }
 
 # release line marker //////////////////////////////////////////////////////////
@@ -1064,7 +1028,7 @@ frobulator.rel () {
 
 	echo -e "${teal}${marker_rel}${marker_spc}${prompt}${reset}"
 
-	color=("${teal}")
+	color_entry=("${teal}")
 }
 
 # forward line marker //////////////////////////////////////////////////////////
@@ -1077,7 +1041,7 @@ frobulator.fwd () {
 
 	echo -e "${silver}${marker_fwd}${marker_spc}${prompt}${reset}"
 
-	color=("${silver}")
+	color_entry=("${silver}")
 }
 
 # reverse line marker //////////////////////////////////////////////////////////
@@ -1090,7 +1054,7 @@ frobulator.rev () {
 
 	echo -e "${silver}${marker_rev}${marker_spc}${prompt}${reset}"
 
-	color=("${silver}")
+	color_entry=("${silver}")
 }
 
 # stop line marker /////////////////////////////////////////////////////////////
@@ -1103,7 +1067,7 @@ frobulator.stp () {
 
 	echo -e "${grey}${marker_stp}${marker_spc}${prompt}${reset}"
 
-	color=("${grey}")
+	color_entry=("${grey}")
 }
 
 # download line marker /////////////////////////////////////////////////////////
@@ -1116,7 +1080,7 @@ frobulator.dwl () {
 
 	echo -e "${magenta}${marker_bot}${marker_spc}${prompt}${reset}"
 
-	color=("${magenta}")
+	color_entry=("${magenta}")
 }
 
 # upload line marker ///////////////////////////////////////////////////////////
@@ -1129,7 +1093,7 @@ frobulator.upl () {
 
 	echo -e "${purple}${marker_top}${marker_spc}${prompt}${reset}"
 
-	color=("${purple}")
+	color_entry=("${purple}")
 }
 
 # link line marker /////////////////////////////////////////////////////////////
@@ -1142,7 +1106,7 @@ frobulator.lnk () {
 
 	echo -e "${yellow}${marker_stp}${marker_spc}${prompt}${reset}"
 
-	color=("${yellow}")
+	color_entry=("${yellow}")
 }
 
 # success line marker //////////////////////////////////////////////////////////
@@ -1155,7 +1119,7 @@ frobulator.scs () {
 
 	echo -e "${green}${marker_yes}${marker_spc}${prompt}${reset}"
 
-	color=("${green}")
+	color_entry=("${green}")
 }
 
 # error line marker ////////////////////////////////////////////////////////////
@@ -1168,7 +1132,7 @@ frobulator.err () {
 
 	echo -e "${red}${marker_not}${marker_spc}${prompt}${reset}"
 
-	color=("${red}")
+	color_entry=("${red}")
 }
 
 # insert line marker ///////////////////////////////////////////////////////////
@@ -1181,7 +1145,7 @@ frobulator.ins () {
 
 	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
 
-	color=("${teal}")
+	color_entry=("${teal}")
 }
 
 # user input prompts ///////////////////////////////////////////////////////////
@@ -1203,7 +1167,7 @@ frobulator.ask () {
 
 	echo -n -e "${fuschia}${marker_ask}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color=("${fuschia}")
+	color_entry=("${fuschia}")
 }
 
 # input line marker ////////////////////////////////////////////////////////////
@@ -1216,7 +1180,7 @@ frobulator.ipt () {
 
 	echo -n -e "${pink}${marker_add}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color=("${pink}")
+	color_entry=("${pink}")
 }
 
 # user line marker /////////////////////////////////////////////////////////////
@@ -1229,7 +1193,7 @@ frobulator.usr () {
 
 	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color=("${grey}")
+	color_entry=("${grey}")
 }
 
 # null line marker /////////////////////////////////////////////////////////////
@@ -1246,7 +1210,7 @@ frobulator.nul () {
 
 	echo -e "${color}${marker_nul}${marker_spc}${prompt}${reset}"
 
-	unset color
+	unset color_entry
 }
 
 # letter line marker ///////////////////////////////////////////////////////////
@@ -1335,7 +1299,7 @@ frobulator.sep () {
 
 	echo -e "${color}${marker_sep}${prompt}${reset}"
 
-	unset color
+	unset color_entry
 }
 
 # separate /////////////////////////////////////////////////////////////////////
@@ -1788,7 +1752,7 @@ frobulator.progress () {
 		sleep "${seconds}"
 	done
 
-	unset color
+	unset color_entry
 
 	echo
 

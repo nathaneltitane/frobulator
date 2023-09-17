@@ -336,11 +336,11 @@ if [ -z "$(command -v tput)" ]
 then
 	# handle color digit length for ansi fallback method
 
-	for color in ${colors_selection[@]}
+	for color_entry in ${colors_selection[@]}
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color}"
+		read color_name color_value <<< "${color_entry}"
 
 		if [ ${#color_value} = 3 ]
 		then
@@ -406,7 +406,7 @@ else
 	do
 		IFS='='
 
-		read color_name color_value <<< "${color}"
+		read color_name color_value <<< "${color_entry}"
 
 		IFS=''
 

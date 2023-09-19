@@ -1321,6 +1321,20 @@ frobulator.separate () {
 	echo
 }
 
+# read /////////////////////////////////////////////////////////////////////////
+
+# use to capture user input through frobulator.ask / frobulator.interrupt
+
+# sets newline for next prompt clearance
+
+frobulator.read () {
+
+	read ${@}
+
+	echo
+
+}
+
 # script ///////////////////////////////////////////////////////////////////////
 
 # use to mark the beginning of a script process

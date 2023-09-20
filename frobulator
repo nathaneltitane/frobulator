@@ -1485,11 +1485,11 @@ frobulator.countdown () {
 
 frobulator.process () {
 
-	seconds="0.25"
-
 	# catch PID of last command
 
-	PID=${PID}
+	PID=$!
+
+	seconds="0.25"
 
 	ticker='/\'
 
@@ -1782,15 +1782,19 @@ frobulator.progress () {
 
 frobulator.bar () {
 
+	# catch PID of last command
+
+	PID=$!
+
+	# refresh interval
+
+	seconds="0.5"
+
 	# total characters for line
 
 	count=${terminal_columns}
 
 	total="100"
-
-	# refresh interval
-
-	seconds="0.5"
 
 	bar_progress () {
 
@@ -1812,10 +1816,6 @@ frobulator.bar () {
 
 		progress="${done}${left}"
 	}
-
-	# catch PID of last command
-
-	PID=${PID}
 
 	while [ -d /proc/"${PID}" ]
 	do

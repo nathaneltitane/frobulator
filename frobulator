@@ -603,12 +603,22 @@ frobulator.pmt () {
 
 	span_character="/"
 
+	# prepare span for line marker usage:
+	# [   ] --------------------------------------------------------------------------
+
+	span=${span::-6}
+
+	span_length=${#span}
+
 	# 3 arguments - replace span character with argument 3
 
 	if [ $# -eq 3 ]
 	then
 		span_character="${3}"
 		span_character_length=${#span_character}
+
+		# if span character length greater than 2:
+		# compensate by dividing to achieve 80 characters total span
 
 		if [ ${span_character_length} -ge 2 ]
 		then
@@ -617,10 +627,6 @@ frobulator.pmt () {
 			span_length=${count}
 		fi
 	fi
-
-	span=${span::-6}
-
-	span_length=${#span}
 
 	# 2+ arguments:
 	# append space to 'begin' value

@@ -40,6 +40,152 @@ version="08-13-2023"
 
 # usage ////////////////////////////////////////////////////////////////////////
 
+frobulator.pmt () {
+
+	# initialize string return array
+
+	prompt_string=()
+
+	# define input arguments
+
+	begin="${1}"
+	end="${2}"
+
+	# provide fallback for line character count
+
+	if [ -z "${count}" ]
+	then
+		count=${terminal_columns}
+	fi
+
+	# set span width
+
+	if [ ${#begin} -le "${count}" ]
+	then
+		span="--------------------------------------------------------------------------------"
+	else
+		span=""
+	fi
+
+	# set span character default:
+	# cannot use '\' character as span //////////////////////////////// FIX ME #
+
+	span_character="/"
+
+	# prepare span for line marker usage:
+	# [   ] --------------------------------------------------------------------------
+
+	span=${span::-6}
+
+	span_length=${#span}
+
+	# 3 arguments - replace span character with argument 3
+
+	if [ $# -eq 3 ]
+	then
+		span_character="${3}"
+		span_character_length=${#span_character}
+
+		# if span character length greater than 2:
+		# compensate by dividing to achieve 80 characters total span
+
+		if [ ${span_character_length} -ge 2 ]
+		then
+			count=$((${count} / ${span_character_length}))
+
+			span_length=${count}
+		fi
+	fi
+
+	# 2+ arguments:
+	# append space to 'begin' value
+	# prepend space to 'end' value
+
+	if [ $# -ge 2 ]
+	then
+		begin="${begin} "
+		end=" ${end}"
+	fi
+
+	# define parsing calculation lengths
+
+	begin_length=${#begin}
+	end_length=${#end}
+
+	# 75+ characters per string:
+	# fold string using word detection at limit
+	# to prevent overstepping 80 characters overall limit
+	# indent second line onward (6 spaces) to match line marker
+	# detect newline character and indent onward (6 spaces) to match line marker
+
+	margin=5
+
+	fold=$(( "${count}" - "${margin}" ))
+
+	if [ "${begin_length}" -ge "${fold}" ]
+	then
+		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
+	fi
+
+	# substitute span character
+
+	span="${span//-/$span_character}"
+
+	# print first argument:
+	# remove newline for continuous string arguments
+
+	span_begin=$(echo -n -e "${begin}")
+
+	# print other arguments as fixed width prompt if present:
+	# calculate span width - remove 6 characters for prompt header
+
+	span_count=$(( ${span_length} - ${begin_length} - ${end_length} ))
+
+	# set new padding width
+
+ 	if [ ${begin_length} -lt "${count}" ]
+ 	then
+ 		span=${span:0:$span_count}
+ 	else
+ 		span=""
+ 	fi
+
+ 	# define user input aor automatic fill
+
+	span_middle="${span}"
+
+	# print last argument:
+	# carry newline and jump to next block
+
+	span_end=$(echo -e "${end}")
+
+	# populate array at end to avoid integrating spaces
+
+	if [ $# -ge 0 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 1 ]
+	then
+		prompt_string=("${span_begin}")
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 3 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	# reset line string counter
+
+	unset count
+}
+
 # variables ////////////////////////////////////////////////////////////////////
 
 frobulator.inf "Test line 1 - information"
@@ -152,4 +298,8 @@ echo
 
 frobulator.aqua "aqua"
 frobulator.teal "teal"
+echo
+
+frobulator.inf "test1" "[ test2 ]"
+frobulator.nul "blablabla"
 echo

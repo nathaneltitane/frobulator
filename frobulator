@@ -618,20 +618,9 @@ frobulator.pmt () {
 		fi
 	fi
 
-	# 2+ arguments - reduce span by 6 characters:
-	# compensate for line marker + space
+	span=${span::-6}
 
-	if [ $# -ge 2 ]
-	then
-		span=${span::-6}
-		span_length=${#span}
-	fi
-
-	if [ $# -le 0 ]
-	then
-		span=${span::-6}
-		span_length=${#span}
-	fi
+	span_length=${#span}
 
 	# 2+ arguments:
 	# append space to 'begin' value

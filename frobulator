@@ -3181,24 +3181,24 @@ frobulator.require () {
 
 				while read query_line
 				do
-				IFS=':'
+					IFS=':'
 
-				read query_package query_content <<< "${query_line}"
+					read query_package query_content <<< "${query_line}"
 
-				if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
-				then
-					frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
-					echo
+					if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
+					then
+						frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
+						echo
 
-					install_list+=("${query_package}")
+						install_list+=("${query_package}")
 
-					break
-				fi
+						break
+					else
+						frobulator.err "Command provision not found" "[ '${command}' ]"
+						echo
+					fi
+
 				done <<< ${query_filter[@]}
-
-			else
-				frobulator.err "Command provision not found" "[ '${command}' ]"
-				echo
 			fi
 
 		done <<< ${query_filter[@]}
@@ -3210,11 +3210,6 @@ frobulator.require () {
 			frobulator.install ${install_list[@]}
 
 			install_list=()
-		else
-			frobulator.err "Command provision not found" "[ '${command}' ]"
-			echo
-
-			:
 		fi
 
 		# unset array

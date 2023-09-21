@@ -3103,7 +3103,7 @@ frobulator.require () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	frobulator.failsafe apt-file
+	#frobulator.failsafe apt-file
 
 	frobulator.log "apt-file update"
 

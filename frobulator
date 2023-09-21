@@ -1469,6 +1469,8 @@ frobulator.countdown () {
 
 	done
 
+	echo
+
 	# normalize line spacing:
 	# additional 'echo' required due to carriage return
 

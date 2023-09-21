@@ -123,7 +123,7 @@ frobulator.separate
 frobulator.white "white"
 frobulator.silver "silver"
 frobulator.grey "grey"
-frobulator.bla ck "bla ck"
+frobulator.black "black"
 echo
 
 frobulator.red "red"

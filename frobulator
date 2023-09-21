@@ -2752,6 +2752,8 @@ frobulator.log () {
 
 	command="${@}"
 
+	script="${script##*/}"
+
 	"${shell}" -c "$(echo ${command})" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
 }
 
@@ -2998,6 +3000,9 @@ frobulator.failsafe () {
 	command_update="apt-get --assume-yes update"
 	command_upgrade="apt-get --assume-yes upgrade"
 	command_install="apt-get --assume-yes install"
+
+	frobulator.fwd "Loading..."
+	echo
 
 	for package in ${list[@]}
 	do

@@ -606,7 +606,7 @@ frobulator.pmt () {
 	# prepare span for line marker usage:
 	# [   ] --------------------------------------------------------------------------
 
-	span=${span::-6}
+	# span=${span::-6} //////////////////////////////////////////////// FIX ME #
 
 	span_length=${#span}
 
@@ -655,7 +655,7 @@ frobulator.pmt () {
 
 	if [ "${begin_length}" -ge "${fold}" ]
 	then
-		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
+		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$'"s/^/${marker_idt}/g" | sed -e 's/ \\n /\\n\n      /g')
 	fi
 
 	# substitute span character

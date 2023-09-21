@@ -2314,7 +2314,9 @@ frobulator.keep () {
 
 			if [[ "$keep" = 0 ]]
 			then
-				rm -rf "${item}"
+				rm					\
+					--recursive		\
+					--force			 "${item}"
 			fi
 		done
 	else

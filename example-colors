@@ -118,7 +118,6 @@ frobulator.pmt () {
 
 	# span=${span::-6} //////////////////////////////////////////////// FIX ME #
 
-	span_length=${#span}
 
 	# 3 arguments - replace span character with argument 3
 
@@ -137,6 +136,7 @@ frobulator.pmt () {
 			span_length=${count}
 		fi
 	fi
+	span_length=${#span}
 
 	# 2+ arguments:
 	# append space to 'begin' value
@@ -347,7 +347,7 @@ echo
 
 frobulator.inf "test1" "[ test2 ]"
 
-frobulator.inf "test1" "[ test2 ]" ++
+frobulator.inf "test1" "[ test2 ]" "++"
 
 frobulator.inf "test1" "[ test2 ]" z
 

@@ -3103,7 +3103,7 @@ frobulator.require () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	#frobulator.failsafe apt-file
+	frobulator.failsafe apt-file
 
 	frobulator.log "apt-file update"
 
@@ -3134,62 +3134,74 @@ frobulator.require () {
 
 		# set IFS
 
-		IFS=$'\n'
+		IFS="${marker_spc}"
 
-		read -a query_filter <<< $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | sort -u | grep "${system_binary_directory}"/"${command}"$)
+		query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
 
 		# reset IFS
 
 		IFS=''
 
-		query_package="$(echo "${query_filter}" | cut -d ':' -f 1)"
-		query_content="$(echo "${query_filter}" | cut -d ':' -f 2)"
+		while read query_line
+		do
+			IFS=':'
 
-		query_command="${system_binary_directory}"/"${command}"
+			read query_package query_content <<< "${query_line}"
 
-		if [ "${query_command}" == "${query_content}" ] && [ "${command}" == "${query_package}" ]
-		then
-			frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
-			echo
+			query_command="${system_binary_directory}"/"${command}"
 
-			install_list+=("${query_package}")
+			if  [[ "${command}" == "${query_package}" ]] && [[ "${query_command}" == "${query_content}" ]]
+			then
+				frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
+				echo
 
-		elif [ "${query_command}" == "${query_content}" ] && [ "${command}" != "${query_package}" ]
-		then
-			frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
-			echo
+				install_list+=("${query_package}")
 
-			install_list+=("${query_package}")
+				break
 
-		else
-			# set IFS
+			elif [[ "${command}" = "${query_package}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
+			then
+				frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
+				echo
 
-			IFS=$'\n'
+				install_list+=("${query_package}")
 
-			read -a query_filter <<< $(apt-file search "${command}" | sed 's/ //' | sort -u | grep ^"${command}")
+				break
 
-			# reset IFS
+			elif [[ "${query_line}" = "" ]]
+			then
 
-			IFS=''
+				IFS="${marker_spc}"
 
-			for selection in ${query_filter[@]}
-			do
-				query_filter="${selection}"
+				query_meta=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
 
-				query_package="$(echo "${query_filter}" | cut -d ':' -f 1)"
-				query_content="$(echo "${query_filter}" | cut -d ':' -f 2)"
+				# reset IFS
 
-				query_command="${command}"
+				IFS=''
 
-				if [ "${query_command}" != "${query_content}" ] && [ "${command}" = "${query_package}" ]
+				while read query_line
+				do
+				IFS=':'
+
+				read query_package query_content <<< "${query_line}"
+
+				if [[ "${command}" == "${query_package}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
 				then
-					frobulator.scs "Command provision found as metapackage" "[ '${query_package}' ]"
+					frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
 					echo
 
 					install_list+=("${query_package}")
+
+					break
 				fi
-			done
-		fi
+				done <<< ${query_meta[@]}
+
+			else
+				frobulator.err "Command provision not found" "[ '${command}' ]"
+				echo
+			fi
+
+		done <<< ${query_filter[@]}
 
 		# install
 

@@ -39,6 +39,47 @@ script=$(basename -- "${BASH_SOURCE[0]}")
 version="08-13-2023"
 
 # usage ////////////////////////////////////////////////////////////////////////
+# line markers /////////////////////////////////////////////////////////////////
+
+marker_top='[ △ ]'
+marker_bot='[ ▽ ]'
+
+marker_fwd='[ ▷ ]'
+marker_rev='[ ◁ ]'
+marker_stp='[ □ ]'
+
+marker_add='[ + ]'
+marker_rem='[ - ]'
+
+marker_ret='[ ● ]'
+marker_rel='[ ○ ]'
+
+marker_ask='[ ? ]'
+marker_inf='[ i ]'
+marker_wrn='[ ! ]'
+
+marker_ipt='[ > ]'
+marker_msg='[ # ]'
+marker_usr='[ ~ ]'
+
+marker_yes='[ ✓ ]'
+marker_not='[ 𐄂 ]'
+
+marker_nul='     '
+
+# special case markers /////////////////////////////////////////////////////////
+
+marker_sep='//////'
+
+marker_elp='...'
+marker_idt='      '
+marker_prc='%'
+marker_spc=' '
+
+# prompt management tool (pmt) /////////////////////////////////////////////////
+
+# prompt management and standardizing with 80 charcters width:
+# adds line folding with word detection for strings over 80 characters long
 
 frobulator.pmt () {
 
@@ -75,7 +116,7 @@ frobulator.pmt () {
 	# prepare span for line marker usage:
 	# [   ] --------------------------------------------------------------------------
 
-	span=${span::-6}
+	#span=${span::-6}
 
 	span_length=${#span}
 
@@ -124,7 +165,7 @@ frobulator.pmt () {
 
 	if [ "${begin_length}" -ge "${fold}" ]
 	then
-		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e '2,$s/^/      /g' | sed 's/ \\n /\\n\n      /g')
+		begin=$(echo "${begin}" | fold -s -w "${fold}" | sed -e "2s/^/${marker_idt}/g" | sed -e "s/ \\n /\\n\n${marker_idt}/g")
 	fi
 
 	# substitute span character
@@ -181,8 +222,11 @@ frobulator.pmt () {
 		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
-	# reset line string counter
+	# reset line elements
 
+	unset begin
+	unset end
+	unset span
 	unset count
 }
 
@@ -301,5 +345,5 @@ frobulator.teal "teal"
 echo
 
 frobulator.inf "test1" "[ test2 ]"
-frobulator.nul "blablabla"
+frobulator.nul "blablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablabla\n blablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablablabla\n blablablablablablablablablablablablablablabla"
 echo

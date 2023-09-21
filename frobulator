@@ -712,8 +712,11 @@ frobulator.pmt () {
 		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
-	# reset line string counter
+	# reset line elements
 
+	unset begin
+	unset end
+	unset span
 	unset count
 }
 

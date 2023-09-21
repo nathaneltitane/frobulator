@@ -3073,10 +3073,6 @@ frobulator.install () {
 
 				frobulator.progress "install"
 
-				# cleanup
-
-				frobulator.clean
-
 			else
 				frobulator.scs "Present on system" "[ '${package}' ]"
 				echo
@@ -3088,6 +3084,10 @@ frobulator.install () {
 			fi
 		fi
 	done
+
+	# cleanup
+
+	frobulator.clean
 
 	# unset array
 

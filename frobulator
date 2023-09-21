@@ -1206,9 +1206,9 @@ frobulator.nul () {
 
 	prompt="${prompt_string[@]}"
 
-	color=${color[@]}
+	color_entry=${color_entry[@]}
 
-	echo -e "${color}${marker_nul}${marker_spc}${prompt}${reset}"
+	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	unset color_entry
 }

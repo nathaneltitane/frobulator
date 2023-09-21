@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="09-15-2023"
+# version="09-21-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -3173,7 +3173,7 @@ frobulator.require () {
 
 				IFS="${marker_spc}"
 
-				query_meta=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
+				query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
 
 				# reset IFS
 
@@ -3194,7 +3194,7 @@ frobulator.require () {
 
 					break
 				fi
-				done <<< ${query_meta[@]}
+				done <<< ${query_filter[@]}
 
 			else
 				frobulator.err "Command provision not found" "[ '${command}' ]"

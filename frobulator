@@ -562,9 +562,9 @@ marker_nul='     '
 marker_sep='//////'
 
 marker_elp='...'
+marker_idt='      '
 marker_prc='%'
 marker_spc=' '
-
 
 # prompt management tool (pmt) /////////////////////////////////////////////////
 

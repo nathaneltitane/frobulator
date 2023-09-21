@@ -3130,8 +3130,6 @@ frobulator.require () {
 
 		list=()
 
-		system_binary_directory=/usr/bin
-
 		# set IFS
 
 		IFS="${marker_spc}"
@@ -3148,9 +3146,11 @@ frobulator.require () {
 
 			read query_package query_content <<< "${query_line}"
 
+			system_binary_directory=/usr/bin
+
 			query_command="${system_binary_directory}"/"${command}"
 
-			if  [[ "${command}" == "${query_package}" ]] && [[ "${query_command}" == "${query_content}" ]]
+			if  [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" == "${query_command}" ]]
 			then
 				frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
 				echo
@@ -3159,7 +3159,7 @@ frobulator.require () {
 
 				break
 
-			elif [[ "${command}" = "${query_package}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
+			elif [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
 			then
 				frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
 				echo
@@ -3185,7 +3185,7 @@ frobulator.require () {
 
 				read query_package query_content <<< "${query_line}"
 
-				if [[ "${command}" == "${query_package}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
+				if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
 				then
 					frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
 					echo

@@ -1942,9 +1942,9 @@ frobulator.temporary () {
 # handles exit codes and signals to ensure proper cleanup
 # specify directory name as variable returned from 'eval' in frobulator.temporary
 
-# usage:                  frobulator.temporary "[directory name]" | "[array name]"
-# optional assignment:    directory="${directory_name}"
-#                         frobulator.trap "${directory name}"
+# usage:         frobulator.temporary "[directory name]" | "[array name]"
+# assignment:    directory="${frobulator_return[@]}"
+#                frobulator.trap "${directory name}"
 
 frobulator.trap () {
 

@@ -1904,14 +1904,18 @@ frobulator.temporary () {
 		list+=("${directory}")
 	fi
 
+	template="frobulator.tmp.XXXXXX"
+	
 	for directory in ${list[@]}
 	do
+		temporary_directory=$(mktemp -d -t "${template}")
+	
+		eval directory="${temporary_directory}"
+		
 		frobulator.add "Creating temporary directory" "[ ${directory} ]"
 		echo
 
-		temporary_directory=$(mktemp -d -t "frobulator.temporary.XXXXXX")
-
-		frobulator_return+=("${directory}"="${temporary_directory}")
+		frobulator_return+=( "${directory}" )
 	done
 }
 
@@ -1938,8 +1942,9 @@ frobulator.temporary () {
 # handles exit codes and signals to ensure proper cleanup
 # specify directory name as variable returned from 'eval' in frobulator.temporary
 
-# usage:      frobulator.temporary "[directory name]" | "[array name]"
-#             frobulator.trap "${directory name}"
+# usage:                  frobulator.temporary "[directory name]" | "[array name]"
+# optional assignment:    directory="${directory_name}"
+#                         frobulator.trap "${directory name}"
 
 frobulator.trap () {
 
@@ -1958,7 +1963,6 @@ frobulator.trap () {
 
 	for directory in ${list[@]}
 	do
-		trap "exit 1"					HUP INT PIPE QUIT TERM
 		trap 'rm --recursive --force "${directory}"'	EXIT
 	done
 }

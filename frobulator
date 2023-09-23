@@ -1958,7 +1958,7 @@ frobulator.trap () {
 
 	for directory in ${list[@]}
 	do
-		trap "exit 1"					HUP INT PIPE QUIT TERM
+		#trap "exit 1"					HUP INT PIPE QUIT TERM
 		trap 'rm -r -f "${directory}"'	EXIT
 	done
 }
@@ -2870,6 +2870,7 @@ frobulator.input () {
 frobulator.clean () {
 
 	command_autoremove="apt-get autoremove"
+	command_autoclean="apt-get autoclean"
 	command_clean="apt-get clean"
 
 	frobulator.log "${command_autoremove}" &
@@ -2882,7 +2883,7 @@ frobulator.clean () {
 
 	# fix 'dpkg' lock and errors:
 	# remove all post-install logs - prevent package configuration errors
-
+/var/cache/apt/pkgcache.bin
 	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
 	then
 		rm					\

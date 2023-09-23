@@ -1963,9 +1963,11 @@ frobulator.trap () {
 
 	for directory in ${list[@]}
 	do
+		trap "exit 1"					HUP INT PIPE QUIT TERM
 		trap 'rm --recursive --force "${directory}"'	EXIT
 	done
 }
+
 
 # directory ////////////////////////////////////////////////////////////////////
 

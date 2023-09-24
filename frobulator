@@ -3732,7 +3732,7 @@ frobulator.extract () {
 
 	# unset array
 
-		list=()
+	list=()
 
 	file="${1}"
 	extension="${2}"

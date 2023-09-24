@@ -3728,7 +3728,7 @@ frobulator.extract () {
 		unzip
 	)
 
-#	frobulator.install ${list[@]}
+	frobulator.require ${list[@]}
 
 	# unset array
 

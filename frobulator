@@ -3720,7 +3720,7 @@ frobulator.archive () {
 frobulator.extract () {
 
 	list+=(
-		7z
+		7zip
 		bunzip2
 		gunzip
 		tar

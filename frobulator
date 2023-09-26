@@ -584,14 +584,14 @@ frobulator.pmt () {
 
 	# provide fallback for line character count
 
-	if [ -z "${count}" ]
+	if [ -z "${character_count}" ]
 	then
-		count=${terminal_columns}
+		character_count=${terminal_columns}
 	fi
 
 	# set span width
 
-	if [ ${#begin} -le "${count}" ]
+	if [ ${#begin} -le "${character_count}" ]
 	then
 		span="--------------------------------------------------------------------------------"
 	else
@@ -620,9 +620,9 @@ frobulator.pmt () {
 
 		if [ ${span_character_length} -ge 2 ]
 		then
-			count=$((${count} / ${span_character_length}))
+			character_count=$((${character_count} / ${span_character_length}))
 
-			span_length=${count}
+			span_length=${character_count}
 		fi
 	fi
 
@@ -651,7 +651,7 @@ frobulator.pmt () {
 
 	margin=5
 
-	fold=$(( "${count}" - "${margin}" ))
+	fold=$(( "${character_countcount}" - "${margin}" ))
 
 	if [ "${begin_length}" -ge "${fold}" ]
 	then
@@ -674,7 +674,7 @@ frobulator.pmt () {
 
 	# set new padding width
 
- 	if [ ${begin_length} -lt "${count}" ]
+ 	if [ ${begin_length} -lt "${character_count}" ]
  	then
  		span=${span:0:$span_count}
  	else
@@ -717,7 +717,7 @@ frobulator.pmt () {
 	unset begin
 	unset end
 	unset span
-	unset count
+	unset character_count
 }
 
 # highlights ///////////////////////////////////////////////////////////////////

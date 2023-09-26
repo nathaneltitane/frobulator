@@ -651,7 +651,7 @@ frobulator.pmt () {
 
 	margin=5
 
-	fold=$(( "${character_countcount}" - "${margin}" ))
+	fold=$(( "${character_count}" - "${margin}" ))
 
 	if [ "${begin_length}" -ge "${fold}" ]
 	then

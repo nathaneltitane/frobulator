@@ -598,15 +598,15 @@ frobulator.pmt () {
 		span=""
 	fi
 
+	# prepare span for line marker usage:
+	# [   ] --------------------------------------------------------------------------
+
+	span=${span::-6}
+
 	# set span character default:
 	# cannot use '\' character as span //////////////////////////////// FIX ME #
 
 	span_character="/"
-
-	# prepare span for line marker usage:
-	# [   ] --------------------------------------------------------------------------
-
-	# span=${span::-6} //////////////////////////////////////////////// FIX ME #
 
 	# 3 arguments - replace span character with argument 3
 

@@ -538,6 +538,8 @@ marker_fwd='[ ▷ ]'
 marker_rev='[ ◁ ]'
 marker_stp='[ □ ]'
 
+marker_cpt='[ ¤ ]'
+
 marker_add='[ + ]'
 marker_rem='[ - ]'
 
@@ -917,6 +919,8 @@ frobulator.teal () {
 # top [ △ ]
 # bot [ ▽ ]
 
+# cpt='[ ¤ ]'
+
 # fwd [ ▷ ]
 # rev [ ◁ ]
 # stp [ □ ]
@@ -1144,6 +1148,19 @@ frobulator.ins () {
 	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
 
 	color_entry=("${teal}")
+}
+
+# complete line marker ///////////////////////////////////////////////////////////
+
+frobulator.cpt () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${marker_cpt}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${magenta}")
 }
 
 # user input prompts ///////////////////////////////////////////////////////////

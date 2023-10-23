@@ -603,7 +603,14 @@ frobulator.pmt () {
 	# prepare span for line marker usage:
 	# [   ] --------------------------------------------------------------------------
 
-	span=${span::-6}
+	span_length=${#span}
+
+	if [ ${span_length} -le 0 ]
+	then
+		span=${span}
+	else
+		span=${span::-6}
+	fi
 
 	# set span character default:
 	# cannot use '\' character as span //////////////////////////////// FIX ME #

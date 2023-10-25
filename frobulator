@@ -1936,7 +1936,7 @@ frobulator.temporary () {
 	
 		eval directory="${temporary_directory}"
 		
-		frobulator.add "Creating temporary directory" "[ ${directory} ]"
+		frobulator.add "Generating temporary directory" "[ ${directory} ]"
 		echo
 
 		frobulator_return+=( "${directory}" )
@@ -2042,7 +2042,7 @@ frobulator.directory () {
 
 	for directory in ${list[@]}
 	do
-		frobulator.add "Creating directory" "[ ${directory} ]"
+		frobulator.add "Generating directory" "[ ${directory} ]"
 		echo
 
 		# create directory and set permissions
@@ -2262,7 +2262,7 @@ frobulator.file () {
 
 	for file in ${list[@]}
 	do
-		frobulator.add "Creating" "[ ${file} ]"
+		frobulator.add "Generating" "[ ${file} ]"
 		echo
 
 		# create file and set permissions

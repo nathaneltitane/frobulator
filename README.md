@@ -75,8 +75,6 @@ The following projects incorporate Frobulator in their usage:
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
-[[ Termux // Project Page ]](https://github.com/nathaneltitane/termux)
-
 ### Reports:
 
 [Submit bug report or feature request](https://github.com/nathaneltitane/terminal/issues)

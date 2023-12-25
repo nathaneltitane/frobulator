@@ -2767,7 +2767,7 @@ frobulator.silence () {
 # use to wrap command and redirect all output to "${script}"-"${stamp}".log file
 # provides fully silent execution
 
-frobulator.log () {
+ () {
 
 	if [ -z "${SUDO:-$HOME}" ]
 	then
@@ -2869,7 +2869,7 @@ frobulator.input () {
 			if [ -z "${input}" ]
 			then
 				echo
-				frobulator.err "${prompt%:} cannot be empty."
+				frobulator.err "${prompt%:} cannot be empty"
 				echo
 
 				prompt="$(echo ${label} | sed 's/_/ /'):"
@@ -2952,7 +2952,7 @@ frobulator.hold () {
 
 	command_hold="apt-mark hold"
 
-	frobulator.inf "Holding package(s)."
+	frobulator.inf "Holding package(s)"
 	echo
 
 	for package in ${list[@]}
@@ -2994,7 +2994,7 @@ frobulator.release () {
 
 	command_unhold="apt-mark unhold"
 
-	frobulator.inf "Releasing package(s)."
+	frobulator.inf "Releasing package(s)"
 	echo
 
 	for package in ${list[@]}
@@ -3085,14 +3085,14 @@ frobulator.install () {
 
 	command_install="apt-get --assume-yes install"
 
-	frobulator.inf "Installing package(s)."
+	frobulator.inf "Installing package(s)"
 	echo
 
 	for package in ${list[@]}
 	do
 		if [[ "${package}" = "*.deb" ]]
 		then
-			frobulator.msg "Local package(s) selected."
+			frobulator.msg "Local package(s) selected"
 			echo
 
 			frobulator.log "$(echo ${command_install} ${package})" &
@@ -3281,7 +3281,7 @@ frobulator.reinstall () {
 
 	command_reinstall="apt-get --assume-yes install --reinstall"
 
-	frobulator.inf "Reinstalling package(s)."
+	frobulator.inf "Reinstalling package(s)"
 	echo
 
 	for package in ${list[@]}
@@ -3306,7 +3306,7 @@ frobulator.update () {
 
 	command_update="apt-get update"
 
-	frobulator.inf "Processing package and repository information."
+	frobulator.inf "Processing package and repository information"
 	echo
 
 	frobulator.log "${command_update}" &
@@ -3324,7 +3324,7 @@ frobulator.upgrade () {
 
 	command_upgrade="apt-get --assume-yes dist-upgrade"
 
-	frobulator.inf "Processing installed package(s)."
+	frobulator.inf "Processing installed package(s)"
 	echo
 
 	frobulator.log "${command_upgrade}" &
@@ -3355,7 +3355,7 @@ frobulator.purge () {
 
 	command_purge="apt-get --assume-yes purge --autoremove"
 
-	frobulator.inf "Purging selected package(s)."
+	frobulator.inf "Purging selected package(s)"
 	echo
 
 	for package in ${list[@]}
@@ -3432,7 +3432,7 @@ frobulator.dialog () {
 	then
 		dialog=$(k_dialog)
 	else
-		frobulator.wrn "This utility must be run using the 'directory' option."
+		frobulator.wrn "This utility must be run using the 'directory' option"
 		echo
 
 		frobulator.fwd "Exiting${marker_elp}"
@@ -3547,7 +3547,7 @@ frobulator.assess () {
 		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
 		echo
 
-		frobulator.inf "Restart as '${USER}' to proceed." "[ '${script}' ]"
+		frobulator.inf "Restart as '${USER}' to proceed" "[ '${script}' ]"
 		echo
 	else
 		for command in ${list[@]}
@@ -3557,7 +3557,7 @@ frobulator.assess () {
 				frobulator.err "Missing" "[ '${command}' ]"
 				echo
 
-				frobulator.wrn "Privilege escalation required to proceed." "[ '${script}' ]"
+				frobulator.wrn "Privilege escalation required to proceed" "[ '${script}' ]"
 				echo
 
 				frobulator.ask "Launch as 'root'?"
@@ -3569,7 +3569,7 @@ frobulator.assess () {
 				then
 					frobulator.escalate
 				else
-					frobulator.wrn "Launch as 'root' to install requirement(s)." "[ '${script}' ]"
+					frobulator.wrn "Launch as 'root' to install requirement(s)" "[ '${script}' ]"
 					echo
 				fi
 			fi

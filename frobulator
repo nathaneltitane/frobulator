@@ -2356,7 +2356,7 @@ frobulator.keep () {
 			fi
 		done
 	else
-		frobulator.error "Path does not exist" "[ ${path} ]"
+		frobulator.err "Path does not exist" "[ ${path} ]"
 		echo
 	fi
 

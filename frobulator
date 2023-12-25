@@ -3038,7 +3038,7 @@ frobulator.failsafe () {
 	command_upgrade="apt-get --assume-yes upgrade"
 	command_install="apt-get --assume-yes install"
 
-	frobulator.fwd "Loading..."
+	frobulator.fwd "Loading${marker_elp}"
 	echo
 
 	for package in ${list[@]}

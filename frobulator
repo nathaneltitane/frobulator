@@ -23,7 +23,7 @@ fi
 
 # provide terminal columns count
 
-terminal_columns=80
+	terminal_columns=80
 
 # provide fallback for non 'root' assessments
 
@@ -2767,7 +2767,7 @@ frobulator.silence () {
 # use to wrap command and redirect all output to "${script}"-"${stamp}".log file
 # provides fully silent execution
 
- () {
+frobulator.log () {
 
 	if [ -z "${SUDO:-$HOME}" ]
 	then

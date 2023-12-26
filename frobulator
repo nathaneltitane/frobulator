@@ -3106,9 +3106,11 @@ frobulator.install () {
 			#	frobulator.wrn "Absent on system" "[ '${package}' ]"
 			#	echo
 
-				frobulator.log "$(echo ${command_install} ${package})" &
+				#frobulator.log "$(echo ${command_install} ${package})" &
 
-				frobulator.progress "install"
+				#frobulator.progress "install"
+				
+				apt-get --assume-yes install "${package}"
 
 			#else
 			#	frobulator.scs "Present on system" "[ '${package}' ]"

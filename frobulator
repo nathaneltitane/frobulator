@@ -3102,28 +3102,24 @@ frobulator.install () {
 
 			frobulator.progress "install"
 		else
-			#query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
-			#if [[ -z "${query_filter}" ]]
-			#then
-			#	frobulator.wrn "Absent on system" "[ '${package}' ]"
-			#	echo
+			if [[ -z "${query_filter}" ]]
+			then
+				frobulator.wrn "Absent on system" "[ '${package}' ]"
+				echo
 
-				#frobulator.log "$(echo ${command_install} ${package})" &
+				frobulator.log "$(echo ${command_install} ${package})" &
 
-				#frobulator.progress "install"
+				frobulator.progress "install"
 				
-				apt-get --assume-yes install "${package}"
+			else
+				frobulator.scs "Present on system" "[ '${package}' ]"
+				echo
 
-			#else
-			#	frobulator.scs "Present on system" "[ '${package}' ]"
-			#	echo
-
-			#	frobulator.fwd "Continuing${marker_elp}"
-			#	echo
-
-			#	:
-			#fi
+				frobulator.fwd "Continuing${marker_elp}"
+				echo
+			fi
 		fi
 	done
 

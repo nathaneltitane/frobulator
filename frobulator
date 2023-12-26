@@ -3118,7 +3118,7 @@ frobulator.install () {
 			#	echo
 
 			#	:
-			fi
+			#fi
 		fi
 	done
 

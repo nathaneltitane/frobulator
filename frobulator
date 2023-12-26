@@ -1592,6 +1592,7 @@ frobulator.progress () {
 
 	navy_list=(
 		reinstall
+		import
 		move
 	)
 

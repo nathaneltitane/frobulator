@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="12-25-2023"
+# version="12-27-2023"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -23,7 +23,7 @@ fi
 
 # provide terminal columns count
 
-	terminal_columns=80
+terminal_columns=80
 
 # provide fallback for non 'root' assessments
 
@@ -33,6 +33,22 @@ if [ -z "${script}" ]
 then
 	script="${self}"
 fi
+
+# provide log setup for argument / error / output logging
+
+if [ -z "${SUDO:-$HOME}" ]
+then
+	log_directory="${PREFIX}"/var/log
+else
+	if [ ! -d "${HOME}"/.local/var/log ]
+	then
+		mkdir -p "${HOME}"/.local/var/log
+	fi
+
+	log_directory="${HOME}"/.local/var/log
+fi
+
+log="${log_directory}"/"${script}"-"${stamp}".log
 
 # provide null sink for argument / error / output silencing
 
@@ -2793,7 +2809,7 @@ frobulator.log () {
 
 	script="${script##*/}"
 
-	"${SHELL}" -c "$(echo ${command})" >> "${log_directory}"/"${script}"-"${stamp}".log 2>&1
+	"${SHELL}" -c "$(echo ${command})" >> "${log}" 2>&1
 }
 
 # password /////////////////////////////////////////////////////////////////////

@@ -2053,7 +2053,9 @@ frobulator.directory () {
 
 		if [ ! -d "${path}"/"${directory}" ]
 		then
-			mkdir -p "${path}"/"${directory}"
+			mkdir			\
+				--parents	\
+							"${path}"/"${directory}"
 		fi
 
 		# set ownership
@@ -2119,7 +2121,9 @@ frobulator.write () {
 
 	if [ ! -d "${path}" ]
 	then
-		mkdir -p "${path}"
+		mkdir			\
+			--parents	\
+						"${path}"
 	fi
 
 	for file in ${list[@]}
@@ -2198,7 +2202,9 @@ frobulator.flag () {
 
 	if [ ! -d "${path}" ]
 	then
-		mkdir -p "${path}"
+		mkdir			\
+			--parents	\
+						"${path}"
 	fi
 
 	for file in ${list[@]}
@@ -2261,7 +2267,9 @@ frobulator.file () {
 
 	if [ ! -d "${path}" ]
 	then
-		 mkdir -p "${path}"
+		 mkdir			\
+			--parents	\
+						"${path}"
 	fi
 
 	for file in ${list[@]}
@@ -2451,7 +2459,9 @@ frobulator.copy () {
 
 	if [ ! -d "${target}" ]
 	then
-		mkdir -p "${target}"
+		mkdir			\
+			--parents	\
+						"${target}"
 	fi
 
 	for file in ${list[@]}
@@ -2494,7 +2504,9 @@ frobulator.move () {
 
 	if [ ! -d "${target}" ]
 	then
-		mkdir -p "${target}"
+		mkdir			\
+			--parents	\
+						"${target}"
 	fi
 
 	for file in ${list[@]}
@@ -2539,7 +2551,9 @@ frobulator.link () {
 
 	if [ ! -d "${target}" ]
 	then
-		mkdir -p "${target}"
+		mkdir			\
+			--parents	\
+						"${target}"
 	fi
 
 	for file in ${list[@]}
@@ -2689,7 +2703,9 @@ frobulator.download () {
 
 		if [ ! -d "${path}" ]
 		then
-			mkdir -p "${path}"
+			mkdir			\
+				--parents	\
+							"${path}"
 		fi
 
 		for file in ${list[@]}
@@ -2744,10 +2760,10 @@ frobulator.put () {
 
 	type="${1}"
 
-	curl									\
-		-X PUT "${destination}/${file}"		\
-		-H "Content-Type: ${type}"			\
-		-d 									"${file}" &
+	curl										\
+		--request PUT "${destination}/${file}"	\
+		--header "Content-Type: ${type}"		\
+		--data									"${file}" &
 
 	frobulator.progress "upload" "[ '${file}' ]"
 }
@@ -2789,7 +2805,9 @@ frobulator.log () {
 	else
 		if [ ! -d "${HOME}"/.local/var/log ]
 		then
-			mkdir -p "${HOME}"/.local/var/log
+			mkdir		\
+			--parents	\
+						"${HOME}"/.local/var/log
 		fi
 
 		log_directory="${HOME}"/.local/var/log
@@ -3796,7 +3814,9 @@ frobulator.extract () {
 
 	if [ ! -d "${directory}" ]
 	then
-		mkdir -p "${directory}"
+		mkdir			\
+			--parents	\
+						"${directory}"
 	fi
 
 	case "${extension}"

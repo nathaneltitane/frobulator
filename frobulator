@@ -1510,7 +1510,7 @@ frobulator.countdown () {
 
 frobulator.process () {
 
-	# catch PID of last command
+	# catch process identifier of last command
 
 	PID=$!
 
@@ -1557,7 +1557,7 @@ frobulator.process () {
 
 frobulator.progress () {
 
-	# catch PID of last command
+	# catch process identifier of last command
 
 	PID=$!
 
@@ -1810,7 +1810,7 @@ frobulator.progress () {
 
 frobulator.bar () {
 
-	# catch PID of last command
+	# catch process identifier of last command
 
 	PID=$!
 

@@ -2864,6 +2864,8 @@ frobulator.log () {
 	log="${log_directory}"/"${script}"-"${stamp}".log
 
 	"${SHELL}" -c "$(echo ${command})" >>  "${log}" 2>&1
+	
+	unset log
 }
 
 # password /////////////////////////////////////////////////////////////////////

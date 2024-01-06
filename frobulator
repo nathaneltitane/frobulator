@@ -2020,9 +2020,9 @@ frobulator.complete () {
 	
 	PES=${?}
 	
-	command="${1}"
-
-	execute="${2}"
+	command="${@}"
+	
+	command="${command^}"
 
 	if [[ ! "${PES}" = 0 ]]
 	then

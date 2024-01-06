@@ -2003,7 +2003,7 @@ frobulator.trap () {
 
 # complete /////////////////////////////////////////////////////////////////////
 
-frobulator.complete {
+frobulator.complete () {
 
 	# Number	Meaning			Example			Comments
 	#   0		

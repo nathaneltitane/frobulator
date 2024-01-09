@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="01-01-2024"
+# version="01-08-2024"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2432,10 +2432,12 @@ frobulator.delete () {
 			list=(${@:1})
 		else
 			file="${1}"
+			
+			item="${file}"
 
 			list=()
 
-			list+=("${file}")
+			list+=("${item}")
 		fi
 	else
 		path="${1}"
@@ -2447,16 +2449,18 @@ frobulator.delete () {
 			list=(${@:2})
 		else
 			file="${2}"
+			
+			item="${path}"/"${file}"
 
 			list=()
 
-			list+=("${file}")
+			list+=("${item}")
 		fi
 	fi
 
 	for file in ${list[@]}
 	do
-		echo "Deleting" "[ ${file} ]"
+		echo "Deleting" "[ ${item} ]"
 		echo
 
 		# remove file
@@ -2464,7 +2468,7 @@ frobulator.delete () {
 		rm					\
 			--recursive		\
 			--force			\
-							"${file}"
+							"${item}"
 	done
 
 	# unset array

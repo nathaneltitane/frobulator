@@ -2460,7 +2460,7 @@ frobulator.delete () {
 
 	for file in ${list[@]}
 	do
-		echo "Deleting" "[ ${item} ]"
+		frobulator.rem "Deleting" "[ ${item} ]"
 		echo
 
 		# remove file

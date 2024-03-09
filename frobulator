@@ -2458,7 +2458,7 @@ frobulator.delete () {
 		fi
 	fi
 
-	for file in ${list[@]}
+	for item in ${list[@]}
 	do
 		frobulator.rem "Deleting" "[ ${item} ]"
 		echo

@@ -1612,6 +1612,7 @@ frobulator.progress () {
 		update
 		refresh
 		clone
+		sync
 	)
 
 	orange_list=(

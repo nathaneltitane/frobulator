@@ -3680,8 +3680,10 @@ frobulator.escalate () {
 
 		HOME=/home/"${SUDO_USER}"
 	else
-		frobulator.wrn "Privilege escalation granted - restarting command" "[ 'root' ]"
+		frobulator.wrn "Privilege escalation granted - restarting command" "[ '"${SUDO_USER}"' ]"
 		echo
+
+		frobulator.user
 
 		if [[ -z $(command -v sudo) ]]
 		then

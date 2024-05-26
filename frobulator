@@ -3099,8 +3099,9 @@ frobulator.release () {
 
 # failsafe /////////////////////////////////////////////////////////////////////
 
-# use to install package(s) and update system to avoid 'ignore' or 'not found' errors
-# useful as failsafe to fetch all up-to-date content before batch install
+# use to install package(s) and update system
+# helps avoid 'ignore' or 'not found' errors returned by package manager
+# useful as failsafe to fetch all up-to-date content before batch installs
 
 frobulator.failsafe () {
 

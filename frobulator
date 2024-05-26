@@ -2562,6 +2562,10 @@ frobulator.move () {
 		echo
 
 		mv "${source}"/"${file}" "${target}"/"${file}"
+
+		# set permissions
+
+		chmod a+rx "${target}"/"${file}"
 	done
 
 	# unset array

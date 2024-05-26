@@ -3591,13 +3591,13 @@ frobulator.result () {
 # user /////////////////////////////////////////////////////////////////////////
 
 # use to identify 'user' name
-# usefule for priviledged execution status checks
+# useful for priviledged execution status checks
 
 frobulator.user () {
 
 	seconds="1"
 
-	frobulator.msg "Current shell user name" "[ '${SUDO_USER:-$USER}' ]"
+	frobulator.msg "Active shell user" "[ '${SUDO_USER:-$USER}' ]"
 	echo
 
 	sleep "${seconds}"

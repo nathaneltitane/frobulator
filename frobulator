@@ -3128,18 +3128,13 @@ frobulator.failsafe () {
 
 	for package in ${list[@]}
 	do
-		query_command="$(command -v "${package}")"
+		frobulator.log "${command_update}"
 
-		while [[ -z "${query_command}" ]]
-		do
-			frobulator.log "${command_update}"
+		frobulator.log "${command_upgrade}"
 
-			frobulator.log "${command_upgrade}"
+		frobulator.log "${command_install} ${package}"
 
-			frobulator.log "${command_install} ${package}"
-
-			frobulator.log "${command_update}"
-		done
+		frobulator.log "${command_update}"
 	done
 
 	# unset array

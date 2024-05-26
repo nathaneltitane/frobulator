@@ -2782,7 +2782,10 @@ frobulator.download () {
 
 			frobulator.progress "download" "[ '${file}' ]"
 
-			chmod a+rx "${path}"/"${file}"
+		# set permissions
+
+		chmod a+rx "${path}"/"${file}"
+
 		done
 
 		# unset array

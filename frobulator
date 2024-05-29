@@ -3104,6 +3104,18 @@ frobulator.release () {
 
 frobulator.failsafe () {
 
+	failsafe_intent () {
+
+		# run failsafepackage and repository update:
+		# mitigate general deployment setup issues
+		# mitigate skipped packages on install
+
+		yes | apt update       > "${sink}" 2>&1
+
+		yes | apt full-upgrade > "${sink}" 2>&1
+
+	}
+
 	export DEBIAN_FRONTEND=noninteractive
 
 	if [[ -n "${#list[@]}" ]]
@@ -3120,8 +3132,12 @@ frobulator.failsafe () {
 	fi
 
 	command_update="apt-get --assume-yes update"
-	command_upgrade="apt-get --assume-yes upgrade"
+	command_upgrade="apt-get --assume-yes dist upgrade"
 	command_install="apt-get --assume-yes install"
+
+	failsafe_intent &
+
+	frobulator.process "Please wait"
 
 	frobulator.fwd "Loading${marker_elp}"
 	echo
@@ -3134,7 +3150,6 @@ frobulator.failsafe () {
 
 		frobulator.log "${command_install} ${package}"
 
-		frobulator.log "${command_update}"
 	done
 
 	# unset array

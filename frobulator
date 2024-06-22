@@ -2601,26 +2601,36 @@ frobulator.link () {
 						"${target}"
 	fi
 
-	for file in ${list[@]}
+	for item in ${list[@]}
 	do
-		if [ -e "${source}"/"${file}" ]
+		if [ -e "${source}"/"${item}" ]
 		then
 			if [ $# -eq 3 ]
 			then
-				file=${list[0]}
+				item=${list[0]}
 				link=${list[0]}
 			fi
 
 			if [ $# -eq 4 ]
 			then
-				file=${list[0]}
+				item=${list[0]}
 				link=${list[1]}
 			fi
 
-			frobulator.lnk "Linking" "[ ${file} ]"
+			if [[ -d "${source}"/"${item}" ]]
+			then
+				item_type="directory"
+			fi
+
+			if [[ -f "${source}"/"${item}" ]]
+			then
+				item_type="file"
+			fi
+
+			frobulator.lnk "Linking ${item_type}" "[ ${item} ]"
 			echo
 
-			ln -s -f "${source}"/"${file}" "${target}"/"${link}"
+			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
 
 			chown "${uid}":"${gid}" --recursive "${target}"/"${link}"
 		fi

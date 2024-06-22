@@ -2619,15 +2619,15 @@ frobulator.link () {
 
 			if [[ -d "${source}"/"${item}" ]]
 			then
-				item_type="directory"
+				type="directory"
 			fi
 
 			if [[ -f "${source}"/"${item}" ]]
 			then
-				item_type="file"
+				type="file"
 			fi
 
-			frobulator.lnk "Linking ${item_type}" "[ ${item} ]"
+			frobulator.lnk "Linking ${type}" "[ ${item} ]"
 			echo
 
 			ln -s -f "${source}"/"${item}" "${target}"/"${link}"

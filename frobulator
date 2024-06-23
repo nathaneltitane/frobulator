@@ -3859,26 +3859,6 @@ frobulator.archive () {
 				echo
 		;;
 
-# 			bz2)
-# 				bzip					\
-# 					--stdout			\
-# 					--keep				\
-# 					--quiet				"${directory}" > "${archive}"
-#
-# 					frobulator.inf "Archiving" "[ ${archive} ]"
-# 					echo
-# 			;;
-
-# 			gz)
-# 				gzip					\
-# 					--stdout			\
-# 					--keep				\
-# 					--quiet				"${directory}" > "${archive}"
-#
-# 					frobulator.inf "Archiving" "[ ${archive} ]"
-# 					echo
-# 			;;
-
 		7z)
 			7z a "${archive}" -o "${directory}" > "${sink}" 2>&1
 

@@ -2862,6 +2862,8 @@ frobulator.upload () {
 # use to wrap command execution and redirect all output to null sink
 # provides fully silent execution
 
+# usage:      frobulator.silence "[command]"
+
 frobulator.silence () {
 
 	command="${@}"
@@ -2873,6 +2875,8 @@ frobulator.silence () {
 
 # use to wrap command and redirect all output to "${script}"-"${stamp}".log file
 # provides fully silent execution
+
+# usage:      frobulator.log "[command]"
 
 frobulator.log () {
 
@@ -2909,6 +2913,8 @@ frobulator.log () {
 # password /////////////////////////////////////////////////////////////////////
 
 # use to obfuscate password input with custom mask character
+
+# usage:      frobulator.password
 
 frobulator.password () {
 
@@ -2956,6 +2962,8 @@ frobulator.password () {
 # input ////////////////////////////////////////////////////////////////////////
 
 # use to capture user input
+
+# usage:      frobulator.input "[array]"
 
 frobulator.input () {
 
@@ -3016,6 +3024,8 @@ frobulator.input () {
 
 # use to run package and installer post-install cleanup
 
+# usage:      frobulator.clean
+
 frobulator.clean () {
 
 	command_autoremove="apt-get autoremove"
@@ -3032,7 +3042,7 @@ frobulator.clean () {
 
 	# fix 'dpkg' lock and errors:
 	# remove all post-install logs - prevent package configuration errors
-/var/cache/apt/pkgcache.bin
+
 	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
 	then
 		rm					\
@@ -3045,6 +3055,8 @@ frobulator.clean () {
 
 # use to hold package(s) from argument or array list
 # marks package(s) for version freeze
+
+# usage:      frobulator.hold "[package]" | "[array]"
 
 frobulator.hold () {
 
@@ -3088,6 +3100,8 @@ frobulator.hold () {
 # use to release package(s) from argument or array list
 # unmarks package(s) for version freeze
 
+# usage:      frobulator.release "[package]" | "[array]"
+
 frobulator.release () {
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -3130,6 +3144,8 @@ frobulator.release () {
 # use to install package(s) and update system
 # helps avoid 'ignore' or 'not found' errors returned by package manager
 # useful as failsafe to fetch all up-to-date content before batch installs
+
+# usage:      frobulator.failsafe "[package]" | "[array]"
 
 frobulator.failsafe () {
 
@@ -3189,6 +3205,8 @@ frobulator.failsafe () {
 # install //////////////////////////////////////////////////////////////////////
 
 # use to install package(s) from argument or array list
+
+# usage:      frobulator.install "[package]" | "[array]"
 
 frobulator.install () {
 
@@ -3253,6 +3271,8 @@ frobulator.install () {
 
 # use to install required package(s) from argument or array list
 # use to search and validate required package dependencies for operations
+
+# usage:      frobulator.require "[package]" | "[array]"
 
 frobulator.require () {
 
@@ -3384,6 +3404,8 @@ frobulator.require () {
 
 # use to reinstall package(s) from argument or array list
 
+# usage:      frobulator.reinstall "[package]" | "[array]"
+
 frobulator.reinstall () {
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -3422,6 +3444,8 @@ frobulator.reinstall () {
 
 # use to update system package(s)
 
+# usage:      frobulator.update
+
 frobulator.update () {
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -3440,6 +3464,8 @@ frobulator.update () {
 
 # use to upgrade system packages
 
+# usage:      frobulator.upgrade
+
 frobulator.upgrade () {
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -3457,6 +3483,8 @@ frobulator.upgrade () {
 # purge ////////////////////////////////////////////////////////////////////////
 
 # use to purge package(s) from argument or array list
+
+# usage:      frobulator.purge "[package]" | "[array]"
 
 frobulator.purge () {
 
@@ -3568,6 +3596,8 @@ frobulator.dialog () {
 
 # use to forcefully terminate rogue processes
 
+# usage:      frobulator.terminate "[process]"
+
 frobulator.terminate () {
 
 	process_name="${1}"
@@ -3584,6 +3614,8 @@ frobulator.terminate () {
 # exit /////////////////////////////////////////////////////////////////////////
 
 # use to exit process or program instance
+
+# usage:      frobulator.exit "[instance]"
 
 frobulator.exit () {
 

@@ -1806,6 +1806,8 @@ frobulator.progress () {
 
 # bar //////////////////////////////////////////////////////////////////////////
 
+# work in progress
+
 # use to mark process progress
 
 frobulator.bar () {
@@ -2341,6 +2343,8 @@ frobulator.file () {
 # use to reverse-select file(s) for deletion from argument or array list
 # keeps selected files in directory
 
+# usage:      frobulator.keep "[path]" "[file]" | "[array]"
+
 frobulator.keep () {
 
 	if [ $# -eq 1 ]
@@ -2424,6 +2428,8 @@ frobulator.keep () {
 # use to select file(s) for deletion from argument or array list
 # removes selected file in directory
 
+# usage:      frobulator.delete "[path]" "[file]" | "[array]"
+
 frobulator.delete () {
 
 	if [ $# -eq 1 ]
@@ -2483,6 +2489,8 @@ frobulator.delete () {
 
 # use to copy file(s) and/or diretories from argument or array list
 
+# usage:      frobulator.copy "[source]" "[target]" "[file]" | "[array]"
+
 frobulator.copy () {
 
 	source="${1}"
@@ -2527,6 +2535,8 @@ frobulator.copy () {
 # move /////////////////////////////////////////////////////////////////////////
 
 # use to move file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.move "[source]" "[target]" "[file]" | "[array]"
 
 frobulator.move () {
 
@@ -2578,6 +2588,8 @@ frobulator.move () {
 # link /////////////////////////////////////////////////////////////////////////
 
 # use to link file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.link "[source]" "[target]" "[item]" | "[array]"
 
 frobulator.link () {
 
@@ -2648,6 +2660,8 @@ frobulator.link () {
 
 # use to validate http status code prior to download / upload operations
 
+# usage:      frobulator.status "[url]"
+
 frobulator.status () {
 
 	url="${@}"
@@ -2665,6 +2679,8 @@ frobulator.status () {
 # download /////////////////////////////////////////////////////////////////////
 
 # use to download file(s) with url status verification from argument or array list
+
+# usage:      frobulator.download "[url]" "[directory]" "[item]" | "[array]"
 
 frobulator.download () {
 

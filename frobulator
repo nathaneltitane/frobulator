@@ -3975,28 +3975,6 @@ frobulator.extract () {
 
 		;;
 
-		bz2)
-			bzip							\
-				--stdout					\
-				--keep						\
-				--quiet						\
-				--decompress				"${file}"	> "${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
-		;;
-
-		gz)
-			gzip							\
-				--stdout					\
-				--keep						\
-				--quiet						\
-				--decompress				"${file}"	> "${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
-		;;
-
 		7z)
 			7z								\
 				x "${file}" 				\

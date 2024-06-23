@@ -3916,6 +3916,10 @@ frobulator.archive () {
 
 # use to extract known archive types for script dependency or process resolution
 
+# "${directory}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.extract "[archive]" "[type]" "[directory]"
+
 frobulator.extract () {
 
 	list+=(

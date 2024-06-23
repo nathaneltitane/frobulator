@@ -3630,8 +3630,9 @@ frobulator.exit () {
 
 # use to flag process checkpoint results such as installations and deployments
 
-frobulator.result () {
+# usage:      frobulator.result "[file]"
 
+frobulator.result () {
 
 	if [ $# -eq 1 ]
 	then

@@ -3665,6 +3665,8 @@ frobulator.result () {
 # use to identify 'user' name
 # useful for priviledged execution status checks
 
+# usage:      frobulator.user
+
 frobulator.user () {
 
 	seconds="1"
@@ -3679,6 +3681,8 @@ frobulator.user () {
 
 # use to assess 'superuser' status and prompt for priviledged execution
 # useful for in-script dependency assessment and installation
+
+# usage:      frobulator.assess "[package]" | "[array]"
 
 frobulator.assess () {
 
@@ -3741,6 +3745,8 @@ frobulator.assess () {
 # use to provide priviledged execution
 # restarts script process as 'superuser' once the status is granted
 
+# usage:      frobulator.escalate
+
 frobulator.escalate () {
 
 	if [[ $(id -u -n) = "root" ]]
@@ -3780,6 +3786,10 @@ frobulator.escalate () {
 # archive //////////////////////////////////////////////////////////////////////
 
 # use to archive content and for backup procedures
+
+# "${directory}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.archive "[archive]" "[type]" "[directory]"
 
 frobulator.archive () {
 

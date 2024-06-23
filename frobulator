@@ -2044,6 +2044,7 @@ frobulator.complete () {
 # directory ////////////////////////////////////////////////////////////////////
 
 # use to generate directory from argument or array list
+
 # "${path}" defaults to "${PWD}" when omitted
 
 # usage:      frobulator.directory "[path]" "[directory name]" | "[array name]"
@@ -2268,6 +2269,8 @@ frobulator.flag () {
 # file /////////////////////////////////////////////////////////////////////////
 
 # use to generate file(s) from argument or array list
+
+# usage:      frobulator.file "[path]" "[file]" | "[array]"
 
 frobulator.file () {
 

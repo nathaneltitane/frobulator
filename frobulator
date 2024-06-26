@@ -2363,7 +2363,10 @@ frobulator.keep () {
 
 			list+=("${file}")
 		fi
-	else
+	fi
+
+	if [ $# -eq 2 ]
+	then
 		path="${1}"
 
 		if [[ -n "${#list[@]}" ]]
@@ -2410,7 +2413,7 @@ frobulator.keep () {
 				rm					\
 					--recursive		\
 					--force			\
-									"${item}"
+									"${path}"/"${item}"
 			fi
 		done
 	else

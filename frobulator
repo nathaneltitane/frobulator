@@ -2069,7 +2069,10 @@ frobulator.directory () {
 
 			list+=("${file}")
 		fi
-	else
+	fi
+
+	if [ $# -eq 2 ]
+	then
 		path="${1}"
 
 		if [[ -n "${#list[@]}" ]]
@@ -2139,7 +2142,10 @@ frobulator.write () {
 
 			list+=("${file}")
 		fi
-	else
+	fi
+
+	if [ $# -eq 3 ]
+	then
 		path="${2}"
 
 		if [ -z "${path}" ]

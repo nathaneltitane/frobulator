@@ -1970,11 +1970,14 @@ frobulator.temporary () {
 
 # use to cleanup temporary directory or other process driven execution
 # handles exit codes and signals to ensure proper cleanup
-# specify directory name as variable returned from 'eval' in frobulator.temporary
+# specify directory name as variable
+# variable is returned from 'eval' into frobulator.temporary
 
 # usage:         frobulator.temporary "[directory name]" | "[array name]"
 # assignment:    directory="${frobulator_return[@]}"
 #                frobulator.trap "${directory name}"
+
+# ------------------------------------------------------------------------------
 
 frobulator.trap () {
 

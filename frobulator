@@ -2434,6 +2434,8 @@ frobulator.delete () {
 
 	if [ $# -eq 1 ]
 	then
+		path="${PWD}"
+
 		if [[ -n "${#list[@]}" ]]
 		then
 			# ${1} - array
@@ -2459,8 +2461,6 @@ frobulator.delete () {
 			list=(${@:2})
 		else
 			item="${2}"
-			
-			item="${path}"/"${item}"
 
 			list=()
 
@@ -2478,7 +2478,7 @@ frobulator.delete () {
 		rm					\
 			--recursive		\
 			--force			\
-							"${item}"
+							"${path}"/"${item}"
 	done
 
 	# unset array

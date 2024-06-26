@@ -2440,15 +2440,16 @@ frobulator.delete () {
 
 			list=(${@:1})
 		else
-			file="${1}"
+			item="${1}"
 			
-			item="${file}"
-
 			list=()
 
 			list+=("${item}")
 		fi
-	else
+	fi
+
+	if [ $# -eq 2 ]
+	then
 		path="${1}"
 
 		if [[ -n "${#list[@]}" ]]
@@ -2457,9 +2458,9 @@ frobulator.delete () {
 
 			list=(${@:2})
 		else
-			file="${2}"
+			item="${2}"
 			
-			item="${path}"/"${file}"
+			item="${path}"/"${item}"
 
 			list=()
 

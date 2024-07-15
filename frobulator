@@ -3772,7 +3772,7 @@ frobulator.escalate () {
 
 		HOME=/home/"${SUDO_USER}"
 	else
-		frobulator.wrn "Privilege escalation granted - restarting command" "[ '"${SUDO_USER}"' ]"
+		frobulator.wrn "Privilege escalation granted - restarting command" "[ '${SUDO_USER:-$USER}' ]"
 		echo
 
 		frobulator.user

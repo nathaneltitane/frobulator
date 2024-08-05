@@ -2227,7 +2227,10 @@ frobulator.flag () {
 
 			list+=("${file}")
 		fi
-	else
+	fi
+
+	if [ $# -eq 3 ]
+	then
 		path="${2}"
 
 		if [ -z "${path}" ]

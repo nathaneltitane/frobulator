@@ -2378,7 +2378,7 @@ frobulator.keep () {
 		fi
 	fi
 
-	if [ $# -eq 2 ]
+	if [ $# -ge 2 ]
 	then
 		path="${1}"
 
@@ -2394,6 +2394,9 @@ frobulator.keep () {
 
 			list+=("${file}")
 		fi
+
+		shift
+
 	fi
 
 	if [ -d "${path}" ]

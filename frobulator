@@ -2089,8 +2089,6 @@ frobulator.directory () {
 			list+=("${file}")
 		fi
 
-		shift
-
 	fi
 
 	for directory in ${list[@]}

@@ -2072,7 +2072,7 @@ frobulator.directory () {
 		fi
 	fi
 
-	if [ $# -eq 2 ]
+	if [ $# -ge 2 ]
 	then
 		path="${1}"
 
@@ -2088,6 +2088,9 @@ frobulator.directory () {
 
 			list+=("${file}")
 		fi
+
+		shift
+
 	fi
 
 	for directory in ${list[@]}

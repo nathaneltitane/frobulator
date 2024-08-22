@@ -1562,8 +1562,7 @@ frobulator.progress () {
 
 	seconds="0.25"
 
-	# ticker='⎺⎻⎼⎽⎼⎻'
-	  ticker='◸◹◿◺'
+	ticker='⎺⎻⎼⎽⎼⎻'
 
 	before="[${marker_spc}"
 	after="${marker_spc}]"

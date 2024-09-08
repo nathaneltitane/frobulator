@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="09-07-2024"
+# version="09-08-2024"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -41,7 +41,13 @@ then
 	sink="/dev/null"
 fi
 
-# provide character encoding / expansion capabilities
+# provide character encoding / expansion capabilities for embedded document writes
+
+# space
+
+SPC="$(printf '\ ')"
+
+# tab
 
 TAB="$(printf '\t')"
 

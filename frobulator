@@ -2016,16 +2016,16 @@ frobulator.trap () {
 
 # complete /////////////////////////////////////////////////////////////////////
 
-# Number    Meaning                                                             Example                           Comments
+# Number    Meaning                                                       Example                Comments
 #   0
-#   1       Catchall for general errors                                         let "var1 = 1/0"                  Miscellaneous errors, such as "divide by zero" and other impermissible operations
-#   2       Misuse of shell builtins (according to Bash documentation)          empty_function() {}               Missing keyword, command or permission problem (and different return code on a failed binary file comparison).
-# 126       Command invoked cannot execute                                      /dev/null                         Permission problem or command is not an executable
-# 127       Command not found                                                   illegal_command                   Possible problem with $PATH or a typo
-# 128       Invalid argument to exit                                            exit 3.14159                      'exit' takes only integer arguments ranging 0 - 255 (see first footnote)
-# 128+n     Fatal error signal "n"                                              kill -9 $PPID                     '$?' returns 137 (128 + 9)
-# 130       Script terminated by Control-C                                      Ctl-C                             CONTROL-C is fatal error signal 2 (130 = 128 + 2)
-# 255*      Exit status out of range                                            exit -1                           'exit' takes only integer args in the range 0 - 255
+#   1       Catchall for general errors                                   let "var1 = 1/0"       Miscellaneous errors, such as "divide by zero" and other impermissible operations
+#   2       Misuse of shell builtins (according to Bash documentation)    empty_function() {}    Missing keyword, command or permission problem (and different return code on a failed binary file comparison).
+# 126       Command invoked cannot execute                                /dev/null              Permission problem or command is not an executable
+# 127       Command not found                                             illegal_command        Possible problem with $PATH or a typo
+# 128       Invalid argument to exit                                      exit 3.14159           'exit' takes only integer arguments ranging 0 - 255 (see first footnote)
+# 128+n     Fatal error signal "n"                                        kill -9 $PPID          '$?' returns 137 (128 + 9)
+# 130       Script terminated by Control-C                                Ctl-C                  CONTROL-C is fatal error signal 2 (130 = 128 + 2)
+# 255*      Exit status out of range                                      exit -1                'exit' takes only integer args in the range 0 - 255
 
 frobulator.complete () {
 
@@ -2719,19 +2719,92 @@ frobulator.status () {
 
 frobulator.download () {
 
+	# HTTP response status codes:
+
+	# informational responses //////////////////////////////////////////////////
+
+	# 100 continue:                            client can proceed
+	# 101 switching protocols:                 server switching protocols
+	# 102 processing:                          request received, status pending
+	# 103 early hints:                         preload resources early
+
+	# successful responses /////////////////////////////////////////////////////
+
+	# 200 ok:                                  request successful
+	# 201 created:                             new resource created
+	# 202 accepted:                            request received, not processed
+	# 203 non-authoritative:                   metadata from a copy
+	# 204 no content:                          no content, headers updated
+	# 205 reset content:                       reset document
+	# 206 partial content:                     partial content sent
+	# 207 multi-status:                        multiple resource statuses
+	# 208 already reported:                    avoids repeated enumeration
+	# 226 im used:                             result of manipulations applied
+
+	# redirection messages /////////////////////////////////////////////////////
+
+	# 300 multiple choices:                    choose one response
+	# 301 moved permanently:                   resource permanently moved
+	# 302 found:                               resource temporarily moved
+	# 303 see other:                           get resource at another uri
+	# 304 not modified:                        resource not modified
+	# 307 temporary redirect:                  redirect, keep method
+	# 308 permanent redirect:                  redirect, keep method
+
+	# client error responses ///////////////////////////////////////////////////
+
+	# 400 bad request:                         invalid request
+	# 401 unauthorized:                        authentication required
+	# 403 forbidden:                           access denied
+	# 404 not found:                           resource not found
+	# 405 method not allowed:                  method not supported
+	# 406 not acceptable:                      no matching content
+	# 408 request timeout:                     connection idle
+	# 409 conflict:                            request conflicts with server
+	# 410 gone:                                resource permanently deleted
+	# 413 content too large:                   request body too large
+	# 414 uri too long:                        uri too long
+	# 415 unsupported media type:              media type not supported
+	# 416 range not satisfiable:               range not satisfiable
+	# 417 expectation failed:                  expectation failed
+	# 418 im a teapot:                         not a teapot
+	# 421 misdirected request:                 request misdirected
+	# 429 too many requests:                   rate limiting exceeded
+	# 431 header fields too large:             headers too large
+	# 451 unavailable for legal reasons:       access denied by law
+
+	# server error responses ///////////////////////////////////////////////////
+
+	# 500 internal server error:              server error
+	# 501 not implemented:                    method not implemented
+	# 502 bad gateway:                        invalid gateway response
+	# 503 service unavailable:                server unavailable
+	# 504 gateway timeout:                    gateway timeout
+	# 505 http version not supported:         http version not supported
+	# 511 network authentication required:    network authentication required
+
 	url="${1}"
 
 	frobulator.status "${url}"
 
-	if [[ "${url_status}" = [0145][0-9][0-9] ]]
+	if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		frobulator.err "Error" "[ Status // ${url_status} ]"
 		echo
 
+	elif [[ "${url_status}" = [45][0-9][0-9] ]]
+	then
+		frobulator.err "Error" "[ Status // ${url_status} ]"
+		echo
+
+		return 1
+
 	elif [[ "${url_status}" = [23][0-9][0-9] ]]
 	then
-		frobulator.scs "Found" "[ "${url}" // Status // ${url_status} ]"
+		frobulator.scs "Success" "[ "${url}" // Status // ${url_status} ]"
 		echo
+
+		return 0
 
 		if [ $# -eq 2 ]
 		then

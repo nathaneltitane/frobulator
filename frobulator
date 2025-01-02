@@ -2041,15 +2041,15 @@ frobulator.trap () {
 # use to validate previous command's exit status
 # use in tandem with frobulator.complete
 
-# function () {
+# example:	function () {
 
-#	frobulator.continue
+#				frobulator.continue
 
-#	[function commands]
+#					[function commands]
 
-#	frobulator.complete
+#				frobulator.complete
 
-# }
+#			}
 
 frobulator.continue () {
 
@@ -2082,15 +2082,15 @@ frobulator.continue () {
 
 # usage:      frobulator.complete "[command]"
 
-# function () {
+# example:	function () {
 
-#	frobulator.continue
+#				frobulator.continue
 
-#	[function commands]
+#					[function commands]
 
-#	frobulator.complete
+#				frobulator.complete
 
-# }
+#			}
 
 frobulator.complete () {
 

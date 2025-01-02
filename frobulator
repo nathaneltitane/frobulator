@@ -2450,6 +2450,8 @@ frobulator.keep () {
 		echo
 	fi
 
+	unset keep
+
 	# unset array
 
 	list=()
@@ -2789,23 +2791,35 @@ frobulator.download () {
 
 	if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
-		frobulator.err "Error" "[ Status // ${url_status} ]"
+		frobulator.inf "Information" "[ Status // ${url_status} ]"
 		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [2][0-9][0-9] ]]
+	then
+		frobulator.scs "Success" "[ Status // ${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [3][0-9][0-9] ]]
+	then
+		frobulator.wrn "Redirection" "[ Status // ${url_status} ]"
+		echo
+
+		proceed=1
 
 	elif [[ "${url_status}" = [45][0-9][0-9] ]]
 	then
 		frobulator.err "Error" "[ Status // ${url_status} ]"
 		echo
 
-		return 1
+		proceed=0
+	fi
 
-	elif [[ "${url_status}" = [23][0-9][0-9] ]]
+	if [[ "${proceed}" = 1 ]]
 	then
-		frobulator.scs "Success" "[ "${url}" // Status // ${url_status} ]"
-		echo
-
-		return 0
-
 		if [ $# -eq 2 ]
 		then
 			path="${PWD}"
@@ -2934,9 +2948,22 @@ frobulator.download () {
 
 		list=()
 
-	else
-		frobulator.err "Status unknown" "[ "${url}" // Status N/A ]"
+		return 0
+
+	elif [[ "${proceed}" = 0 ]]
+	then
+
+		frobulator.err "Download Error - Status Response ${url_status}"
+		frobulator.nul "Cannot continue."
+		echo
+
+		frobulator.stp "Aborting${marker_elp}"
+		echo
+
+		return 1
 	fi
+
+	unset proceed
 }
 
 # put //////////////////////////////////////////////////////////////////////////

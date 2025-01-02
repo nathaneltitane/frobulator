@@ -2904,8 +2904,7 @@ frobulator.download () {
 			fi
 		fi
 
-		if [[ $(curl --silent --head --write-out '%{http_code}' \
-    "$url"/${file}) ]]
+		if [[ $(curl --silent --head --write-out '%{http_code}' "$url"/${file}) != *200* ]]
 		then
 			proceed=0
 		fi

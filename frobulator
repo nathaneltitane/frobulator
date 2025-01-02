@@ -2973,7 +2973,7 @@ frobulator.download () {
 	then
 
 		frobulator.err "Download Error - Status Response ${url_status}"
-		frobulator.nul "Cannot continue: ${reason} unavailable."
+		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 
 		frobulator.stp "Aborting${marker_elp}"

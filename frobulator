@@ -2726,13 +2726,11 @@ frobulator.download () {
 	if [[ "${url_status}" = [0145][0-9][0-9] ]]
 	then
 		frobulator.err "Error" "[ Status // ${url_status} ]"
-		frobulator.nul "Cannot access ${url}"
 		echo
 
 	elif [[ "${url_status}" = [23][0-9][0-9] ]]
 	then
 		frobulator.scs "Found" "[ "${url}" // Status // ${url_status} ]"
-		frobulator.nul "Accessing ${url}"
 		echo
 
 		if [ $# -eq 2 ]

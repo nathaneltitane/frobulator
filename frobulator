@@ -2785,49 +2785,6 @@ frobulator.download () {
 
 	url="${1}"
 
-	frobulator.status "${url}"
-
-	if [[ "${url_status}" = [1][0-9][0-9] ]]
-	then
-		frobulator.inf "Information" "[ Status // ${url_status} ]"
-		echo
-
-		proceed=1
-
-	elif [[ "${url_status}" = [2][0-9][0-9] ]]
-	then
-		frobulator.scs "Success" "[ Status // ${url_status} ]"
-		echo
-
-		proceed=1
-
-	elif [[ "${url_status}" = [3][0-9][0-9] ]]
-	then
-		frobulator.wrn "Redirection" "[ Status // ${url_status} ]"
-		echo
-
-		proceed=1
-
-	elif [[ "${url_status}" = [4][0-9][0-9] ]]
-	then
-		frobulator.err "Error" "[ Status // ${url_status} ]"
-		echo
-
-		reason="client"
-
-		proceed=0
-
-	elif [[ "${url_status}" = [5][0-9][0-9] ]]
-	then
-		frobulator.err "Error" "[ Status // ${url_status} ]"
-		echo
-
-		reason="server"
-
-		proceed=0
-	fi
-
-
 	if [ $# -eq 2 ]
 	then
 		path="${PWD}"
@@ -2907,9 +2864,51 @@ frobulator.download () {
 		fi
 	fi
 
-	resource_status=$(curl --silent --head --write-out '%{http_code}\n' "${image_url}"/"${image_archive}")
+	frobulator.status "${url}"
 
-	if [[ "${resource_status}" != *200* ]]
+	if [[ "${url_status}" = [1][0-9][0-9] ]]
+	then
+		frobulator.inf "Information" "[ Status // ${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [2][0-9][0-9] ]]
+	then
+		frobulator.scs "Success" "[ Status // ${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [3][0-9][0-9] ]]
+	then
+		frobulator.wrn "Redirection" "[ Status // ${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [4][0-9][0-9] ]]
+	then
+		frobulator.err "Error" "[ Status // ${url_status} ]"
+		echo
+
+		reason="client"
+
+		proceed=0
+
+	elif [[ "${url_status}" = [5][0-9][0-9] ]]
+	then
+		frobulator.err "Error" "[ Status // ${url_status} ]"
+		echo
+
+		reason="server"
+
+		proceed=0
+	fi
+
+	resource=$(curl --silent --head --write-out '%{http_code}\n' "${url}"/"${file}")
+
+	if [[ "${resource}" != *200* ]]
 	then
 		reason="resource"
 

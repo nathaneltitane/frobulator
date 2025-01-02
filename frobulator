@@ -2903,7 +2903,12 @@ frobulator.download () {
 		fi
 	fi
 
+	resource_status=$(curl --silent --head --write-out '%{http_code}\n' "${image_url}"/"${image_archive}")
 
+	if [[ "${resource_status}" != *200* ]]
+	then
+		proceed=0
+	fi
 
 	if [[ "${proceed}" = 1 ]]
 	then

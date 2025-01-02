@@ -2933,28 +2933,28 @@ frobulator.download () {
 
 	if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
-		frobulator.inf "Information" "[ Status // ${url_status} ]"
+		frobulator.inf "Download status" "[ information // ${url_status} ]"
 		echo
 
 		proceed=1
 
 	elif [[ "${url_status}" = [2][0-9][0-9] ]]
 	then
-		frobulator.scs "Success" "[ Status // ${url_status} ]"
+		frobulator.scs "Download status" "[ success // ${url_status} ]"
 		echo
 
 		proceed=1
 
 	elif [[ "${url_status}" = [3][0-9][0-9] ]]
 	then
-		frobulator.wrn "Redirection" "[ Status // ${url_status} ]"
+		frobulator.wrn "Download status" "[ redirection // ${url_status} ]"
 		echo
 
 		proceed=1
 
 	elif [[ "${url_status}" = [4][0-9][0-9] ]]
 	then
-		frobulator.err "Error" "[ Status // ${url_status} ]"
+		frobulator.err "Download status" "[ error // ${url_status} ]"
 		echo
 
 		reason="client"
@@ -2963,7 +2963,7 @@ frobulator.download () {
 
 	elif [[ "${url_status}" = [5][0-9][0-9] ]]
 	then
-		frobulator.err "Error" "[ Status // ${url_status} ]"
+		frobulator.err "Download status" "[ error // ${url_status} ]"
 		echo
 
 		reason="server"

@@ -2041,14 +2041,13 @@ frobulator.complete () {
 		frobulator.err "Incomplete - errors encountered" "[ ${command} ]"
 		echo
 		
-		frobulator.wrn "Consult log for process details" "[ ${log} ]"
-		echo
-		
 		exit 1
 		
 	else
 		frobulator.cpt "Complete" "[ ${command} ]"
 		echo
+
+		exit 0
 	fi
 
 }

@@ -2064,11 +2064,12 @@ frobulator.continue () {
 		echo
 
 		exit 1
-	else
+
+	elif [[ "${PES}" = 0 ]]
+	then
 		frobulator.fwd "Continuing${marker_elp}"
 		echo
 
-		exit 0
 	fi
 
 }

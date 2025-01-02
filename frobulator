@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="12-26-2024"
+# version="01-01-2025"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -19,6 +19,11 @@ then
 	SHELL=/bin/bash
 else
 	SHELL="${SHELL}"
+fi
+
+if [ -z "${FUNCTION}" ]
+then
+	FUNCTION="${FUNCNAME}"
 fi
 
 # provide terminal columns count

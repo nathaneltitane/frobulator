@@ -21,11 +21,6 @@ else
 	SHELL="${SHELL}"
 fi
 
-if [ -z "${function}" ]
-then
-	FUNCTION="${FUNCNAME}"
-fi
-
 # provide terminal columns count
 
 terminal_columns=80

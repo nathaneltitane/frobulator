@@ -2014,41 +2014,42 @@ frobulator.trap () {
 	done
 }
 
-# complete /////////////////////////////////////////////////////////////////////
+# continue /////////////////////////////////////////////////////////////////////
 
-# Number    Meaning                                                       Example                Comments
-#   0
-#   1       Catchall for general errors                                   let "var1 = 1/0"       Miscellaneous errors, such as "divide by zero" and other impermissible operations
-#   2       Misuse of shell builtins (according to Bash documentation)    empty_function() {}    Missing keyword, command or permission problem (and different return code on a failed binary file comparison).
-# 126       Command invoked cannot execute                                /dev/null              Permission problem or command is not an executable
-# 127       Command not found                                             illegal_command        Possible problem with $PATH or a typo
-# 128       Invalid argument to exit                                      exit 3.14159           'exit' takes only integer arguments ranging 0 - 255 (see first footnote)
-# 128+n     Fatal error signal "n"                                        kill -9 $PPID          '$?' returns 137 (128 + 9)
-# 130       Script terminated by Control-C                                Ctl-C                  CONTROL-C is fatal error signal 2 (130 = 128 + 2)
-# 255*      Exit status out of range                                      exit -1                'exit' takes only integer args in the range 0 - 255
+# BASH exit status codes ///////////////////////////////////////////////////////
 
-frobulator.complete () {
+# exit status codes are integers returned by commands upon completion.
+# a successful command typically returns an exit status of 0.
+# non-zero values generally indicate an error or abnormal termination.
 
-	# catch process exit status of last command
-	
-	PES=${?}
-	
-	command="${1}"
-	
-	if [[ "${PES}" = 1 ]]
-	then
-		frobulator.err "Incomplete - errors encountered" "[ ${command} ]"
-		echo
-		
-		return 1
-	else
-		frobulator.cpt "Complete" "[ ${command} ]"
-		echo
+# common exit status codes /////////////////////////////////////////////////////
 
-		return 0
-	fi
+# CODE     DEFINITION                           EXAMPLE
 
-}
+# 0        success                              true
+# 1        generic error                        false
+# 2        misuse of shell builtins             'cd /nonexistent/directory'
+# 126      command invoked cannot execute       'bash /nonexistent_script'  (assumes script lacks executable permissions)
+# 127      command not found                    'nonexistent_command'
+# 128+n    fatal error signal "n"               'kill -9 $$'                (sends SIGKILL to the current process)
+# 130      terminated by signal 2 (sigint)      'kill -2 $!'                (sends SIGINT to the background process)
+# 137      terminated by signal 9 (sigkill)     'kill -9 $!'                (sends SIGKILL to the background process)
+# 139      terminated by signal 11 (sigsegv)                                (often requires a program with memory access violations)
+# 143      terminated by signal 15 (sigterm)    'kill -15 $!'               (sends SIGTERM to the background process)
+# 255*     out of range - exit -1
+
+# use to validate previous command's exit status
+# use in tandem with frobulator.complete
+
+# function () {
+
+#	frobulator.continue
+
+#	[function commands]
+
+#	frobulator.complete
+
+# }
 
 frobulator.continue () {
 
@@ -2070,6 +2071,46 @@ frobulator.continue () {
 		frobulator.fwd "Continuing${marker_elp}"
 		echo
 
+	fi
+
+}
+
+# complete /////////////////////////////////////////////////////////////////////
+
+# use to confirm running command's exit status
+# use in tandem with frobulator.continue
+
+# usage:      frobulator.complete "[command]"
+
+# function () {
+
+#	frobulator.continue
+
+#	[function commands]
+
+#	frobulator.complete
+
+# }
+
+frobulator.complete () {
+
+	# catch process exit status of last command
+
+	PES=${?}
+
+	command="${1}"
+
+	if [[ "${PES}" = 1 ]]
+	then
+		frobulator.err "Incomplete - error status" "[ ${command} ]"
+		echo
+
+		return 1
+	else
+		frobulator.cpt "Complete - success status" "[ ${command} ]"
+		echo
+
+		return 0
 	fi
 
 }

@@ -2029,13 +2029,15 @@ frobulator.trap () {
 # 0        success                              true
 # 1        generic error                        false
 # 2        misuse of shell builtins             'cd /nonexistent/directory'
-# 126      command invoked cannot execute       'bash /nonexistent_script'  (assumes script lacks executable permissions)
+
+# 126      command invoked cannot execute       'bash /nonexistent_script'  (assume script lacks executable permissions)
 # 127      command not found                    'nonexistent_command'
-# 128+n    fatal error signal "n"               'kill -9 $$'                (sends SIGKILL to the current process)
-# 130      terminated by signal 2 (sigint)      'kill -2 $!'                (sends SIGINT to the background process)
-# 137      terminated by signal 9 (sigkill)     'kill -9 $!'                (sends SIGKILL to the background process)
-# 139      terminated by signal 11 (sigsegv)                                (often requires a program with memory access violations)
-# 143      terminated by signal 15 (sigterm)    'kill -15 $!'               (sends SIGTERM to the background process)
+# 128+n    fatal error  - signal "n"            'kill -9 $$'                (send SIGKILL to current process)
+# 130      terminated - signal 2 (sigint)       'kill -2 $!'                (send SIGINT to background process)
+# 137      terminated - signal 9 (sigkill)      'kill -9 $!'                (send SIGKILL to background process)
+# 139      terminated - signal 11 (sigsegv)                                 (program with memory access violations)
+# 143      terminated - signal 15 (sigterm)     'kill -15 $!'               (send SIGTERM to background process)
+
 # 255*     out of range - exit -1
 
 # use to validate previous command's exit status

@@ -2035,7 +2035,7 @@ frobulator.complete () {
 	
 	command="${1}"
 	
-	command="${command^}"
+	command="${command}"
 
 	if [[ ! "${PES}" = 0 ]]
 	then

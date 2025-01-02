@@ -2041,13 +2041,11 @@ frobulator.complete () {
 		echo
 		
 		return 1
-		
 	else
 		frobulator.cpt "Complete" "[ ${command} ]"
 		echo
 
 		return 0
-
 	fi
 
 }
@@ -2066,13 +2064,11 @@ frobulator.continue () {
 		echo
 
 		exit 1
-
 	else
 		frobulator.fwd "Continuing${marker_elp}"
 		echo
 
 		exit 0
-
 	fi
 
 }

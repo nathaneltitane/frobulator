@@ -2772,6 +2772,8 @@ frobulator.status () {
 					--write-out 	"${status_code}"	\
 														"${url}"
 				)
+
+	unset status_code
 }
 
 # download /////////////////////////////////////////////////////////////////////
@@ -2971,7 +2973,14 @@ frobulator.download () {
 		proceed=0
 	fi
 
-	resource=$(curl --silent --head --write-out '%{http_code}\n' "${url}"/"${file}")
+	status_code="%{http_code}\n"
+
+	resource=$(curl									\
+				--silent							\
+				--head								\
+				--write-out		"${status_code}"	\
+													"${url}"/"${file}"
+			)
 
 	if [[ "${resource}" = *[45][0-9][0-9]* ]]
 	then
@@ -2981,6 +2990,8 @@ frobulator.download () {
 
 		unset resource
 	fi
+
+	unset status_code
 
 	if [[ "${proceed}" = 1 ]]
 	then

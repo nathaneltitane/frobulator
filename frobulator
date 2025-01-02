@@ -2906,6 +2906,7 @@ frobulator.download () {
 
 		if [[ $(curl --silent --head --write-out '%{http_code}' "$url"/${file}) != *200* ]]
 		then
+		echo "FILE IS UNAVAILABLE"
 			proceed=0
 		fi
 

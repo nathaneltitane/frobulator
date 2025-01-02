@@ -2041,13 +2041,14 @@ frobulator.complete () {
 		frobulator.err "Incomplete - errors encountered" "[ ${command} ]"
 		echo
 		
-		exit 1
+		return 1
 		
 	else
 		frobulator.cpt "Complete" "[ ${command} ]"
 		echo
 
-		exit 0
+		return 0
+
 	fi
 
 }

@@ -4002,7 +4002,7 @@ frobulator.escalate () {
 		fi
 
 		self="${0}"
-		command="${@}"
+		options="${@}"
 
 		# set superuser password prompt
 
@@ -4010,7 +4010,7 @@ frobulator.escalate () {
 
 		# restart as superuser
 
-		exec sudo "${SHELL}" "${self}" "${command}" "${@}"
+		exec sudo "${SHELL}" "${self}" "${options}"
 		echo
 	fi
 }

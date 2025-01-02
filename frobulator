@@ -2035,7 +2035,7 @@ frobulator.complete () {
 	
 	command="${1}"
 	
-	if [[ ! "${PES}" = 0 ]]
+	if [[ "${PES}" = 1 ]]
 	then
 		frobulator.err "Incomplete - errors encountered" "[ ${command} ]"
 		echo
@@ -2060,7 +2060,7 @@ frobulator.continue () {
 
 	command="${1}"
 
-	if [[ ! "${PES}" = 0 ]]
+	if [[ "${PES}" = 1 ]]
 	then
 		frobulator.stp "Aborting${marker_elp}"
 		echo

@@ -2034,9 +2034,8 @@ frobulator.complete () {
 	PES=${?}
 	
 	command="${1}"
+	log="${2}"
 	
-	command="${command}"
-
 	if [[ ! "${PES}" = 0 ]]
 	then
 		frobulator.err "Incomplete - errors encountered" "[ ${command} ]"
@@ -3044,9 +3043,9 @@ frobulator.log () {
 	else
 		if [ ! -d "${HOME}"/.local/var/log ]
 		then
-			mkdir		\
-			--parents	\
-						"${HOME}"/.local/var/log
+			mkdir			\
+				--parents	\
+							"${HOME}"/.local/var/log
 		fi
 
 		log_directory="${HOME}"/.local/var/log

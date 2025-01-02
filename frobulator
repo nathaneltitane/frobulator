@@ -3038,7 +3038,7 @@ frobulator.download () {
 	elif [[ "${proceed}" = 0 ]]
 	then
 
-		frobulator.err "Download Error - Status Response ${url_status}"
+		frobulator.err "Download error" "[ response // ${url_status} ]"
 		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 

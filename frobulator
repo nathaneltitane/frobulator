@@ -2815,10 +2815,21 @@ frobulator.download () {
 
 		proceed=1
 
-	elif [[ "${url_status}" = [45][0-9][0-9] ]]
+	elif [[ "${url_status}" = [4][0-9][0-9] ]]
 	then
 		frobulator.err "Error" "[ Status // ${url_status} ]"
 		echo
+
+		reason="client"
+
+		proceed=0
+
+	elif [[ "${url_status}" = [5][0-9][0-9] ]]
+	then
+		frobulator.err "Error" "[ Status // ${url_status} ]"
+		echo
+
+		reason="server"
 
 		proceed=0
 	fi
@@ -2907,6 +2918,8 @@ frobulator.download () {
 
 	if [[ "${resource_status}" != *200* ]]
 	then
+		reason="resource"
+
 		proceed=0
 	fi
 
@@ -2967,7 +2980,7 @@ frobulator.download () {
 	then
 
 		frobulator.err "Download Error - Status Response ${url_status}"
-		frobulator.nul "Cannot continue."
+		frobulator.nul "Cannot continue: ${reason} unavailable."
 		echo
 
 		frobulator.stp "Aborting${marker_elp}"

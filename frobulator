@@ -2823,93 +2823,94 @@ frobulator.download () {
 		proceed=0
 	fi
 
-	if [[ "${proceed}" = 1 ]]
+
+	if [ $# -eq 2 ]
 	then
-		if [ $# -eq 2 ]
+		path="${PWD}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+
+	elif [ $# -eq 3 ]
+	then
+		path="${2}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+
+	elif [ $# -eq 4 ]
+	then
+		source_file="${2}"
+		path="${3}"
+
+		if [ -z "${path}" ]
 		then
 			path="${PWD}"
+		fi
 
-			if [[ -n "${#list[@]}" ]]
-			then
-				# ${2} - array
-
-				list=(${@:2})
-			else
-				file="${2}"
-
-				list=()
-
-				list+=("${file}")
-			fi
-
-		elif [ $# -eq 3 ]
+		if [[ -n "${#list[@]}" ]]
 		then
-			path="${2}"
+			# ${4} - array
 
-			if [[ -n "${#list[@]}" ]]
-			then
-				# ${3} - array
-
-				list=(${@:3})
-			else
-				file="${3}"
-
-				list=()
-
-				list+=("${file}")
-			fi
-
-		elif [ $# -eq 4 ]
-		then
-			source_file="${2}"
-			path="${3}"
-
-			if [ -z "${path}" ]
-			then
-				path="${PWD}"
-			fi
-
-			if [[ -n "${#list[@]}" ]]
-			then
-				# ${4} - array
-
-				list=(${@:4})
-			else
-				file="${4}"
-
-				list=()
-
-				list+=("${file}")
-			fi
-
+			list=(${@:4})
 		else
-			path="${2}"
+			file="${4}"
 
-			if [ -z "${path}" ]
-			then
-				path="${PWD}"
-			fi
+			list=()
 
-			if [[ -n "${#list[@]}" ]]
-			then
-				# ${3} - array
-
-				list=(${@:3})
-			else
-				file="${3}"
-
-				list=()
-
-				list+=("${file}")
-			fi
+			list+=("${file}")
 		fi
 
-		if [[ $(curl --silent --head --write-out '%{http_code}' "$url"/${file}) != *200* ]]
+	else
+		path="${2}"
+
+		if [ -z "${path}" ]
 		then
-		echo "FILE IS UNAVAILABLE"
-			proceed=0
+			path="${PWD}"
 		fi
 
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [[ $(curl --silent --head --write-out '%{http_code}' "$url"/${file}) != *200* ]]
+	then
+	echo "FILE IS UNAVAILABLE"
+		proceed=0
+	fi
+
+	if [[ "${proceed}" = 1 ]]
+	then
 		if [ ! -d "${path}" ]
 		then
 			mkdir			\

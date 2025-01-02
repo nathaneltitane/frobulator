@@ -21,7 +21,7 @@ else
 	SHELL="${SHELL}"
 fi
 
-if [ -z "${FUNCTION}" ]
+if [ -z "${function}" ]
 then
 	FUNCTION="${FUNCNAME}"
 fi
@@ -2902,6 +2902,12 @@ frobulator.download () {
 
 				list+=("${file}")
 			fi
+		fi
+
+		if [[ $(curl --silent --head --write-out '%{http_code}' \
+    "$url"/${file}) ]]
+		then
+			proceed=0
 		fi
 
 		if [ ! -d "${path}" ]

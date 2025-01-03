@@ -2762,31 +2762,6 @@ frobulator.link () {
 
 frobulator.status () {
 
-	url="${@}"
-
-	status_code="%{http_code}\n"
-
-	url_status=$(curl									\
-					--silent							\
-					--header							\
-					--output		"${sink}"			\
-					--write-out 	"${status_code}"	\
-														"${url}"
-				)
-
-	unset status_code
-}
-
-# download /////////////////////////////////////////////////////////////////////
-
-# use to download file(s) with url status verification from argument or array list
-
-# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
-#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
-#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
-
-frobulator.download () {
-
 	# HTTP response status codes:
 
 	# informational responses //////////////////////////////////////////////////
@@ -2850,6 +2825,31 @@ frobulator.download () {
 	# 504 gateway timeout:                    gateway timeout
 	# 505 http version not supported:         http version not supported
 	# 511 network authentication required:    network authentication required
+
+	url="${@}"
+
+	status_code="%{http_code}\n"
+
+	url_status=$(curl									\
+					--silent							\
+					--header							\
+					--output		"${sink}"			\
+					--write-out 	"${status_code}"	\
+														"${url}"
+				)
+
+	unset status_code
+}
+
+# download /////////////////////////////////////////////////////////////////////
+
+# use to download file(s) with url status verification from argument or array list
+
+# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
+#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
+#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
+
+frobulator.download () {
 
 	url="${1}"
 
@@ -3063,32 +3063,70 @@ frobulator.download () {
 	unset proceed
 }
 
-# put //////////////////////////////////////////////////////////////////////////
-
-# WIP
-
-frobulator.put () {
-
-	type="${1}"
-
-	curl										\
-		--request PUT "${destination}/${file}"	\
-		--header "Content-Type: ${type}"		\
-		--data									"${file}" &
-
-	frobulator.progress "upload" "[ '${file}' ]"
-}
-
 # upload ///////////////////////////////////////////////////////////////////////
 
-# WIP
+# use to upload data or  file(s) with url from argument or array list
+
+# usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
 
 frobulator.upload () {
 
-	frobulator.upl "Loading${marker_elp}"
-	echo
+	request="${1}" # POST / PUT
+	url="${2}"
+	data="${3}"
 
-	frobulator.put
+	unset command_upload
+
+	command_upload+="curl"
+	command_upload+=" --request ${request}"
+
+	header="--header Content-Type: "
+
+	if [[ -z "${data}" ]]
+	then
+		# no data
+
+		echo "Error: No data provided for POST request." >&2
+
+		return 1
+
+	elif [[ "${data}" =~ ^\{.*\}$ ]]
+	then
+		# json data
+
+		header+="application/json"
+
+	elif [[ "${data}" =~ ^@ ]]
+	then
+		# verify data
+
+		if [[ ! -f "${data#@}" ]] || \
+		   [[ ! -s "${data#@}" ]]
+		then
+			echo "Error: File '${data#@}' is empty or does not exist." >&2
+
+			return 1
+		fi
+
+		# file
+
+		header+="multipart/form-data"
+
+		data="--file=@"
+		data+="${data#@}"
+
+	else
+		# form data (urlencoded)
+
+		header="application/x-www-form-urlencoded"
+	fi
+
+	command_upload+=" ${header}"
+	command_upload+=" ${data}"
+	command_upload+=" ${url}"
+
+	${command_upload}
+
 }
 
 # silence //////////////////////////////////////////////////////////////////////

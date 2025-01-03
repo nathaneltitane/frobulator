@@ -4082,8 +4082,8 @@ frobulator.assess () {
 
 # escalate /////////////////////////////////////////////////////////////////////
 
-# use to provide priviledged execution
-# restarts script process as 'superuser' once the status is granted
+# use to provide priviledged command or script execution
+# restarts process as 'superuser' once status is granted
 
 # usage:      export self_arguments="${@}"
 #             frobulator.escalate

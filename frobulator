@@ -3176,7 +3176,7 @@ frobulator.upload () {
 	elif [[ "${proceed}" = 0 ]]
 	then
 
-		frobulator.err "Download error" "[ response // ${url_status} ]"
+		frobulator.err "Upload error" "[ response // ${url_status} ]"
 		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 

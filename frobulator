@@ -3978,9 +3978,16 @@ frobulator.assess () {
 # use to provide priviledged execution
 # restarts script process as 'superuser' once the status is granted
 
-# usage:      frobulator.escalate
+# usage:      export self_arguments="${@}"
+#             frobulator.escalate
 
 frobulator.escalate () {
+
+	self="${0}"
+	self_arguments=("${self_arguments}")
+
+	echo ${self_arguments[@]} "ARGS from function"
+
 
 	if [[ $(id -u -n) = "root" ]]
 	then
@@ -4001,20 +4008,19 @@ frobulator.escalate () {
 			frobulator.require sudo
 		fi
 
-		self="${0}"
-		options="${@}"
-
 		# set superuser password prompt
 
 		export SUDO_PROMPT="[ $(tput setaf 3)${USER}$(tput sgr 0) ] >_ ? "
 
 		# restart as superuser
 
-		exec sudo "${SHELL}" "${self}" "${options}"
+		exec sudo "${SHELL}" "${self}" ${self_arguments[@]}
 		echo
 	fi
-}
 
+	unset self_arguments
+
+}
 
 # archive //////////////////////////////////////////////////////////////////////
 

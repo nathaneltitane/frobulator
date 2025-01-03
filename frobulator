@@ -4105,7 +4105,7 @@ frobulator.escalate () {
 		frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-$USER}' ]"
 		echo
 
-		frobulator.fwd "Restarting ${self}${marker_elp}" xx
+		frobulator.fwd "Restarting ${self}${marker_elp}"
 		echo
 
 		frobulator.user

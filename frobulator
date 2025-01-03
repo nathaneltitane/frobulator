@@ -2012,6 +2012,7 @@ frobulator.trap () {
 		
 		trap 'rm --recursive --force "${directory}"'	EXIT
 	done
+
 }
 
 # continue /////////////////////////////////////////////////////////////////////
@@ -4094,14 +4095,17 @@ frobulator.escalate () {
 
 	if [[ $(id -u -n) = "root" ]]
 	then
-		frobulator.inf "Setting up privilege escalation" "[ '${USER}' ]"
+		frobulator.inf "Requesting privilege escalation" "[ '${USER}' ]"
 		echo
 
 		USER="${SUDO_USER}"
 
 		HOME=/home/"${SUDO_USER}"
 	else
-		frobulator.wrn "Privilege escalation granted - restarting command" "[ '${SUDO_USER:-$USER}' ]"
+		frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-$USER}' ]"
+		echo
+
+		frobulator.fwd "Restarting ${self}${marker_elp}" xx
 		echo
 
 		frobulator.user

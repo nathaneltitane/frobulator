@@ -3126,7 +3126,8 @@ frobulator.upload () {
 		then
 			# no data
 
-			echo "Error: No data provided for POST request." >&2
+			frobulator.err "Error: No data provided for  request." "[ ${request} ]" >&2
+			echo
 
 			return 1
 
@@ -3151,7 +3152,8 @@ frobulator.upload () {
 				data="--file=@"
 				data+="${data}"
 			else
-				echo "Error: fILE IS EMPTY OR DOES NOT EXIST." >&2
+				frobulator.err "file is empty or does not exist" "[ ${data} ]" >&2
+				echo
 
 				return 1
 

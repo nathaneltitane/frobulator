@@ -3069,6 +3069,9 @@ frobulator.download () {
 
 # usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
 
+#             item as path to item
+#             array as array of items
+
 frobulator.upload () {
 
 	request="${1}" # POST / PUT
@@ -3108,12 +3111,12 @@ frobulator.upload () {
 			return 1
 		fi
 
-		# file
+		# file / form data
 
 		header+="multipart/form-data"
 
 		data="--file=@"
-		data+="${data#@}"
+		data+="${data}"
 
 	else
 		# form data (urlencoded)

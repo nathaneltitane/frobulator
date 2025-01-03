@@ -2974,14 +2974,7 @@ frobulator.download () {
 		proceed=0
 	fi
 
-	status_code="%{http_code}\n"
-
-	resource=$(curl									\
-				--silent							\
-				--head								\
-				--write-out		"${status_code}"	\
-													"${url}"/"${file}"
-			)
+	resource=$(frobulator.status "${url}"/"${file}")
 
 	if [[ "${resource}" = *[45][0-9][0-9]* ]]
 	then
@@ -2991,8 +2984,6 @@ frobulator.download () {
 
 		unset resource
 	fi
-
-	unset status_code
 
 	if [[ "${proceed}" = 1 ]]
 	then
@@ -3078,57 +3069,122 @@ frobulator.upload () {
 	url="${2}"
 	data="${3}"
 
-	unset command_upload
+	frobulator.status "${url}"
 
-	command_upload+="curl"
-	command_upload+=" --request ${request}"
-
-	header="--header Content-Type: "
-
-	if [[ -z "${data}" ]]
+	if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
-		# no data
+		frobulator.inf "Download status" "[ information // ${url_status} ]"
+		echo
 
-		echo "Error: No data provided for POST request." >&2
+		proceed=1
 
-		return 1
-
-	elif [[ "${data}" =~ ^\{.*\}$ ]]
+	elif [[ "${url_status}" = [2][0-9][0-9] ]]
 	then
-		# json data
+		frobulator.scs "Download status" "[ success // ${url_status} ]"
+		echo
 
-		header+="application/json"
+		proceed=1
 
-	elif [[ "${data}" =~ ^@ ]]
+	elif [[ "${url_status}" = [3][0-9][0-9] ]]
 	then
-		# verify data
+		frobulator.wrn "Download status" "[ redirection // ${url_status} ]"
+		echo
 
-		if [[ ! -f "${data#@}" ]] || \
-		   [[ ! -s "${data#@}" ]]
-		then
-			echo "Error: File '${data#@}' is empty or does not exist." >&2
+		proceed=1
 
-			return 1
-		fi
+	elif [[ "${url_status}" = [4][0-9][0-9] ]]
+	then
+		frobulator.err "Download status" "[ error // ${url_status} ]"
+		echo
 
-		# file / form data
+		reason="client"
 
-		header+="multipart/form-data"
+		proceed=0
 
-		data="--file=@"
-		data+="${data}"
+	elif [[ "${url_status}" = [5][0-9][0-9] ]]
+	then
+		frobulator.err "Download status" "[ error // ${url_status} ]"
+		echo
 
-	else
-		# form data (urlencoded)
+		reason="server"
 
-		header="application/x-www-form-urlencoded"
+		proceed=0
 	fi
 
-	command_upload+=" ${header}"
-	command_upload+=" ${data}"
-	command_upload+=" ${url}"
+	unset status_code
 
-	${command_upload}
+	if [[ "${proceed}" = 1 ]]
+	then
+		unset command_upload
+
+		command_upload+="curl"
+		command_upload+=" --request ${request}"
+
+		header="--header Content-Type: "
+
+		if [[ -z "${data}" ]]
+		then
+			# no data
+
+			echo "Error: No data provided for POST request." >&2
+
+			return 1
+
+		elif [[ "${data}" =~ ^\{.*\}$ ]]
+		then
+			# json data
+
+			header+="application/json"
+
+		elif [[ "${data}" =~ ^@ ]]
+		then
+			data="${data#@}"
+
+			if [[ -f "${data}" ]] || \
+			[[ -s "${data}" ]]
+			then
+
+				# file / form data
+
+				header+="multipart/form-data"
+
+				data="--file=@"
+				data+="${data}"
+			else
+				echo "Error: fILE IS EMPTY OR DOES NOT EXIST." >&2
+
+				return 1
+
+			fi
+
+		else
+			# form data (urlencoded)
+
+			header="application/x-www-form-urlencoded"
+		fi
+
+		command_upload+=" ${header}"
+		command_upload+=" ${data}"
+		command_upload+=" ${url}"
+
+		${command_upload}
+
+		return 0
+
+	elif [[ "${proceed}" = 0 ]]
+	then
+
+		frobulator.err "Download error" "[ response // ${url_status} ]"
+		frobulator.nul "Cannot continue - ${reason} unavailable."
+		echo
+
+		frobulator.stp "Aborting${marker_elp}"
+		echo
+
+		return 1
+	fi
+
+	unset proceed
 
 }
 

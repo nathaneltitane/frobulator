@@ -1512,7 +1512,7 @@ frobulator.countdown () {
 # process //////////////////////////////////////////////////////////////////////
 
 # use as ticker line marker to mark process completion or progress
-# use after process marked  for background operation
+# use after process marked for background operation
 
 # usage:      [process] &
 #             frobulator.process "[string]"
@@ -1795,9 +1795,9 @@ frobulator.progress () {
 	while [ -d /proc/"${PID}" ]
 	do
 		if [ ! -d /proc/"${PID}" ]
-        then
+		then
 			break
-        fi
+		fi
 
 		echo -n -e "\r${before}${color} \b${ticker:instance++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
 
@@ -3065,7 +3065,7 @@ frobulator.download () {
 
 # upload ///////////////////////////////////////////////////////////////////////
 
-# use to upload data or  file(s) with url from argument or array list
+# use to upload data or file(s) with url from argument or array list
 
 # usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
 

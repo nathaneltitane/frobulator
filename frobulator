@@ -2851,92 +2851,6 @@ frobulator.download () {
 
 	url="${1}"
 
-	if [ $# -eq 2 ]
-	then
-		path="${PWD}"
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${2} - array
-
-			list=(${@:2})
-		else
-			file="${2}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	elif [ $# -eq 3 ]
-	then
-		path="${2}"
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${3} - array
-
-			list=(${@:3})
-		else
-			file="${3}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	elif [ $# -eq 4 ]
-	then
-		source_file="${2}"
-		path="${3}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${4} - array
-
-			list=(${@:4})
-		else
-			file="${4}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	else
-		path="${2}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${3} - array
-
-			list=(${@:3})
-		else
-			file="${3}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-	fi
-
-	if [ ! -d "${path}" ]
-	then
-		mkdir			\
-			--parents	\
-						"${path}"
-	fi
-
 	frobulator.status "${url}"
 
 	if [[ "${url_status}" = [1][0-9][0-9] ]]
@@ -2991,6 +2905,92 @@ frobulator.download () {
 
 	if [[ "${proceed}" = 1 ]]
 	then
+		if [ $# -eq 2 ]
+		then
+			path="${PWD}"
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${2} - array
+
+				list=(${@:2})
+			else
+				file="${2}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 3 ]
+		then
+			path="${2}"
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 4 ]
+		then
+			source_file="${2}"
+			path="${3}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${4} - array
+
+				list=(${@:4})
+			else
+				file="${4}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		else
+			path="${2}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+		fi
+
+		if [ ! -d "${path}" ]
+		then
+			mkdir			\
+				--parents	\
+							"${path}"
+		fi
+
 		for file in ${list[@]}
 		do
 			if [ $# -eq 2 ]

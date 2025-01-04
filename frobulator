@@ -2982,19 +2982,6 @@ frobulator.download () {
 		proceed=0
 	fi
 
-	resource="${url}"/"${list[0]}"
-
-	frobulator.status ${resource}
-
-	if [[ "${url_status}" = *[45][0-9][0-9]* ]]
-	then
-		reason="resource"
-
-		proceed=0
-
-		unset resource
-	fi
-
 	if [[ "${proceed}" = 1 ]]
 	then
 		if [ ! -d "${path}" ]

@@ -2833,7 +2833,6 @@ frobulator.status () {
 
 	url_status=$(curl									\
 					--silent							\
-					--header							\
 					--output		"${sink}"			\
 					--write-out 	"${status_code}"	\
 														"${url}"

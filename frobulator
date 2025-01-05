@@ -3027,7 +3027,7 @@ frobulator.download () {
 
 		chmod a+rx "${path}"/"${file}"
 
-# 		done
+		done
 
 		# unset array
 

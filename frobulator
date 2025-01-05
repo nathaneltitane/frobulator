@@ -2837,6 +2837,9 @@ frobulator.status () {
 					--write-out 	"${status_code}"	\
 														"${url}"
 				)
+
+#	url_status=$(curl --silent --location "${url}" | cut -d ':' -f 1)
+
 }
 
 # download /////////////////////////////////////////////////////////////////////

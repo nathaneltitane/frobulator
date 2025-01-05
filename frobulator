@@ -16,7 +16,12 @@ stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
 if [ -z "${SHELL}" ]
 then
-	SHELL=/bin/bash
+	if [[ $(command -v /bin/bash) ]]
+	then
+		SHELL=$(command -v /bin/bash)
+	else
+		SHELL=$(command -v /usr/bin/bash)
+	fi
 else
 	SHELL="${SHELL}"
 fi

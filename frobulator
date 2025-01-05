@@ -3023,9 +3023,9 @@ frobulator.download () {
 
 			frobulator.progress "download" "[ '${file}' ]"
 
-		# set permissions
+			# set permissions
 
-		chmod a+rx "${path}"/"${file}"
+			chmod a+rx "${path}"/"${file}"
 
 		done
 

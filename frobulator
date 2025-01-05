@@ -2755,13 +2755,13 @@ frobulator.link () {
 	list=()
 }
 
-# status ///////////////////////////////////////////////////////////////////////
+# http /////////////////////////////////////////////////////////////////////////
 
 # use to validate http status code prior to download / upload operations
 
 # usage:      frobulator.status "[url]"
 
-frobulator.status () {
+frobulator.http () {
 
 	# HTTP response status codes:
 
@@ -2829,12 +2829,12 @@ frobulator.status () {
 
 	url="${@}"
 
-	status_code="%{http_code}\n"
+	http_code="%{http_code}\n"
 
 	url_status=$(curl									\
 					--silent							\
 					--output		"${sink}"			\
-					--write-out 	"${status_code}"	\
+					--write-out 	"${http_code}"	\
 														"${url}"
 				)
 
@@ -2842,100 +2842,17 @@ frobulator.status () {
 
 }
 
-# download /////////////////////////////////////////////////////////////////////
+# status /////////////////////////////////////////////////////////////////////
 
-# use to download file(s) with url status verification from argument or array list
+# use to parse and validate HTTP status responses and manage download actions
+# use in tandem with frobulator.http
 
-# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
-#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
-#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
+# usage:    frobulator.http [url]
+#           frobulator.status
 
-frobulator.download () {
+frobulator.status () {
 
-	url="${1}"
-
-	if [ $# -eq 2 ]
-	then
-		path="${PWD}"
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${2} - array
-
-			list=(${@:2})
-		else
-			file="${2}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	elif [ $# -eq 3 ]
-	then
-		path="${2}"
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${3} - array
-
-			list=(${@:3})
-		else
-			file="${3}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	elif [ $# -eq 4 ]
-	then
-		source_file="${2}"
-		path="${3}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${4} - array
-
-			list=(${@:4})
-		else
-			file="${4}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-
-	else
-		path="${2}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${3} - array
-
-			list=(${@:3})
-		else
-			file="${3}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-	fi
-
-	frobulator.status "${url}"
-
-	if [[ "${url_status}" = [1][0-9][0-9] ]]
+if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="information"
 
@@ -2985,8 +2902,105 @@ frobulator.download () {
 		proceed=0
 	fi
 
+}
+
+# download /////////////////////////////////////////////////////////////////////
+
+# use to download file(s) with url status verification from argument or array list
+
+# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
+#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
+#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
+
+frobulator.download () {
+
+	url="${1}"
+
+	frobulator.http "${url}"
+
+	frobulator.status
+
 	if [[ "${proceed}" = 1 ]]
 	then
+		if [ $# -eq 2 ]
+		then
+			path="${PWD}"
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${2} - array
+
+				list=(${@:2})
+			else
+				file="${2}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 3 ]
+		then
+			path="${2}"
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 4 ]
+		then
+			source_file="${2}"
+			path="${3}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${4} - array
+
+				list=(${@:4})
+			else
+				file="${4}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		else
+			path="${2}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ -n "${#list[@]}" ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+		fi
+
 		if [ ! -d "${path}" ]
 		then
 			mkdir			\
@@ -2996,39 +3010,57 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			if [ $# -eq 2 ]
-			then
-				curl			\
-					--silent	\
-					--location	\
-								"${url}" > "${path}"/"${file}" &
+			url_status=$(curl --silent --location "${url}/${file}" | cut -d ':' -f 1)
 
-			elif [ $# -eq 3 ]
-			then
-				curl			\
-					--silent	\
-					--location	\
-								"${url}"/"${file}" > "${path}"/"${file}" &
+			frobulator.status
 
-			elif [ $# -eq 4 ]
+			if [[ "${proceed}" = 1 ]]
 			then
-				curl			\
-					--silent	\
-					--location	\
-								"${url}"/"${source_file}" > "${path}"/"${file}" &
+				if [ $# -eq 2 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}" > "${path}"/"${file}" &
 
-			else
-				curl			\
-					--silent	\
-					--location	\
-								"${url}"/"${file}" > "${path}"/"${file}" &
+				elif [ $# -eq 3 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${file}" > "${path}"/"${file}" &
+
+				elif [ $# -eq 4 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${source_file}" > "${path}"/"${file}" &
+
+				else
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${file}" > "${path}"/"${file}" &
+				fi
+
+				frobulator.progress "download" "[ '${file}' ]"
+
+				# set permissions
+
+				chmod a+rx "${path}"/"${file}"
+
+			elif [[ "${proceed}" = 0 ]]
+			then
+				frobulator.stp "Refused" "[ '${file}' ]"
+				echo
+
+				frobulator.wrn "File missing or unavailable:"
+				frobulator.nul "Review file spelling or availability for URL at ${url}"
+				echo
+
+				return 1
 			fi
-
-			frobulator.progress "download" "[ '${file}' ]"
-
-			# set permissions
-
-			chmod a+rx "${path}"/"${file}"
 
 		done
 

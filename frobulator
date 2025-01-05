@@ -2783,6 +2783,7 @@ frobulator.http () {
 	# 206 partial content:                     partial content sent
 	# 207 multi-status:                        multiple resource statuses
 	# 208 already reported:                    avoids repeated enumeration
+
 	# 226 im used:                             result of manipulations applied
 
 	# redirection messages /////////////////////////////////////////////////////
@@ -2805,6 +2806,7 @@ frobulator.http () {
 	# 406 not acceptable:                      no matching content
 	# 408 request timeout:                     connection idle
 	# 409 conflict:                            request conflicts with server
+
 	# 410 gone:                                resource permanently deleted
 	# 413 content too large:                   request body too large
 	# 414 uri too long:                        uri too long
@@ -2812,9 +2814,12 @@ frobulator.http () {
 	# 416 range not satisfiable:               range not satisfiable
 	# 417 expectation failed:                  expectation failed
 	# 418 im a teapot:                         not a teapot
+
 	# 421 misdirected request:                 request misdirected
 	# 429 too many requests:                   rate limiting exceeded
+
 	# 431 header fields too large:             headers too large
+
 	# 451 unavailable for legal reasons:       access denied by law
 
 	# server error responses ///////////////////////////////////////////////////
@@ -2825,6 +2830,7 @@ frobulator.http () {
 	# 503 service unavailable:                server unavailable
 	# 504 gateway timeout:                    gateway timeout
 	# 505 http version not supported:         http version not supported
+
 	# 511 network authentication required:    network authentication required
 
 	url="${@}"

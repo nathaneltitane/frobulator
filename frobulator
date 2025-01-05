@@ -14,6 +14,8 @@ stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
 # defaults /////////////////////////////////////////////////////////////////////
 
+# provide system shell
+
 if [ -z "${SHELL}" ]
 then
 	if [[ $(command -v /bin/bash) ]]

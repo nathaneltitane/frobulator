@@ -3024,7 +3024,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			url_status=$(curl --silent --location "${url}/${file}" | cut -d ':' -f 1)
+			url_status=$(curl --silent --location "${url}/${file}" | cut -d ':' -f 1
 
 			frobulator.status
 

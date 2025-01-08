@@ -584,6 +584,7 @@ marker_sep='//////'
 
 marker_elp='...'
 marker_idt='      '
+marker_web='https://'
 marker_prc='%'
 marker_spc=' '
 marker_tab='    '
@@ -3107,7 +3108,7 @@ frobulator.download () {
 
 				frobulator.wrn "File missing or unavailable."
 				frobulator.nul "Review file spelling or availability for URL at:"
-				frobulator.url "https://${url}"
+				frobulator.url "${marker_web}${url}"
 				echo
 			fi
 

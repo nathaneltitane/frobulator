@@ -2854,9 +2854,11 @@ frobulator.http () {
 
 	url_status_type="url"
 
-	url="${1}"
+	if [ $# -eq 1 ]
+	then
+		url="${1}"
 
-	if [ $# -eq 2 ]
+	elif [ $# -eq 2 ]
 	then
 		url_status_type="${1}"
 

@@ -2856,20 +2856,33 @@ frobulator.http () {
 
 	if [ -z "${url_status_type}" ]
 	then
-		url_status_type="content"
+		url_status_type="url"
 	fi
 
 	url="${@}"
 
 	http_code="%{http_code}\n"
 
+	if [[ "${url_status_type}" = "[uU][rR]lL]" ]]
+	then
 	url_status=$(curl									\
 					--silent							\
 					--output		"${sink}"			\
-					--write-out 	"${http_code}"	\
+					--write-out 	"${http_code}"		\
 														"${url}"
 				)
 
+	elif [[ "${url_status_type}" = "[cC][oO][nN][tT][eE][nN][tT]" ]]
+	then
+		url_status=$(curl								\
+					--silent							\
+					--output		"${sink}"			\
+					--write-out		"${http_code}"		\
+					--location		"${url}/${file}"	| tail -n 1 | cut -d ':' -f 1
+				)
+	else
+		exit 1
+	fi
 }
 
 # status /////////////////////////////////////////////////////////////////////

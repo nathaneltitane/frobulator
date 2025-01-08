@@ -2859,7 +2859,7 @@ frobulator.http () {
 		url_status_type="url"
 	fi
 
-	url="${@}"
+	url="${2}"
 
 	http_code="%{http_code}\n"
 

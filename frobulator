@@ -2856,7 +2856,7 @@ frobulator.http () {
 
 	if [ -z "${url_status_type}" ]
 	then
-		url_status_type="url"
+		url_status_type="content"
 	fi
 
 	url="${@}"
@@ -3043,7 +3043,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			frobulator.http file "${url}/${file}"
+			frobulator.http content "${url}/${file}"
 
 			frobulator.status
 

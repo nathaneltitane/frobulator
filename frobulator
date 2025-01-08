@@ -2822,7 +2822,7 @@ frobulator.http () {
 	# 403 forbidden:                           access denied
 	# 404 not found:                           resource not found
 	# 405 method not allowed:                  method not supported
-	# 406 not acceptable:                 z     no matching content
+	# 406 not acceptable:                      no matching content
 	# 408 request timeout:                     connection idle
 	# 409 conflict:                            request conflicts with server
 

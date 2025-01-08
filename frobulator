@@ -2863,6 +2863,19 @@ frobulator.http () {
 		url_status_type="${1}"
 
 		url="${2}"
+
+		if [[ -n "${#list[@]}" ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
 	fi
 
 	http_code="%{http_code}\n"

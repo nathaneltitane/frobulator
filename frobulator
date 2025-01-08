@@ -1188,6 +1188,19 @@ frobulator.cpt () {
 	color_entry=("${magenta}")
 }
 
+# url line marker //////////////////////////////////////////////////////////////
+
+frobulator.url () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${grey}")
+}
+
 # user input prompts ///////////////////////////////////////////////////////////
 
 # use for questions, input, user input dependant inquiries
@@ -1236,18 +1249,6 @@ frobulator.usr () {
 	color_entry=("${grey}")
 }
 
-# url line marker //////////////////////////////////////////////////////////////
-
-frobulator.url () {
-
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -n -e "${silver}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
-
-	color_entry=("${grey}")
-}
 # null line marker /////////////////////////////////////////////////////////////
 
 # use to carry over prompts without adding a line marker while retaining color

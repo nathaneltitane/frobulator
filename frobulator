@@ -3073,7 +3073,8 @@ frobulator.download () {
 				frobulator.nul "Review file spelling or availability for URL at ${url}"
 				echo
 
-				return 1
+				# return 1
+
 			fi
 
 		done

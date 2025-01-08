@@ -2810,7 +2810,7 @@ frobulator.http () {
 	# 403 forbidden:                           access denied
 	# 404 not found:                           resource not found
 	# 405 method not allowed:                  method not supported
-	# 406 not acceptable:                      no matching content
+	# 406 not acceptable:                 z     no matching content
 	# 408 request timeout:                     connection idle
 	# 409 conflict:                            request conflicts with server
 
@@ -3024,7 +3024,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			url_status=$(curl --silent --location "${url}/${file}" | cut -d ':' -f 1)
+			url_status=$(curl --silent --output "${sink}" --write-out "${http_code}" --location "${url}/${file}" | tail -n 1 | cut -d ':' -f 1)
 
 			frobulator.status
 

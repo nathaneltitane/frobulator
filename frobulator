@@ -3071,7 +3071,7 @@ frobulator.download () {
 
 		for item in ${list[@]}
 		do
-			frobulator.http content "${url}"/"${item}"
+			frobulator.http content "${url}"/"${file}"
 
 			frobulator.status
 
@@ -3082,30 +3082,30 @@ frobulator.download () {
 					curl			\
 						--silent	\
 						--location	\
-									"${url}" > "${path}"/"${item}" &
+									"${url}" > "${path}"/"${file}" &
 
 				elif [ $# -eq 3 ]
 				then
 					curl			\
 						--silent	\
 						--location	\
-									"${url}"/"${file}" > "${path}"/"${item}" &
+									"${url}"/"${file}" > "${path}"/"${file}" &
 
 				elif [ $# -eq 4 ]
 				then
 					curl			\
 						--silent	\
 						--location	\
-									"${url}"/"${source_item}" > "${path}"/"${item}" &
+									"${url}"/"${source_file}" > "${path}"/"${file}" &
 
 				else
 					curl			\
 						--silent	\
 						--location	\
-									"${url}"/"${item}" > "${path}"/"${item}" &
+									"${url}"/"${file}" > "${path}"/"${file}" &
 				fi
 
-				frobulator.progress "download" "[ '${item}' ]"
+				frobulator.progress "download" "[ '${file}' ]"
 
 				# set permissions
 
@@ -3113,7 +3113,7 @@ frobulator.download () {
 
 			elif [[ "${proceed}" = 0 ]]
 			then
-				frobulator.stp "Refused" "[ '${item}' ]"
+				frobulator.stp "Refused" "[ '${file}' ]"
 				echo
 
 				frobulator.wrn "File missing or unavailable:"

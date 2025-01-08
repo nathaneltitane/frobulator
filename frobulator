@@ -2867,10 +2867,11 @@ frobulator.http () {
 
 	http_code="%{http_code}\n"
 
+	echo $#
 	echo $1
 	echo $2
 
-	if [[ "${url_status_type}" =~ [uU][rR][lL] ]]
+	if [[ "${url_status_type}" = [uU][rR][lL] ]]
 	then
 		url_status=$(curl									\
 						--silent							\
@@ -2879,7 +2880,7 @@ frobulator.http () {
 															"${url}"
 					)
 
-	elif [[ "${url_status_type}" =~ [cC][oO][nN][tT][eE][nN][tT] ]]
+	elif [[ "${url_status_type}" = [cC][oO][nN][tT][eE][nN][tT] ]]
 	then
 		url_status=$(curl														\
 					--silent													\

@@ -574,6 +574,8 @@ marker_usr='[ ~ ]'
 marker_yes='[ ✓ ]'
 marker_not='[ 𐄂 ]'
 
+marker_url='[ / ]'
+
 marker_nul='     '
 
 # special case markers /////////////////////////////////////////////////////////
@@ -967,6 +969,8 @@ frobulator.teal () {
 # yes [ ✓ ]
 # not [ 𐄂 ]
 
+# url [ / ]
+
 # information line marker //////////////////////////////////////////////////////
 
 frobulator.inf () {
@@ -1196,7 +1200,7 @@ frobulator.url () {
 
 	prompt="${prompt_string[@]}"
 
-	echo -e "${silver}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
+	echo -e "${silver}${marker_url}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color_entry=("${grey}")
 }

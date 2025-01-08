@@ -2854,7 +2854,7 @@ frobulator.http () {
 
 	url_status_type="url"
 
-	url="${@}"
+	url="${1}"
 
 	if [ $# -eq 2 ]
 	then

@@ -3069,7 +3069,7 @@ frobulator.download () {
 							"${path}"
 		fi
 
-		for item in ${list[@]}
+		for file in ${list[@]}
 		do
 			frobulator.http content "${url}"/"${file}"
 

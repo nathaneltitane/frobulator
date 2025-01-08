@@ -2870,9 +2870,9 @@ frobulator.http () {
 
 	http_code="%{http_code}\n"
 
-	echo $#
-	echo $1
-	echo $2
+	echo $# '$#'
+	echo $1 '#1'
+	echo $2 '#2'
 
 	if [[ "${url_status_type}" = [uU][rR][lL] ]]
 	then
@@ -2898,6 +2898,8 @@ frobulator.http () {
 	else
 		exit 1
 	fi
+
+	return
 }
 
 # status /////////////////////////////////////////////////////////////////////

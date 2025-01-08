@@ -3105,9 +3105,9 @@ frobulator.download () {
 				frobulator.stp "Refused" "[ '${file}' ]"
 				echo
 
-				frobulator.wrn "File missing or unavailable:"
-				frobulator.nul "Review file spelling or availability for URL at"
-				frobulator.url "${url}"
+				frobulator.wrn "File missing or unavailable."
+				frobulator.nul "Review file spelling or availability for URL at:"
+				frobulator.url "https://${url}"
 				echo
 			fi
 

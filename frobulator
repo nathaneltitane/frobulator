@@ -2888,8 +2888,6 @@ frobulator.http () {
 					--location		"${url}/${file}"		| tail -n 1			\
 															| cut -d ':' -f 1
 				)
-	else
-		exit 1
 	fi
 }
 

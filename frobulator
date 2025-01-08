@@ -2865,6 +2865,9 @@ frobulator.http () {
 
 	http_code="%{http_code}\n"
 
+	echo $1
+	echo $2
+
 	if [[ "${url_status_type}" = "[uU][rR]lL]" ]]
 	then
 		url_status=$(curl									\

@@ -1236,6 +1236,18 @@ frobulator.usr () {
 	color_entry=("${grey}")
 }
 
+# url line marker //////////////////////////////////////////////////////////////
+
+frobulator.url () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${silver}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${grey}")
+}
 # null line marker /////////////////////////////////////////////////////////////
 
 # use to carry over prompts without adding a line marker while retaining color
@@ -3070,11 +3082,9 @@ frobulator.download () {
 				echo
 
 				frobulator.wrn "File missing or unavailable:"
-				frobulator.nul "Review file spelling or availability for URL at ${url}"
+				frobulator.nul "Review file spelling or availability for URL at"
+				frobulator.url "${url}"
 				echo
-
-				# return 1
-
 			fi
 
 		done

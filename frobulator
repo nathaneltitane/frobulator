@@ -2863,19 +2863,6 @@ frobulator.http () {
 		url_status_type="${1}"
 
 		url="${2}"
-
-		if [[ -n "${#list[@]}" ]]
-		then
-			# ${2} - array
-
-			list=(${@:2})
-		else
-			file="${2}"
-
-			list=()
-
-			list+=("${file}")
-		fi
 	fi
 
 	http_code="%{http_code}\n"
@@ -2905,8 +2892,6 @@ frobulator.http () {
 	else
 		exit 1
 	fi
-
-	list=()
 }
 
 # status /////////////////////////////////////////////////////////////////////
@@ -3080,7 +3065,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			frobulator.http content "${url}/${file}"
+			frobulator.http content "${url}"/"${file}"
 
 			frobulator.status
 

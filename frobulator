@@ -2852,6 +2852,13 @@ frobulator.http () {
 
 	# 511 network authentication required:    network authentication required
 
+	url_status_type="${1}"
+
+	if [ -z "${url_status_type}" ]
+	then
+		url_status_type="url"
+	fi
+
 	url="${@}"
 
 	http_code="%{http_code}\n"
@@ -3036,7 +3043,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			url_status=$(curl --silent --output "${sink}" --write-out "${http_code}" --location "${url}/${file}" | tail -n 1 | cut -d ':' -f 1)
+			frobulator.http file "${url}/${file}"
 
 			frobulator.status
 

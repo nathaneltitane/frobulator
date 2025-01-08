@@ -2852,10 +2852,10 @@ frobulator.http () {
 
 	# 511 network authentication required:    network authentication required
 
-	url_status_type="url"
-
 	if [ $# -eq 1 ]
 	then
+		url_status_type="url"
+
 		url="${1}"
 
 	elif [ $# -eq 2 ]
@@ -2870,7 +2870,7 @@ frobulator.http () {
 	echo $1
 	echo $2
 
-	if [[ "${url_status_type}" = [uU][rR]lL] ]]
+	if [[ "${url_status_type}" = [uU][rR][lL] ]]
 	then
 		url_status=$(curl									\
 						--silent							\
@@ -2888,6 +2888,8 @@ frobulator.http () {
 					--location		"${url}/${file}"		| tail -n 1			\
 															| cut -d ':' -f 1
 				)
+	else
+		exit 1
 	fi
 }
 

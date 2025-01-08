@@ -2777,8 +2777,12 @@ frobulator.link () {
 # http /////////////////////////////////////////////////////////////////////////
 
 # use to validate http status code prior to download / upload operations
+# use for url addresses [url] and data download validations [content]
 
-# usage:      frobulator.status "[url]"
+# usage:      frobulator.status "[url]"				type: url		[default]
+
+#             frobulator.status "[type]" "[url]"	type: content
+
 
 frobulator.http () {
 

@@ -3103,7 +3103,7 @@ frobulator.download () {
 
 			elif [[ "${proceed}" = 0 ]]
 			then
-				frobulator.stp "Refused" "[ '${file}' ]"
+				frobulator.stp "Skipping" "[ '${file}' ]"
 				echo
 
 				frobulator.wrn "File missing or unavailable."

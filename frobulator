@@ -2855,27 +2855,12 @@ frobulator.http () {
 
 	# 511 network authentication required:    network authentication required
 
-	if [ $# -eq 1 ]
-	then
-		url_status_type="url"
-
-		url="${1}"
-
-	elif [ $# -eq 2 ]
-	then
-		url_status_type="${1}"
-
-		url="${2}"
-	fi
-
 	http_code="%{http_code}\n"
 
-	echo $# '$#'
-	echo $1 '#1'
-	echo $2 '#2'
-
-	if [[ "${url_status_type}" = [uU][rR][lL] ]]
+	if [ $# -eq 1 ]
 	then
+		url="${1}"
+
 		url_status=$(curl									\
 						--silent							\
 						--output		"${sink}"			\
@@ -2883,8 +2868,11 @@ frobulator.http () {
 															"${url}"
 					)
 
-	elif [[ "${url_status_type}" = [cC][oO][nN][tT][eE][nN][tT] ]]
+	elif [ $# -eq 2 ]
 	then
+		url="${1}"
+		file="${2}"
+
 		url_status=$(curl														\
 					--silent													\
 					--output		"${sink}"									\
@@ -2892,16 +2880,8 @@ frobulator.http () {
 					--location		"${url}/${file}"		| tail -n 1			\
 															| cut -d ':' -f 1
 				)
-
-		list=()
-
-	else
-		exit 1
 	fi
 
-	return
-
-	echo $?
 }
 
 # status /////////////////////////////////////////////////////////////////////
@@ -3075,7 +3055,7 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			frobulator.http content "${url}"/"${file}"
+			frobulator.http "${url}" "${file}"
 
 			frobulator.status
 

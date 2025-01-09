@@ -2877,13 +2877,13 @@ frobulator.http () {
 	elif [ $# -eq 2 ]
 	then
 		url="${1}"
-		file="${2}"
+		data="${2}"
 
 		url_status=$(curl														\
 					--silent													\
 					--output		"${sink}"									\
 					--write-out		"${http_code}"								\
-					--location		"${url}/${file}"		| tail -n 1			\
+					--location		"${url}/${data}"		| tail -n 1			\
 															| cut -d ':' -f 1
 				)
 	fi
@@ -3061,7 +3061,14 @@ frobulator.download () {
 
 		for file in ${list[@]}
 		do
-			frobulator.http "${url}" "${file}"
+			if [ $# -eq 4 ]
+			then
+				data="${source_file}"
+			else
+				data="${file}"
+			fi
+
+			frobulator.http "${url}" "${data}"
 
 			frobulator.status
 

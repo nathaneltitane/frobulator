@@ -3121,6 +3121,8 @@ frobulator.download () {
 
 		done
 
+		unset data
+
 		# unset array
 
 		list=()

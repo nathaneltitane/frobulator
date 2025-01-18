@@ -2780,6 +2780,224 @@ frobulator.link () {
 	list=()
 }
 
+# image ////////////////////////////////////////////////////////////////////////
+
+frobulator.image () {
+
+	if [ $# -eq 1 ]
+	then
+		image="${1}"
+
+		width=${terminal_columns}
+
+	elif [ $# -eq 2 ]
+	then
+		image="${1}"
+		width="${2}"
+
+		ratio="1"
+
+	elif [ $# -eq 3 ]
+	then
+		image="${1}"
+		width="${2}"
+		height="${3}"
+
+		ratio="0"
+	fi
+
+	if [ -z "${width}" ]
+	then
+		width=${terminal_columns}
+	fi
+
+	if [ -t 0 ]
+	then
+		# 'stdin' is a tty
+
+		input="tty"
+	else
+		input="stdin"
+	fi
+
+	# verify image source:
+	# url / local file
+
+	if [[ "${image}" =~ ^(https?://)?[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?(:[0-9]{1,5})?(/.*)?$ ]]
+	then
+		encoding=$(curl -s -L "${image}" | base64 -w 0)
+
+	elif [ -r "${image}" ]
+	then
+		encoding=$(cat "${image}" | base64 -w 0)
+	fi
+
+	image_osc () {
+
+		# osc - opening sequence characters
+		# verify terminal multiplexer instance and type
+
+		if [[ "${TERM}" == screen* || "${TERM}" == tmux* ]]
+		then
+			printf "\033Ptmux;\033\033]"
+		else
+			printf "\033]"
+		fi
+	}
+
+	image_tsc () {
+
+		# tsc - termination secquence characters
+		# verify terminal multiplexer instance and type
+
+		if [[ "${TERM}" == screen* ]] || \
+		   [[ "${TERM}" == tmux* ]]
+		then
+			printf "\a\033\\"
+		else
+			printf "\a"
+		fi
+	}
+
+	image_parse () {
+
+		# parameters
+
+		image="${image}"
+
+		input="${input}"
+
+		encoding="${encoding}"
+
+		inline="1"
+
+		name="0"
+
+		width="${width}"
+
+		height="${height}"
+
+		ratio="${ratio}"
+
+		type=""
+
+		block="1"
+
+		echo
+
+		# open sequence - begin transfer
+
+		image_osc
+
+		printf "1337;"
+
+		if [[ "${block}" -eq 1 ]]
+		then
+			printf "File"
+		else
+			printf "MultipartFile"
+		fi
+
+		printf "=inline=%s" "${inline}"
+
+		printf ";size=%d" $(printf "%s" "${encoding}" | base64 -d -i | wc -c)
+
+		if [ -n "${image}" ]
+		then
+			printf ";name=%s" "$(printf "%s" "${image}" | base64 -w 0)"
+		fi
+
+		if [ -n "${width}" ]
+		then
+			printf ";width=%s" "${width}"
+		fi
+
+		if [ -n "${height}" ]
+		then
+			printf ";height=%s" "${height}"
+		fi
+
+		if [ -n "${ratio}" ]
+		then
+			printf ";preserveAspectRatio=%s" "${ratio}"
+		fi
+
+		#[ -n "${type}" ] && printf ";type=%s" "${type}"
+
+		if [[ "${block}" -eq 1 ]]
+		then
+			printf ":%s" "${encoding}"
+
+			image_tsc
+		else
+			image_tsc
+
+			# split into 200-byte parts:
+			# optimizes parsing through terminal multiplexer
+
+			bytes=200
+
+			split=$(fold -w ${bytes})
+
+			parts=$(printf "%s" "${encoding}" | ${split})
+
+			# load byte stream
+
+			for part in "${parts}"
+			do
+				image_osc
+
+				printf '1337;FilePart=%s' "${part}"
+
+				image_tsc
+			done
+
+			# terminate sequence
+
+			image_osc
+
+			printf '1337;FileEnd'
+
+			image_tsc
+		fi
+
+		echo
+
+		if [ "${name}" = "1" ]
+		then
+			echo "Image: ${image}"
+			echo
+		fi
+	}
+
+	image_print () {
+
+		if [ "${input}" = "stdin" ]
+		then
+			image=""
+			inline="1"
+			encoding=$(cat | base64 -w 0)
+
+		elif [ "${input}" = "tty" ]
+		then
+			inline="1"
+		fi
+
+		image_parse "${image}" "${inline}" "${encoding}" "${name}" "${width}" "${height}" "${ratio}" "${type}" "${block}"
+
+	}
+
+	if [ -z "${image}" ]
+	then
+		frobulator.err "No image supplied"
+		echo
+
+		exit 1
+	fi
+
+	image_print
+}
+
 # http /////////////////////////////////////////////////////////////////////////
 
 # use to validate http status code prior to download / upload operations

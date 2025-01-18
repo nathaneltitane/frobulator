@@ -79,6 +79,8 @@ The following projects incorporate Frobulator in their usage:
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/nathaneltitane?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=NATHANEL+TITANE)](https://github.com/nathaneltitane/nathaneltitane)
 
+[![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/pewpewprints?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=PEWPEWPRINTS)](https://github.com/nathaneltitane/pewpewprints)
+
 ---
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 09-06-2023 ]

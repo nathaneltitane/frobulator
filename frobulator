@@ -4517,7 +4517,7 @@ frobulator.extract () {
 		bunzip2
 		gunzip
 		tar
-		unrar
+		unrar-free
 		unzip
 	)
 
@@ -4554,9 +4554,6 @@ frobulator.extract () {
 				--bzip2						\
 				--file="${file}" 			\
 				--directory="${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
 		;;
 
 		tar.gz|tgz)
@@ -4565,9 +4562,6 @@ frobulator.extract () {
 				--gzip						\
 				--file="${file}" 			\
 				--directory="${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
 		;;
 
 		tar)
@@ -4575,26 +4569,16 @@ frobulator.extract () {
 				--extract					\
 				--file="${file}" 			\
 				--directory="${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
-
 		;;
 
 		7z)
 			7z								\
 				x "${file}" 				\
 				-o							"${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
 		;;
 
 		rar)
 			unrar e "${file}" "${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
 		;;
 
 		zip)
@@ -4602,9 +4586,6 @@ frobulator.extract () {
 				-o							\
 				-qq "${file}"				\
 				-d							"${directory}"
-
-				frobulator.inf "Extracting" "[ ${archive} ]"
-				echo
 		;;
 
 		*)
@@ -4615,4 +4596,8 @@ frobulator.extract () {
 		;;
 
 	esac
+
+	frobulator.inf "Extracting" "[ ${archive} ]"
+	echo
+
 }

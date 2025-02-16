@@ -4527,9 +4527,10 @@ frobulator.extract () {
 
 	file="${1}"
 	directory="${2}"
-	extension="${3}"
 
 	archive="${file##*/}"
+
+	extension="${file#*.}"
 
 	if [ -z "${directory}" ]
 	then

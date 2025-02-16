@@ -4506,7 +4506,9 @@ frobulator.archive () {
 
 # "${directory}" defaults to "${PWD}" when omitted
 
-# usage:      frobulator.extract "[archive]" "[type]" "[directory]"
+# "${extension}" assumes file name does not contain any periods '.'
+
+# usage:      frobulator.extract "[archive]" "[directory]"
 
 frobulator.extract () {
 
@@ -4535,11 +4537,6 @@ frobulator.extract () {
 	if [ -z "${directory}" ]
 	then
 		directory="${PWD}"
-	fi
-
-	if [ -z "${extension}" ]
-	then
-		extension="${file##*.}"
 	fi
 
 	if [ ! -d "${directory}" ]

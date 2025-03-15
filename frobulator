@@ -3827,7 +3827,7 @@ frobulator.install () {
 		list+=("${package}")
 	fi
 
-	command_install="apt-get --assume-yes install"
+	command_install="apt-get install --assume-yes --no-install-recommends"
 
 	frobulator.inf "Installing package(s)"
 	echo

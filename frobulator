@@ -4551,6 +4551,7 @@ frobulator.extract () {
 		tar.bz2|tbz2)
 			tar								\
 				--extract					\
+				--no-same-owner				\
 				--bzip2						\
 				--file="${file}" 			\
 				--directory="${directory}"
@@ -4559,6 +4560,7 @@ frobulator.extract () {
 		tar.gz|tgz)
 			tar								\
 				--extract					\
+				--no-same-owner				\
 				--gzip						\
 				--file="${file}" 			\
 				--directory="${directory}"
@@ -4567,6 +4569,7 @@ frobulator.extract () {
 		tar)
 			tar								\
 				--extract					\
+				--no-same-owner				\
 				--file="${file}" 			\
 				--directory="${directory}"
 		;;

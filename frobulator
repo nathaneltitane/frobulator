@@ -589,6 +589,20 @@ marker_prc='%'
 marker_spc=' '
 marker_tab='    '
 
+# prompt line overwrite (plo) ///////////////////////////////////////////////////
+
+frobulator.plo () {
+
+	# move cursor up one row
+
+	terminal_cursor_up
+
+	# clear line up to cursor
+
+	terminal_clear_left
+
+}
+
 # prompt management tool (pmt) /////////////////////////////////////////////////
 
 # prompt management and standardizing with 80 charcters width:

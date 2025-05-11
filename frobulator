@@ -474,27 +474,15 @@ else
 
 		# full description of terminal capacity
 
-		terminal_info () {
-
-			tput longname
-
-		}
+		terminal_info=$(tput longname)
 
 		# number of lines in terminal
 
-		terminal_height () {
-
-			tput lines
-
-		}
+		terminal_height=$(tput lines)
 
 		# number of columns in terminal
 
-		terminal_width () {
-
-			tput cols
-
-		}
+		terminal_width=$(tput cols)
 
 		# number of colors available
 
@@ -502,15 +490,23 @@ else
 
 		# save cursor position of terminal
 
-		terminal_save_cursor=$(tput sc)
+		terminal_cursor_save=$(tput sc)
 
 		# restore cursor position of terminal
 
-		terminal_restore_cursor=$(tput rc)
+		terminal_cursor_restore=$(tput rc)
+
+		# set cursor to invisible state
+
+		terminal_cursor_hide=$(tput civis)
+
+		# set cursor to normal state
+
+		terminal_cursor_show=$(tput cnorm)
 
 		# move cursor to upper left corner (0,0) - equivalent: 'tput cup 0 0'
 
-		terminal_home_cursor=$(tput home)
+		terminal_cursor_home=$(tput home)
 
 		# move cursor to position (row, column)
 
@@ -561,37 +557,48 @@ else
 			fi
 		}
 
-		# set cursor to invisible state
-
-		terminal_cursor_hide=$(tput civis)
-
-		# set cursor to normal state
-
-		terminal_cursor_show=$(tput cnorm)
-
 		# save screen contents
 
-		terminal_save_screen=$(tput smcup)
+		terminal_screen_save () {
+
+			tput smcup
+		}
 
 		# restore screen contents
 
-		terminal_restore_screen=$(tput rmcup)
+		terminal_screen_restore () {
 
-		# clear from cursor to end of line - left
+			tput rmcup
+		}
 
-		terminal_clear_right=$(tput el1)
+		# clear from cursor to beginning of line (left)
 
-		# clear from cursor to beginning of line - right
+		terminal_clear_left () {
 
-		terminal_clear_left=$(tput el)
+			tput el
+		}
 
-		# clear from cursor to end of the screen - down
+		# clear from cursor to end of line (right)
 
-		terminal_clear_down=$(tput ed)
+		terminal_clear_right () {
 
-		# clear entire screen and home cursor (0,0) - all
+			tput el1
+		}
 
-		terminal_clear_all=$(tput clear)
+		# clear from cursor to end of the screen (down)
+
+		terminal_clear_down () {
+
+			tput ed
+		}
+
+		# clear entire screen and home cursor (0,0)
+
+		terminal_clear_all () {
+
+			tput clear
+		}
+
 	fi
 fi
 

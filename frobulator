@@ -506,11 +506,11 @@ else
 
 		# move cursor down 1 row
 
-		terminal_cursor_down=$(tput cud1)
+		terminal_cursor_down=$(tput cud ${@})
 
 		# move cursor up 1 row
 
-		terminal_cursor_up=$(tput cuu1)
+		terminal_cursor_up=$(tput cuu ${@})
 
 		# set cursor to invisible state
 
@@ -593,14 +593,19 @@ marker_tab='    '
 
 frobulator.plo () {
 
-	# move cursor up one row
+	lines="${1:-1}"
 
-	terminal_cursor_up
+	# validate input is a number
 
-	# clear line up to cursor
+	if [[ "${lines}" =~ ^[0-9]+$ ]]
+	then
+		echo -e ${terminal_cursor_up} "${lines}"
+		echo -e ${terminal_clear_right}
+	else
+		return 1
+	fi
 
-	terminal_clear_left
-
+	unset lines
 }
 
 # prompt management tool (pmt) /////////////////////////////////////////////////

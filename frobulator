@@ -490,23 +490,38 @@ else
 
 		# save cursor position of terminal
 
-		terminal_cursor_save=$(tput sc)
+		terminal_cursor_save () {
+
+			tput sc
+		}
 
 		# restore cursor position of terminal
 
-		terminal_cursor_restore=$(tput rc)
+		terminal_cursor_restore () {
+
+			tput rc
+		}
 
 		# set cursor to invisible state
 
-		terminal_cursor_hide=$(tput civis)
+		terminal_cursor_hide () {
 
-		# set cursor to normal state
+			tput civis
+		}
 
-		terminal_cursor_show=$(tput cnorm)
+		# set cursor to normal (visible) state
 
-		# move cursor to upper left corner (0,0) - equivalent: 'tput cup 0 0'
+		terminal_cursor_show () {
 
-		terminal_cursor_home=$(tput home)
+			tput cnorm
+		}
+
+		# move cursor to upper-left corner (0,0)
+
+		terminal_cursor_home () {
+
+			tput home
+		}
 
 		# move cursor to position (row, column)
 

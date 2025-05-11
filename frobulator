@@ -474,15 +474,27 @@ else
 
 		# full description of terminal capacity
 
-		terminal_info=$(tput longname)
+		terminal_info () {
+
+			tput longname
+
+		}
 
 		# number of lines in terminal
 
-		terminal_height=$(tput lines)
+		terminal_height () {
+
+			tput lines
+
+		}
 
 		# number of columns in terminal
 
-		terminal_width=$(tput cols)
+		terminal_width () {
+
+			tput cols
+
+		}
 
 		# number of colors available
 
@@ -502,15 +514,52 @@ else
 
 		# move cursor to position (row, column)
 
-		terminal_move_cursor=$(tput cup ${tput_row} ${tput_col})
+		terminal_cursor_move () {
 
-		# move cursor down 1 row
+			row="${1}"
+			col="${2}"
 
-		terminal_cursor_down=$(tput cud ${@})
+			if [[ "${row}" =~ ^[0-9]+$ ]] && [[ "${column}" =~ ^[0-9]+$ ]]
+			then
+				tput cup "${row}" "${column}"
+			else
+				echo "terminal_cursor_move: invalid row/column input: '${row}' '${column}'" >&2
 
-		# move cursor up 1 row
+				return 1
+			fi
+		}
 
-		terminal_cursor_up=$(tput cuu ${@})
+		# move cursor down (row)
+
+		terminal_cursor_down () {
+
+			local rows="${1:-1}"
+
+			if [[ "${rows}" =~ ^[0-9]+$ ]]
+			then
+				tput cud "${rows}"
+			else
+				echo "terminal_cursor_up: invalid row input: '${rows}'" >&2
+
+				return 1
+			fi
+		}
+
+		# move cursor up (row)
+
+		terminal_cursor_up () {
+
+			local rows="${1:-1}"
+
+			if [[ "${rows}" =~ ^[0-9]+$ ]]
+			then
+				tput cuu "${rows}"
+			else
+				echo "terminal_cursor_up: invalid row input: '${rows}'" >&2
+
+				return 1
+			fi
+		}
 
 		# set cursor to invisible state
 
@@ -593,19 +642,10 @@ marker_tab='    '
 
 frobulator.plo () {
 
-	lines="${1:-1}"
+	terminal_cursor_up 1
 
-	# validate input is a number
+	echo -e ${terminal_clear_right}
 
-	if [[ "${lines}" =~ ^[0-9]+$ ]]
-	then
-		echo -e ${terminal_cursor_up} "${lines}"
-		echo -e ${terminal_clear_right}
-	else
-		return 1
-	fi
-
-	unset lines
 }
 
 # prompt management tool (pmt) /////////////////////////////////////////////////

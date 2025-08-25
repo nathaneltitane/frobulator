@@ -53,7 +53,7 @@ The following projects incorporate Frobulator in their usage:
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
-[[ Lego // Linux // Project Page ]](https://github.com/nathaneltitane/legolinux)
+[[ Mecha // Blocks // Project Page ]](https://github.com/nathaneltitane/legolinux)
 
 [[ Nathanel + Titane // Project Page ]](https://github.com/nathaneltitane/nathaneltitane)
 

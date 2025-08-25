@@ -53,7 +53,7 @@ The following projects incorporate Frobulator in their usage:
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
-[[ Mecha // Blocks // Project Page ]](https://github.com/nathaneltitane/legolinux)
+[[ Mecha // Blocks // Project Page ]](https://github.com/nathaneltitane/mechablocks)
 
 [[ Nathanel + Titane // Project Page ]](https://github.com/nathaneltitane/nathaneltitane)
 
@@ -77,7 +77,7 @@ The following projects incorporate Frobulator in their usage:
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/terminal?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=TERMINAL)](https://github.com/nathaneltitane/terminal)
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/legolinux?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=LEGO%20//%20LINUX)](https://github.com/nathaneltitane/legolinux)
+[![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/mechablocks?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=LEGO%20//%20LINUX)](https://github.com/nathaneltitane/mechablocks)
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/pixtrm?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=PIXTRM)](https://github.com/nathaneltitane/pixtrm)
 

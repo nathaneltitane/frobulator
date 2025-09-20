@@ -48,6 +48,23 @@ then
 	sink="/dev/null"
 fi
 
+# package manager //////////////////////////////////////////////////////////////
+
+# detect package manager
+
+if [[ $(command -v apt) ]]
+then
+	package_manager="apt"
+
+elif [[ $(command -v dnf) ]]
+then
+	package_manager="dnf"
+
+elif [[ $(command -v yum) ]]
+then
+	package_manager="yum"
+fi
+
 # provide character encoding / expansion capabilities for embedded document writes
 
 # space

@@ -681,7 +681,7 @@ marker_tab='    '
 
 frobulator.plo () {
 
-	terminal_cursor_up 1
+	terminal_cursor_up ${@}
 
 	terminal_clear_right
 

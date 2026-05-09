@@ -1898,6 +1898,12 @@ frobulator.progress () {
 		# double end 'b'
 
 		notification="${notification/%b/bb}"
+
+	elif [ "${notification: -1}" = "n" ]
+	then
+		# double end 'n'
+
+		notification="${notification/%n/nn}"
 	fi
 
 	# append verb end

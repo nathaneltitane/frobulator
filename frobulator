@@ -1761,6 +1761,7 @@ frobulator.progress () {
 
 	teal_list=(
 		release
+		scan
 		deploy
 		build
 	)

@@ -1512,8 +1512,6 @@ frobulator.script () {
 		message="${script}"
 	fi
 
-	echo
-
 	frobulator.msg "${description}" "[ ${message} ]"
 
 	echo
@@ -2071,13 +2069,13 @@ frobulator.temporary () {
 	fi
 
 	template="frobulator.tmp.XXXXXX"
-	
+
 	for directory in ${list[@]}
 	do
 		temporary_directory=$(mktemp -d -t "${template}")
-	
+
 		eval directory="${temporary_directory}"
-		
+
 		frobulator.add "Generating temporary directory" "[ ${directory} ]"
 		echo
 
@@ -2131,11 +2129,11 @@ frobulator.trap () {
 	for directory in ${list[@]}
 	do
 		# clean on interruption or error
-		
+
 		trap "exit 1"					HUP INT PIPE QUIT TERM
-		
+
 		# clean on exit
-		
+
 		trap 'rm --recursive --force "${directory}"'	EXIT
 	done
 
@@ -2667,7 +2665,7 @@ frobulator.delete () {
 			list=(${@:1})
 		else
 			item="${1}"
-			
+
 			list=()
 
 			list+=("${item}")
@@ -3605,11 +3603,11 @@ frobulator.log () {
 	command="${@}"
 
 	script="${script##*/}"
-	
+
 	log="${log_directory}"/"${script}"-"${stamp}".log
 
 	"${SHELL}" -c "$(echo ${command})" >>  "${log}" 2>&1
-	
+
 	unset log
 }
 
@@ -3954,7 +3952,7 @@ frobulator.install () {
 				frobulator.log "$(echo ${command_install} ${package})" &
 
 				frobulator.progress "install"
-				
+
 			else
 				frobulator.scs "Present on system" "[ '${package}' ]"
 				echo

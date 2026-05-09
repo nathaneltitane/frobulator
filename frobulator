@@ -687,6 +687,7 @@ frobulator.plo () {
 
 	terminal_clear_right
 
+	echo
 }
 
 # prompt management tool (pmt) /////////////////////////////////////////////////

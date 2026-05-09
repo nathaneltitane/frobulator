@@ -1372,6 +1372,22 @@ frobulator.nul () {
 	unset color_entry
 }
 
+# index line marker /////////////////////////////////////////////////////////////
+
+# use to carry over prompts without adding a line marker without retaining color
+
+frobulator.ind () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	unset color_entry
+
+	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+
+}
+
 # letter line marker ///////////////////////////////////////////////////////////
 
 # use to indicate lettered steps, directives or instructions

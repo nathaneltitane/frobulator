@@ -3265,7 +3265,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 
 	elif [[ "${url_status}" = [3][0-9][0-9] ]]
 	then
-		url_status_label="redirection"
+		url_status_label="redirect"
 
 		frobulator.wrn "Download status" "[ ${url_status_label} // ${url_status} ]"
 		echo

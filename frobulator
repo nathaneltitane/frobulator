@@ -771,13 +771,17 @@ frobulator.pmt () {
 		begin_length=${#begin}
 		end_length=${#end}
 
+		end_open=${end:0:2}
+		end_close=${end: -2:0}
+
 		marker_elp_length=${#marker_elp}
+
 
 		# adjust for longer than usual arguments:
 		# truncate end with ellipsis
 
 		# formatting:
-		# preserve second argument start and end brackets with padding
+		# preserve second argument brackets and padding when present
 
 		if [ "${end:0:2}" = '[ ' ] ||
 		   [ "${end: -2}" = ' ]' ]
@@ -4775,3 +4779,9 @@ frobulator.extract () {
 # prompt line //////////////////////////////////////////////////////////////////
 
 echo
+
+frobulator.fwd "Seaching" "[ abc def ghi jklmnopqurstuvwxyz 1234567890 ]"
+
+frobulator.fwd "Seaching jklmnopqurstuvwxyz " "[ abc def ghi jklmnopqurstuvwxyz 1234567890 ]"
+
+frobulator.fwd "Seaching" "[ abc def ghi jklmnopqurstuvwxyz 1234567890 ]"

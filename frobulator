@@ -767,6 +767,29 @@ frobulator.pmt () {
 	then
 		begin="${begin} "
 		end=" ${end}"
+
+		begin_length=${#begin}
+		end_length=${#end}
+
+		# adjust for longer than usual arguments:
+		# truncate end by 12 characters
+
+		end_limit=$(( span_length - begin_length - 12 ))
+
+		if [ "${end_limit}" -gt 0 ] &&
+		   [ "${end_length}" -gt "${end_limit}" ]
+		then
+			end_start=${end:0:${end_limit}}
+
+			# preserve last 3 characters
+
+			end_end=${end: -3}
+
+			# append ellipsis marker to end of truncation
+
+			end="${end_start}${marker_elp}${end_end}"
+		fi
+
 	fi
 
 	# define parsing calculation lengths
@@ -801,7 +824,12 @@ frobulator.pmt () {
 	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
 
-	span_count=$(( ${span_length} - ${begin_length} - ${end_length} ))
+span_count=$(( span_length - begin_length - end_length ))
+
+if [ "${span_count}" -lt 0 ]
+then
+	span_count=0
+fi
 
 	# set new padding width
 

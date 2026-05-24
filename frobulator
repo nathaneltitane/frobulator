@@ -4825,9 +4825,3 @@ frobulator.extract () {
 # prompt line //////////////////////////////////////////////////////////////////
 
 echo
-
-frobulator.fwd "Seaching" "[ abc def ghi jklmnopqurstuvwxyz 1234567890 ]"
-
-frobulator.fwd "Seasssssssssssssssssssching jklmnopqurstuvwxyz" "[ abc def ghi jklmnopqurstdddddddddddddddddddddduvwxyz 1234567890 ]"
-
-frobulator.fwd "Seaching" "[ abc def ghi jklmnopqurstuvwxyz 1234567890 ]"

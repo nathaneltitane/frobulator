@@ -771,19 +771,32 @@ frobulator.pmt () {
 		begin_length=${#begin}
 		end_length=${#end}
 
-		# adjust for longer than usual arguments:
-		# truncate end by 12 characters
+		marker_elp_length=${#marker_elp}
 
-		end_limit=$(( span_length - begin_length - 12 ))
+		# adjust for longer than usual arguments:
+		# truncate end with ellipsis
+
+		# formatting:
+		# preserve second argument start and end brackets with padding
+
+		if [ "${end:0:2}" = '[ ' ] ||
+		   [ "${end: -2}" = ' ]' ]
+		then
+			# include last string digit for recognition
+
+			end_end=${end: -$marker_elp_length}
+		fi
+
+		# preserve span character at minimum of 2 characters
+
+		span_limter=8
+
+		end_limit=$(( span_length - begin_length - span_limter ))
 
 		if [ "${end_limit}" -gt 0 ] &&
 		   [ "${end_length}" -gt "${end_limit}" ]
 		then
 			end_start=${end:0:${end_limit}}
-
-			# preserve last 3 characters
-
-			end_end=${end: -3}
 
 			# append ellipsis marker to end of truncation
 

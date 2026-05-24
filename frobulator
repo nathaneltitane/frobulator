@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="05-20-2026"
+# version="05-24-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2273,26 +2273,28 @@ frobulator.complete () {
 
 # "${path}" defaults to "${PWD}" when omitted
 
-# usage:      frobulator.directory "[path]" "[directory name]" | "[array name]"
+# usage:      frobulator.directory "[/path/string]" | "[path]" "[directory name]" | "[array name]"
 
 frobulator.directory () {
 
 	if [ $# -eq 1 ]
 	then
-		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${1}" = */* ]]
 		then
-			# ${1} - array
+			path="${1%/*}"
 
-			list=(${@:1})
+			directory_item="${1##*/}"
 		else
-			file="${1}"
+			path="${PWD}"
 
-			list=()
-
-			list+=("${file}")
+			directory_item="${1}"
 		fi
+
+		list=()
+
+		list+=("${directory_item}")
+
 	fi
 
 	if [ $# -ge 2 ]
@@ -2305,11 +2307,11 @@ frobulator.directory () {
 
 			list=(${@:2})
 		else
-			file="${2}"
+			directory_item="${2}"
 
 			list=()
 
-			list+=("${file}")
+			list+=("${directory_item}")
 		fi
 
 		shift

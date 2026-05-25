@@ -4825,6 +4825,150 @@ frobulator.extract () {
 
 }
 
+# TO DO ////////////////////////////////////////////////////////////////////////
+
+# frobulator.install ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes install package
+#
+# pipx equivalent:
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip install package
+#
+# status:
+#	true equivalent
+
+# frobulator.require ///////////////////////////////////////////////////////////
+
+# apt:
+#	command -v command
+#	apt-file search command
+#	frobulator.install resolved-package
+#
+# pipx equivalent:
+#	command -v command
+#	python3 -m pip index versions package
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip show package
+#	python3 -m pip install package
+#
+# status:
+#	true equivalent, but resolver logic differs
+
+# frobulator.reinstall /////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes install --reinstall package
+#
+# pipx equivalent:
+#	pipx reinstall package
+#
+# pip equivalent:
+#	python3 -m pip install --force-reinstall package
+#
+# status:
+#	true equivalent
+
+# frobulator.purge /////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes purge --autoremove package
+#
+# pipx equivalent:
+#	pipx uninstall package
+#
+# pip equivalent:
+#	python3 -m pip uninstall --yes package
+#
+# status:
+#	close equivalent
+#	pip/pipx do not have apt-style purge/autoremove behavior
+
+# frobulator.hold //////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-mark hold package
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no clean equivalent
+#	can only approximate by avoiding upgrade/reinstall
+
+# frobulator.release ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-mark unhold package
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no clean equivalent
+
+# frobulator.failsafe //////////////////////////////////////////////////////////
+
+# apt:
+#	apt update
+#	apt full-upgrade
+#	apt-get install package
+#
+# pipx equivalent:
+#	python3 -m pip install --user --upgrade pipx
+#	pipx ensurepath
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip install --upgrade pip
+#	python3 -m pip install package
+#
+# status:
+#	partial equivalent only
+
+# frobulator.update ////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get update
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no equivalent
+#	pip/pipx query live indexes directly
+
+# frobulator.upgrade ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes dist-upgrade
+#
+# pipx equivalent:
+#	pipx upgrade-all
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	pipx has a good equivalent
+#	pip does not
+
+# TO DO ////////////////////////////////////////////////////////////////////////
+
 # prompt line //////////////////////////////////////////////////////////////////
 
 # normalize line spacing:

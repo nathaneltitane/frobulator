@@ -710,16 +710,19 @@ frobulator.pmt () {
 
 	if [ -z "${character_count}" ]
 	then
-		character_count=${terminal_columns}
+		character_count="${terminal_columns}"
 	fi
 
 	# set span width
 
 	if [ ${#begin} -le "${character_count}" ]
 	then
-		span="--------------------------------------------------------------------------------"
+		while [ ${#span} -lt "${character_count}" ]
+		do
+			span="${span}-"
+		done
 	else
-		span=""
+		span="${span}"
 	fi
 
 	# prepare span for line marker usage:
@@ -735,7 +738,7 @@ frobulator.pmt () {
 	fi
 
 	# set span character default:
-	# cannot use '\' character as span //////////////////////////////// FIX ME #
+	# do not use '\' - reserved for BASH esacpe sequences
 
 	span_character="/"
 

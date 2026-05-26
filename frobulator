@@ -1651,7 +1651,7 @@ frobulator.ntf ( ) {
 	# styling
 
 	if [ -z "${style}"         ] || \
-	   [ "${style}" = 'square' ]
+	   [ "${style}" = "square" ]
 	then
 		frame_horizontal='─'
 		frame_vertical='│'
@@ -1706,27 +1706,35 @@ frobulator.ntf ( ) {
 
 	# output parsing
 
+	# frame top
+
 	echo "${frame_top_left}${line}${frame_top_right}"
+
+	# title line
 
 	text="${marker_spc}${title}"
 
 	while [ ${#text} -lt "${content_width}" ]
 	do
-		text="${text} "
+		text="${text}${marker_spc}"
 	done
 
 	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
 
 	echo "${frame_middle_left}${line}${frame_middle_right}"
 
+	# message line
+
 	text="${message}"
 
 	while [ ${#text} -lt "${content_width}" ]
 	do
-		text="${text} "
+		text="${text}${marker_spc}"
 	done
 
 	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+
+	#frame bottom
 
 	echo "${frame_bottom_left}${line}${frame_bottom_right}"
 

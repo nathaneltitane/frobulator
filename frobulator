@@ -1577,10 +1577,10 @@ frobulator.sep () {
 # use to separate notices and messages from execution blocks
 #
 #
-# usage:	frobulator.ntf
-#			frobulator.ntf "title" "message"
-#			frobulator.ntf style "title" "message"
+# usage:	frobulator.ntf "title" "message"
+#			frobulator.ntf [square|round|heavy|double] "title" "message"
 #
+# command:	frobulator.ntf style "title" "message"
 # result:
 #
 # ┌────────────────────────────────────────────────────────────────────────────┐

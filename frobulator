@@ -1571,6 +1571,164 @@ frobulator.sep () {
 	unset color_entry
 }
 
+# notify ///////////////////////////////////////////////////////////////////////
+#
+# framed message block with header:
+# use to separate notices and messages from execution blocks
+#
+#
+# usage:	frobulator.ntf
+#			frobulator.ntf "title" "message"
+#			frobulator.ntf style "title" "message"
+#
+# command:	frobulator.ntf "system" "package installed successfully"
+#
+# result:
+#
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ title                                                                      │
+# ├────────────────────────────────────────────────────────────────────────────┤
+# │ message                                                                    │
+# └────────────────────────────────────────────────────────────────────────────┘
+
+frobulator.ntf ( ) {
+
+	local style
+	local title
+	local message
+
+	local character_count
+	local content_width
+
+	local frame_horizontal
+	local frame_vertical
+	local frame_top_left
+	local frame_top_right
+	local frame_middle_left
+	local frame_middle_right
+	local frame_bottom_left
+	local frame_bottom_right
+
+	local line
+	local text
+
+	style="${1}"
+	title="${2:-Notice}"
+	message="${3:-}"
+
+	# columns
+
+	if [ -z "${terminal_columns}" ]
+	then
+		character_count="${span_characters}"
+	else
+		character_count="${terminal_columns}"
+	fi
+
+	content_width=$(( character_count - 2 ))
+
+	# styling
+
+	if [ -z "${style}"         ] || \
+	   [ "${style}" = 'square' ]
+	then
+		frame_horizontal='─'
+		frame_vertical='│'
+		frame_top_left='┌'
+		frame_top_right='┐'
+		frame_middle_left='├'
+		frame_middle_right='┤'
+		frame_bottom_left='└'
+		frame_bottom_right='┘'
+
+	elif [ "${style}" = 'round' ]
+	then
+		frame_top_left='╭'
+		frame_top_right='╮'
+		frame_bottom_left='╰'
+		frame_bottom_right='╯'
+
+	elif [ "${style}" = 'heavy' ]
+	then
+		frame_horizontal='━'
+		frame_vertical='┃'
+		frame_top_left='┏'
+		frame_top_right='┓'
+		frame_middle_left='┣'
+		frame_middle_right='┫'
+		frame_bottom_left='┗'
+		frame_bottom_right='┛'
+
+	elif [ "${style}" = 'double' ]
+	then
+		frame_horizontal='═'
+		frame_vertical='║'
+		frame_top_left='╔'
+		frame_top_right='╗'
+		frame_middle_left='╠'
+		frame_middle_right='╣'
+		frame_bottom_left='╚'
+		frame_bottom_right='╝'
+	fi
+
+	# line setup
+
+	line=''
+
+	while [ ${#line} -lt "${content_width}" ]
+	do
+		line="${line}${frame_horizontal}"
+	done
+
+	# output parsing
+
+	echo "${frame_top_left}${line}${frame_top_right}"
+
+	text="${title}"
+
+	while [ ${#text} -lt "${content_width}" ]
+	do
+		text="${text} "
+	done
+
+	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+
+	echo "${frame_middle_left}${line}${frame_middle_right}"
+
+	text="${message}"
+
+	while [ ${#text} -lt "${content_width}" ]
+	do
+		text="${text} "
+	done
+
+	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+
+	echo "${frame_bottom_left}${line}${frame_bottom_right}"
+
+	# cleanup
+
+	unset style
+	unset title
+	unset message
+
+	unset character_count
+	unset content_width
+
+	unset frame_horizontal
+	unset frame_vertical
+	unset frame_top_left
+	unset frame_top_right
+	unset frame_middle_left
+	unset frame_middle_right
+	unset frame_bottom_left
+	unset frame_bottom_right
+
+	unset line
+	unset text
+
+}
+
 # separate /////////////////////////////////////////////////////////////////////
 
 # use to separate instructions or warnings from prompts
@@ -1581,7 +1739,7 @@ frobulator.sep () {
 # usage:      frobulator.separate
 
 # command:    frobulator.separate
-# result:     ////////////////////////////////////////////////////////////////////////////////
+# result:     /////////////////////////...//////////////////////////////////////
 
 frobulator.separate () {
 

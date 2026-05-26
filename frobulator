@@ -1729,7 +1729,7 @@ frobulator.ntf ( ) {
 
 	while [ ${#text} -lt "${content_width}" ]
 	do
-		text="${text}${marker_spc}"
+		text="${marker_spc}${text}"
 	done
 
 	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"

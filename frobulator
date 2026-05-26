@@ -1581,8 +1581,6 @@ frobulator.sep () {
 #			frobulator.ntf "title" "message"
 #			frobulator.ntf style "title" "message"
 #
-# command:	frobulator.ntf "system" "package installed successfully"
-#
 # result:
 #
 # ┌────────────────────────────────────────────────────────────────────────────┐

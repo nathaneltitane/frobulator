@@ -677,7 +677,7 @@ marker_prc='%'
 marker_spc=' '
 marker_tab='    '
 
-# prompt line overwrite (plo) ///////////////////////////////////////////////////
+# prompt line overwrite (plo) //////////////////////////////////////////////////
 
 frobulator.plo () {
 
@@ -726,7 +726,7 @@ frobulator.pmt () {
 	fi
 
 	# prepare span for line marker usage:
-	# [   ] --------------------------------------------------------------------------
+	# [   ] --------------------------------------------------------------...---
 
 	span_length=${#span}
 
@@ -955,10 +955,10 @@ fi
 # result:     string
 #
 # command:    frobulator.[color] "[string]" "[string]"
-# result:     string ///////////////////////////////////////////////////////////// string
+# result:     string //////////////////////////////////////////////.../// string
 #
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
-# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
 frobulator.black () {
 
@@ -1132,10 +1132,10 @@ frobulator.teal () {
 # result:     string
 
 # command:    frobulator.[color] "[string]" "[string]"
-# result:     string ///////////////////////////////////////////////////////////// string
+# result:     string //////////////////////////////////////////////.../// string
 
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
-# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
 # line markers:
 
@@ -1779,7 +1779,7 @@ frobulator.ntf ( ) {
 # usage:      frobulator.separate
 
 # command:    frobulator.separate
-# result:     /////////////////////////...//////////////////////////////////////
+# result:     ////////////////////////////////////////////////////////////...///
 
 frobulator.separate () {
 
@@ -1810,7 +1810,7 @@ frobulator.read () {
 # usage:      frobulator.script
 
 # command:    frobulator.script "Setting up ${script#*-}"
-# result:     [ # ] Setting up 'script' ///////////////////////////////////////////// [ name ]
+# result:     [ # ] Setting up 'script' /////////////////////////.../// [ name ]
 
 frobulator.script () {
 
@@ -3526,7 +3526,7 @@ frobulator.http () {
 
 }
 
-# status /////////////////////////////////////////////////////////////////////
+# status ///////////////////////////////////////////////////////////////////////
 
 # use to parse and validate HTTP status responses and manage download actions
 # use in tandem with frobulator.http

@@ -1633,8 +1633,8 @@ frobulator.ntf ( ) {
 		message="${2}"
 	else
 		style="${1}"
-		title="${2:-${marker_spc}Notice}"
-		message="${3:-}"
+		title="${2}"
+		message="${3}"
 	fi
 
 	# columns

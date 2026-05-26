@@ -1611,8 +1611,31 @@ frobulator.ntf ( ) {
 	local text
 
 	style="${1}"
-	title="${2:-Notice}"
-	message="${3:-}"
+	title="${2}"
+	message="${3}"
+
+	if [ $# -eq 0 ]
+	then
+		style=""
+		title="Notice"
+		message=""
+
+	elif [ $# -eq 1 ]
+	then
+		style=""
+		title="Notice"
+		message="${1}"
+
+	elif [ $# -eq 2 ]
+	then
+		style=""
+		title="${1}"
+		message="${2}"
+	else
+		style="${1}"
+		title="${2:-${marker_spc}Notice}"
+		message="${3:-}"
+	fi
 
 	# columns
 
@@ -1638,15 +1661,17 @@ frobulator.ntf ( ) {
 		frame_middle_right='┤'
 		frame_bottom_left='└'
 		frame_bottom_right='┘'
+	fi
 
-	elif [ "${style}" = 'round' ]
+	if [ "${style}" = "round" ]
 	then
 		frame_top_left='╭'
 		frame_top_right='╮'
 		frame_bottom_left='╰'
 		frame_bottom_right='╯'
+	fi
 
-	elif [ "${style}" = 'heavy' ]
+	if [ "${style}" = "heavy" ]
 	then
 		frame_horizontal='━'
 		frame_vertical='┃'
@@ -1656,8 +1681,9 @@ frobulator.ntf ( ) {
 		frame_middle_right='┫'
 		frame_bottom_left='┗'
 		frame_bottom_right='┛'
+	fi
 
-	elif [ "${style}" = 'double' ]
+	if [ "${style}" = "double" ]
 	then
 		frame_horizontal='═'
 		frame_vertical='║'
@@ -1682,7 +1708,7 @@ frobulator.ntf ( ) {
 
 	echo "${frame_top_left}${line}${frame_top_right}"
 
-	text="${title}"
+	text="${marker_spc}${title}"
 
 	while [ ${#text} -lt "${content_width}" ]
 	do

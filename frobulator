@@ -1375,7 +1375,7 @@ frobulator.ins () {
 	color_entry=("${teal}")
 }
 
-# complete line marker ///////////////////////////////////////////////////////////
+# complete line marker /////////////////////////////////////////////////////////
 
 frobulator.cpt () {
 
@@ -1466,7 +1466,7 @@ frobulator.nul () {
 	unset color_entry
 }
 
-# index line marker /////////////////////////////////////////////////////////////
+# index line marker ////////////////////////////////////////////////////////////
 
 # use to carry over prompts without adding a line marker without retaining color
 
@@ -1493,10 +1493,10 @@ frobulator.ind () {
 # result:     [ l ] string
 
 # command:    frobulator.num "[letter]" "[string]" "[string]"
-# result:     [ l ] string ///////////////////////////////////////////////////////////// string
+# result:     [ l ] string ////////////////////////////////////////.../// string
 
 # command:    frobulator.num "[letter]" "[string]" "[string]" "[\]"
-# result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+# result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
 frobulator.ltr () {
 
@@ -1525,10 +1525,10 @@ frobulator.ltr () {
 # result:     [ n ] string
 
 # command:    frobulator.num "[number]" "[string]" "[string]"
-# result:     [ n ] string ///////////////////////////////////////////////////////////// string
+# result:     [ n ] string ////////////////////////////////////////.../// string
 
 # command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
-# result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ string
+# result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
 frobulator.num () {
 
@@ -1556,7 +1556,7 @@ frobulator.num () {
 # usage:      frobulator.sep
 
 # command:    frobulator.sep
-# result:     ////////////////////////////////////////////////////////////////////////////////
+# result:     ////////////////////////////////////////////////////////////...///
 
 frobulator.sep () {
 

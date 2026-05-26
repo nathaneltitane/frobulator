@@ -1720,22 +1720,25 @@ frobulator.ntf ( ) {
 
 	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
 
-	echo "${frame_middle_left}${line}${frame_middle_right}"
-
 	# message line
 
-	text="${marker_spc}${message}"
+	if [ -n "${message}" ]
+	then
+		echo "${frame_middle_left}${line}${frame_middle_right}"
 
-	while [ ${#text} -lt "${content_width}" ]
-	do
-		text="${text}${marker_spc}"
-	done
+		text="${marker_spc}${message}"
 
-	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+		while [ ${#text} -lt "${content_width}" ]
+		do
+			text="${text}${marker_spc}"
+		done
 
-	# frame bottom
+		echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
 
-	echo "${frame_bottom_left}${line}${frame_bottom_right}"
+		echo "${frame_bottom_left}${line}${frame_bottom_right}"
+	else
+		echo "${frame_bottom_left}${line}${frame_bottom_right}"
+	fi
 
 	# cleanup
 

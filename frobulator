@@ -1630,7 +1630,7 @@ frobulator.ntf ( ) {
 	   [ "${1}" = "round"   ] || \
 	   [ "${1}" = "heavy"   ] || \
 	   [ "${1}" = "double"  ] || \
-	   [ "${1}" = "braille" ]
+	   [ "${1}" = "dots" ]
 	then
 		style="${1}"
 
@@ -1723,7 +1723,7 @@ frobulator.ntf ( ) {
 		frame_bottom_left='╚'
 		frame_bottom_right='╝'
 
-	elif [ "${style}" = "braille" ]
+	elif [ "${style}" = "dots" ]
 	then
 		frame_horizontal_top='⠉'
 		frame_horizontal_middle='⠒'

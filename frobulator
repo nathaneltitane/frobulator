@@ -1598,8 +1598,13 @@ frobulator.ntf ( ) {
 	local character_count
 	local content_width
 
-	local frame_horizontal
-	local frame_vertical
+	local frame_horizontal_top
+	local frame_horizontal_middle
+	local frame_horizontal_bottom
+
+	local frame_vertical_left
+	local frame_vertical_right
+
 	local frame_top_left
 	local frame_top_right
 	local frame_middle_left
@@ -1607,17 +1612,25 @@ frobulator.ntf ( ) {
 	local frame_bottom_left
 	local frame_bottom_right
 
-	local line
+	local line_top
+	local line_middle
+	local line_bottom
+
+	local frame_top
+	local frame_middle
+	local frame_bottom
+
 	local text
 
 	title="Notice"
 
 	# arguments
 
-	if [ "${1}" = "square" ] || \
-	   [ "${1}" = "round"  ] || \
-	   [ "${1}" = "heavy"  ] || \
-	   [ "${1}" = "double" ]
+	if [ "${1}" = "square"  ] || \
+	   [ "${1}" = "round"   ] || \
+	   [ "${1}" = "heavy"   ] || \
+	   [ "${1}" = "double"  ] || \
+	   [ "${1}" = "braille" ]
 	then
 		style="${1}"
 
@@ -1655,8 +1668,13 @@ frobulator.ntf ( ) {
 
 	# defaults
 
-	frame_horizontal='─'
-	frame_vertical='│'
+	frame_horizontal_top='─'
+	frame_horizontal_middle='─'
+	frame_horizontal_bottom='─'
+
+	frame_vertical_left='│'
+	frame_vertical_right='│'
+
 	frame_top_left='┌'
 	frame_top_right='┐'
 	frame_middle_left='├'
@@ -1675,8 +1693,13 @@ frobulator.ntf ( ) {
 
 	elif [ "${style}" = "heavy" ]
 	then
-		frame_horizontal='━'
-		frame_vertical='┃'
+		frame_horizontal_top='━'
+		frame_horizontal_middle='━'
+		frame_horizontal_bottom='━'
+
+		frame_vertical_left='┃'
+		frame_vertical_right='┃'
+
 		frame_top_left='┏'
 		frame_top_right='┓'
 		frame_middle_left='┣'
@@ -1686,30 +1709,65 @@ frobulator.ntf ( ) {
 
 	elif [ "${style}" = "double" ]
 	then
-		frame_horizontal='═'
-		frame_vertical='║'
+		frame_horizontal_top='═'
+		frame_horizontal_middle='═'
+		frame_horizontal_bottom='═'
+
+		frame_vertical_left='║'
+		frame_vertical_right='║'
+
 		frame_top_left='╔'
 		frame_top_right='╗'
 		frame_middle_left='╠'
 		frame_middle_right='╣'
 		frame_bottom_left='╚'
 		frame_bottom_right='╝'
+
+	elif [ "${style}" = "braille" ]
+	then
+		frame_horizontal_top='⠉'
+		frame_horizontal_middle='⠒'
+		frame_horizontal_bottom='⠤'
+
+		frame_vertical_left='⠇'
+		frame_vertical_right='⠸'
+
+		frame_top_left='⠏'
+		frame_top_right='⠹'
+		frame_middle_left='⠗'
+		frame_middle_right='⠺'
+		frame_bottom_left='⠧'
+		frame_bottom_right='⠼'
 	fi
 
 	# line setup
 
-	line=""
+	line_top=""
 
-	while [ ${#line} -lt "${content_width}" ]
+	while [ ${#line_top} -lt "${content_width}" ]
 	do
-		line="${line}${frame_horizontal}"
+		line_top="${line_top}${frame_horizontal_top}"
+	done
+
+	line_middle=""
+
+	while [ ${#line_middle} -lt "${content_width}" ]
+	do
+		line_middle="${line_middle}${frame_horizontal_middle}"
+	done
+
+	line_bottom=""
+
+	while [ ${#line_bottom} -lt "${content_width}" ]
+	do
+		line_bottom="${line_bottom}${frame_horizontal_bottom}"
 	done
 
 	# frame setup - horizontal
 
-	frame_top="${frame_top_left}${line}${frame_top_right}"
-	frame_middle="${frame_middle_left}${line}${frame_middle_right}"
-	frame_bottom="${frame_bottom_left}${line}${frame_bottom_right}"
+	frame_top="${frame_top_left}${line_top}${frame_top_right}"
+	frame_middle="${frame_middle_left}${line_middle}${frame_middle_right}"
+	frame_bottom="${frame_bottom_left}${line_bottom}${frame_bottom_right}"
 
 	# frame top
 
@@ -1724,7 +1782,7 @@ frobulator.ntf ( ) {
 		text="${text}${marker_spc}"
 	done
 
-	echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+	echo "${frame_vertical_left}${text:0:${content_width}}${frame_vertical_right}"
 
 	# message line
 
@@ -1741,7 +1799,7 @@ frobulator.ntf ( ) {
 			text="${text}${marker_spc}"
 		done
 
-		echo "${frame_vertical}${text:0:${content_width}}${frame_vertical}"
+		echo "${frame_vertical_left}${text:0:${content_width}}${frame_vertical_right}"
 	fi
 
 	echo "${frame_bottom}"
@@ -1755,8 +1813,13 @@ frobulator.ntf ( ) {
 	unset character_count
 	unset content_width
 
-	unset frame_horizontal
-	unset frame_vertical
+	unset frame_horizontal_top
+	unset frame_horizontal_middle
+	unset frame_horizontal_bottom
+
+	unset frame_vertical_left
+	unset frame_vertical_right
+
 	unset frame_top_left
 	unset frame_top_right
 	unset frame_middle_left
@@ -1764,7 +1827,14 @@ frobulator.ntf ( ) {
 	unset frame_bottom_left
 	unset frame_bottom_right
 
-	unset line
+	unset line_top
+	unset line_middle
+	unset line_bottom
+
+	unset frame_top
+	unset frame_middle
+	unset frame_bottom
+
 	unset text
 
 }

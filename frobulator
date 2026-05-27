@@ -1585,7 +1585,7 @@ frobulator.sep () {
 #
 #
 # usage:	frobulator.ntf "title" "message"
-#			frobulator.ntf [square|round|heavy|double] "title" "message"
+#			frobulator.ntf [style] "title" "message"
 #
 # command:	frobulator.ntf style "title" "message"
 # result:
@@ -1596,14 +1596,15 @@ frobulator.sep () {
 # │ message                                                                    │
 # └────────────────────────────────────────────────────────────────────────────┘
 
-frobulator.ntf () {
+frobulator.ntf ( ) {
 
 	local style
 	local title
 	local message
 
 	local character_count
-	local content_width
+	local content_span
+	local message_width
 
 	local frame_horizontal_top
 	local frame_horizontal_middle
@@ -1619,6 +1620,10 @@ frobulator.ntf () {
 	local frame_bottom_left
 	local frame_bottom_right
 
+	local frame_vertical_left_count
+	local frame_vertical_right_count
+	local marker_spc_count
+
 	local line_top
 	local line_middle
 	local line_bottom
@@ -1627,21 +1632,22 @@ frobulator.ntf () {
 	local frame_middle
 	local frame_bottom
 
-	local text
+	local message_fold
+	local message_line
 
 	title="Notice"
 
 	# arguments
 
-	if [ "${1}" = "square"  ] || \
-	   [ "${1}" = "round"   ] || \
-	   [ "${1}" = "heavy"   ] || \
-	   [ "${1}" = "double"  ] || \
-	   [ "${1}" = "dots"    ] || \
-	   [ "${1}" = "matrix"  ] || \
-	   [ "${1}" = "tech"    ] || \
-	   [ "${1}" = "skel"    ] || \
-	   [ "${1}" = "ascii"   ]
+	if [ "${1}" = "square" ] || \
+	   [ "${1}" = "round"  ] || \
+	   [ "${1}" = "heavy"  ] || \
+	   [ "${1}" = "double" ] || \
+	   [ "${1}" = "dots"   ] || \
+	   [ "${1}" = "matrix" ] || \
+	   [ "${1}" = "tech"   ] || \
+	   [ "${1}" = "skel"   ] || \
+	   [ "${1}" = "ascii"  ]
 	then
 		style="${1}"
 
@@ -1675,8 +1681,6 @@ frobulator.ntf () {
 		character_count="${terminal_columns}"
 	fi
 
-	content_width=$(( character_count - 2 ))
-
 	# default frame style
 
 	frame_horizontal_top='─'
@@ -1704,19 +1708,8 @@ frobulator.ntf () {
 
 	elif [ "${style}" = "skel" ]
 	then
-		frame_horizontal_top='─'
-		frame_horizontal_middle='─'
-		frame_horizontal_bottom='─'
-
 		frame_vertical_left=' '
 		frame_vertical_right=' '
-
-		frame_top_left='┌'
-		frame_top_right='┐'
-		frame_middle_left='├'
-		frame_middle_right='┤'
-		frame_bottom_left='└'
-		frame_bottom_right='┘'
 
 	elif [ "${style}" = "heavy" ]
 	then
@@ -1800,10 +1793,6 @@ frobulator.ntf () {
 
 	elif [ "${style}" = "tech" ]
 	then
-		frame_horizontal_top='─'
-		frame_horizontal_middle='─'
-		frame_horizontal_bottom='─'
-
 		frame_vertical_left='║'
 		frame_vertical_right='║'
 
@@ -1813,69 +1802,92 @@ frobulator.ntf () {
 		frame_middle_right='╢'
 		frame_bottom_left='╙'
 		frame_bottom_right='╜'
-
 	fi
+
+	# width setup
+
+	frame_vertical_left_count=${#frame_vertical_left}
+	frame_vertical_right_count=${#frame_vertical_right}
+
+	marker_elp_count=${#marker_elp}
+	marker_spc_count=${#marker_spc}
+
+	content_span=$(( character_count - frame_vertical_left_count - frame_vertical_right_count ))
+
+	title_width=$(( content_span - marker_spc_count - marker_spc_count ))
+
+	message_width=$(( content_span - marker_spc_count - marker_spc_count ))
 
 	# line setup
 
-	line_top=""
-
-	while [ ${#line_top} -lt "${content_width}" ]
+	while [ ${#line_top} -lt "${content_span}" ]
 	do
 		line_top="${line_top}${frame_horizontal_top}"
 	done
 
-	line_middle=""
-
-	while [ ${#line_middle} -lt "${content_width}" ]
+	while [ ${#line_middle} -lt "${content_span}" ]
 	do
 		line_middle="${line_middle}${frame_horizontal_middle}"
 	done
 
-	line_bottom=""
-
-	while [ ${#line_bottom} -lt "${content_width}" ]
+	while [ ${#line_bottom} -lt "${content_span}" ]
 	do
 		line_bottom="${line_bottom}${frame_horizontal_bottom}"
 	done
 
-	# frame setup - horizontal
+	# frame setup
 
 	frame_top="${frame_top_left}${line_top}${frame_top_right}"
 	frame_middle="${frame_middle_left}${line_middle}${frame_middle_right}"
 	frame_bottom="${frame_bottom_left}${line_bottom}${frame_bottom_right}"
 
-	# frame top
-
 	echo "${frame_top}"
 
 	# title line
 
-	text="${marker_spc}${title}"
+	title="${marker_spc}${title}${marker_spc}"
 
-	while [ ${#text} -lt "${content_width}" ]
+	# abridge long title
+
+	if [ ${#title} -gt "${content_span}" ]
+	then
+		title="${title:0:$(( content_span - ${marker_elp_count} - ${marker_spc_count} ))}${marker_elp}${marker_spc}"
+	fi
+
+	while [ ${#title} -lt "${content_span}" ]
 	do
-		text="${text}${marker_spc}"
+		title="${title}${marker_spc}"
 	done
 
-	echo "${frame_vertical_left}${text:0:${content_width}}${frame_vertical_right}"
+	echo "${frame_vertical_left}${title}${frame_vertical_right}"
 
 	# message line
 
 	if [ -n "${message}" ]
 	then
-		# frame middle
-
 		echo "${frame_middle}"
 
-		text="${marker_spc}${message}"
+		if [ ${#message} -gt "${message_width}" ]
+		then
+			message_fold=$(echo "${message}" | fold -s -w "${message_width}")
+		else
+			message_fold="${message}"
+		fi
 
-		while [ ${#text} -lt "${content_width}" ]
+		while IFS= read -r message_line
 		do
-			text="${text}${marker_spc}"
-		done
+			message_line="${marker_spc}${message_line}"
 
-		echo "${frame_vertical_left}${text:0:${content_width}}${frame_vertical_right}"
+			while [ ${#message_line} -lt "${content_span}" ]
+			do
+				message_line="${message_line}${marker_spc}"
+			done
+
+			message_line="${message_line:0:${content_span}}"
+
+			echo "${frame_vertical_left}${message_line}${frame_vertical_right}"
+
+		done <<< "${message_fold}"
 	fi
 
 	echo "${frame_bottom}"
@@ -1887,7 +1899,8 @@ frobulator.ntf () {
 	unset message
 
 	unset character_count
-	unset content_width
+	unset content_span
+	unset message_width
 
 	unset frame_horizontal_top
 	unset frame_horizontal_middle
@@ -1903,6 +1916,10 @@ frobulator.ntf () {
 	unset frame_bottom_left
 	unset frame_bottom_right
 
+	unset frame_vertical_left_count
+	unset frame_vertical_right_count
+	unset marker_spc_count
+
 	unset line_top
 	unset line_middle
 	unset line_bottom
@@ -1911,7 +1928,8 @@ frobulator.ntf () {
 	unset frame_middle
 	unset frame_bottom
 
-	unset text
+	unset message_fold
+	unset message_line
 
 }
 

@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="05-26-2026"
+# version="05-27-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -1589,7 +1589,7 @@ frobulator.sep () {
 # │ message                                                                    │
 # └────────────────────────────────────────────────────────────────────────────┘
 
-frobulator.ntf ( ) {
+frobulator.ntf () {
 
 	local style
 	local title
@@ -1670,7 +1670,7 @@ frobulator.ntf ( ) {
 
 	content_width=$(( character_count - 2 ))
 
-	# defaults
+	# default frame style
 
 	frame_horizontal_top='─'
 	frame_horizontal_middle='─'
@@ -1686,14 +1686,14 @@ frobulator.ntf ( ) {
 	frame_bottom_left='└'
 	frame_bottom_right='┘'
 
-	# styling
+	# alternate frame styles
 
 	if [ "${style}" = "round" ]
 	then
 		frame_top_left='╭'
 		frame_top_right='╮'
 		frame_bottom_left='╰'
-		frame_bottom_right='╯'
+		frame_bottom_right='╯'ing
 
 	elif [ "${style}" = "skel" ]
 	then

@@ -827,8 +827,8 @@ frobulator.pmt () {
 
 		for bracket_index in "${!brackets_open[@]}"
 		do
-			if [ "${end_open}" = "${brackets_open[${bracket_index}]}" ] ||
-			[ "${end_close}" = "${brackets_close[${bracket_index}]}" ]
+			if [ "${end_open}" = "${brackets_open[${bracket_index}]}"   ] || \
+			   [ "${end_close}" = "${brackets_close[${bracket_index}]}" ]
 			then
 				# include last string digit for recognition
 

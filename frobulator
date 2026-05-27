@@ -65,7 +65,7 @@ then
 	package_manager="yum"
 fi
 
-# provide character encoding / expansion capabilities for embedded document writes
+# character encoding / expansion capabilities for embedded document writes
 
 # space
 

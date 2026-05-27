@@ -1630,7 +1630,8 @@ frobulator.ntf ( ) {
 	   [ "${1}" = "round"   ] || \
 	   [ "${1}" = "heavy"   ] || \
 	   [ "${1}" = "double"  ] || \
-	   [ "${1}" = "dots" ]
+	   [ "${1}" = "dots"    ] || \
+	   [ "${1}" = "ascii"   ]
 	then
 		style="${1}"
 
@@ -1722,6 +1723,22 @@ frobulator.ntf ( ) {
 		frame_middle_right='╣'
 		frame_bottom_left='╚'
 		frame_bottom_right='╝'
+
+	elif [ "${style}" = "ascii" ]
+	then
+		frame_horizontal_top='-'
+		frame_horizontal_middle='-'
+		frame_horizontal_bottom='-'
+
+		frame_vertical_left='|'
+		frame_vertical_right='|'
+
+		frame_top_left='+'
+		frame_top_right='+'
+		frame_middle_left='+'
+		frame_middle_right='+'
+		frame_bottom_left='+'
+		frame_bottom_right='+'
 
 	elif [ "${style}" = "dots" ]
 	then

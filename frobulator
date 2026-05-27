@@ -1693,7 +1693,7 @@ frobulator.ntf () {
 		frame_top_left='╭'
 		frame_top_right='╮'
 		frame_bottom_left='╰'
-		frame_bottom_right='╯'ing
+		frame_bottom_right='╯'
 
 	elif [ "${style}" = "skel" ]
 	then

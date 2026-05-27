@@ -897,12 +897,12 @@ frobulator.pmt () {
 	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
 
-span_count=$(( span_length - begin_length - end_length ))
+	span_count=$(( span_length - begin_length - end_length ))
 
-if [ "${span_count}" -lt 0 ]
-then
-	span_count=0
-fi
+	if [ "${span_count}" -lt 0 ]
+	then
+		span_count=0
+	fi
 
 	# set new padding width
 

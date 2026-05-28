@@ -2042,7 +2042,7 @@ frobulator.type () {
 
 	if [ -z "${interval}" ]
 	then
-		interval=3
+		interval=2
 	fi
 
 	for (( characters=0 ; characters<=${string_length} ; characters++ ))

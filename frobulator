@@ -2454,109 +2454,207 @@ frobulator.progress () {
 
 # bar //////////////////////////////////////////////////////////////////////////
 
-# WIP
-
-# use to mark process progress
+# progress bar /////////////////////////////////////////////////////////////////
+#
+# use to run a command with an estimated activity bar
+#
+# note:
+#	this is not a true progress meter
+#	it estimates progress while the process is running
+#	it only reaches 100 percent when the process exits
+#
+# usage:
+#	frobulator.bar sleep 5
+#	frobulator.bar apt-get update
+#	frobulator.bar rsync -av source/ destination/
 
 frobulator.bar () {
 
-	# catch process identifier of last command
+	local command
 
-	PID=$!
+	local process_id
+	local process_exit
 
-	# refresh interval
+	local seconds
 
-	seconds="0.5"
+	local character_count
+	local before_count
+	local after_count
+	local buffer_count
 
-	# total characters for line
+	local progress_current
+	local progress_limit
+	local progress_percent
 
-	count=${terminal_columns}
+	local progress_done
+	local progress_left
 
-	total="100"
+	local progress_done_line
+	local progress_left_line
+	local progress_line
 
-	bar_progress () {
+	local progress_label
 
-		buffer=$(( ${count} - ${before} - ${after} ))
+	local job_control
 
-		ratio=$(( ${current} * 100 / ${total} * 100 ))
-		percentage=$(( ${ratio} / 100 ))
+	if [ $# -eq 0 ]
+	then
+		frobulator.err "Missing command"
+		echo
 
-		done=$(( ( ${percentage} * ${buffer} ) / 100 ))
-		left=$(( ${buffer} - ${done} ))
+		return 1
+	fi
 
-		# substitutions
+	# defaults
 
-		done=$(printf "%${done}s")
-		left=$(printf "%${left}s")
+	seconds="0.25"
 
-		done="${done// //}${reset}"
-		left="${left// /-}${reset}"
+	progress_current=0
+	progress_limit=99
 
-		progress="${done}${left}"
-	}
+	# columns
 
-	while [ -d /proc/"${PID}" ]
+	if [ -z "${terminal_columns}" ]
+	then
+		character_count="${span_characters}"
+	else
+		character_count="${terminal_columns}"
+	fi
+
+	# reserved output width
+
+	before_count=0
+	after_count=12
+
+	buffer_count=$(( character_count - before_count - after_count ))
+
+	# run command
+
+	command=${@}
+
+	"${SHELL}" -c "${command}" >> "${sink}" 2>&1 &
+
+	process_id=$!
+
+	# monitor process
+
+	while [ -d /proc/"${process_id}" ]
 	do
-		for (( current=1 ; current<=100 ; current++ ))
-		do
-			before=8	# maximum characters for header:		'[ x ] [ '
-			after=12	# maximum characters for percentage:	' ] [ xxx % ]'
+		# simulated progress
 
-			bar_progress
+		if [ "${progress_current}" -lt 70 ]
+		then
+			progress_current=$(( progress_current + 2 ))
 
-			header="${marker_fwd}"
+		elif [ "${progress_current}" -lt 90 ]
+		then
+			progress_current=$(( progress_current + 1 ))
 
-			bar_before="${marker_spc}[${marker_spc}"
-			bar_after="${marker_spc}]"
+		elif [ "${progress_current}" -lt "${progress_limit}" ]
+		then
+			progress_current=$(( progress_current + 0 ))
 
-			bar="${bar_before}${progress}${bar_after}"
+		fi
 
-			# completion marker padding
+		# progress calculation
 
-			if (( ${current} >= 0 && ${current} <= 9 ))
-			then
-				# handle number spacing: 1-9
+		progress_percent="${progress_current}"
 
-				percentage="00${percentage}"
+		progress_done=$(( progress_percent * buffer_count / 100 ))
+		progress_left=$(( buffer_count - progress_done ))
 
-			elif (( ${current} >= 10 && ${current} <= 99 ))
-			then
-				# handle number spacing: 10-99
+		# progress line
 
-				percentage="0${percentage}"
-			else
-				# handle number spacing: 100-999
+		progress_done_line=$(printf "%${progress_done}s")
+		progress_left_line=$(printf "%${progress_left}s")
 
-				percentage="${percentage}"
-			fi
+		progress_done_line="${progress_done_line// />}"
+		progress_left_line="${progress_left_line// /-}"
 
-			percentage="${bar_before}${percentage}${marker_spc}${marker_prc}${bar_after}"
+		progress_line="${progress_done_line}${progress_left_line}"
 
-			if [ ! -d /proc/"${PID}" ]
-			then
-				current="${total}"
+		# percentage padding
 
-				bar_progress
+		if [ "${progress_percent}" -lt 10 ]
+		then
+			progress_label="00${progress_percent}"
 
-				header="${marker_stp}"
+		elif [ "${progress_percent}" -lt 100 ]
+		then
+			progress_label="0${progress_percent}"
 
-				bar="${bar_before}${progress}${bar_after}"
+		else
+			progress_label="${progress_percent}"
+		fi
 
-				percentage="${bar_before}${percentage}${marker_spc}%${bar_after}"
+		# output
 
-				echo -n -e "\r${header}${bar}${percentage}\c"
+		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}|${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
 
-				break
-			fi
-
-			echo -n -e "\r${header}${bar}${percentage}\c"
-
-			sleep "${seconds}"
-
-		done
+		sleep "${seconds}"
 	done
 
+	# collect exit code
+
+	wait ${process_id}
+
+	process_exit=$?
+
+	# force completion
+
+	progress_percent=100
+
+	progress_done=$(( progress_percent * buffer_count / 100 ))
+	progress_left=$(( buffer_count - progress_done ))
+
+	progress_done_line=$(printf "%${progress_done}s")
+	progress_left_line=$(printf "%${progress_left}s")
+
+	progress_done_line="${progress_done_line// />}"
+	progress_left_line="${progress_left_line// /-}"
+
+	progress_line="${progress_done_line}${progress_left_line}"
+
+	progress_label="100"
+
+	# final output
+
+	if [ "${process_exit}" -eq 0 ]
+	then
+		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}|${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
+	fi
+
 	echo
+
+	# cleanup
+
+	unset command
+
+	unset process_id
+	unset process_exit
+
+	unset seconds
+
+	unset character_count
+	unset before_count
+	unset after_count
+	unset buffer_count
+
+	unset progress_current
+	unset progress_limit
+	unset progress_percent
+
+	unset progress_done
+	unset progress_left
+
+	unset progress_done_line
+	unset progress_left_line
+	unset progress_line
+
+	unset progress_label
+
+	return ${process_exit}
+
 }
 
 # temporary ////////////////////////////////////////////////////////////////////

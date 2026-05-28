@@ -1585,7 +1585,7 @@ frobulator.sep () {
 #
 #
 # usage:	frobulator.ntf "title" "message"
-#			frobulator.ntf [style] "title" "message"
+#			frobulator.ntf [style] [split] "title" "message"
 #
 # command:	frobulator.ntf style "title" "message"
 # result:
@@ -1595,15 +1595,27 @@ frobulator.sep () {
 # ├────────────────────────────────────────────────────────────────────────────┤
 # │ message                                                                    │
 # └────────────────────────────────────────────────────────────────────────────┘
+#
+# command:	frobulator.ntf style split "title" "message"
+# result:
+#
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ title                                                                      │
+# └────────────────────────────────────────────────────────────────────────────┘
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ message                                                                    │
+# └────────────────────────────────────────────────────────────────────────────┘
 
-frobulator.ntf ( ) {
+frobulator.ntf () {
 
 	local style
 	local title
+	local split
 	local message
 
 	local character_count
 	local content_span
+	local title_width
 	local message_width
 
 	local frame_horizontal_top
@@ -1622,6 +1634,7 @@ frobulator.ntf ( ) {
 
 	local frame_vertical_left_count
 	local frame_vertical_right_count
+	local marker_elp_count
 	local marker_spc_count
 
 	local line_top
@@ -1636,6 +1649,7 @@ frobulator.ntf ( ) {
 	local message_line
 
 	title="Notice"
+	split=""
 
 	# arguments
 
@@ -1654,6 +1668,13 @@ frobulator.ntf ( ) {
 		shift
 	fi
 
+	if [ "${1}" = "split" ]
+	then
+		split="true"
+
+		shift
+	fi
+
 	if [ $# -eq 0 ]
 	then
 		title="${title}"
@@ -1668,6 +1689,13 @@ frobulator.ntf ( ) {
 		title="${1}"
 
 		shift
+
+		if [ "${1}" = "split" ]
+		then
+			split="true"
+
+			shift
+		fi
 
 		message="${@}"
 	fi
@@ -1815,10 +1843,9 @@ frobulator.ntf ( ) {
 	content_span=$(( character_count - frame_vertical_left_count - frame_vertical_right_count ))
 
 	title_width=$(( content_span - marker_spc_count - marker_spc_count ))
-
 	message_width=$(( content_span - marker_spc_count - marker_spc_count ))
 
-	# line setup
+	# horizontal frame setup
 
 	while [ ${#line_top} -lt "${content_span}" ]
 	do
@@ -1835,23 +1862,19 @@ frobulator.ntf ( ) {
 		line_bottom="${line_bottom}${frame_horizontal_bottom}"
 	done
 
-	# frame setup
-
 	frame_top="${frame_top_left}${line_top}${frame_top_right}"
 	frame_middle="${frame_middle_left}${line_middle}${frame_middle_right}"
 	frame_bottom="${frame_bottom_left}${line_bottom}${frame_bottom_right}"
 
-	echo "${frame_top}"
+	# title frame
 
-	# title line
+	echo "${frame_top}"
 
 	title="${marker_spc}${title}${marker_spc}"
 
-	# abridge long title
-
 	if [ ${#title} -gt "${content_span}" ]
 	then
-		title="${title:0:$(( content_span - ${marker_elp_count} - ${marker_spc_count} ))}${marker_elp}${marker_spc}"
+		title="${title:0:$(( content_span - marker_elp_count - marker_spc_count ))}${marker_elp}${marker_spc}"
 	fi
 
 	while [ ${#title} -lt "${content_span}" ]
@@ -1861,11 +1884,17 @@ frobulator.ntf ( ) {
 
 	echo "${frame_vertical_left}${title}${frame_vertical_right}"
 
-	# message line
+	# message frame
 
 	if [ -n "${message}" ]
 	then
-		echo "${frame_middle}"
+		if [ -n "${split}" ]
+		then
+			echo "${frame_bottom}"
+			echo "${frame_top}"
+		else
+			echo "${frame_middle}"
+		fi
 
 		if [ ${#message} -gt "${message_width}" ]
 		then
@@ -1888,6 +1917,7 @@ frobulator.ntf ( ) {
 			echo "${frame_vertical_left}${message_line}${frame_vertical_right}"
 
 		done <<< "${message_fold}"
+
 	fi
 
 	echo "${frame_bottom}"
@@ -1896,10 +1926,12 @@ frobulator.ntf ( ) {
 
 	unset style
 	unset title
+	unset split
 	unset message
 
 	unset character_count
 	unset content_span
+	unset title_width
 	unset message_width
 
 	unset frame_horizontal_top
@@ -1918,6 +1950,7 @@ frobulator.ntf ( ) {
 
 	unset frame_vertical_left_count
 	unset frame_vertical_right_count
+	unset marker_elp_count
 	unset marker_spc_count
 
 	unset line_top

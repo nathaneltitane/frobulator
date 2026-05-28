@@ -668,8 +668,8 @@ marker_nul='     '
 
 # special case markers /////////////////////////////////////////////////////////
 
+marker_hnt='//'
 marker_sep='//////'
-
 marker_elp='...'
 marker_idt='      '
 marker_web='https://'
@@ -2015,7 +2015,7 @@ frobulator.script () {
 
 	if [[ "${script}" = *-* ]]
 	then
-		message="${script%-*} // ${version}"
+		message="${script%-*}${marker_hnt}${version}"
 	else
 		message="${script}"
 	fi
@@ -3740,7 +3740,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="information"
 
-		frobulator.inf "Download status" "[ ${url_status_label} // ${url_status} ]"
+		frobulator.inf "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3749,7 +3749,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="success"
 
-		frobulator.scs "Download status" "[ ${url_status_label} // ${url_status} ]"
+		frobulator.scs "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3758,7 +3758,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="redirect"
 
-		frobulator.wrn "Download status" "[ ${url_status_label} // ${url_status} ]"
+		frobulator.wrn "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3767,7 +3767,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="error"
 
-		frobulator.err "Download status" "[ ${url_status_label} // ${url_status} ]"
+		frobulator.err "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
 		echo
 
 		reason="client"
@@ -3778,7 +3778,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="error"
 
-		frobulator.err "Download status""[ ${url_status_label} // ${url_status} ]"
+		frobulator.err "Download status""[ ${url_status_label}${marker_hnt}${url_status} ]"
 		echo
 
 		reason="server"
@@ -3965,7 +3965,7 @@ frobulator.download () {
 	elif [[ "${proceed}" = 0 ]]
 	then
 
-		frobulator.err "Download error" "[ response // ${url_status} ]"
+		frobulator.err "Download error" "[ response${marker_hnt}${url_status} ]"
 		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 
@@ -4060,7 +4060,7 @@ frobulator.upload () {
 	elif [[ "${proceed}" = 0 ]]
 	then
 
-		frobulator.err "Upload error" "[ response // ${url_status} ]"
+		frobulator.err "Upload error" "[ response${marker_hnt}${url_status} ]"
 		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 

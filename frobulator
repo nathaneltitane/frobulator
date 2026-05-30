@@ -846,8 +846,7 @@ frobulator.pmt () {
 
 		end_limit=$(( span_length - begin_length - span_limter ))
 
-		if [ "${end_limit}" -gt 0 ] &&
-		   [ "${end_length}" -gt "${end_limit}" ]
+		if [ "${end_limit}" -gt 0 ] && [ "${end_length}" -gt "${end_limit}" ]
 		then
 			end_start=${end:0:${end_limit}}
 

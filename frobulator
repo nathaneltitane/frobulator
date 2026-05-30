@@ -845,7 +845,7 @@ frobulator.pmt () {
 
 		# preserve span character at minimum of 2 characters
 
-		span_limter=8
+		span_limter=$(( 6 + 2 ))
 
 		end_limit=$(( span_length - begin_length - span_limter ))
 
@@ -3564,7 +3564,7 @@ frobulator.image () {
 		# verify terminal multiplexer instance and type
 
 		if [[ "${TERM}" == screen* ]] || \
-		   [[ "${TERM}" == tmux* ]]
+		   [[ "${TERM}" == tmux*   ]]
 		then
 			printf "\a\033\\"
 		else
@@ -5467,3 +5467,7 @@ frobulator.extract () {
 # normalize line spacing:
 
 echo
+
+frobulator.inf "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+

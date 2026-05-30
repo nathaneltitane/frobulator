@@ -1582,7 +1582,7 @@ frobulator.sep () {
 #
 # framed message block with header:
 # use to separate notices and messages from execution blocks
-# supports message type designation for colored output
+# supports message type designation for colorized output
 #
 #
 # usage:	frobulator.ntf "title" "message"

@@ -63,6 +63,14 @@ then
 elif [[ $(command -v yum) ]]
 then
 	package_manager="yum"
+
+elif [[ $(command -v pip) ]]
+then
+	package_manager="pip"
+
+elif [[ $(command -v pipx) ]]
+then
+	package_manager="pipx"
 fi
 
 # character encoding / expansion capabilities for embedded document writes
@@ -968,166 +976,111 @@ frobulator.pmt () {
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
-frobulator.black () {
+frobulator.color () {
+
+	local color
+
+	color="${1}"
+
+	shift
 
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
-	echo -e "${black}${prompt}${reset}"
+	echo -e "${!color}${prompt}${reset}"
+
+	unset color
+}
+
+frobulator.black () {
+
+	frobulator.color black "${@}"
 }
 
 frobulator.silver () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${silver}${prompt}${reset}"
+	frobulator.color silver "${@}"
 }
 
 frobulator.grey () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${grey}${prompt}${reset}"
+	frobulator.color grey "${@}"
 }
 
 frobulator.white () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${white}${prompt}${reset}"
+	frobulator.color white "${@}"
 }
 
 frobulator.red () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${red}${prompt}${reset}"
+	frobulator.color red "${@}"
 }
 
 frobulator.crimson () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${crimson}${prompt}${reset}"
+	frobulator.color crimson "${@}"
 }
 
 frobulator.green () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${green}${prompt}${reset}"
+	frobulator.color green "${@}"
 }
 
 frobulator.lime () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${lime}${prompt}${reset}"
+	frobulator.color lime "${@}"
 }
 
 frobulator.yellow () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${yellow}${prompt}${reset}"
+	frobulator.color yellow "${@}"
 }
 
 frobulator.orange () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${orange}${prompt}${reset}"
+	frobulator.color orange "${@}"
 }
 
 frobulator.blue () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${blue}${prompt}${reset}"
+	frobulator.color blue "${@}"
 }
 
 frobulator.navy () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${navy}${prompt}${reset}"
+	frobulator.color navy "${@}"
 }
 
 frobulator.magenta () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${magenta}${prompt}${reset}"
+	frobulator.color magenta "${@}"
 }
 
 frobulator.purple () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${purple}${prompt}${reset}"
+	frobulator.color purple "${@}"
 }
 
 frobulator.fuschia () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${fuschia}${prompt}${reset}"
+	frobulator.color fuschia "${@}"
 }
 
 frobulator.pink () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${pink}${prompt}${reset}"
+	frobulator.color pink "${@}"
 }
 
 frobulator.aqua () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${aqua}${prompt}${reset}"
+	frobulator.color aqua "${@}"
 }
 
 frobulator.teal () {
 
-	frobulator.pmt "${@}"
-
-	prompt="${prompt_string[@]}"
-
-	echo -e "${teal}${prompt}${reset}"
+	frobulator.color teal "${@}"
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////
@@ -1662,12 +1615,14 @@ frobulator.ntf () {
 	local frame_middle
 	local frame_bottom
 
-	local message_fold
 	local message_line
 
 	style="square"
+
 	title="Notice"
+
 	split=""
+
 	color=""
 
 	# arguments
@@ -1950,9 +1905,9 @@ frobulator.ntf () {
 
 		if [ ${#message} -gt "${message_width}" ]
 		then
-			message_fold=$(echo "${message}" | fold -s -w "${message_width}")
+			message=$(echo "${message}" | fold -s -w "${message_width}")
 		else
-			message_fold="${message}"
+			message="${message}"
 		fi
 
 		while IFS= read -r message_line
@@ -1968,7 +1923,7 @@ frobulator.ntf () {
 
 			echo -e "${frame_vertical_left}${color}${message_line}${reset}${frame_vertical_right}"
 
-		done <<< "${message_fold}"
+		done <<< "${message}"
 	fi
 
 	echo "${frame_bottom}"
@@ -2014,7 +1969,6 @@ frobulator.ntf () {
 	unset frame_middle
 	unset frame_bottom
 
-	unset message_fold
 	unset message_line
 
 	unset IFS
@@ -5521,3 +5475,5 @@ frobulator.extract () {
 # normalize line spacing:
 
 echo
+
+frobulator.ntf round split err "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."

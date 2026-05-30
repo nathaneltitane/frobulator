@@ -1612,6 +1612,8 @@ frobulator.ntf () {
 	local title
 	local split
 	local message
+	local prompt_type
+	local color
 
 	local character_count
 	local content_span
@@ -1648,32 +1650,66 @@ frobulator.ntf () {
 	local message_fold
 	local message_line
 
+	style="square"
 	title="Notice"
 	split=""
+	color=""
 
 	# arguments
 
-	if [ "${1}" = "square" ] || \
-	   [ "${1}" = "round"  ] || \
-	   [ "${1}" = "heavy"  ] || \
-	   [ "${1}" = "double" ] || \
-	   [ "${1}" = "dots"   ] || \
-	   [ "${1}" = "matrix" ] || \
-	   [ "${1}" = "tech"   ] || \
-	   [ "${1}" = "skel"   ] || \
-	   [ "${1}" = "ascii"  ]
-	then
-		style="${1}"
+	while true
+	do
+		if [ "${1}" = "square" ] || \
+		   [ "${1}" = "round"  ] || \
+		   [ "${1}" = "heavy"  ] || \
+		   [ "${1}" = "double" ] || \
+		   [ "${1}" = "dots"   ] || \
+		   [ "${1}" = "matrix" ] || \
+		   [ "${1}" = "tech"   ] || \
+		   [ "${1}" = "skel"   ] || \
+		   [ "${1}" = "ascii"  ]
+		then
+			style="${1}"
 
-		shift
-	fi
+			shift
 
-	if [ "${1}" = "split" ]
-	then
-		split="true"
+		elif [ "${1}" = "split" ]
+		then
+			split="true"
 
-		shift
-	fi
+			shift
+
+		elif [ "${1}" = "inf" ] || \
+		     [ "${1}" = "wrn" ] || \
+		     [ "${1}" = "msg" ] || \
+		     [ "${1}" = "add" ] || \
+		     [ "${1}" = "rem" ] || \
+		     [ "${1}" = "ret" ] || \
+		     [ "${1}" = "rel" ] || \
+		     [ "${1}" = "fwd" ] || \
+		     [ "${1}" = "rev" ] || \
+		     [ "${1}" = "stp" ] || \
+		     [ "${1}" = "dwl" ] || \
+		     [ "${1}" = "upl" ] || \
+		     [ "${1}" = "lnk" ] || \
+		     [ "${1}" = "scs" ] || \
+		     [ "${1}" = "err" ] || \
+		     [ "${1}" = "ins" ] || \
+		     [ "${1}" = "cpt" ] || \
+		     [ "${1}" = "url" ]
+		then
+			prompt_type="${1}"
+
+			shift
+
+			frobulator."${prompt_type}" > /dev/null
+
+			color=${color_entry[@]}
+
+		else
+			break
+		fi
+	done
 
 	if [ $# -eq 0 ]
 	then
@@ -1882,7 +1918,7 @@ frobulator.ntf () {
 		title="${title}${marker_spc}"
 	done
 
-	echo "${frame_vertical_left}${title}${frame_vertical_right}"
+	echo -e "${frame_vertical_left}${color}${title}${reset}${frame_vertical_right}"
 
 	# message frame
 
@@ -1914,10 +1950,9 @@ frobulator.ntf () {
 
 			message_line="${message_line:0:${content_span}}"
 
-			echo "${frame_vertical_left}${message_line}${frame_vertical_right}"
+			echo -e "${frame_vertical_left}${color}${message_line}${reset}${frame_vertical_right}"
 
 		done <<< "${message_fold}"
-
 	fi
 
 	echo "${frame_bottom}"
@@ -1928,6 +1963,8 @@ frobulator.ntf () {
 	unset title
 	unset split
 	unset message
+	unset prompt_type
+	unset color
 
 	unset character_count
 	unset content_span
@@ -1964,6 +2001,7 @@ frobulator.ntf () {
 	unset message_fold
 	unset message_line
 
+	unset IFS
 }
 
 # separate /////////////////////////////////////////////////////////////////////
@@ -5470,4 +5508,4 @@ echo
 
 frobulator.inf "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
-
+frobulator.ntf round wrn test1 test2

@@ -876,12 +876,12 @@ frobulator.pmt () {
 	if [ "${begin_length}" -ge "${fold}" ]
 	then
 		begin=$(
-				echo "${begin}"						|
-				fold -s -w "${fold}"				|
-				sed 								\
-					-e '2,$'"s/^/${marker_idt}/g"	|
-				sed 								\
-					-e 's/ \\n /\\n\n      /g'
+				echo "${begin}"							|
+					fold -s -w "${fold}"				|
+					sed 								\
+						-e '2,$'"s/^/${marker_idt}/g"	|
+					sed 								\
+						-e 's/ \\n /\\n\n      /g'
 		)
 	fi
 
@@ -4147,9 +4147,9 @@ frobulator.upload () {
 			header="application/x-www-form-urlencoded"
 		fi
 
-		command_upload+=" ${header}"
-		command_upload+=" ${data}"
-		command_upload+=" ${url}"
+		command_upload+="${marker_spc}${header}"
+		command_upload+="${marker_spc}${data}"
+		command_upload+="${marker_spc}${url}"
 
 		${command_upload}
 
@@ -5092,7 +5092,7 @@ frobulator.escalate () {
 
 		# set superuser password prompt
 
-		export SUDO_PROMPT="[ $(tput setaf 3)${USER}$(tput sgr 0) ] >_ ? "
+		export SUDO_PROMPT="[ $(tput setaf 3)${USER}$(tput sgr 0) ] >_ ?${marker_spc}"
 
 		# restart as superuser
 

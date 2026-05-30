@@ -871,13 +871,13 @@ frobulator.pmt () {
 	# indent second line onward (6 spaces) to match line marker (margin_left)
 	# detect newline character and indent onward to match line marker spacing
 
-	fold=$(( "${character_count}" - "${margin_left_length}" ))
+	fold_count=$(( "${character_count}" - "${margin_left_length}" ))
 
-	if [ "${begin_length}" -ge "${fold}" ]
+	if [ "${begin_length}" -ge "${fold_count}" ]
 	then
 		begin=$(
 				echo "${begin}"							|
-					fold -s -w "${fold}"				|
+					fold -s -w "${fold_count}"			|
 					sed 								\
 						-e '2,$'"s/^/${marker_idt}/g"	|
 					sed 								\

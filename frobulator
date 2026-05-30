@@ -1134,41 +1134,31 @@ frobulator.prompt () {
 	local marker
 	local newline
 	local suffix
-	local mode
 
 	color="${1}"
 	marker="${2}"
 	newline="${3}"
 	suffix="${4}"
-	mode="${5}"
 
-	shift 5
+	shift 4
 
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
-	if [ "${mode}" = "set" ]
-	then
-		color_entry=("${!color}")
-
-	elif [ "${mode}" = "clear" ]
-	then
-		unset color_entry
-	fi
+	color_entry=("${!color}")
 
 	if [ "${newline}" = "false" ]
 	then
-		echo -n -e "${color_entry[@]}${marker}${marker_spc}${prompt}${suffix}${reset}"
+		echo -n -e "${!color}${marker}${marker_spc}${prompt}${suffix}${reset}"
 	else
-		echo -e "${color_entry[@]}${marker}${marker_spc}${prompt}${suffix}${reset}"
+		echo -e "${!color}${marker}${marker_spc}${prompt}${suffix}${reset}"
 	fi
 
 	unset color
 	unset marker
 	unset newline
 	unset suffix
-	unset mode
 }
 
 # empty line marker ////////////////////////////////////////////////////////////
@@ -1342,7 +1332,15 @@ frobulator.usr () {
 
 frobulator.nul () {
 
-	frobulator.prompt "" "${marker_nul}" true "" keep "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	color_entry=${color_entry[@]}
+
+	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+
+	unset color_entry
 }
 
 # index line marker ////////////////////////////////////////////////////////////
@@ -1351,7 +1349,14 @@ frobulator.nul () {
 
 frobulator.ind () {
 
-	frobulator.prompt "" "${marker_nul}" true "" clear "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	unset color_entry
+
+	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+
 }
 
 # letter line marker ///////////////////////////////////////////////////////////
@@ -5375,6 +5380,5 @@ frobulator.extract () {
 echo
 
 frobulator.inf xyz terminal_screen_restore +
-
 
 frobulator.ntf round split err "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."

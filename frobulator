@@ -728,13 +728,16 @@ frobulator.pmt () {
 	# prepare span for line marker usage:
 	# [   ] --------------------------------------------------------------...---
 
+	margin_left="${marker_nul}${marker_spc}"
+	margin_left_length=${#margin_left}
+
 	span_length=${#span}
 
 	if [ ${span_length} -le 0 ]
 	then
 		span=${span}
 	else
-		span=${span::-6}
+		span=${span::-${margin_left_length}}
 	fi
 
 	# set span character default:
@@ -768,8 +771,8 @@ frobulator.pmt () {
 
 	if [ $# -ge 2 ]
 	then
-		begin="${begin} "
-		end=" ${end}"
+		begin="${begin}${marker_spc}"
+		end="${marker_spc}${end}"
 
 		begin_length=${#begin}
 		end_length=${#end}
@@ -862,15 +865,13 @@ frobulator.pmt () {
 	begin_length=${#begin}
 	end_length=${#end}
 
-	# 75+ characters per string:
+	# 74+ characters per string:
 	# fold string using word detection at limit
-	# to prevent overstepping 80 characters overall limit
-	# indent second line onward (6 spaces) to match line marker
-	# detect newline character and indent onward (6 spaces) to match line marker
+	# prevent overstepping 80 characters overall limit
+	# indent second line onward (6 spaces) to match line marker (margin_left)
+	# detect newline character and indent onward to match line marker spacing
 
-	margin=5
-
-	fold=$(( "${character_count}" - "${margin}" ))
+	fold=$(( "${character_count}" - "${margin_left_length}" ))
 
 	if [ "${begin_length}" -ge "${fold}" ]
 	then

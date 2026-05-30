@@ -668,6 +668,7 @@ marker_nul='     '
 
 # special case markers /////////////////////////////////////////////////////////
 
+marker_nil=''
 marker_hnt='//'
 marker_sep='//////'
 marker_elp='...'
@@ -1176,6 +1177,19 @@ frobulator.teal () {
 
 # information line marker //////////////////////////////////////////////////////
 
+frobulator.nil () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${white}${marker_nil}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${white}")
+}
+
+# information line marker //////////////////////////////////////////////////////
+
 frobulator.inf () {
 
 	frobulator.pmt "${@}"
@@ -1680,7 +1694,8 @@ frobulator.ntf () {
 
 			shift
 
-		elif [ "${1}" = "inf" ] || \
+		elif [ "${1}" = "nil" ] || \
+			 [ "${1}" = "inf" ] || \
 		     [ "${1}" = "wrn" ] || \
 		     [ "${1}" = "msg" ] || \
 		     [ "${1}" = "add" ] || \
@@ -5506,13 +5521,3 @@ frobulator.extract () {
 # normalize line spacing:
 
 echo
-
-frobulator.inf "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-frobulator.ntf round split wrn test1 test2
-
-frobulator.err "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-frobulator.sep
-
-frobulator.ipt "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."

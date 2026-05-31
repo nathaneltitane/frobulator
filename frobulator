@@ -2447,47 +2447,51 @@ frobulator.progress () {
 
 	# select notification index for transformation
 
-	notification=${notification[0]}
+	notification_action="${notification[0]}"
+	notification_detail="${notification[1]}"
 
 	# set notification to first letter uppercase
 
-	notification="${notification^}"
+	notification_action="${notification_action^}"
 
-	# set notification verb conjugation
+	# set notification action conjugation
 
-	if [ "${notification: -1}" = "e" ]
+	if [ "${notification_action: -1}" = "e" ]
 	then
 		# remove end 'e'
 
-		notification="${notification/%e/}"
+		notification_action="${notification_action/%e/}"
 
-	elif [ "${notification: -1}" = "b" ]
+	elif [ "${notification_action: -1}" = "b" ]
 	then
 		# double end 'b'
 
-		notification="${notification/%b/bb}"
+		notification_action="${notification_action/%b/bb}"
 
-	elif [ "${notification: -1}" = "n" ]
+	elif [ "${notification_action: -1}" = "n" ]
 	then
 		# double end 'n'
 
-		notification="${notification/%n/nn}"
+		notification_action="${notification_action/%n/nn}"
 	fi
 
-	# append verb end
+	# append action end
 
-	notification="${notification/%/ing}"
+	notification_action="${notification_action/%/ing}"
 
 	# append ellipsis
 
 	if [ $# -le 1 ]
 	then
-		notification="${notification/%/$marker_elp}"
+		notification_action="${notification_action/%/$marker_elp}"
 	fi
 
-	notification[0]="${notification}"
-
-	frobulator.pmt ${notification[@]}
+	if [ -n "${notification_detail}" ]
+	then
+		frobulator.pmt "${notification_action}" "${notification_detail}"
+	else
+		frobulator.pmt "${notification_action}"
+	fi
 
 	prompt="${prompt_string[@]}"
 

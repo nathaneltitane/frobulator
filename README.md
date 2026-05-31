@@ -148,7 +148,7 @@ frobulator.color blue "Building" "[ frobulator ]"
 
 All color wrappers use the same prompt formatting rules as `frobulator.color`.
 
-| command |    example    |
+| command | example |
 |---|---|
 | `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
 | `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |
@@ -174,8 +174,8 @@ All color wrappers use the same prompt formatting rules as `frobulator.color`.
 These commands print standard frobulator markers with their configured colors. Most marker commands accept the same prompt arguments: a main string, an optional right-side string, and an optional span character.
 
 | command | purpose | example |
-|---|---|---|
-| `frobulator.nil` | empty marker line | `frobulator.nil "Message" "[ detail ]"` |
+|---|---|
+| `frobulator.nil` | empty marker line `frobulator.nil "Message" "[ detail ]"` |
 | `frobulator.inf` | information line | `frobulator.inf "Message" "[ detail ]"` |
 | `frobulator.wrn` | warning line | `frobulator.wrn "Message" "[ detail ]"` |
 | `frobulator.msg` | message line | `frobulator.msg "Message" "[ detail ]"` |

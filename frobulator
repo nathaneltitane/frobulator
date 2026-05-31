@@ -4517,10 +4517,12 @@ frobulator.require () {
 	do
 		if [[ "${command}" == *'*'* ]]
 		then
-			frobulator.fwd "Expanding package selection${marker_elp}" "[ '${command}' ]"
+			frobulator.fwd "Expanding package selection query" "[ '${command}' ]"
 			echo
 
-			while read query_package
+			packages=$(apt-cache pkgnames)
+
+			while IFS= read -r query_package
 			do
 				if [[ "${query_package}" == ${command} ]]
 				then
@@ -4529,7 +4531,9 @@ frobulator.require () {
 					install_list+=("${query_package}")
 				fi
 
-			done < <(apt-cache pkgnames)
+			done <<< "${packages}"
+
+			unset packages
 
 			echo
 

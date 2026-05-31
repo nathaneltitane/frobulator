@@ -779,8 +779,6 @@ frobulator.escalate
 frobulator.archive
 frobulator.extract
 ```
-
-
 ### Uses:
 
 The following projects incorporate Frobulator in their usage:

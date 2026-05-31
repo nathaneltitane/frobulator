@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="05-30-2026"
+# version="05-31-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -4527,6 +4527,7 @@ frobulator.require () {
 				if [[ "${query_package}" == ${command} ]]
 				then
 					frobulator.add "Package selection found" "[ '${query_package}' ]"
+					echo
 
 					install_list+=("${query_package}")
 				fi

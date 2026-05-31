@@ -47,7 +47,7 @@ The current set of assertions upon which Frobulator is built restricts its funct
 . "${HOME}"/.local/bin/frobulator
 ```
 
-## standard bootstrap
+## standard script bootstrap
 
 ```bash
 #!/bin/bash

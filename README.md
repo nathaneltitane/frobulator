@@ -258,13 +258,13 @@ prompt_arguments=(
 	"[ curl ]"
 )
 
-frobulator.inf "${prompt_arguments[@]}"
+frobulator.fwd "${prompt_arguments[@]}"
 ```
 
 ```bash
 current_user=$(id -u -n)
 
-frobulator.inf "Current user" "[ ${current_user} ]"
+frobulator.wrn "Current user" "[ ${current_user} ]"
 ```
 
 All argument types are normalized internally through `frobulator.pmt`, allowing prompt formatting, alignment, wrapping, and span generation to remain consistent regardless of how values are supplied.

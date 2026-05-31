@@ -4508,46 +4508,59 @@ frobulator.require () {
 
 	frobulator.log "apt-file update"
 
-	if [[ -n "${#list[@]}" ]]
-	then
-		# ${1} - array
-
-		list=(${@:1})
-	else
-		command="${1}"
-
-		list=()
-
-		list+=("${command}")
-	fi
+	list=("${@}")
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
 	echo
 
-	for command in ${list[@]}
+	for command in "${list[@]}"
 	do
-		if [[ -z $(command -v "${command}") ]]
+		if [[ "${command}" == *'*'* ]]
+		then
+			frobulator.fwd "Expanding package selection${marker_elp}" "[ '${command}' ]"
+			echo
+
+			while read query_package
+			do
+				if [[ "${query_package}" == ${command} ]]
+				then
+					frobulator.add "Package selection found" "[ '${query_package}' ]"
+
+					install_list+=("${query_package}")
+				fi
+
+			done < <(apt-cache pkgnames)
+
+			echo
+
+			if [[ "${#install_list[@]}" -ge 1 ]]
+			then
+				frobulator.install "${install_list[@]}"
+
+				install_list=()
+			else
+				frobulator.err "Package selection not found" "[ '${command}' ]"
+				echo
+			fi
+
+		elif [[ -z $(command -v "${command}") ]]
 		then
 			frobulator.fwd "Probing${marker_elp}"
 			echo
-
-			list=()
-
-			# set IFS
 
 			IFS="${marker_spc}"
 
 			query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
 
-			# reset IFS
-
-			IFS=''
+			unset IFS
 
 			while read query_line
 			do
 				IFS=':'
 
 				read query_package query_content <<< "${query_line}"
+
+				unset IFS
 
 				system_binary_directory=/usr/bin
 
@@ -4573,20 +4586,19 @@ frobulator.require () {
 
 				elif [[ "${query_line}" = "" ]]
 				then
-
 					IFS="${marker_spc}"
 
 					query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
 
-					# reset IFS
-
-					IFS=''
+					unset IFS
 
 					while read query_line
 					do
 						IFS=':'
 
 						read query_package query_content <<< "${query_line}"
+
+						unset IFS
 
 						if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
 						then
@@ -4601,16 +4613,14 @@ frobulator.require () {
 							echo
 						fi
 
-					done <<< ${query_filter[@]}
+					done <<< "${query_filter[@]}"
 				fi
 
-			done <<< ${query_filter[@]}
-
-			# install
+			done <<< "${query_filter[@]}"
 
 			if [[ "${#install_list[@]}" -ge 1 ]]
 			then
-				frobulator.install ${install_list[@]}
+				frobulator.install "${install_list[@]}"
 
 				install_list=()
 			fi
@@ -4619,10 +4629,6 @@ frobulator.require () {
 			frobulator.scs "Command provision already present on system" "[ '${command}' ]"
 			echo
 		fi
-
-		# unset array
-
-		list=()
 	done
 }
 

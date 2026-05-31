@@ -4881,7 +4881,7 @@ frobulator.result () {
 		frobulator.err "Setup errors may have been encountered" "[ ${instance} ]"
 		echo
 
-		frobulator.inf "Review setup logs for details" '[ ${PREFIX}/var/log/ ]'
+		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
 	fi
 }

@@ -2504,7 +2504,9 @@ frobulator.progress () {
 			break
 		fi
 
-		echo -n -e "\r${before}${color} \b${ticker:instance++%${#ticker}:1}${reset}${after}${marker_spc}${prompt}\c"
+		ticker=${ticker:instance++%${#ticker}:1}
+
+		echo -n -e "\r${before}${color} \b${ticker}${reset}${after}${marker_spc}${prompt}\c"
 
 		sleep "${seconds}"
 	done

@@ -3819,7 +3819,7 @@ frobulator.download () {
 		then
 			path="${PWD}"
 
-			if [[ -n "${#list[@]}" ]]
+			if [[ "${#list[@]}" -gt 0 ]]
 			then
 				# ${2} - array
 
@@ -3836,7 +3836,7 @@ frobulator.download () {
 		then
 			path="${2}"
 
-			if [[ -n "${#list[@]}" ]]
+			if [[ "${#list[@]}" -gt 0 ]]
 			then
 				# ${3} - array
 
@@ -3859,7 +3859,7 @@ frobulator.download () {
 				path="${PWD}"
 			fi
 
-			if [[ -n "${#list[@]}" ]]
+			if [[ "${#list[@]}" -gt 0 ]]
 			then
 				# ${4} - array
 
@@ -3880,7 +3880,7 @@ frobulator.download () {
 				path="${PWD}"
 			fi
 
-			if [[ -n "${#list[@]}" ]]
+			if [[ "${#list[@]}" -gt 0 ]]
 			then
 				# ${3} - array
 
@@ -3901,7 +3901,7 @@ frobulator.download () {
 							"${path}"
 		fi
 
-		for file in ${list[@]}
+		for file in "${list[@]}"
 		do
 			if [ $# -eq 4 ]
 			then

@@ -200,6 +200,35 @@ These commands print standard frobulator markers using their configured colors. 
 | `frobulator.nul`   | continue line, retain color | `frobulator.nul "continued output"`         |
 | `frobulator.ind`   | continue line, clear color  | `frobulator.ind "continued output"`         |
 
+## argument handling
+
+Most frobulator prompt commands accept either direct string arguments or array-expanded arguments.
+
+Direct arguments:
+
+```bash
+frobulator.inf "Checking dependencies" "[ curl ]"
+```
+
+Array arguments:
+
+```bash
+prompt_arguments=(
+	"Checking dependencies"
+	"[ curl ]"
+)
+
+frobulator.inf "${prompt_arguments[@]}"
+```
+
+Output:
+
+```text
+[ i ] Checking dependencies ///////////////////////////////// [ curl ]
+```
+
+This pattern applies to most commands that forward their arguments through `frobulator.pmt`, including color commands, marker commands, and structured prompt helpers.
+
 ### frobulator.prompt
 
 generic marker/color prompt engine used by status marker wrappers.

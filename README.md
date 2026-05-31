@@ -148,7 +148,7 @@ frobulator.color blue "Building" "[ frobulator ]"
 
 All color wrappers use the same prompt formatting rules as `frobulator.color`.
 
-| command | example |
+| command |    example    |
 |---|---|
 | `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
 | `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |

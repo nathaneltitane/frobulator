@@ -3749,7 +3749,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="information"
 
-		frobulator.inf "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
+		frobulator.inf "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3758,7 +3758,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="success"
 
-		frobulator.scs "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
+		frobulator.scs "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3767,7 +3767,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="redirect"
 
-		frobulator.wrn "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
+		frobulator.wrn "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
 		proceed=1
@@ -3776,7 +3776,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="error"
 
-		frobulator.err "Download status" "[ ${url_status_label}${marker_hnt}${url_status} ]"
+		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
 		reason="client"
@@ -3787,7 +3787,7 @@ if [[ "${url_status}" = [1][0-9][0-9] ]]
 	then
 		url_status_label="error"
 
-		frobulator.err "Download status""[ ${url_status_label}${marker_hnt}${url_status} ]"
+		frobulator.err "Download status""[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
 		reason="server"

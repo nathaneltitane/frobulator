@@ -41,7 +41,745 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 ### Usage:
 
-In progress...
+## source
+
+```bash
+. "${HOME}"/.local/bin/frobulator
+```
+
+## standard bootstrap
+
+```bash
+#!/bin/bash
+
+# dependencies /////////////////////////////////////////////////////////////////
+
+if [ -f "${HOME}"/.local/bin/frobulator ]
+then
+	rm -r -f "${HOME}"/.local/bin/frobulator
+fi
+
+if [[ -z $(command -v frobulator) ]]
+then
+	if [[ $(id -u -n) = "root" ]]
+	then
+		SUDO_HOME=/root
+
+		USER="${SUDO_USER}"
+
+		HOME=/home/"${USER}"
+	fi
+
+	if [[ -z $(command -v curl) ]]
+	then
+		yes | apt-get install curl
+	fi
+
+	if [ ! -d "${HOME}"/.local/bin ]
+	then
+		mkdir -p "${HOME}"/.local/bin
+	fi
+
+	curl -s -L get.frbltr.app > "${HOME}"/.local/bin/frobulator
+
+	chmod +x "${HOME}"/.local/bin/frobulator
+fi
+
+. "${HOME}"/.local/bin/frobulator
+```
+
+## standard script header
+
+```bash
+# superuser ////////////////////////////////////////////////////////////////////
+
+export self_arguments="${@}"
+
+frobulator.escalate
+
+# script ///////////////////////////////////////////////////////////////////////
+
+script=$(basename -- "${BASH_SOURCE[0]}")
+
+# version //////////////////////////////////////////////////////////////////////
+
+version="MM-DD-YY"
+
+# usage ////////////////////////////////////////////////////////////////////////
+
+# prompt ///////////////////////////////////////////////////////////////////////
+
+frobulator.script "Setting up ${script#*-}"
+
+# variables ////////////////////////////////////////////////////////////////////
+
+# defaults /////////////////////////////////////////////////////////////////////
+
+# functions ////////////////////////////////////////////////////////////////////
+```
+
+## prompt formatting
+
+### frobulator.plo
+
+clears and rewrites prompt output above the current cursor position.
+
+```bash
+frobulator.plo 1
+```
+
+### frobulator.pmt
+
+normalizes prompt strings, handles span padding, and folds long lines.
+
+```bash
+frobulator.pmt "Downloading" "[ package.tar.gz ]"
+```
+
+### frobulator.color
+
+generic color engine used by the named color wrappers.
+
+```bash
+frobulator.color blue "Building" "[ frobulator ]"
+```
+
+## color commands
+
+All color wrappers use the same prompt formatting rules as `frobulator.color`.
+
+| command | example |
+|---|---|
+| `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
+| `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |
+| `frobulator.grey` | `frobulator.grey "Highlighted" "[ value ]"` |
+| `frobulator.white` | `frobulator.white "Highlighted" "[ value ]"` |
+| `frobulator.red` | `frobulator.red "Highlighted" "[ value ]"` |
+| `frobulator.crimson` | `frobulator.crimson "Highlighted" "[ value ]"` |
+| `frobulator.green` | `frobulator.green "Highlighted" "[ value ]"` |
+| `frobulator.lime` | `frobulator.lime "Highlighted" "[ value ]"` |
+| `frobulator.yellow` | `frobulator.yellow "Highlighted" "[ value ]"` |
+| `frobulator.orange` | `frobulator.orange "Highlighted" "[ value ]"` |
+| `frobulator.blue` | `frobulator.blue "Highlighted" "[ value ]"` |
+| `frobulator.navy` | `frobulator.navy "Highlighted" "[ value ]"` |
+| `frobulator.magenta` | `frobulator.magenta "Highlighted" "[ value ]"` |
+| `frobulator.purple` | `frobulator.purple "Highlighted" "[ value ]"` |
+| `frobulator.fuschia` | `frobulator.fuschia "Highlighted" "[ value ]"` |
+| `frobulator.pink` | `frobulator.pink "Highlighted" "[ value ]"` |
+| `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
+| `frobulator.teal` | `frobulator.teal "Highlighted" "[ value ]"` |
+
+## prompt marker commands
+
+These commands print standard frobulator markers with their configured colors. Most marker commands accept the same prompt arguments: a main string, an optional right-side string, and an optional span character.
+
+| command | purpose | example |
+|---|---|---|
+| `frobulator.nil` | empty marker line | `frobulator.nil "Message" "[ detail ]"` |
+| `frobulator.inf` | information line | `frobulator.inf "Message" "[ detail ]"` |
+| `frobulator.wrn` | warning line | `frobulator.wrn "Message" "[ detail ]"` |
+| `frobulator.msg` | message line | `frobulator.msg "Message" "[ detail ]"` |
+| `frobulator.add` | add/create line | `frobulator.add "Message" "[ detail ]"` |
+| `frobulator.rem` | remove/delete line | `frobulator.rem "Message" "[ detail ]"` |
+| `frobulator.ret` | retain/keep line | `frobulator.ret "Message" "[ detail ]"` |
+| `frobulator.rel` | release line | `frobulator.rel "Message" "[ detail ]"` |
+| `frobulator.fwd` | forward/progress line | `frobulator.fwd "Message" "[ detail ]"` |
+| `frobulator.rev` | reverse/back line | `frobulator.rev "Message" "[ detail ]"` |
+| `frobulator.stp` | stop line | `frobulator.stp "Message" "[ detail ]"` |
+| `frobulator.dwl` | download line | `frobulator.dwl "Message" "[ detail ]"` |
+| `frobulator.upl` | upload line | `frobulator.upl "Message" "[ detail ]"` |
+| `frobulator.lnk` | link line | `frobulator.lnk "Message" "[ detail ]"` |
+| `frobulator.scs` | success line | `frobulator.scs "Message" "[ detail ]"` |
+| `frobulator.err` | error line | `frobulator.err "Message" "[ detail ]"` |
+| `frobulator.ins` | insert/input line | `frobulator.ins "Message" "[ detail ]"` |
+| `frobulator.cpt` | complete line | `frobulator.cpt "Message" "[ detail ]"` |
+| `frobulator.url` | url line | `frobulator.url "https://example.com"` |
+| `frobulator.ask` | question prompt without newline | `frobulator.ask "Enter value"` |
+| `frobulator.ipt` | input prompt without newline | `frobulator.ipt "Enter value"` |
+| `frobulator.usr` | user prompt without newline | `frobulator.usr "Enter value"` |
+| `frobulator.nul` | continue line retaining the current color | `frobulator.nul "continued output"` |
+| `frobulator.ind` | indented continuation line without retaining color | `frobulator.ind "continued output"` |
+
+### frobulator.prompt
+
+generic marker/color prompt engine used by status marker wrappers.
+
+```bash
+frobulator.prompt blue "${marker_inf}" true "" set "Building" "[ frobulator ]"
+```
+
+## structured prompt helpers
+
+### frobulator.ltr
+
+prints a lettered step marker.
+
+```bash
+frobulator.ltr "a" "Select source directory"
+```
+
+### frobulator.num
+
+prints a numbered step marker.
+
+```bash
+frobulator.num "1" "Install dependencies"
+```
+
+### frobulator.sep
+
+prints a separator line.
+
+```bash
+frobulator.sep
+```
+
+### frobulator.ntf
+
+prints a framed notice block.
+
+```bash
+frobulator.ntf round inf "Notice" "The setup process is ready."
+```
+
+### frobulator.separate
+
+prints a larger separation block for prompts or warnings.
+
+```bash
+frobulator.separate
+```
+
+### frobulator.read
+
+captures user input after prompt helpers.
+
+```bash
+frobulator.ask "Continue?" "[ y/n ]"
+frobulator.read
+```
+
+### frobulator.script
+
+prints a script startup banner.
+
+```bash
+frobulator.script "Setting up ${script#*-}"
+```
+
+### frobulator.type
+
+types text gradually for prompt effects.
+
+```bash
+frobulator.type 0.03 "Preparing environment..."
+```
+
+### frobulator.timeout
+
+shows a timeout marker for a number of seconds.
+
+```bash
+frobulator.timeout 5
+```
+
+### frobulator.clear
+
+clears prompt output during checkpointed script paging.
+
+```bash
+frobulator.clear
+```
+
+### frobulator.countdown
+
+shows a countdown before continuing.
+
+```bash
+frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
+```
+
+## process and progress helpers
+
+### frobulator.process
+
+waits on a background process and prints process completion feedback.
+
+```bash
+apt-get update &
+frobulator.process "Updating package index"
+```
+
+### frobulator.progress
+
+waits on a background process and prints ongoing progress feedback.
+
+```bash
+curl -L "${url}" -o "${file}" &
+frobulator.progress "Downloading" "[ ${file} ]"
+```
+
+### frobulator.bar
+
+runs a command with an estimated progress bar.
+
+```bash
+frobulator.bar sleep 5
+```
+
+### frobulator.temporary
+
+creates temporary directories from a string or array.
+
+```bash
+frobulator.temporary "build"
+```
+
+### frobulator.trap
+
+registers cleanup handling for temporary runtime resources.
+
+```bash
+frobulator.temporary "build"
+frobulator.trap
+```
+
+### frobulator.continue
+
+evaluates and reports the previous command exit status.
+
+```bash
+make all
+frobulator.continue
+```
+
+### frobulator.complete
+
+runs a command and reports completion through frobulator status output.
+
+```bash
+frobulator.complete "make all"
+```
+
+## filesystem helpers
+
+### frobulator.directory
+
+creates directories from a path/name or array.
+
+```bash
+frobulator.directory "${HOME}/.config" "frobulator"
+```
+
+### frobulator.write
+
+appends content to files.
+
+```bash
+frobulator.write "enabled=true" "${HOME}/.config/frobulator" "config"
+```
+
+### frobulator.flag
+
+overwrites content to files, useful for checkpoint flags.
+
+```bash
+frobulator.flag "ready" "${temporary_directory}" "checkpoint"
+```
+
+### frobulator.file
+
+creates files from a path/name or array.
+
+```bash
+frobulator.file "${HOME}/.config/frobulator" "config"
+```
+
+### frobulator.keep
+
+keeps selected files and removes unselected files from a directory.
+
+```bash
+frobulator.keep "${HOME}/Downloads" "important.zip"
+```
+
+### frobulator.delete
+
+deletes selected files from a directory.
+
+```bash
+frobulator.delete "${temporary_directory}" "old-file.tmp"
+```
+
+### frobulator.copy
+
+copies files or directories.
+
+```bash
+frobulator.copy "${source_directory}" "${target_directory}" "config"
+```
+
+### frobulator.move
+
+moves files or directories.
+
+```bash
+frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"
+```
+
+### frobulator.link
+
+creates symbolic links.
+
+```bash
+frobulator.link "${source_directory}" "${target_directory}" "config"
+```
+
+### frobulator.image
+
+handles image-related output/operations.
+
+```bash
+frobulator.image "${image_file}"
+```
+
+## network helpers
+
+### frobulator.http
+
+validates HTTP status before network operations.
+
+```bash
+frobulator.http "https://example.com/file.tar.gz"
+```
+
+### frobulator.status
+
+parses HTTP status responses for download/upload flows.
+
+```bash
+frobulator.status "https://example.com/file.tar.gz"
+```
+
+### frobulator.download
+
+downloads files after status verification.
+
+```bash
+frobulator.download "https://example.com/file.tar.gz" "${download_directory}" "file.tar.gz"
+```
+
+### frobulator.upload
+
+uploads data or files.
+
+```bash
+frobulator.upload POST "https://example.com/upload" "${archive_file}"
+```
+
+## command wrappers
+
+### frobulator.silence
+
+runs a command with all output redirected to the sink.
+
+```bash
+frobulator.silence "apt-get update"
+```
+
+### frobulator.log
+
+runs a command and redirects output to a timestamped log.
+
+```bash
+frobulator.log "apt-get install curl"
+```
+
+## user input helpers
+
+### frobulator.password
+
+captures masked password input.
+
+```bash
+frobulator.password
+```
+
+### frobulator.input
+
+captures and validates user input against an array.
+
+```bash
+options=( "one" "two" "three" )
+frobulator.input options
+```
+
+### frobulator.dialog
+
+generates desktop dialogs through supported desktop helpers.
+
+```bash
+frobulator.dialog "info" "Setup complete"
+```
+
+## package helpers
+
+### frobulator.clean
+
+runs package-manager cleanup.
+
+```bash
+frobulator.clean
+```
+
+### frobulator.hold
+
+marks packages as held/frozen.
+
+```bash
+frobulator.hold "firefox-esr"
+```
+
+### frobulator.release
+
+removes package hold/freeze state.
+
+```bash
+frobulator.release "firefox-esr"
+```
+
+### frobulator.failsafe
+
+updates package sources before installing to avoid missing package errors.
+
+```bash
+frobulator.failsafe "curl"
+```
+
+### frobulator.install
+
+installs packages.
+
+```bash
+frobulator.install "curl"
+```
+
+### frobulator.require
+
+checks and installs required packages.
+
+```bash
+frobulator.require "curl"
+```
+
+### frobulator.reinstall
+
+reinstalls packages.
+
+```bash
+frobulator.reinstall "curl"
+```
+
+### frobulator.update
+
+updates package lists.
+
+```bash
+frobulator.update
+```
+
+### frobulator.upgrade
+
+upgrades installed packages.
+
+```bash
+frobulator.upgrade
+```
+
+### frobulator.purge
+
+purges packages.
+
+```bash
+frobulator.purge "unused-package"
+```
+
+## process, privilege, and result helpers
+
+### frobulator.terminate
+
+forcefully terminates processes.
+
+```bash
+frobulator.terminate "rogue-process"
+```
+
+### frobulator.exit
+
+exits a process/program instance with frobulator messaging.
+
+```bash
+frobulator.exit "setup"
+```
+
+### frobulator.result
+
+reports checkpoint result status.
+
+```bash
+frobulator.result "${checkpoint_file}"
+```
+
+### frobulator.user
+
+prints the active shell user.
+
+```bash
+frobulator.user
+```
+
+### frobulator.assess
+
+assesses privileges and requirements.
+
+```bash
+requirements=( curl git )
+frobulator.assess requirements
+```
+
+### frobulator.escalate
+
+relaunches the current script as superuser.
+
+```bash
+export self_arguments="${@}"
+frobulator.escalate
+```
+
+## archive helpers
+
+### frobulator.archive
+
+creates archives for backup or packaging.
+
+```bash
+frobulator.archive "backup.tar.gz" "gz" "${HOME}/Documents"
+```
+
+### frobulator.extract
+
+extracts known archive types.
+
+```bash
+frobulator.extract "backup.tar.gz" "${target_directory}"
+```
+
+## complete command index
+
+```text
+frobulator.plo
+frobulator.pmt
+frobulator.color
+frobulator.black
+frobulator.silver
+frobulator.grey
+frobulator.white
+frobulator.red
+frobulator.crimson
+frobulator.green
+frobulator.lime
+frobulator.yellow
+frobulator.orange
+frobulator.blue
+frobulator.navy
+frobulator.magenta
+frobulator.purple
+frobulator.fuschia
+frobulator.pink
+frobulator.aqua
+frobulator.teal
+frobulator.prompt
+frobulator.nil
+frobulator.inf
+frobulator.wrn
+frobulator.msg
+frobulator.add
+frobulator.rem
+frobulator.ret
+frobulator.rel
+frobulator.fwd
+frobulator.rev
+frobulator.stp
+frobulator.dwl
+frobulator.upl
+frobulator.lnk
+frobulator.scs
+frobulator.err
+frobulator.ins
+frobulator.cpt
+frobulator.url
+frobulator.ask
+frobulator.ipt
+frobulator.usr
+frobulator.nul
+frobulator.ind
+frobulator.ltr
+frobulator.num
+frobulator.sep
+frobulator.ntf
+frobulator.separate
+frobulator.read
+frobulator.script
+frobulator.type
+frobulator.timeout
+frobulator.clear
+frobulator.countdown
+frobulator.process
+frobulator.progress
+frobulator.bar
+frobulator.temporary
+frobulator.trap
+frobulator.continue
+frobulator.complete
+frobulator.directory
+frobulator.write
+frobulator.flag
+frobulator.file
+frobulator.keep
+frobulator.delete
+frobulator.copy
+frobulator.move
+frobulator.link
+frobulator.image
+frobulator.http
+frobulator.status
+frobulator.download
+frobulator.upload
+frobulator.silence
+frobulator.log
+frobulator.password
+frobulator.input
+frobulator.clean
+frobulator.hold
+frobulator.release
+frobulator.failsafe
+frobulator.install
+frobulator.require
+frobulator.reinstall
+frobulator.update
+frobulator.upgrade
+frobulator.purge
+frobulator.dialog
+frobulator.terminate
+frobulator.exit
+frobulator.result
+frobulator.user
+frobulator.assess
+frobulator.escalate
+frobulator.archive
+frobulator.extract
+```
+
 
 ### Uses:
 

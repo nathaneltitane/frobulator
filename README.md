@@ -194,11 +194,11 @@ These commands print standard frobulator markers with their configured colors. M
 | `frobulator.ins` | insert/input line | `frobulator.ins "Message" "[ detail ]"` |
 | `frobulator.cpt` | complete line | `frobulator.cpt "Message" "[ detail ]"` |
 | `frobulator.url` | url line | `frobulator.url "https://example.com"` |
-| `frobulator.ask` | question prompt without newline | `frobulator.ask "Enter value"` |
-| `frobulator.ipt` | input prompt without newline | `frobulator.ipt "Enter value"` |
-| `frobulator.usr` | user prompt without newline | `frobulator.usr "Enter value"` |
-| `frobulator.nul` | continue line retaining the current color | `frobulator.nul "continued output"` |
-| `frobulator.ind` | indented continuation line without retaining color | `frobulator.ind "continued output"` |
+| `frobulator.ask` | question prompt: no newline | `frobulator.ask "Enter value"` |
+| `frobulator.ipt` | input prompt: no newline | `frobulator.ipt "Enter value"` |
+| `frobulator.usr` | user prompt: no newline | `frobulator.usr "Enter value"` |
+| `frobulator.nul` | continue line: retains color | `frobulator.nul "continued output"` |
+| `frobulator.ind` | index/indent continue line: does not retain color | `frobulator.ind "continued output"` |
 
 ### frobulator.prompt
 

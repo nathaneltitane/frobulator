@@ -1343,7 +1343,7 @@ frobulator.nul () {
 	unset color_entry
 }
 
-# index line marker ////////////////////////////////////////////////////////////
+# index / indent line marker ///////////////////////////////////////////////////
 
 # use to carry over prompts without adding a line marker without retaining color
 

@@ -148,57 +148,57 @@ frobulator.color blue "Building" "[ frobulator ]"
 
 All color wrappers use the same prompt formatting rules as `frobulator.color`.
 
-| command | example |
-|---|---|
-| `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
-| `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |
-| `frobulator.grey` | `frobulator.grey "Highlighted" "[ value ]"` |
-| `frobulator.white` | `frobulator.white "Highlighted" "[ value ]"` |
-| `frobulator.red` | `frobulator.red "Highlighted" "[ value ]"` |
-| `frobulator.crimson` | `frobulator.crimson "Highlighted" "[ value ]"` |
-| `frobulator.green` | `frobulator.green "Highlighted" "[ value ]"` |
-| `frobulator.lime` | `frobulator.lime "Highlighted" "[ value ]"` |
-| `frobulator.yellow` | `frobulator.yellow "Highlighted" "[ value ]"` |
-| `frobulator.orange` | `frobulator.orange "Highlighted" "[ value ]"` |
-| `frobulator.blue` | `frobulator.blue "Highlighted" "[ value ]"` |
-| `frobulator.navy` | `frobulator.navy "Highlighted" "[ value ]"` |
-| `frobulator.magenta` | `frobulator.magenta "Highlighted" "[ value ]"` |
-| `frobulator.purple` | `frobulator.purple "Highlighted" "[ value ]"` |
-| `frobulator.fuschia` | `frobulator.fuschia "Highlighted" "[ value ]"` |
-| `frobulator.pink` | `frobulator.pink "Highlighted" "[ value ]"` |
-| `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
-| `frobulator.teal` | `frobulator.teal "Highlighted" "[ value ]"` |
+| command               | example                                           |
+|-----------------------|---------------------------------------------------|
+| `frobulator.black`    | `frobulator.black "Highlighted" "[ value ]"`      |
+| `frobulator.silver`   | `frobulator.silver "Highlighted" "[ value ]"`     |
+| `frobulator.grey`     | `frobulator.grey "Highlighted" "[ value ]"`       |
+| `frobulator.white`    | `frobulator.white "Highlighted" "[ value ]"`      |
+| `frobulator.red`      | `frobulator.red "Highlighted" "[ value ]"`        |
+| `frobulator.crimson`  | `frobulator.crimson "Highlighted" "[ value ]"`    |
+| `frobulator.green`    | `frobulator.green "Highlighted" "[ value ]"`      |
+| `frobulator.lime`     | `frobulator.lime "Highlighted" "[ value ]"`       |
+| `frobulator.yellow`   | `frobulator.yellow "Highlighted" "[ value ]"`     |
+| `frobulator.orange`   | `frobulator.orange "Highlighted" "[ value ]"`     |
+| `frobulator.blue`     | `frobulator.blue "Highlighted" "[ value ]"`       |
+| `frobulator.navy`     | `frobulator.navy "Highlighted" "[ value ]"`       |
+| `frobulator.magenta`  | `frobulator.magenta "Highlighted" "[ value ]"`    |
+| `frobulator.purple`   | `frobulator.purple "Highlighted" "[ value ]"`     |
+| `frobulator.fuschia`  | `frobulator.fuschia "Highlighted" "[ value ]"`    |
+| `frobulator.pink`     | `frobulator.pink "Highlighted" "[ value ]"`       |
+| `frobulator.aqua`     | `frobulator.aqua "Highlighted" "[ value ]"`       |
+| `frobulator.teal`     | `frobulator.teal "Highlighted" "[ value ]"`       |
 
 ## prompt marker commands
 
-These commands print standard frobulator markers with their configured colors. Most marker commands accept the same prompt arguments: a main string, an optional right-side string, and an optional span character.
+These commands print standard frobulator markers using their configured colors. Most prompt marker commands accept a message, an optional detail string, and an optional fill character.
 
-| command | purpose | example |
-|---|---|
-| `frobulator.nil` | empty marker line `frobulator.nil "Message" "[ detail ]"` |
-| `frobulator.inf` | information line | `frobulator.inf "Message" "[ detail ]"` |
-| `frobulator.wrn` | warning line | `frobulator.wrn "Message" "[ detail ]"` |
-| `frobulator.msg` | message line | `frobulator.msg "Message" "[ detail ]"` |
-| `frobulator.add` | add/create line | `frobulator.add "Message" "[ detail ]"` |
-| `frobulator.rem` | remove/delete line | `frobulator.rem "Message" "[ detail ]"` |
-| `frobulator.ret` | retain/keep line | `frobulator.ret "Message" "[ detail ]"` |
-| `frobulator.rel` | release line | `frobulator.rel "Message" "[ detail ]"` |
-| `frobulator.fwd` | forward/progress line | `frobulator.fwd "Message" "[ detail ]"` |
-| `frobulator.rev` | reverse/back line | `frobulator.rev "Message" "[ detail ]"` |
-| `frobulator.stp` | stop line | `frobulator.stp "Message" "[ detail ]"` |
-| `frobulator.dwl` | download line | `frobulator.dwl "Message" "[ detail ]"` |
-| `frobulator.upl` | upload line | `frobulator.upl "Message" "[ detail ]"` |
-| `frobulator.lnk` | link line | `frobulator.lnk "Message" "[ detail ]"` |
-| `frobulator.scs` | success line | `frobulator.scs "Message" "[ detail ]"` |
-| `frobulator.err` | error line | `frobulator.err "Message" "[ detail ]"` |
-| `frobulator.ins` | insert/input line | `frobulator.ins "Message" "[ detail ]"` |
-| `frobulator.cpt` | complete line | `frobulator.cpt "Message" "[ detail ]"` |
-| `frobulator.url` | url line | `frobulator.url "https://example.com"` |
-| `frobulator.ask` | question prompt: no newline | `frobulator.ask "Enter value"` |
-| `frobulator.ipt` | input prompt: no newline | `frobulator.ipt "Enter value"` |
-| `frobulator.usr` | user prompt: no newline | `frobulator.usr "Enter value"` |
-| `frobulator.nul` | continue line: retains color | `frobulator.nul "continued output"` |
-| `frobulator.ind` | index/indent continue line: does not retain color | `frobulator.ind "continued output"` |
+| command            | purpose                     | example                                     |
+|--------------------|-----------------------------|---------------------------------------------|
+| `frobulator.nil`   | empty marker line           | `frobulator.nil "Message" "[ detail ]"`     |
+| `frobulator.inf`   | information line            | `frobulator.inf "Message" "[ detail ]"`     |
+| `frobulator.wrn`   | warning line                | `frobulator.wrn "Message" "[ detail ]"`     |
+| `frobulator.msg`   | message line                | `frobulator.msg "Message" "[ detail ]"`     |
+| `frobulator.add`   | add/create line             | `frobulator.add "Message" "[ detail ]"`     |
+| `frobulator.rem`   | remove/delete line          | `frobulator.rem "Message" "[ detail ]"`     |
+| `frobulator.ret`   | retain/keep line            | `frobulator.ret "Message" "[ detail ]"`     |
+| `frobulator.rel`   | release line                | `frobulator.rel "Message" "[ detail ]"`     |
+| `frobulator.fwd`   | forward/progress line       | `frobulator.fwd "Message" "[ detail ]"`     |
+| `frobulator.rev`   | reverse/back line           | `frobulator.rev "Message" "[ detail ]"`     |
+| `frobulator.stp`   | stop line                   | `frobulator.stp "Message" "[ detail ]"`     |
+| `frobulator.dwl`   | download line               | `frobulator.dwl "Message" "[ detail ]"`     |
+| `frobulator.upl`   | upload line                 | `frobulator.upl "Message" "[ detail ]"`     |
+| `frobulator.lnk`   | link line                   | `frobulator.lnk "Message" "[ detail ]"`     |
+| `frobulator.scs`   | success line                | `frobulator.scs "Message" "[ detail ]"`     |
+| `frobulator.err`   | error line                  | `frobulator.err "Message" "[ detail ]"`     |
+| `frobulator.ins`   | insert/input line           | `frobulator.ins "Message" "[ detail ]"`     |
+| `frobulator.cpt`   | complete line               | `frobulator.cpt "Message" "[ detail ]"`     |
+| `frobulator.url`   | url line                    | `frobulator.url "https://example.com"`      |
+| `frobulator.ask`   | question prompt (no newline)| `frobulator.ask "Enter value"`              |
+| `frobulator.ipt`   | input prompt (no newline)   | `frobulator.ipt "Enter value"`              |
+| `frobulator.usr`   | user prompt (no newline)    | `frobulator.usr "Enter value"`              |
+| `frobulator.nul`   | continue line, retain color | `frobulator.nul "continued output"`         |
+| `frobulator.ind`   | continue line, clear color  | `frobulator.ind "continued output"`         |
 
 ### frobulator.prompt
 

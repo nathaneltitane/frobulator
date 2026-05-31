@@ -976,111 +976,166 @@ frobulator.pmt () {
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
-frobulator.color () {
-
-	local color
-
-	color="${1}"
-
-	shift
+frobulator.black () {
 
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
-	echo -e "${!color}${prompt}${reset}"
-
-	unset color
-}
-
-frobulator.black () {
-
-	frobulator.color black "${@}"
+	echo -e "${black}${prompt}${reset}"
 }
 
 frobulator.silver () {
 
-	frobulator.color silver "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${prompt}${reset}"
 }
 
 frobulator.grey () {
 
-	frobulator.color grey "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${grey}${prompt}${reset}"
 }
 
 frobulator.white () {
 
-	frobulator.color white "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${white}${prompt}${reset}"
 }
 
 frobulator.red () {
 
-	frobulator.color red "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${red}${prompt}${reset}"
 }
 
 frobulator.crimson () {
 
-	frobulator.color crimson "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${crimson}${prompt}${reset}"
 }
 
 frobulator.green () {
 
-	frobulator.color green "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${green}${prompt}${reset}"
 }
 
 frobulator.lime () {
 
-	frobulator.color lime "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lime}${prompt}${reset}"
 }
 
 frobulator.yellow () {
 
-	frobulator.color yellow "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${yellow}${prompt}${reset}"
 }
 
 frobulator.orange () {
 
-	frobulator.color orange "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${orange}${prompt}${reset}"
 }
 
 frobulator.blue () {
 
-	frobulator.color blue "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${blue}${prompt}${reset}"
 }
 
 frobulator.navy () {
 
-	frobulator.color navy "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${navy}${prompt}${reset}"
 }
 
 frobulator.magenta () {
 
-	frobulator.color magenta "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${prompt}${reset}"
 }
 
 frobulator.purple () {
 
-	frobulator.color purple "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${purple}${prompt}${reset}"
 }
 
 frobulator.fuschia () {
 
-	frobulator.color fuschia "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${fuschia}${prompt}${reset}"
 }
 
 frobulator.pink () {
 
-	frobulator.color pink "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${pink}${prompt}${reset}"
 }
 
 frobulator.aqua () {
 
-	frobulator.color aqua "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${aqua}${prompt}${reset}"
 }
 
 frobulator.teal () {
 
-	frobulator.color teal "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${prompt}${reset}"
 }
 
 # prompt marking ///////////////////////////////////////////////////////////////
@@ -1128,170 +1183,249 @@ frobulator.teal () {
 
 # url [ / ]
 
-frobulator.prompt () {
+# empty line marker ////////////////////////////////////////////////////////////
 
-	local color
-	local marker
-	local newline
-	local suffix
-
-	color="${1}"
-	marker="${2}"
-	newline="${3}"
-	suffix="${4}"
-
-	shift 4
+frobulator.nil () {
 
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
-	color_entry=("${!color}")
+	echo -e "${white}${marker_inf}${marker_spc}${prompt}${reset}"
 
-	if [ "${newline}" = "false" ]
-	then
-		echo -n -e "${!color}${marker}${marker_spc}${prompt}${suffix}${reset}"
-	else
-		echo -e "${!color}${marker}${marker_spc}${prompt}${suffix}${reset}"
-	fi
-
-	unset color
-	unset marker
-	unset newline
-	unset suffix
-}
-
-# empty line marker ////////////////////////////////////////////////////////////
-
-frobulator.nil () {
-
-	frobulator.prompt white "${marker_nil}" true "" "${@}"
+	color_entry=("${white}")
 }
 
 # information line marker //////////////////////////////////////////////////////
 
 frobulator.inf () {
 
-	frobulator.prompt blue "${marker_inf}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${blue}")
 }
 
-# warning line marker //////////////////////////////////////////////////////////
+# warning line marker //////////////////////////////////////////////////////
 
 frobulator.wrn () {
 
-	frobulator.prompt orange "${marker_wrn}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${orange}${marker_wrn}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${orange}")
 }
 
 # message line marker //////////////////////////////////////////////////////////
 
 frobulator.msg () {
 
-	frobulator.prompt navy "${marker_msg}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${navy}${marker_msg}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${navy}")
 }
 
 # add line marker //////////////////////////////////////////////////////////////
 
 frobulator.add () {
 
-	frobulator.prompt lime "${marker_add}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lime}${marker_add}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${lime}")
 }
 
 # remove line marker ///////////////////////////////////////////////////////////
 
 frobulator.rem () {
 
-	frobulator.prompt crimson "${marker_rem}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${crimson}${marker_rem}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${crimson}")
 }
 
 # retain line marker ///////////////////////////////////////////////////////////
 
 frobulator.ret () {
 
-	frobulator.prompt aqua "${marker_ret}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${aqua}${marker_ret}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${aqua}")
 }
 
 # release line marker //////////////////////////////////////////////////////////
 
 frobulator.rel () {
 
-	frobulator.prompt teal "${marker_rel}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${marker_rel}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${teal}")
 }
 
 # forward line marker //////////////////////////////////////////////////////////
 
 frobulator.fwd () {
 
-	frobulator.prompt silver "${marker_fwd}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_fwd}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${silver}")
 }
 
 # reverse line marker //////////////////////////////////////////////////////////
 
 frobulator.rev () {
 
-	frobulator.prompt silver "${marker_rev}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_rev}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${silver}")
 }
 
 # stop line marker /////////////////////////////////////////////////////////////
 
 frobulator.stp () {
 
-	frobulator.prompt grey "${marker_stp}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${grey}${marker_stp}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${grey}")
 }
 
 # download line marker /////////////////////////////////////////////////////////
 
 frobulator.dwl () {
 
-	frobulator.prompt magenta "${marker_bot}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${marker_bot}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${magenta}")
 }
 
 # upload line marker ///////////////////////////////////////////////////////////
 
 frobulator.upl () {
 
-	frobulator.prompt purple "${marker_top}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${purple}${marker_top}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${purple}")
 }
 
 # link line marker /////////////////////////////////////////////////////////////
 
 frobulator.lnk () {
 
-	frobulator.prompt yellow "${marker_stp}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${yellow}${marker_stp}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${yellow}")
 }
 
 # success line marker //////////////////////////////////////////////////////////
 
 frobulator.scs () {
 
-	frobulator.prompt green "${marker_yes}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${green}${marker_yes}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${green}")
 }
 
 # error line marker ////////////////////////////////////////////////////////////
 
 frobulator.err () {
 
-	frobulator.prompt red "${marker_not}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${red}${marker_not}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${red}")
 }
 
 # insert line marker ///////////////////////////////////////////////////////////
 
 frobulator.ins () {
 
-	frobulator.prompt teal "${marker_ipt}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${teal}")
 }
 
 # complete line marker /////////////////////////////////////////////////////////
 
 frobulator.cpt () {
 
-	frobulator.prompt magenta "${marker_cpt}" true "" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${marker_cpt}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${magenta}")
 }
 
 # url line marker //////////////////////////////////////////////////////////////
 
 frobulator.url () {
 
-	frobulator.prompt silver "${marker_url}" true "${marker_spc}" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_url}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color_entry=("${grey}")
 }
@@ -1309,21 +1443,39 @@ frobulator.url () {
 
 frobulator.ask () {
 
-	frobulator.prompt fuschia "${marker_ask}" false "${marker_spc}" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${fuschia}${marker_ask}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${fuschia}")
 }
 
 # input line marker ////////////////////////////////////////////////////////////
 
 frobulator.ipt () {
 
-	frobulator.prompt pink "${marker_add}" false "${marker_spc}" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${pink}${marker_add}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${pink}")
 }
 
 # user line marker /////////////////////////////////////////////////////////////
 
 frobulator.usr () {
 
-	frobulator.prompt grey "${marker_usr}" false "${marker_spc}" "${@}"
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${grey}")
 }
 
 # null line marker /////////////////////////////////////////////////////////////
@@ -1343,7 +1495,7 @@ frobulator.nul () {
 	unset color_entry
 }
 
-# index / indent line marker ///////////////////////////////////////////////////
+# index line marker ////////////////////////////////////////////////////////////
 
 # use to carry over prompts without adding a line marker without retaining color
 

@@ -4849,7 +4849,7 @@ frobulator.exit () {
 
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
-	frobulator.kill "${SHELL}"
+	frobulator.terminate "${SHELL}"
 }
 
 # result ///////////////////////////////////////////////////////////////////////

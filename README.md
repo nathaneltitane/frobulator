@@ -224,7 +224,7 @@ frobulator.inf "${prompt_arguments[@]}"
 Output:
 
 ```text
-[ i ] Checking dependencies ///////////////////////////////// [ curl ]
+[ i ] Checking dependencies /////////////////////////////////////////// [ curl ]
 ```
 
 This pattern applies to most commands that forward their arguments through `frobulator.pmt`, including color commands, marker commands, and structured prompt helpers.
@@ -234,8 +234,8 @@ Arguments may be provided as:
 - Direct strings
 - Variables
 - Arrays
-- Command substitutions
-- Values returned from other frobulator functions
+- Command substitutions that return raw values
+- Values generated elsewhere in the script
 
 Examples:
 
@@ -243,17 +243,13 @@ Examples:
 message="Checking dependencies"
 detail="[ curl ]"
 
-frobulator.inf    \
-	"${message}"  \
-	"${detail}"
+frobulator.inf "${message}" "${detail}"
 ```
 
 ```bash
 package=$(basename "${archive_path}")
 
-frobulator.inf             \
-	"Processing package"   \
-	"[ ${package} ]"
+frobulator.inf "Processing package" "[ ${package} ]"
 ```
 
 ```bash
@@ -266,13 +262,12 @@ frobulator.inf "${prompt_arguments[@]}"
 ```
 
 ```bash
-frobulator.inf \
-	"Current user" \
-	"[ $(frobulator.user) ]"
+current_user=$(id -u -n)
+
+frobulator.inf "Current user" "[ ${current_user} ]"
 ```
 
 All argument types are normalized internally through `frobulator.pmt`, allowing prompt formatting, alignment, wrapping, and span generation to remain consistent regardless of how values are supplied.
-```
 
 ### frobulator.prompt
 

@@ -229,6 +229,51 @@ Output:
 
 This pattern applies to most commands that forward their arguments through `frobulator.pmt`, including color commands, marker commands, and structured prompt helpers.
 
+Arguments may be provided as:
+
+- Direct strings
+- Variables
+- Arrays
+- Command substitutions
+- Values returned from other frobulator functions
+
+Examples:
+
+```bash
+message="Checking dependencies"
+detail="[ curl ]"
+
+frobulator.inf    \
+	"${message}"  \
+	"${detail}"
+```
+
+```bash
+package=$(basename "${archive_path}")
+
+frobulator.inf             \
+	"Processing package"   \
+	"[ ${package} ]"
+```
+
+```bash
+prompt_arguments=(
+	"Checking dependencies"
+	"[ curl ]"
+)
+
+frobulator.inf "${prompt_arguments[@]}"
+```
+
+```bash
+frobulator.inf \
+	"Current user" \
+	"[ $(frobulator.user) ]"
+```
+
+All argument types are normalized internally through `frobulator.pmt`, allowing prompt formatting, alignment, wrapping, and span generation to remain consistent regardless of how values are supplied.
+```
+
 ### frobulator.prompt
 
 generic marker/color prompt engine used by status marker wrappers.

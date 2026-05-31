@@ -2578,7 +2578,7 @@ frobulator.bar () {
 
 frobulator.temporary () {
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -2636,7 +2636,7 @@ frobulator.temporary () {
 
 frobulator.trap () {
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -2799,7 +2799,7 @@ frobulator.directory () {
 	then
 		path="${1}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -2857,7 +2857,7 @@ frobulator.write () {
 	then
 		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -2880,7 +2880,7 @@ frobulator.write () {
 			path="${PWD}"
 		fi
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${3} - array
 
@@ -2941,7 +2941,7 @@ frobulator.flag () {
 	then
 		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -2964,7 +2964,7 @@ frobulator.flag () {
 			path="${PWD}"
 		fi
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${3} - array
 
@@ -3016,7 +3016,7 @@ frobulator.file () {
 	then
 		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${1} - array
 
@@ -3034,7 +3034,7 @@ frobulator.file () {
 	then
 		path="${1}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -3090,7 +3090,7 @@ frobulator.keep () {
 	then
 		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${1} - array
 
@@ -3108,7 +3108,7 @@ frobulator.keep () {
 	then
 		path="${1}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -3183,7 +3183,7 @@ frobulator.delete () {
 	then
 		path="${PWD}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${1} - array
 
@@ -3201,7 +3201,7 @@ frobulator.delete () {
 	then
 		path="${1}"
 
-		if [[ -n "${#list[@]}" ]]
+		if [[ "${#list[@]}" -gt 0 ]]
 		then
 			# ${2} - array
 
@@ -3244,7 +3244,7 @@ frobulator.copy () {
 	source="${1}"
 	target="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${2} - array
 
@@ -3291,7 +3291,7 @@ frobulator.move () {
 	source="${1}"
 	target="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${2} - array
 
@@ -3344,7 +3344,7 @@ frobulator.link () {
 	source="${1}"
 	target="${2}"
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${3} - array
 
@@ -4288,7 +4288,7 @@ frobulator.hold () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4332,7 +4332,7 @@ frobulator.release () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4389,7 +4389,7 @@ frobulator.failsafe () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4438,7 +4438,7 @@ frobulator.install () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4647,7 +4647,7 @@ frobulator.reinstall () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4727,7 +4727,7 @@ frobulator.purge () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
@@ -4923,7 +4923,7 @@ frobulator.user () {
 
 frobulator.assess () {
 
-	if [[ -n "${#list[@]}" ]]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 

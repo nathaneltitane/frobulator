@@ -2232,11 +2232,13 @@ frobulator.process () {
 
 	while [ -d /proc/"${PID}" ]
 	do
+		ticker=${ticker:instance++%${#ticker}:1}
+
 		if [ $# -le 1 ]
 		then
-			echo -n -e "\r${before} \b${ticker:instance++%${#ticker}:1}${after}${marker_spc}${prompt}${marker_elp}\c"
+			echo -n -e "\r${before} \b${ticker}${after}${marker_spc}${prompt}${marker_elp}\c"
 		else
-			echo -n -e "\r${before} \b${ticker:instance++%${#ticker}:1}${after}${marker_spc}${prompt}\c"
+			echo -n -e "\r${before} \b${ticker}${after}${marker_spc}${prompt}\c"
 		fi
 
 		sleep "${seconds}"

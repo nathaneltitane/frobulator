@@ -2078,7 +2078,7 @@ frobulator.script () {
 
 	if [[ "${script}" = *-* ]]
 	then
-		message="${script%-*}${marker_hnt}${version}"
+		message="${script%-*}${marker_spc}${marker_hnt}${marker_spc}${version}"
 	else
 		message="${script}"
 	fi

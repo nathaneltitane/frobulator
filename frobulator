@@ -2281,6 +2281,7 @@ frobulator.progress () {
 		extract
 		download
 		render
+		play
 	)
 
 	purple_list=(

@@ -12,7 +12,79 @@
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
+# script ///////////////////////////////////////////////////////////////////////
+
+script=$(basename -- "${BASH_SOURCE[0]}")
+
 # defaults /////////////////////////////////////////////////////////////////////
+
+install_directory="${HOME}"/.local/bin
+
+install_file="frobulator"
+
+# usage ////////////////////////////////////////////////////////////////////////
+
+if [ $# -eq 0 ]
+then
+	. "${BASH_SOURCE[0]}"
+
+	return 0 2> "${sink}" || exit 0
+fi
+
+while (($#))
+do
+	case "${1}" in
+		-i|--install)
+
+			if [ ! -d "${install_directory}" ]
+			then
+				mkdir -p "${install_directory}"
+			fi
+
+			cp	"${BASH_SOURCE[0]}"		\
+										"${install_directory}"/"${install_file}"
+
+			chmod a+rx					\
+										"${install_directory}"/"${install_file}"
+
+			frobulator.scs "Installed" "[ ${install_directory}/${install_file} ]"
+			echo
+
+			exit 0
+		;;
+
+		-h|--help)
+
+			echo
+			echo "Usage:"
+			echo
+			echo "	. ./frobulator"
+			echo "	./frobulator --install"
+			echo
+			echo "Options:"
+			echo
+			echo "	-i, --install	Install frobulator to ${install_directory}"
+			echo "	-h, --help	Show this help menu"
+			echo
+
+			exit 0
+		;;
+
+		*)
+
+			echo
+			echo "${script}: Unknown option '${1}'"
+			echo "Type './${script} --help' for help and usage information."
+			echo
+
+			exit 1
+		;;
+	esac
+
+	shift
+done
+
+# requirements /////////////////////////////////////////////////////////////////
 
 # provide system shell
 

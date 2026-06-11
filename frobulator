@@ -28,12 +28,21 @@ if [ $# -eq 0 ]
 then
 	. "${BASH_SOURCE[0]}"
 
-	return 0 2> "${sink}" || exit 0
+	if return 0 2> "${sink}"
+	then
+		:
+	else
+		frobulator.scs "Implemented" "[ ${PWD}/${install_file} ]"
+		echo
+
+		exit 0
+	fi
 fi
 
 while (($#))
 do
 	case "${1}" in
+
 		-i|--install)
 
 			if [ ! -d "${install_directory}" ]
@@ -41,16 +50,23 @@ do
 				mkdir -p "${install_directory}"
 			fi
 
-			cp	"${BASH_SOURCE[0]}"		\
-										"${install_directory}"/"${install_file}"
+			source_file="${BASH_SOURCE[0]}"
+			target_file="${install_directory}/${install_file}"
 
-			chmod a+rx					\
-										"${install_directory}"/"${install_file}"
+			if [ "${source_file}" != "${target_file}" ]
+			then
+				cp "${source_file}" "${target_file}"
 
-			frobulator.scs "Installed" "[ ${install_directory}/${install_file} ]"
-			echo
+				chmod a+rx "${target_file}"
 
-			exit 0
+				source "${target_file}"
+
+				frobulator.scs "Installed" "[ ${target_file} ]"
+
+				echo
+
+				exit 0
+			fi
 		;;
 
 		-h|--help)

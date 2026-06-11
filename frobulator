@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="06-04-2026"
+# version="06-11-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -1155,33 +1155,33 @@ frobulator.teal () {
 
 # line markers:
 
-# top [ △ ]
-# bot [ ▽ ]
+# top [  △  ]
+# bot [  ▽  ]
 
-# cpt='[ ¤ ]'
+# cpt [  ¤  ]
 
-# fwd [ ▷ ]
-# rev [ ◁ ]
-# stp [ □ ]
+# fwd [  ▷  ]
+# rev [  ◁  ]
+# stp [  □  ]
 
-# add [ + ]
-# rem [ - ]
+# add [  +  ]
+# rem [  -  ]
 
-# ret [ ● ]
-# rel [ ○ ]
+# ret [  ●  ]
+# rel [  ○  ]
 
-# ask [ ? ]
-# inf [ i ]
-# wrn [ ! ]
+# ask [  ?  ]
+# inf [  i  ]
+# wrn [  !  ]
 
-# ipt [ > ]
-# msg [ # ]
-# usr [ ~ ]
+# ipt [  >  ]
+# msg [  #  ]
+# usr [  ~  ]
 
-# yes [ ✓ ]
-# not [ 𐄂 ]
+# yes [  ✓  ]
+# not [  𐄂  ]
 
-# url [ / ]
+# url [  /  ]
 
 # empty line marker ////////////////////////////////////////////////////////////
 
@@ -1529,8 +1529,8 @@ frobulator.ind () {
 
 frobulator.ltr () {
 
-	before="[ "
-	after=" ]"
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
 
 	letter="${1}"
 
@@ -1561,8 +1561,8 @@ frobulator.ltr () {
 
 frobulator.num () {
 
-	before="[ "
-	after=" ]"
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
 
 	number="${1}"
 
@@ -2221,8 +2221,8 @@ frobulator.process () {
 
 	ticker='/\'
 
-	before="[${marker_spc}"
-	after="${marker_spc}]"
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
 
 	frobulator.pmt "${@}"
 
@@ -2270,8 +2270,8 @@ frobulator.progress () {
 
 	ticker='⎺⎻⎼⎽⎼⎻'
 
-	before="[${marker_spc}"
-	after="${marker_spc}]"
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
 
 	notification=("${@}")
 

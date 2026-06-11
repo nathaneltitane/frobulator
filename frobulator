@@ -642,38 +642,6 @@ else
 	fi
 fi
 
-# line markers /////////////////////////////////////////////////////////////////
-
-marker_top='[ △ ]'
-marker_bot='[ ▽ ]'
-
-marker_fwd='[ ▷ ]'
-marker_rev='[ ◁ ]'
-marker_stp='[ □ ]'
-
-marker_cpt='[ ¤ ]'
-
-marker_add='[ + ]'
-marker_rem='[ - ]'
-
-marker_ret='[ ● ]'
-marker_rel='[ ○ ]'
-
-marker_ask='[ ? ]'
-marker_inf='[ i ]'
-marker_wrn='[ ! ]'
-
-marker_ipt='[ > ]'
-marker_msg='[ # ]'
-marker_usr='[ ~ ]'
-
-marker_yes='[ ✓ ]'
-marker_not='[ 𐄂 ]'
-
-marker_url='[ / ]'
-
-marker_nul='     '
-
 # special case markers /////////////////////////////////////////////////////////
 
 marker_nil=''
@@ -685,6 +653,38 @@ marker_web='https://'
 marker_prc='%'
 marker_spc=' '
 marker_tab='    '
+
+# line markers /////////////////////////////////////////////////////////////////
+
+marker_top='[  △  ]'
+marker_bot='[  ▽  ]'
+
+marker_fwd='[  ▷  ]'
+marker_rev='[  ◁  ]'
+marker_stp='[  □  ]'
+
+marker_cpt='[  ¤  ]'
+
+marker_add='[  + ]'
+marker_rem='[  -  ]'
+
+marker_ret='[  ●  ]'
+marker_rel='[  ○  ]'
+
+marker_ask='[  ?  ]'
+marker_inf='[  i  ]'
+marker_wrn='[  !  ]'
+
+marker_ipt='[  >  ]'
+marker_msg='[  #  ]'
+marker_usr='[  ~  ]'
+
+marker_yes='[  ✓  ]'
+marker_not='[  𐄂  ]'
+
+marker_url='[  /  ]'
+
+marker_nul='       '
 
 # prompt line overwrite (plo) //////////////////////////////////////////////////
 

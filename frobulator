@@ -26,9 +26,11 @@ install_file="frobulator"
 
 if [[ "${BASH_SOURCE[0]}" = "${0}" ]]
 then
+	# implement from local version
+
 	if [ $# -eq 0 ]
 	then
-		. "${BASH_SOURCE[0]}"
+		source "${BASH_SOURCE[0]}"
 
 		if return 0 2> "${sink}"
 		then

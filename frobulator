@@ -34,8 +34,6 @@ then
 		else
 			frobulator.scs "Implemented" "[ ${PWD}/${install_file} ]"
 			echo
-
-			exit 0
 		fi
 	fi
 

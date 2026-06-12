@@ -73,10 +73,7 @@ then
 			-h|--help)
 
 				echo
-				echo "Usage:"
-				echo
-				echo "	. ./frobulator"
-				echo "	./frobulator --install"
+			echo -e "Usage: ./${script} | [OPTION]"
 				echo
 				echo "Options:"
 				echo

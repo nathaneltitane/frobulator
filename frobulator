@@ -81,7 +81,7 @@ then
 				echo "	-h, --help       Show this help menu"
 				echo
 
-				exit 0
+				exit
 			;;
 
 			*)

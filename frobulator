@@ -73,7 +73,7 @@ then
 			-h|--help)
 
 				echo
-			echo -e "Usage: ./${script} | [OPTION]"
+				echo -e "Usage: ./${script} | [OPTION]"
 				echo
 				echo "Options:"
 				echo

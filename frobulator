@@ -2611,50 +2611,6 @@ frobulator.progress () {
 	echo
 }
 
-frobulator.play () {
-
-	if [ -z "$(command -v mpv)" ]
-	then
-		frobulator.require mpv
-	fi
-
-	before="[${marker_spc}"
-	after="${marker_spc}]"
-
-	file="${@}"
-
-	frobulator.pmt "Playing" "${file##*/}"
-
-	prompt="${prompt_string[@]}"
-
-	ticker=(
-		".  "
-		".. "
-		"..."
-		" .."
-		"  ."
-		"   "
-	)
-
-	instance=0
-
-	mpv					\
-		--no-video		\
-		--really-quiet	\
-						"${file}" < "${sink}" > "${sink}" 2>&1 &
-
-	PID=$!
-
-	while [ -d /proc/"${PID}" ]
-	do
-		ticker_frame="${ticker[instance++%${#ticker[@]}]}"
-
-		echo -n -e "\r${before}${ticker_frame}${after}${reset}${marker_spc}${prompt}\c"
-
-		sleep 0.25
-	done
-}
-
 # bar //////////////////////////////////////////////////////////////////////////
 
 # progress bar /////////////////////////////////////////////////////////////////

@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="06-12-2026"
+# version="06-13-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2290,6 +2290,357 @@ frobulator.countdown () {
 	echo
 }
 
+# actions //////////////////////////////////////////////////////////////////////
+
+# action verbage parser:
+# handles simple action verb placement and syntax substitution
+# use in frobulator status item calls
+
+frobulator.action () {
+
+	action="${1}"
+
+	shift
+
+	detail=("${@}")
+
+	# verb dictionaries
+
+	magenta_list=(
+		extract
+		download
+		render
+		play
+		stream
+		decode
+		unpack
+		expand
+		transcode
+		preview
+	)
+
+	purple_list=(
+		archive
+		upload
+		rasterize
+		compress
+		package
+		bundle
+		backup
+		publish
+		encode
+		distribute
+	)
+
+	blue_list=(
+		install
+		export
+		convert
+		configure
+		enable
+		register
+		mount
+		compile
+		integrate
+		initialize
+	)
+
+	navy_list=(
+		reinstall
+		import
+		move
+		restore
+		migrate
+		transfer
+		relocate
+		recover
+		merge
+		adopt
+	)
+
+	red_list=(
+		remove
+		exclude
+		clear
+		delete
+		erase
+		unlink
+		detach
+		disable
+		unload
+		discard
+	)
+
+	crimson_list=(
+		purge
+		expunge
+		sanitize
+		reset
+		obliterate
+		destroy
+		vacuum
+		shred
+		annihilate
+		sterilize
+	)
+
+	yellow_list=(
+		update
+		refresh
+		clone
+		sync
+		fetch
+		pull
+		mirror
+		retrieve
+		reconcile
+		reindex
+	)
+
+	orange_list=(
+		upgrade
+		enhance
+		optimize
+		accelerate
+		improve
+		modernize
+		tune
+		refine
+		strengthen
+		amplify
+	)
+
+	aqua_list=(
+		hold
+		keep
+		wait
+		pause
+		retain
+		reserve
+		preserve
+		cache
+		buffer
+		queue
+	)
+
+	teal_list=(
+		release
+		scan
+		deploy
+		build
+		inspect
+		verify
+		validate
+		test
+		audit
+		check
+	)
+
+	black_list=(
+		clean
+		wipe
+		scrub
+		sweep
+		polish
+		filter
+		normalize
+		tidy
+		repair
+		maintain
+	)
+
+	green_list=(
+		parse
+		resolve
+		analyze
+		interpret
+		evaluate
+		detect
+		identify
+		locate
+		match
+		discover
+	)
+
+	lime_list=(
+		generate
+		spawn
+		create
+		produce
+		make
+		assemble
+		synthesize
+		instantiate
+		fabricate
+		construct
+	)
+
+	silver_list=(
+		evaluate
+		probe
+		assess
+		measure
+		benchmark
+		survey
+		inspect
+		examine
+		diagnose
+		investigate
+	)
+
+	grey_list=(
+		process
+		procede
+		execute
+		run
+		handle
+		perform
+		operate
+		work
+		continue
+		frobulate
+	)
+
+	# action fallback
+
+	if [ -z "${action}" ]
+	then
+		action="frobulate"
+
+		color="${white}"
+	fi
+
+	# color selection
+
+	if [[ "${action}" =~ [a-zA-Z] ]]
+	then
+		if [[ ${magenta_list[*]} =~ "${action}" ]]
+		then
+			color="${magenta}"
+
+		elif [[ ${purple_list[*]} =~ "${action}" ]]
+		then
+			color="${purple}"
+
+		elif [[ ${blue_list[*]} =~ "${action}" ]]
+		then
+			color="${blue}"
+
+		elif [[ ${navy_list[*]} =~ "${action}" ]]
+		then
+			color="${navy}"
+
+		elif [[ ${red_list[*]} =~ "${action}" ]]
+		then
+			color="${red}"
+
+		elif [[ ${crimson_list[*]} =~ "${action}" ]]
+		then
+			color="${crimson}"
+
+		elif [[ ${yellow_list[*]} =~ "${action}" ]]
+		then
+			color="${yellow}"
+
+		elif [[ ${orange_list[*]} =~ "${action}" ]]
+		then
+			color="${orange}"
+
+		elif [[ ${aqua_list[*]} =~ "${action}" ]]
+		then
+			color="${aqua}"
+
+		elif [[ ${teal_list[*]} =~ "${action}" ]]
+		then
+			color="${teal}"
+
+		elif [[ ${black_list[*]} =~ "${action}" ]]
+		then
+			color="${black}"
+
+		elif [[ ${green_list[*]} =~ "${action}" ]]
+		then
+			color="${green}"
+
+		elif [[ ${lime_list[*]} =~ "${action}" ]]
+		then
+			color="${lime}"
+
+		elif [[ ${silver_list[*]} =~ "${action}" ]]
+		then
+			color="${silver}"
+
+		elif [[ ${grey_list[*]} =~ "${action}" ]]
+		then
+			color="${grey}"
+
+		else
+			action="process"
+
+			color="${grey}"
+		fi
+	fi
+
+	# action conjugation
+
+	action="${action^}"
+
+	if [ "${action: -1}" = "e" ]
+	then
+		action="${action/%e/}"
+
+	elif [ "${action: -1}" = "b" ]
+	then
+		action="${action/%b/bb}"
+
+	elif [ "${action: -1}" = "n" ]
+	then
+		action="${action/%n/nn}"
+	fi
+
+	action="${action/%/ing}"
+
+	if [ "${#detail[@]}" -eq 0 ]
+	then
+		action="${action/%/$marker_elp}"
+	fi
+
+	# prompt
+
+	if [ "${#detail[@]}" -gt 0 ]
+	then
+		frobulator.pmt "${action}" "${detail[@]}"
+	else
+		frobulator.pmt "${action}"
+	fi
+
+	progress_prompt="${prompt_string[@]}"
+	progress_color="${color}"
+
+	# cleanup
+
+	unset action
+	unset color
+
+	detail=()
+
+	unset magenta_list
+	unset purple_list
+	unset blue_list
+	unset navy_list
+	unset red_list
+	unset crimson_list
+	unset yellow_list
+	unset orange_list
+	unset aqua_list
+	unset teal_list
+	unset black_list
+	unset green_list
+	unset lime_list
+	unset silver_list
+	unset grey_list
+}
+
 # process //////////////////////////////////////////////////////////////////////
 
 # use as ticker line marker to mark process completion or progress
@@ -2347,6 +2698,8 @@ frobulator.process () {
 # usage:      [process] &
 #             frobulator.progress "[string]"
 
+# progress /////////////////////////////////////////////////////////////////////
+
 frobulator.progress () {
 
 	# catch process identifier of last command
@@ -2360,230 +2713,7 @@ frobulator.progress () {
 	before="[${marker_spc}${marker_spc}"
 	after="${marker_spc}${marker_spc}]"
 
-	notification=("${@}")
-
-	# verb dictionaries
-
-	magenta_list=(
-		extract
-		download
-		render
-		play
-	)
-
-	purple_list=(
-		archive
-		upload
-		rasterize
-	)
-
-	blue_list=(
-		install
-		export
-		convert
-	)
-
-	navy_list=(
-		reinstall
-		import
-		move
-	)
-
-	red_list=(
-		remove
-		exclude
-		clear
-	)
-
-	crimson_list=(
-		purge
-		expunge
-		sanitize
-	)
-
-	yellow_list=(
-		update
-		refresh
-		clone
-		sync
-	)
-
-	orange_list=(
-		upgrade
-		enhance
-		optimize
-	)
-
-	aqua_list=(
-		hold
-		keep
-		wait
-	)
-
-	teal_list=(
-		release
-		scan
-		deploy
-		build
-	)
-
-	black_list=(
-		clean
-		wipe
-		scrub
-	)
-
-	green_list=(
-		parse
-		resolve
-	)
-
-	lime_list=(
-		generate
-		spawn
-	)
-
-	silver_list=(
-		evaluate
-		probe
-	)
-
-	grey_list=(
-		process
-		procede
-	)
-
-	# process alphabetical arguments only
-
-	if [[ "${notification}" =~ [a-zA-Z] ]]
-	then
-		if [[ ${magenta_list[*]} =~ "${notification}" ]]
-		then
-			color="${magenta}"
-
-		elif [[ ${purple_list[*]} =~ "${notification}" ]]
-		then
-			color="${purple}"
-
-		elif [[ ${blue_list[*]} =~ "${notification}" ]]
-		then
-			color="${blue}"
-
-		elif [[ ${navy_list[*]} =~ "${notification}" ]]
-		then
-			color="${navy}"
-
-		elif [[ ${red_list[*]} =~ "${notification}" ]]
-		then
-			color="${red}"
-
-		elif [[ ${crimson_list[*]} =~ "${notification}" ]]
-		then
-			color="${crimson}"
-
-		elif [[ ${yellow_list[*]} =~ "${notification}" ]]
-		then
-			color="${yellow}"
-
-		elif [[ ${orange_list[*]} =~ "${notification}" ]]
-		then
-			color="${orange}"
-
-		elif [[ ${aqua_list[*]} =~ "${notification}" ]]
-		then
-			color="${aqua}"
-
-		elif [[ ${teal_list[*]} =~ "${notification}" ]]
-		then
-			color="${teal}"
-
-		elif [[ ${black_list[*]} =~ "${notification}" ]]
-		then
-			color="${black}"
-
-		elif [[ ${green_list[*]} =~ "${notification}" ]]
-		then
-			color="${green}"
-
-		elif [[ ${lime_list[*]} =~ "${notification}" ]]
-		then
-			color="${lime}"
-
-		elif [[ ${silver_list[*]} =~ "${notification}" ]]
-		then
-			color="${silver}"
-
-		elif [[ ${grey_list[*]} =~ "${notification}" ]]
-		then
-			color="${grey}"
-
-		else
-			# set fallback for unwanted input notification
-
-			notification="process"
-
-			color="${grey}"
-		fi
-	fi
-
-	if [ -z "${notification}" ]
-	then
-		# set fallback for empty input notification
-
-		notification="frobulate"
-
-		color="${white}"
-	fi
-
-	# select notification index for transformation
-
-	notification_action="${notification[0]}"
-	notification_detail="${notification[1]}"
-
-	# set notification to first letter uppercase
-
-	notification_action="${notification_action^}"
-
-	# set notification action conjugation
-
-	if [ "${notification_action: -1}" = "e" ]
-	then
-		# remove end 'e'
-
-		notification_action="${notification_action/%e/}"
-
-	elif [ "${notification_action: -1}" = "b" ]
-	then
-		# double end 'b'
-
-		notification_action="${notification_action/%b/bb}"
-
-	elif [ "${notification_action: -1}" = "n" ]
-	then
-		# double end 'n'
-
-		notification_action="${notification_action/%n/nn}"
-	fi
-
-	# append action end
-
-	notification_action="${notification_action/%/ing}"
-
-	# append ellipsis
-
-	if [ $# -le 1 ]
-	then
-		notification_action="${notification_action/%/$marker_elp}"
-	fi
-
-	if [ -n "${notification_detail}" ]
-	then
-		frobulator.pmt "${notification_action}" "${notification_detail}"
-	else
-		frobulator.pmt "${notification_action}"
-	fi
-
-	prompt="${prompt_string[@]}"
+	frobulator.action "${@}"
 
 	instance=1
 
@@ -2591,12 +2721,7 @@ frobulator.progress () {
 	do
 		ticker_frame="${ticker:instance++%${#ticker}:1}"
 
-		if [ $# -le 1 ]
-		then
-			echo -n -e "\r${before} \b${ticker_frame}${after}${marker_spc}${prompt}${marker_elp}\c"
-		else
-			echo -n -e "\r${before} \b${ticker_frame}${after}${marker_spc}${prompt}\c"
-		fi
+		echo -n -e "\r${before}${progress_color} \b${ticker_frame}${reset}${after}${marker_spc}${progress_prompt}\c"
 
 		sleep "${seconds}"
 	done
@@ -2609,6 +2734,18 @@ frobulator.progress () {
 	# additional 'echo' required due to carriage return
 
 	echo
+
+	# cleanup
+
+	unset PID
+	unset seconds
+	unset ticker
+	unset before
+	unset after
+	unset instance
+	unset ticker_frame
+	unset progress_prompt
+	unset progress_color
 }
 
 # bar //////////////////////////////////////////////////////////////////////////

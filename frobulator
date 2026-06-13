@@ -2581,7 +2581,7 @@ frobulator.action () {
 		fi
 	fi
 
-	# action conjugation
+	# action conjugation / syntactical substitution
 
 	action="${action^}"
 

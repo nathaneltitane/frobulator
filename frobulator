@@ -2585,17 +2585,56 @@ frobulator.action () {
 
 	action="${action^}"
 
-	if [ "${action: -1}" = "e" ]
+	if [ "${action: -2}" = "ie" ]
 	then
+		# die      >>> dying
+		# tie      >>> tying
+
+		action="${action/%ie/y}"
+
+	elif [ "${action: -2}" = "ee" ]
+	then
+		# see      >>> seeing
+		# flee     >>> fleeing
+
+		:
+
+	elif [ "${action: -2}" = "ue" ]
+	then
+		# queue    >>> queueing
+		# issue    >>> issueing
+
+		:
+
+	elif [ "${action: -1}" = "e" ]
+	then
+		# move     >>> moving
+		# remove   >>> removing
+		# archive  >>> archiving
+		# sanitize >>> sanitizing
+		# generate >>> generating
+		# evaluate >>> evaluating
+
 		action="${action/%e/}"
 
-	elif [ "${action: -1}" = "b" ]
+	elif [ "${action: -1}" = "c" ]
 	then
-		action="${action/%b/bb}"
+		# sync     >>> syncing
+		# panic    >>> panicking
+		# picnic   >>> picnicking
 
-	elif [ "${action: -1}" = "n" ]
+		action="${action}k"
+
+	elif [[ "${action}" =~ [aeiou][bcdfghjklmnpqrstvwxyz]$          ]] && \
+	     [[ ! "${action}" =~ [aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] && \
+	     [[ ! "${action}" =~ [wxy]$                                 ]]
 	then
-		action="${action/%n/nn}"
+		# run      >>> running
+		# scrub    >>> scrubbing
+		# begin    >>> beginning
+		# stop     >>> stopping
+
+		action="${action}${action: -1}"
 	fi
 
 	action="${action/%/ing}"
@@ -2694,9 +2733,10 @@ frobulator.process () {
 
 # use as ticker line marker to mark process wait progress
 # use after process marked to for in background
+# refer to frobulator.action for actions list
 
 # usage:      [process] &
-#             frobulator.progress "[string]"
+#             frobulator.progress "[action]"
 
 # progress /////////////////////////////////////////////////////////////////////
 

@@ -43,16 +43,16 @@ then
 
 			-i|--install)
 
-				if [ ! -d "${install_directory}" ]
-				then
-					mkdir -p "${install_directory}"
-				fi
-
 				install_file="frobulator"
 				install_directory="${HOME}"/.local/bin
 
 				source_file="${BASH_SOURCE[0]}"
 				target_file="${install_directory}/${install_file}"
+
+				if [ ! -d "${install_directory}" ]
+				then
+					mkdir -p "${install_directory}"
+				fi
 
 				if [ "${source_file}" != "${target_file}" ]
 				then

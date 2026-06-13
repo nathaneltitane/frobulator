@@ -2625,7 +2625,7 @@ frobulator.action () {
 
 		action="${action}k"
 
-	elif [[ "${action}" =~ [aeiou][bcdfghjklmnpqrstvwxyz]$          ]] && \
+	elif [[   "${action}" =~ [aeiou][bcdfghjklmnpqrstvwxyz]$        ]] && \
 	     [[ ! "${action}" =~ [aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] && \
 	     [[ ! "${action}" =~ [wxy]$                                 ]]
 	then

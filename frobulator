@@ -733,7 +733,7 @@ fi
 
 marker_nil=''
 marker_hnt='//'
-marker_sep='//////'
+marker_sep='///////'
 marker_elp='...'
 marker_idt='      '
 marker_web='https://'

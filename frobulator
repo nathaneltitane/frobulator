@@ -752,7 +752,7 @@ marker_stp='[  □  ]'
 
 marker_cpt='[  ¤  ]'
 
-marker_add='[  + ]'
+marker_add='[  +  ]'
 marker_rem='[  -  ]'
 
 marker_ret='[  ●  ]'

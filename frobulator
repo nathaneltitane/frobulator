@@ -3190,6 +3190,121 @@ frobulator.complete () {
 
 }
 
+# ownership ////////////////////////////////////////////////////////////////////
+
+# use to restore ownership after privileged operations
+
+# usage:      frobulator.ownership [target]
+
+frobulator.ownership () {
+
+	target="${1}"
+
+	# validation
+
+	if [ -z "${target}" ]
+	then
+		frobulator.err "Missing ownership target"
+		echo
+
+		return 1
+	fi
+
+	# determine user ownership source
+
+	if [ -n "${SUDO_USER}" ]
+	then
+		user_name="${SUDO_USER}"
+	else
+		user_name="$(id -u -n)"
+	fi
+
+	# determine user home
+
+	user_home="/home/${user_name}"
+
+	if [ "${user_name}" = "root" ]
+	then
+		user_home="/root"
+	fi
+
+	# resolve target path
+
+	target_path=$(realpath -m "${target}")
+
+	# system ownership paths
+
+	system_paths=(
+		/root
+		/usr
+		/etc
+		/var
+		/opt
+		/boot
+	)
+
+	system_path="false"
+
+	for path in "${system_paths[@]}"
+	do
+		if [[ "${target_path}" = "${path}"   ]] ||
+		   [[ "${target_path}" = "${path}/"* ]]
+		then
+			system_path="true"
+
+			break
+		fi
+	done
+
+	system_paths=()
+
+	# determine ownership context
+
+	if [[ "${target_path}" = "${user_home}"   ]] ||
+	   [[ "${target_path}" = "${user_home}/"* ]]
+	then
+		owner_name="${user_name}"
+
+	elif [ "${system_path}" = "true" ]
+	then
+		owner_name="root"
+
+	else
+		owner_name="${user_name}"
+	fi
+
+	# resolve ownership
+
+	user_id=$(id -u "${owner_name}")
+
+	group_id=$(id -g "${owner_name}")
+
+	# apply ownership
+
+	chown							\
+		"${user_id}:${group_id}"	\
+		--recursive					\
+									"${target}"
+
+	# cleanup
+
+	unset target
+
+	unset user_name
+	unset user_home
+
+	unset target_path
+
+	unset system_path
+
+	unset path
+
+	unset owner_name
+
+	unset user_id
+	unset group_id
+}
+
 # directory ////////////////////////////////////////////////////////////////////
 
 # use to generate directory from argument or array list

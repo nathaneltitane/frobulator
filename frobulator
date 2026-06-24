@@ -3204,7 +3204,7 @@ frobulator.ownership () {
 
 	if [ -z "${target}" ]
 	then
-		frobulator.err "Missing ownership target"
+		frobulator.err "Missing ownership target" "[ target : null ]"
 		echo
 
 		return 1

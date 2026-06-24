@@ -3372,7 +3372,7 @@ frobulator.directory () {
 
 		# set ownership
 
-		chown "${uid}":"${gid}" --recursive "${path}"/"${directory}"
+		frobulator.ownership "${path}"/"${directory}"
 	done
 
 	# unset array
@@ -3452,7 +3452,7 @@ frobulator.write () {
 
 		# set ownership
 
-		chown "${uid}":"${gid}" --recursive "${path}"/"${file}"
+		frobulator.ownership "${path}"/"${file}"
 
 		# set permissions
 
@@ -3536,7 +3536,7 @@ frobulator.flag () {
 
 		# set ownership
 
-		chown "${uid}":"${gid}" --recursive "${path}"/"${file}"
+		frobulator.ownership "${path}"/"${file}"
 
 		# set permissions
 
@@ -3609,7 +3609,7 @@ frobulator.file () {
 
 		# set ownership
 
-		chown "${uid}":"${gid}" --recursive "${path}"/"${file}"
+		frobulator.ownership "${path}"/"${file}"
 	done
 
 	# unset array
@@ -3935,7 +3935,7 @@ frobulator.link () {
 
 			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
 
-			chown "${uid}":"${gid}" --recursive "${target}"/"${link}"
+			frobulator.ownership "${target}"/"${link}"
 		fi
 	done
 

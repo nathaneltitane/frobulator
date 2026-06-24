@@ -3198,17 +3198,15 @@ frobulator.complete () {
 
 frobulator.ownership () {
 
-	target="${1}"
-
-	# validation
-
-	if [ -z "${target}" ]
+	if [ $# -eq 0 ]
 	then
 		frobulator.err "Missing ownership target" "[ target : null ]"
 		echo
 
 		return 1
 	fi
+
+	list=("${@}")
 
 	# determine user ownership source
 
@@ -3228,13 +3226,9 @@ frobulator.ownership () {
 		user_home="/root"
 	fi
 
-	# resolve target path
-
-	target_path=$(realpath -m "${target}")
-
 	# system ownership paths
 
-	system_paths=(
+	system_paths_list=(
 		/root
 		/usr
 		/etc
@@ -3243,48 +3237,56 @@ frobulator.ownership () {
 		/boot
 	)
 
-	system_path="false"
-
-	for path in "${system_paths[@]}"
+	for target in "${list[@]}"
 	do
-		if [[ "${target_path}" = "${path}"   ]] ||
-		   [[ "${target_path}" = "${path}/"* ]]
-		then
-			system_path="true"
+		system_path="false"
 
-			break
+		# resolve target path
+
+		target_path=$(realpath -m "${target}")
+
+		for path in "${system_paths_list[@]}"
+		do
+			if [[ "${target_path}" = "${path}"   ]] || \
+			   [[ "${target_path}" = "${path}/"* ]]
+			then
+				system_path="true"
+
+				break
+			fi
+		done
+
+		# determine ownership context
+
+		if [[ "${target_path}" = "${user_home}"   ]] || \
+		   [[ "${target_path}" = "${user_home}/"* ]]
+		then
+			owner_name="${user_name}"
+
+		elif [ "${system_path}" = "true" ]
+		then
+			owner_name="root"
+
+		else
+			owner_name="${user_name}"
 		fi
+
+		# resolve ownership identities
+
+		user_id=$(id -u "${owner_name}")
+
+		group_id=$(id -g "${owner_name}")
+
+		# apply ownership
+
+		chown							\
+			"${user_id}:${group_id}"	\
+			--recursive					\
+										"${target}"
+
 	done
 
-	system_paths=()
-
-	# determine ownership context
-
-	if [[ "${target_path}" = "${user_home}"   ]] ||
-	   [[ "${target_path}" = "${user_home}/"* ]]
-	then
-		owner_name="${user_name}"
-
-	elif [ "${system_path}" = "true" ]
-	then
-		owner_name="root"
-
-	else
-		owner_name="${user_name}"
-	fi
-
-	# resolve ownership
-
-	user_id=$(id -u "${owner_name}")
-
-	group_id=$(id -g "${owner_name}")
-
-	# apply ownership
-
-	chown							\
-		"${user_id}:${group_id}"	\
-		--recursive					\
-									"${target}"
+	system_paths_list=()
 
 	# cleanup
 

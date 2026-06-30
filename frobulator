@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="06-13-2026"
+# version="06-24-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2256,8 +2256,8 @@ frobulator.countdown () {
 
 	seconds="1"
 
-	before="[${marker_spc}"
-	after="${marker_spc}]"
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
 
 	frobulator.pmt "${@}"
 

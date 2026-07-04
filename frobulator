@@ -1577,7 +1577,7 @@ frobulator.nul () {
 
 	color_entry=${color_entry[@]}
 
-	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+	echo -e "${color_entry}${marker_spc}${marker_spc}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	unset color_entry
 }
@@ -3886,18 +3886,25 @@ frobulator.link () {
 	source="${1}"
 	target="${2}"
 
-	if [[ "${#list[@]}" -gt 0 ]]
+	# validation
+
+	if [ -z "${source}" ] || [ -z "${target}" ]
 	then
-		# ${3} - array
+		frobulator.err "Missing link source or target"
+		echo
 
-		list=(${@:3})
-	else
-		file="${3}"
-
-		list=()
-
-		list+=("${file}")
+		return 1
 	fi
+
+	if [ $# -lt 3 ]
+	then
+		frobulator.err "Missing link item"
+		echo
+
+		return 1
+	fi
+
+	# target directory
 
 	if [ ! -d "${target}" ]
 	then
@@ -3906,44 +3913,104 @@ frobulator.link () {
 						"${target}"
 	fi
 
-	for item in ${list[@]}
-	do
+	# link single item
+
+	if [ $# -eq 3 ]
+	then
+		item="${3}"
+		link="${3}"
+
 		if [ -e "${source}"/"${item}" ]
 		then
-			if [ $# -eq 3 ]
-			then
-				item=${list[0]}
-				link=${list[0]}
-			fi
-
-			if [ $# -eq 4 ]
-			then
-				item=${list[0]}
-				link=${list[1]}
-			fi
-
-			if [[ -d "${source}"/"${item}" ]]
+			if [ -d "${source}"/"${item}" ]
 			then
 				type="directory"
 			fi
 
-			if [[ -f "${source}"/"${item}" ]]
+			if [ -f "${source}"/"${item}" ]
 			then
 				type="file"
 			fi
 
-			frobulator.lnk "Linking ${type}" "[ ${item} ]"
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
 			echo
 
 			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
 
 			frobulator.ownership "${target}"/"${link}"
 		fi
-	done
+	fi
 
-	# unset array
+	# link renamed item
+
+	if [ $# -eq 4 ]
+	then
+		item="${3}"
+		link="${4}"
+
+		if [ -e "${source}"/"${item}" ]
+		then
+			if [ -d "${source}"/"${item}" ]
+			then
+				type="directory"
+			fi
+
+			if [ -f "${source}"/"${item}" ]
+			then
+				type="file"
+			fi
+
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
+			echo
+
+			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
+
+			frobulator.ownership "${target}"/"${link}"
+		fi
+	fi
+
+	# link array
+
+	if [ $# -gt 4 ]
+	then
+		list=("${@:3}")
+
+		for item in "${list[@]}"
+		do
+			link="${item}"
+
+			if [ -e "${source}"/"${item}" ]
+			then
+				if [ -d "${source}"/"${item}" ]
+				then
+					type="directory"
+				fi
+
+				if [ -f "${source}"/"${item}" ]
+				then
+					type="file"
+				fi
+
+				frobulator.lnk "Linking ${type}" "[ ${link} ]"
+				echo
+
+				ln -s -f "${source}"/"${item}" "${target}"/"${link}"
+
+				frobulator.ownership "${target}"/"${link}"
+			fi
+		done
+	fi
+
+	# cleanup
 
 	list=()
+
+	unset source
+	unset target
+
+	unset item
+	unset link
+	unset type
 }
 
 # image ////////////////////////////////////////////////////////////////////////

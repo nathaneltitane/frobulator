@@ -3456,9 +3456,6 @@ frobulator.write () {
 
 		frobulator.ownership "${path}"/"${file}"
 
-		# set permissions
-
-		chmod a+rx "${path}"/"${file}"
 	done
 
 	# unset array

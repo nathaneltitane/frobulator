@@ -1,0 +1,5997 @@
+#!/bin/bash
+
+# dependencies /////////////////////////////////////////////////////////////////
+
+# script ///////////////////////////////////////////////////////////////////////
+
+# version //////////////////////////////////////////////////////////////////////
+
+# version="07-08-2026"
+
+# variables ////////////////////////////////////////////////////////////////////
+
+stamp=$(date +"%m-%d-%Y-%H-%M-%S")
+
+# script ///////////////////////////////////////////////////////////////////////
+
+script=$(basename -- "${BASH_SOURCE[0]}")
+
+# defaults /////////////////////////////////////////////////////////////////////
+
+# usage ////////////////////////////////////////////////////////////////////////
+
+if [[ "${BASH_SOURCE[0]}" = "${0}" ]]
+then
+	# implement from local version
+
+	if [ $# -eq 0 ]
+	then
+		source "${BASH_SOURCE[0]}"
+
+		if return 0 2> "${sink}"
+		then
+			:
+		else
+			frobulator.scs "Implemented" "[ ${PWD}/${install_file} ]"
+			echo
+		fi
+	fi
+
+	while (($#))
+	do
+		case "${1}" in
+
+			-i|--install)
+
+				install_file="frobulator"
+				install_directory="${HOME}"/.local/bin
+
+				source_file="${BASH_SOURCE[0]}"
+				target_file="${install_directory}/${install_file}"
+
+				if [ ! -d "${install_directory}" ]
+				then
+					mkdir -p "${install_directory}"
+				fi
+
+				if [ "${source_file}" != "${target_file}" ]
+				then
+					cp "${source_file}" "${target_file}"
+
+					chmod a+rx "${target_file}"
+
+					source "${target_file}"
+
+					frobulator.scs "Installed" "[ ${target_file} ]"
+
+					echo
+				fi
+			;;
+
+			-h|--help)
+
+				echo
+				echo -e "Usage: ./${script} | [OPTION]"
+				echo
+				echo "Options:"
+				echo
+				echo "	-i, --install    Install frobulator to ${install_directory}"
+				echo "	-h, --help       Show this help menu"
+				echo
+
+				exit
+			;;
+
+			*)
+
+				echo
+				echo "${script}: Unknown option '${1}'"
+				echo "Type './${script} --help' for help and usage information."
+				echo
+
+				exit 1
+			;;
+
+		esac
+
+		shift
+
+	done
+fi
+
+# requirements /////////////////////////////////////////////////////////////////
+
+# provide system shell
+
+if [ -z "${SHELL}" ]
+then
+	if [[ $(command -v /bin/bash) ]]
+	then
+		SHELL=$(command -v /bin/bash)
+	else
+		SHELL=$(command -v /usr/bin/bash)
+	fi
+else
+	SHELL="${SHELL}"
+fi
+
+# provide terminal columns count
+
+terminal_columns=80
+
+# provide fallback for non 'root' assessments
+
+self="${0}"
+
+if [ -z "${script}" ]
+then
+	script="${self}"
+fi
+
+# provide null sink for argument / error / output silencing
+
+if [ -e /dev/null ]
+then
+	sink="/dev/null"
+fi
+
+# package manager //////////////////////////////////////////////////////////////
+
+# detect package manager
+
+if [[ $(command -v apt) ]]
+then
+	package_manager="apt"
+
+elif [[ $(command -v dnf) ]]
+then
+	package_manager="dnf"
+
+elif [[ $(command -v yum) ]]
+then
+	package_manager="yum"
+
+elif [[ $(command -v pip) ]]
+then
+	package_manager="pip"
+
+elif [[ $(command -v pipx) ]]
+then
+	package_manager="pipx"
+fi
+
+# character encoding / expansion capabilities for embedded document writes
+
+# space
+
+SPC="$(printf '\ ')"
+
+# tab
+
+TAB="$(printf '\t')"
+
+# colors ///////////////////////////////////////////////////////////////////////
+
+# 256 colors terminal [0-255]
+
+# 0		Black				#000000	rgb(0,0,0)			hsl(0,0%,0%)
+# 1		Maroon				#800000	rgb(128,0,0)		hsl(0,100%,25%)
+# 2		Green				#008000	rgb(0,128,0)		hsl(120,100%,25%)
+# 3		Olive				#808000	rgb(128,128,0)		hsl(60,100%,25%)
+# 4		Navy				#000080	rgb(0,0,128)		hsl(240,100%,25%)
+# 5		Purple				#800080	rgb(128,0,128)		hsl(300,100%,25%)
+# 6		Teal				#008080	rgb(0,128,128)		hsl(180,100%,25%)
+# 7		Silver				#c0c0c0	rgb(192,192,192)	hsl(0,0%,75%)
+# 8		Grey				#808080	rgb(128,128,128)	hsl(0,0%,50%)
+# 9		Red					#ff0000	rgb(255,0,0)		hsl(0,100%,50%)
+# 10	Lime				#00ff00	rgb(0,255,0)		hsl(120,100%,50%)
+# 11	Yellow				#ffff00	rgb(255,255,0)		hsl(60,100%,50%)
+# 12	Blue				#0000ff	rgb(0,0,255)		hsl(240,100%,50%)
+# 13	Fuchsia				#ff00ff	rgb(255,0,255)		hsl(300,100%,50%)
+# 14	Aqua				#00ffff	rgb(0,255,255)		hsl(180,100%,50%)
+# 15	White				#ffffff	rgb(255,255,255)	hsl(0,0%,100%)
+# 16	Grey0				#000000	rgb(0,0,0)			hsl(0,0%,0%)
+# 17	NavyBlue			#00005f	rgb(0,0,95)			hsl(240,100%,18%)
+# 18	DarkBlue			#000087	rgb(0,0,135)		hsl(240,100%,26%)
+# 19	Blue3				#0000af	rgb(0,0,175)		hsl(240,100%,34%)
+# 20	Blue3				#0000d7	rgb(0,0,215)		hsl(240,100%,42%)
+# 21	Blue1				#0000ff	rgb(0,0,255)		hsl(240,100%,50%)
+# 22	DarkGreen			#005f00	rgb(0,95,0)			hsl(120,100%,18%)
+# 23	DeepSkyBlue4		#005f5f	rgb(0,95,95)		hsl(180,100%,18%)
+# 24	DeepSkyBlue4		#005f87	rgb(0,95,135)		hsl(97,100%,26%)
+# 25	DeepSkyBlue4		#005faf	rgb(0,95,175)		hsl(07,100%,34%)
+# 26	DodgerBlue3			#005fd7	rgb(0,95,215)		hsl(13,100%,42%)
+# 27	DodgerBlue2			#005fff	rgb(0,95,255)		hsl(17,100%,50%)
+# 28	Green4				#008700	rgb(0,135,0)		hsl(120,100%,26%)
+# 29	SpringGreen4		#00875f	rgb(0,135,95)		hsl(62,100%,26%)
+# 30	Turquoise4			#008787	rgb(0,135,135)		hsl(180,100%,26%)
+# 31	DeepSkyBlue3		#0087af	rgb(0,135,175)		hsl(93,100%,34%)
+# 32	DeepSkyBlue3		#0087d7	rgb(0,135,215)		hsl(02,100%,42%)
+# 33	DodgerBlue1			#0087ff	rgb(0,135,255)		hsl(08,100%,50%)
+# 34	Green3				#00af00	rgb(0,175,0)		hsl(120,100%,34%)
+# 35	SpringGreen3		#00af5f	rgb(0,175,95)		hsl(52,100%,34%)
+# 36	DarkCyan			#00af87	rgb(0,175,135)		hsl(66,100%,34%)
+# 37	LightSeaGreen		#00afaf	rgb(0,175,175)		hsl(180,100%,34%)
+# 38	DeepSkyBlue2		#00afd7	rgb(0,175,215)		hsl(91,100%,42%)
+# 39	DeepSkyBlue1		#00afff	rgb(0,175,255)		hsl(98,100%,50%)
+# 40	Green3				#00d700	rgb(0,215,0)		hsl(120,100%,42%)
+# 41	SpringGreen3		#00d75f	rgb(0,215,95)		hsl(46,100%,42%)
+# 42	SpringGreen2		#00d787	rgb(0,215,135)		hsl(57,100%,42%)
+# 43	Cyan3				#00d7af	rgb(0,215,175)		hsl(68,100%,42%)
+# 44	DarkTurquoise		#00d7d7	rgb(0,215,215)		hsl(180,100%,42%)
+# 45	Turquoise2			#00d7ff	rgb(0,215,255)		hsl(89,100%,50%)
+# 46	Green1				#00ff00	rgb(0,255,0)		hsl(120,100%,50%)
+# 47	SpringGreen2		#00ff5f	rgb(0,255,95)		hsl(42,100%,50%)
+# 48	SpringGreen1		#00ff87	rgb(0,255,135)		hsl(51,100%,50%)
+# 49	MediumSpringGreen	#00ffaf	rgb(0,255,175)		hsl(61,100%,50%)
+# 50	Cyan2				#00ffd7	rgb(0,255,215)		hsl(70,100%,50%)
+# 51	Cyan1				#00ffff	rgb(0,255,255)		hsl(180,100%,50%)
+# 52	DarkRed				#5f0000	rgb(95,0,0)			hsl(0,100%,18%)
+# 53	DeepPink4			#5f005f	rgb(95,0,95)		hsl(300,100%,18%)
+# 54	Purple4				#5f0087	rgb(95,0,135)		hsl(82,100%,26%)
+# 55	Purple4				#5f00af	rgb(95,0,175)		hsl(72,100%,34%)
+# 56	Purple3				#5f00d7	rgb(95,0,215)		hsl(66,100%,42%)
+# 57	BlueViolet			#5f00ff	rgb(95,0,255)		hsl(62,100%,50%)
+# 58	Orange4				#5f5f00	rgb(95,95,0)		hsl(60,100%,18%)
+# 59	Grey37				#5f5f5f	rgb(95,95,95)		hsl(0,0%,37%)
+# 60	MediumPurple4		#5f5f87	rgb(95,95,135)		hsl(240,17%,45%)
+# 61	SlateBlue3			#5f5faf	rgb(95,95,175)		hsl(240,33%,52%)
+# 62	SlateBlue3			#5f5fd7	rgb(95,95,215)		hsl(240,60%,60%)
+# 63	RoyalBlue1			#5f5fff	rgb(95,95,255)		hsl(240,100%,68%)
+# 64	Chartreuse4			#5f8700	rgb(95,135,0)		hsl(7,100%,26%)
+# 65	DarkSeaGreen4		#5f875f	rgb(95,135,95)		hsl(120,17%,45%)
+# 66	PaleTurquoise4		#5f8787	rgb(95,135,135)		hsl(180,17%,45%)
+# 67	SteelBlue			#5f87af	rgb(95,135,175)		hsl(210,33%,52%)
+# 68	SteelBlue3			#5f87d7	rgb(95,135,215)		hsl(220,60%,60%)
+# 69	CornflowerBlue		#5f87ff	rgb(95,135,255)		hsl(225,100%,68%)
+# 70	Chartreuse3			#5faf00	rgb(95,175,0)		hsl(7,100%,34%)
+# 71	DarkSeaGreen4		#5faf5f	rgb(95,175,95)		hsl(120,33%,52%)
+# 72	CadetBlue			#5faf87	rgb(95,175,135)		hsl(150,33%,52%)
+# 73	CadetBlue			#5fafaf	rgb(95,175,175)		hsl(180,33%,52%)
+# 74	SkyBlue3			#5fafd7	rgb(95,175,215)		hsl(200,60%,60%)
+# 75	SteelBlue1			#5fafff	rgb(95,175,255)		hsl(210,100%,68%)
+# 76	Chartreuse3			#5fd700	rgb(95,215,0)		hsl(3,100%,42%)
+# 77	PaleGreen3			#5fd75f	rgb(95,215,95)		hsl(120,60%,60%)
+# 78	SeaGreen3			#5fd787	rgb(95,215,135)		hsl(140,60%,60%)
+# 79	Aquamarine3			#5fd7af	rgb(95,215,175)		hsl(160,60%,60%)
+# 80	MediumTurquoise		#5fd7d7	rgb(95,215,215)		hsl(180,60%,60%)
+# 81	SteelBlue1			#5fd7ff	rgb(95,215,255)		hsl(195,100%,68%)
+# 82	Chartreuse2			#5fff00	rgb(95,255,0)		hsl(7,100%,50%)
+# 83	SeaGreen2			#5fff5f	rgb(95,255,95)		hsl(120,100%,68%)
+# 84	SeaGreen1			#5fff87	rgb(95,255,135)		hsl(135,100%,68%)
+# 85	SeaGreen1			#5fffaf	rgb(95,255,175)		hsl(150,100%,68%)
+# 86	Aquamarine1			#5fffd7	rgb(95,255,215)		hsl(165,100%,68%)
+# 87	DarkSlateGray2		#5fffff	rgb(95,255,255)		hsl(180,100%,68%)
+# 88	DarkRed				#870000	rgb(135,0,0)		hsl(0,100%,26%)
+# 89	DeepPink4			#87005f	rgb(135,0,95)		hsl(17,100%,26%)
+# 90	DarkMagenta			#870087	rgb(135,0,135)		hsl(300,100%,26%)
+# 91	DarkMagenta			#8700af	rgb(135,0,175)		hsl(86,100%,34%)
+# 92	DarkViolet			#8700d7	rgb(135,0,215)		hsl(77,100%,42%)
+# 93	Purple				#8700ff	rgb(135,0,255)		hsl(71,100%,50%)
+# 94	Orange4				#875f00	rgb(135,95,0)		hsl(2,100%,26%)
+# 95	LightPink4			#875f5f	rgb(135,95,95)		hsl(0,17%,45%)
+# 96	Plum4				#875f87	rgb(135,95,135)		hsl(300,17%,45%)
+# 97	MediumPurple3		#875faf	rgb(135,95,175)		hsl(270,33%,52%)
+# 98	MediumPurple3		#875fd7	rgb(135,95,215)		hsl(260,60%,60%)
+# 99	SlateBlue1			#875fff	rgb(135,95,255)		hsl(255,100%,68%)
+# 100	Yellow4				#878700	rgb(135,135,0)		hsl(60,100%,26%)
+# 101	Wheat4				#87875f	rgb(135,135,95)		hsl(60,17%,45%)
+# 102	Grey53				#878787	rgb(135,135,135)	hsl(0,0%,52%)
+# 103	LightSlateGrey		#8787af	rgb(135,135,175)	hsl(240,20%,60%)
+# 104	MediumPurple		#8787d7	rgb(135,135,215)	hsl(240,50%,68%)
+# 105	LightSlateBlue		#8787ff	rgb(135,135,255)	hsl(240,100%,76%)
+# 106	Yellow4				#87af00	rgb(135,175,0)		hsl(3,100%,34%)
+# 107	DarkOliveGreen3		#87af5f	rgb(135,175,95)		hsl(90,33%,52%)
+# 108	DarkSeaGreen		#87af87	rgb(135,175,135)	hsl(120,20%,60%)
+# 109	LightSkyBlue3		#87afaf	rgb(135,175,175)	hsl(180,20%,60%)
+# 110	LightSkyBlue3		#87afd7	rgb(135,175,215)	hsl(210,50%,68%)
+# 111	SkyBlue2			#87afff	rgb(135,175,255)	hsl(220,100%,76%)
+# 112	Chartreuse2			#87d700	rgb(135,215,0)		hsl(2,100%,42%)
+# 113	DarkOliveGreen3		#87d75f	rgb(135,215,95)		hsl(100,60%,60%)
+# 114	PaleGreen3			#87d787	rgb(135,215,135)	hsl(120,50%,68%)
+# 115	DarkSeaGreen3		#87d7af	rgb(135,215,175)	hsl(150,50%,68%)
+# 116	DarkSlateGray3		#87d7d7	rgb(135,215,215)	hsl(180,50%,68%)
+# 117	SkyBlue1			#87d7ff	rgb(135,215,255)	hsl(200,100%,76%)
+# 118	Chartreuse1			#87ff00	rgb(135,255,0)		hsl(8,100%,50%)
+# 119	LightGreen			#87ff5f	rgb(135,255,95)		hsl(105,100%,68%)
+# 120	LightGreen			#87ff87	rgb(135,255,135)	hsl(120,100%,76%)
+# 121	PaleGreen1			#87ffaf	rgb(135,255,175)	hsl(140,100%,76%)
+# 122	Aquamarine1			#87ffd7	rgb(135,255,215)	hsl(160,100%,76%)
+# 123	DarkSlateGray1		#87ffff	rgb(135,255,255)	hsl(180,100%,76%)
+# 124	Red3				#af0000	rgb(175,0,0)		hsl(0,100%,34%)
+# 125	DeepPink4			#af005f	rgb(175,0,95)		hsl(27,100%,34%)
+# 126	MediumVioletRed		#af0087	rgb(175,0,135)		hsl(13,100%,34%)
+# 127	Magenta3			#af00af	rgb(175,0,175)		hsl(300,100%,34%)
+# 128	DarkViolet			#af00d7	rgb(175,0,215)		hsl(88,100%,42%)
+# 129	Purple				#af00ff	rgb(175,0,255)		hsl(81,100%,50%)
+# 130	DarkOrange3			#af5f00	rgb(175,95,0)		hsl(2,100%,34%)
+# 131	IndianRed			#af5f5f	rgb(175,95,95)		hsl(0,33%,52%)
+# 132	HotPink3			#af5f87	rgb(175,95,135)		hsl(330,33%,52%)
+# 133	MediumOrchid3		#af5faf	rgb(175,95,175)		hsl(300,33%,52%)
+# 134	MediumOrchid		#af5fd7	rgb(175,95,215)		hsl(280,60%,60%)
+# 135	MediumPurple2		#af5fff	rgb(175,95,255)		hsl(270,100%,68%)
+# 136	DarkGoldenrod		#af8700	rgb(175,135,0)		hsl(6,100%,34%)
+# 137	LightSalmon3		#af875f	rgb(175,135,95)		hsl(30,33%,52%)
+# 138	RosyBrown			#af8787	rgb(175,135,135)	hsl(0,20%,60%)
+# 139	Grey63				#af87af	rgb(175,135,175)	hsl(300,20%,60%)
+# 140	MediumPurple2		#af87d7	rgb(175,135,215)	hsl(270,50%,68%)
+# 141	MediumPurple1		#af87ff	rgb(175,135,255)	hsl(260,100%,76%)
+# 142	Gold3				#afaf00	rgb(175,175,0)		hsl(60,100%,34%)
+# 143	DarkKhaki			#afaf5f	rgb(175,175,95)		hsl(60,33%,52%)
+# 144	NavajoWhite3		#afaf87	rgb(175,175,135)	hsl(60,20%,60%)
+# 145	Grey69				#afafaf	rgb(175,175,175)	hsl(0,0%,68%)
+# 146	LightSteelBlue3		#afafd7	rgb(175,175,215)	hsl(240,33%,76%)
+# 147	LightSteelBlue		#afafff	rgb(175,175,255)	hsl(240,100%,84%)
+# 148	Yellow3				#afd700	rgb(175,215,0)		hsl(1,100%,42%)
+# 149	DarkOliveGreen3		#afd75f	rgb(175,215,95)		hsl(80,60%,60%)
+# 150	DarkSeaGreen3		#afd787	rgb(175,215,135)	hsl(90,50%,68%)
+# 151	DarkSeaGreen2		#afd7af	rgb(175,215,175)	hsl(120,33%,76%)
+# 152	LightCyan3			#afd7d7	rgb(175,215,215)	hsl(180,33%,76%)
+# 153	LightSkyBlue1		#afd7ff	rgb(175,215,255)	hsl(210,100%,84%)
+# 154	GreenYellow			#afff00	rgb(175,255,0)		hsl(8,100%,50%)
+# 155	DarkOliveGreen2		#afff5f	rgb(175,255,95)		hsl(90,100%,68%)
+# 156	PaleGreen1			#afff87	rgb(175,255,135)	hsl(100,100%,76%)
+# 157	DarkSeaGreen2		#afffaf	rgb(175,255,175)	hsl(120,100%,84%)
+# 158	DarkSeaGreen1		#afffd7	rgb(175,255,215)	hsl(150,100%,84%)
+# 159	PaleTurquoise1		#afffff	rgb(175,255,255)	hsl(180,100%,84%)
+# 160	Red3				#d70000	rgb(215,0,0)		hsl(0,100%,42%)
+# 161	DeepPink3			#d7005f	rgb(215,0,95)		hsl(33,100%,42%)
+# 162	DeepPink3			#d70087	rgb(215,0,135)		hsl(22,100%,42%)
+# 163	Magenta3			#d700af	rgb(215,0,175)		hsl(11,100%,42%)
+# 164	Magenta3			#d700d7	rgb(215,0,215)		hsl(300,100%,42%)
+# 165	Magenta2			#d700ff	rgb(215,0,255)		hsl(90,100%,50%)
+# 166	DarkOrange3			#d75f00	rgb(215,95,0)		hsl(6,100%,42%)
+# 167	IndianRed			#d75f5f	rgb(215,95,95)		hsl(0,60%,60%)
+# 168	HotPink3			#d75f87	rgb(215,95,135)		hsl(340,60%,60%)
+# 169	HotPink2			#d75faf	rgb(215,95,175)		hsl(320,60%,60%)
+# 170	Orchid				#d75fd7	rgb(215,95,215)		hsl(300,60%,60%)
+# 171	MediumOrchid1		#d75fff	rgb(215,95,255)		hsl(285,100%,68%)
+# 172	Orange3				#d78700	rgb(215,135,0)		hsl(7,100%,42%)
+# 173	LightSalmon3		#d7875f	rgb(215,135,95)		hsl(20,60%,60%)
+# 174	LightPink3			#d78787	rgb(215,135,135)	hsl(0,50%,68%)
+# 175	Pink3				#d787af	rgb(215,135,175)	hsl(330,50%,68%)
+# 176	Plum3				#d787d7	rgb(215,135,215)	hsl(300,50%,68%)
+# 177	Violet				#d787ff	rgb(215,135,255)	hsl(280,100%,76%)
+# 178	Gold3				#d7af00	rgb(215,175,0)		hsl(8,100%,42%)
+# 179	LightGoldenrod3		#d7af5f	rgb(215,175,95)		hsl(40,60%,60%)
+# 180	Tan					#d7af87	rgb(215,175,135)	hsl(30,50%,68%)
+# 181	MistyRose3			#d7afaf	rgb(215,175,175)	hsl(0,33%,76%)
+# 182	Thistle3			#d7afd7	rgb(215,175,215)	hsl(300,33%,76%)
+# 183	Plum2				#d7afff	rgb(215,175,255)	hsl(270,100%,84%)
+# 184	Yellow3				#d7d700	rgb(215,215,0)		hsl(60,100%,42%)
+# 185	Khaki3				#d7d75f	rgb(215,215,95)		hsl(60,60%,60%)
+# 186	LightGoldenrod2		#d7d787	rgb(215,215,135)	hsl(60,50%,68%)
+# 187	LightYellow3		#d7d7af	rgb(215,215,175)	hsl(60,33%,76%)
+# 188	Grey84				#d7d7d7	rgb(215,215,215)	hsl(0,0%,84%)
+# 189	LightSteelBlue1		#d7d7ff	rgb(215,215,255)	hsl(240,100%,92%)
+# 190	Yellow2				#d7ff00	rgb(215,255,0)		hsl(9,100%,50%)
+# 191	DarkOliveGreen1		#d7ff5f	rgb(215,255,95)		hsl(75,100%,68%)
+# 192	DarkOliveGreen1		#d7ff87	rgb(215,255,135)	hsl(80,100%,76%)
+# 193	DarkSeaGreen1		#d7ffaf	rgb(215,255,175)	hsl(90,100%,84%)
+# 194	Honeydew2			#d7ffd7	rgb(215,255,215)	hsl(120,100%,92%)
+# 195	LightCyan1			#d7ffff	rgb(215,255,255)	hsl(180,100%,92%)
+# 196	Red1				#ff0000	rgb(255,0,0)		hsl(0,100%,50%)
+# 197	DeepPink2			#ff005f	rgb(255,0,95)		hsl(37,100%,50%)
+# 198	DeepPink1			#ff0087	rgb(255,0,135)		hsl(28,100%,50%)
+# 199	DeepPink1			#ff00af	rgb(255,0,175)		hsl(18,100%,50%)
+# 200	Magenta2			#ff00d7	rgb(255,0,215)		hsl(09,100%,50%)
+# 201	Magenta1			#ff00ff	rgb(255,0,255)		hsl(300,100%,50%)
+# 202	OrangeRed1			#ff5f00	rgb(255,95,0)		hsl(2,100%,50%)
+# 203	IndianRed1			#ff5f5f	rgb(255,95,95)		hsl(0,100%,68%)
+# 204	IndianRed1			#ff5f87	rgb(255,95,135)		hsl(345,100%,68%)
+# 205	HotPink				#ff5faf	rgb(255,95,175)		hsl(330,100%,68%)
+# 206	HotPink				#ff5fd7	rgb(255,95,215)		hsl(315,100%,68%)
+# 207	MediumOrchid1		#ff5fff	rgb(255,95,255)		hsl(300,100%,68%)
+# 208	DarkOrange			#ff8700	rgb(255,135,0)		hsl(1,100%,50%)
+# 209	Salmon1				#ff875f	rgb(255,135,95)		hsl(15,100%,68%)
+# 210	LightCoral			#ff8787	rgb(255,135,135)	hsl(0,100%,76%)
+# 211	PaleVioletRed1		#ff87af	rgb(255,135,175)	hsl(340,100%,76%)
+# 212	Orchid2				#ff87d7	rgb(255,135,215)	hsl(320,100%,76%)
+# 213	Orchid1				#ff87ff	rgb(255,135,255)	hsl(300,100%,76%)
+# 214	Orange1				#ffaf00	rgb(255,175,0)		hsl(1,100%,50%)
+# 215	SandyBrown			#ffaf5f	rgb(255,175,95)		hsl(30,100%,68%)
+# 216	LightSalmon1		#ffaf87	rgb(255,175,135)	hsl(20,100%,76%)
+# 217	LightPink1			#ffafaf	rgb(255,175,175)	hsl(0,100%,84%)
+# 218	Pink1				#ffafd7	rgb(255,175,215)	hsl(330,100%,84%)
+# 219	Plum1				#ffafff	rgb(255,175,255)	hsl(300,100%,84%)
+# 220	Gold1				#ffd700	rgb(255,215,0)		hsl(0,100%,50%)
+# 221	LightGoldenrod2		#ffd75f	rgb(255,215,95)		hsl(45,100%,68%)
+# 222	LightGoldenrod2		#ffd787	rgb(255,215,135)	hsl(40,100%,76%)
+# 223	NavajoWhite1		#ffd7af	rgb(255,215,175)	hsl(30,100%,84%)
+# 224	MistyRose1			#ffd7d7	rgb(255,215,215)	hsl(0,100%,92%)
+# 225	Thistle1			#ffd7ff	rgb(255,215,255)	hsl(300,100%,92%)
+# 226	Yellow1				#ffff00	rgb(255,255,0)		hsl(60,100%,50%)
+# 227	LightGoldenrod1		#ffff5f	rgb(255,255,95)		hsl(60,100%,68%)
+# 228	Khaki1				#ffff87	rgb(255,255,135)	hsl(60,100%,76%)
+# 229	Wheat1				#ffffaf	rgb(255,255,175)	hsl(60,100%,84%)
+# 230	Cornsilk1			#ffffd7	rgb(255,255,215)	hsl(60,100%,92%)
+# 231	Grey100				#ffffff	rgb(255,255,255)	hsl(0,0%,100%)
+# 232	Grey3				#080808	rgb(8,8,8)			hsl(0,0%,3%)
+# 233	Grey7				#121212	rgb(18,18,18)		hsl(0,0%,7%)
+# 234	Grey11				#1c1c1c	rgb(28,28,28)		hsl(0,0%,10%)
+# 235	Grey15				#262626	rgb(38,38,38)		hsl(0,0%,14%)
+# 236	Grey19				#303030	rgb(48,48,48)		hsl(0,0%,18%)
+# 237	Grey23				#3a3a3a	rgb(58,58,58)		hsl(0,0%,22%)
+# 238	Grey27				#444444	rgb(68,68,68)		hsl(0,0%,26%)
+# 239	Grey30				#4e4e4e	rgb(78,78,78)		hsl(0,0%,30%)
+# 240	Grey35				#585858	rgb(88,88,88)		hsl(0,0%,34%)
+# 241	Grey39				#626262	rgb(98,98,98)		hsl(0,0%,37%)
+# 242	Grey42				#6c6c6c	rgb(108,108,108)	hsl(0,0%,40%)
+# 243	Grey46				#767676	rgb(118,118,118)	hsl(0,0%,46%)
+# 244	Grey50				#808080	rgb(128,128,128)	hsl(0,0%,50%)
+# 245	Grey54				#8a8a8a	rgb(138,138,138)	hsl(0,0%,54%)
+# 246	Grey58				#949494	rgb(148,148,148)	hsl(0,0%,58%)
+# 247	Grey62				#9e9e9e	rgb(158,158,158)	hsl(0,0%,61%)
+# 248	Grey66				#a8a8a8	rgb(168,168,168)	hsl(0,0%,65%)
+# 249	Grey70				#b2b2b2	rgb(178,178,178)	hsl(0,0%,69%)
+# 250	Grey74				#bcbcbc	rgb(188,188,188)	hsl(0,0%,73%)
+# 251	Grey78				#c6c6c6	rgb(198,198,198)	hsl(0,0%,77%)
+# 252	Grey82				#d0d0d0	rgb(208,208,208)	hsl(0,0%,81%)
+# 253	Grey85				#dadada	rgb(218,218,218)	hsl(0,0%,85%)
+# 254	Grey89				#e4e4e4	rgb(228,228,228)	hsl(0,0%,89%)
+# 255	Grey93				#eeeeee	rgb(238,238,238)	hsl(0,0%,93%)
+
+# set colors selection
+
+colors_selection=(
+	white="255"
+	silver="248"
+	grey="243"
+	black="238"
+
+	red="1"
+	crimson="88"
+
+	green="2"
+	lime="28"
+
+	yellow="11"
+	orange="202"
+
+	blue="4"
+	navy="26"
+
+	magenta="5"
+	purple="53"
+
+	fuschia="126"
+	pink="200"
+
+	aqua="6"
+	teal="30"
+)
+
+if [ -z "$(command -v tput)" ]
+then
+	# handle color digit length for ansi fallback method
+
+	for color_entry in ${colors_selection[@]}
+	do
+		IFS='='
+
+		read color_name color_value <<< "${color_entry}"
+
+		if [ ${#color_value} = 3 ]
+		then
+			color_value="${color_value}"
+		fi
+
+		if [ ${#color_value} = 2 ]
+		then
+			color_value="0${color_value}"
+		fi
+
+		if [ ${#color_value} = 1 ]
+		then
+			color_value="00${color_value}"
+		fi
+
+		IFS=''
+
+		eval "${color_name}=${color_value}"
+
+		unset color_entry
+	done
+
+	# ansi color attributes
+
+	if [[ -t 1 ]]
+	then
+		# monochromatic colors
+
+		white=$(echo -e \\e\[38\;5\;"${white}"m)
+		silver=$(echo -e \\e\[38\;5\;"${silver}"m)
+		grey=$(echo -e \\e\[38\;5\;"${grey}"m)
+		black=$(echo -e \\e\[38\;5\;"${black}"m)
+
+		# standard colors by saturation offset
+
+		red=$(echo -e \\e\[38\;5\;"${red}"m)
+		crimson=$(echo -e \\e\[38\;5\;"${crimson}"m)
+
+		green=$(echo -e \\e\[38\;5\;"${green}"m)
+		lime=$(echo -e \\e\[38\;5\;"${lime}"m)
+
+		yellow=$(echo -e \\e\[38\;5\;"${yellow}"m)
+		orange=$(echo -e \\e\[38\;5\;"${orange}"m)
+
+		blue=$(echo -e \\e\[38\;5\;"${blue}"m)
+		navy=$(echo -e \\e\[38\;5\;"${navy}"m)
+
+		magenta=$(echo -e \\e\[38\;5\;"${magenta}"m)
+		purple=$(echo -e \\e\[38\;5\;"${purple}"m)
+
+		aqua=$(echo -e \\e\[38\;5\;"${aqua}"m)
+		teal=$(echo -e \\e\[38\;5\;"${teal}"m)
+
+		# reset all attributes
+
+		reset=$(echo -e \\e\[39m)
+	fi
+else
+	# handle color selections
+
+	for color_entry in ${colors_selection[@]}
+	do
+		IFS='='
+
+		read color_name color_value <<< "${color_entry}"
+
+		IFS=''
+
+		eval "${color_name}=${color_value}"
+
+		unset color_entry
+	done
+
+	# 'tput' colors and attributes
+
+	if [[ -t 1 ]]
+	then
+		# monochromatic colors
+
+		white=$(tput setaf "${white}")
+		silver=$(tput setaf "${silver}")
+		grey=$(tput setaf "${grey}")
+		black=$(tput setaf "${black}")
+
+		# standard colors by saturation offset
+
+		red=$(tput setaf "${red}")
+		crimson=$(tput setaf "${crimson}")
+
+		green=$(tput setaf "${green}")
+		lime=$(tput setaf "${lime}")
+
+		yellow=$(tput setaf "${yellow}")
+		orange=$(tput setaf "${orange}")
+
+		blue=$(tput setaf "${blue}")
+		navy=$(tput setaf "${navy}")
+
+		magenta=$(tput setaf "${magenta}")
+		purple=$(tput setaf "${purple}")
+
+		fuschia=$(tput setaf "${fuschia}")
+		pink=$(tput setaf "${pink}")
+
+		aqua=$(tput setaf "${aqua}")
+		teal=$(tput setaf "${teal}")
+
+		# reset all attributes
+
+		reset=$(tput sgr 0)
+
+		# 'tput' terminal control
+
+		# full description of terminal capacity
+
+		terminal_info=$(tput longname)
+
+		# number of lines in terminal
+
+		terminal_height=$(tput lines)
+
+		# number of columns in terminal
+
+		terminal_width=$(tput cols)
+
+		# number of colors available
+
+		terminal_colors=$(tput colors)
+
+		# save cursor position of terminal
+
+		terminal_cursor_save () {
+
+			tput sc
+		}
+
+		# restore cursor position of terminal
+
+		terminal_cursor_restore () {
+
+			tput rc
+		}
+
+		# set cursor to invisible state
+
+		terminal_cursor_hide () {
+
+			tput civis
+		}
+
+		# set cursor to normal (visible) state
+
+		terminal_cursor_show () {
+
+			tput cnorm
+		}
+
+		# move cursor to upper-left corner (0,0)
+
+		terminal_cursor_home () {
+
+			tput home
+		}
+
+		# move cursor to position (row, column)
+
+		terminal_cursor_move () {
+
+			row="${1}"
+			col="${2}"
+
+			if [[ "${row}" =~ ^[0-9]+$ ]] && [[ "${column}" =~ ^[0-9]+$ ]]
+			then
+				tput cup "${row}" "${column}"
+			else
+				echo "terminal_cursor_move: invalid row/column input: '${row}' '${column}'" >&2
+
+				return 1
+			fi
+		}
+
+		# move cursor down (row)
+
+		terminal_cursor_down () {
+
+			local rows="${1:-1}"
+
+			if [[ "${rows}" =~ ^[0-9]+$ ]]
+			then
+				tput cud "${rows}"
+			else
+				echo "terminal_cursor_up: invalid row input: '${rows}'" >&2
+
+				return 1
+			fi
+		}
+
+		# move cursor up (row)
+
+		terminal_cursor_up () {
+
+			local rows="${1:-1}"
+
+			if [[ "${rows}" =~ ^[0-9]+$ ]]
+			then
+				tput cuu "${rows}"
+			else
+				echo "terminal_cursor_up: invalid row input: '${rows}'" >&2
+
+				return 1
+			fi
+		}
+
+		# save screen contents
+
+		terminal_screen_save () {
+
+			tput smcup
+		}
+
+		# restore screen contents
+
+		terminal_screen_restore () {
+
+			tput rmcup
+		}
+
+		# clear from cursor to beginning of line (left)
+
+		terminal_clear_left () {
+
+			tput el
+		}
+
+		# clear from cursor to end of line (right)
+
+		terminal_clear_right () {
+
+			tput el1
+		}
+
+		# clear from cursor to end of the screen (down)
+
+		terminal_clear_down () {
+
+			tput ed
+		}
+
+		# clear entire screen and home cursor (0,0)
+
+		terminal_clear_all () {
+
+			tput clear
+		}
+
+	fi
+fi
+
+# special case markers /////////////////////////////////////////////////////////
+
+marker_nil=''
+marker_hnt='//'
+marker_sep='///////'
+marker_elp='...'
+marker_idt='      '
+marker_web='https://'
+marker_prc='%'
+marker_spc=' '
+marker_tab='    '
+
+# line markers /////////////////////////////////////////////////////////////////
+
+marker_top='[  △  ]'
+marker_bot='[  ▽  ]'
+
+marker_fwd='[  ▷  ]'
+marker_rev='[  ◁  ]'
+marker_stp='[  □  ]'
+
+marker_cpt='[  ¤  ]'
+
+marker_add='[  +  ]'
+marker_rem='[  -  ]'
+
+marker_ret='[  ●  ]'
+marker_rel='[  ○  ]'
+
+marker_ask='[  ?  ]'
+marker_inf='[  i  ]'
+marker_wrn='[  !  ]'
+
+marker_ipt='[  >  ]'
+marker_msg='[  #  ]'
+marker_usr='[  ~  ]'
+
+marker_yes='[  ✓  ]'
+marker_not='[  𐄂  ]'
+
+marker_url='[  /  ]'
+
+marker_nul='       '
+
+# prompt line overwrite (plo) //////////////////////////////////////////////////
+
+frobulator.plo () {
+
+	terminal_clear_right
+
+	terminal_cursor_up ${@}
+
+	terminal_clear_right
+
+	echo
+}
+
+# prompt management tool (pmt) /////////////////////////////////////////////////
+
+# prompt management and standardizing with 80 charcters width:
+# adds line folding with word detection for strings over 80 characters long
+
+frobulator.pmt () {
+
+	# initialize string return array
+
+	prompt_string=()
+
+	# define input arguments
+
+	begin="${1}"
+	end="${2}"
+
+	# provide fallback for line character count
+
+	if [ -z "${character_count}" ]
+	then
+		character_count="${terminal_columns}"
+	fi
+
+	# set span width
+
+	if [ ${#begin} -le "${character_count}" ]
+	then
+		while [ ${#span} -lt "${character_count}" ]
+		do
+			span="${span}-"
+		done
+	else
+		span="${span}"
+	fi
+
+	# prepare span for line marker usage:
+	# [   ] --------------------------------------------------------------...---
+
+	margin_left="${marker_nul}${marker_spc}"
+	margin_left_length=${#margin_left}
+
+	span_length=${#span}
+
+	if [ ${span_length} -le 0 ]
+	then
+		span=${span}
+	else
+		span=${span::-${margin_left_length}}
+	fi
+
+	# set span character default:
+	# do not use '\' - reserved for BASH esacpe sequences
+
+	span_character="/"
+
+	# 3 arguments - replace span character with argument 3
+
+	if [ $# -eq 3 ]
+	then
+		span_character="${3}"
+		span_character_length=${#span_character}
+
+		# if span character length greater than 2:
+		# compensate by dividing to achieve 80 characters total span
+
+		if [ ${span_character_length} -ge 2 ]
+		then
+			character_count=$(( ${character_count} / ${span_character_length} ))
+
+			span_length=${character_count}
+		fi
+	fi
+
+	span_length=${#span}
+
+	# 2+ arguments:
+	# append space to 'begin' value
+	# prepend space to 'end' value
+
+	if [ $# -ge 2 ]
+	then
+		begin="${begin}${marker_spc}"
+		end="${marker_spc}${end}"
+
+		begin_length=${#begin}
+		end_length=${#end}
+
+		end_open=${end:0:1}
+		end_close=${end: -1:1}
+
+		marker_elp_length=${#marker_elp}
+
+		# adjust for longer than usual arguments:
+		# truncate end with ellipsis
+
+		# formatting -  utf bracket styling
+		# preserve second argument brackets and padding when present
+
+		brackets_open=(
+			'['
+			'('
+			'{'
+			'<'
+			'«'
+			'‹'
+			'「'
+			'『'
+			'【'
+			'〔'
+			'〘'
+			'〚'
+			'⟨'
+			'⟪'
+			'⟮'
+			'⦅'
+			'⦃'
+		)
+
+		brackets_close=(
+			']'
+			')'
+			'}'
+			'>'
+			'»'
+			'›'
+			'」'
+			'』'
+			'】'
+			'〕'
+			'〙'
+			'〛'
+			'⟩'
+			'⟫'
+			'⟯'
+			'⦆'
+			'⦄'
+		)
+
+		for bracket_index in "${!brackets_open[@]}"
+		do
+			if [ "${end_open}" = "${brackets_open[${bracket_index}]}"   ] || \
+			   [ "${end_close}" = "${brackets_close[${bracket_index}]}" ]
+			then
+				# include last string digit for recognition
+
+				end_end=${end: -$marker_elp_length}
+
+				break
+			fi
+		done
+
+		unset bracket_index
+
+		# preserve span character at minimum of 2 characters
+
+		span_limter=$(( 6 + 2 ))
+
+		end_limit=$(( span_length - begin_length - span_limter ))
+
+		if [ "${end_limit}" -gt 0 ] && [ "${end_length}" -gt "${end_limit}" ]
+		then
+			end_start=${end:0:${end_limit}}
+
+			# append ellipsis marker to end of truncation
+
+			end="${end_start}${marker_elp}${end_end}"
+		fi
+
+	fi
+
+	# define parsing calculation lengths
+
+	begin_length=${#begin}
+	end_length=${#end}
+
+	# 74+ characters per string:
+	# fold string using word detection at limit
+	# prevent overstepping 80 characters overall limit
+	# indent second line onward (6 spaces) to match line marker (margin_left)
+	# detect newline character and indent onward to match line marker spacing
+
+	fold_count=$(( "${character_count}" - "${margin_left_length}" ))
+
+	if [ "${begin_length}" -ge "${fold_count}" ]
+	then
+		begin=$(
+				echo "${begin}"							|
+					fold -s -w "${fold_count}"			|
+					sed 								\
+						-e '2,$'"s/^/${marker_idt}/g"	|
+					sed 								\
+						-e 's/ \\n /\\n\n      /g'
+		)
+	fi
+
+	# substitute span character
+
+	span="${span//-/$span_character}"
+
+	# print first argument:
+	# remove newline for continuous string arguments
+
+	span_begin=$(echo -n -e "${begin}")
+
+	# print other arguments as fixed width prompt if present:
+	# calculate span width - remove 6 characters for prompt header
+
+	span_count=$(( span_length - begin_length - end_length ))
+
+	if [ "${span_count}" -lt 0 ]
+	then
+		span_count=0
+	fi
+
+	# set new padding width
+
+ 	if [ ${begin_length} -lt "${character_count}" ]
+ 	then
+ 		span=${span:0:$span_count}
+ 	else
+ 		span=""
+ 	fi
+
+ 	# define user input aor automatic fill
+
+	span_middle="${span}"
+
+	# print last argument:
+	# carry newline and jump to next block
+
+	span_end=$(echo -e "${end}")
+
+	# populate array at end to avoid integrating spaces
+
+	if [ $# -ge 0 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 1 ]
+	then
+		prompt_string=("${span_begin}")
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	if [ $# -eq 3 ]
+	then
+		prompt_string=("${span_begin}""${span_middle}""${span_end}")
+	fi
+
+	# reset line elements
+
+	unset begin
+	unset end
+	unset span
+	unset character_count
+}
+
+# highlights ///////////////////////////////////////////////////////////////////
+
+# colored string highlights with built-in prompt arguments and line padding
+#
+# usage:      frobulator.[color] "[string]" "[string]" "[span character]"
+#
+# command:    frobulator.[color] "[string]"
+# result:     string
+#
+# command:    frobulator.[color] "[string]" "[string]"
+# result:     string //////////////////////////////////////////////.../// string
+#
+# command:    frobulator.[color] "[string]" "[string]" "[\]"
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
+
+frobulator.black () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${black}${prompt}${reset}"
+}
+
+frobulator.silver () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${prompt}${reset}"
+}
+
+frobulator.grey () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${grey}${prompt}${reset}"
+}
+
+frobulator.white () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${white}${prompt}${reset}"
+}
+
+frobulator.red () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${red}${prompt}${reset}"
+}
+
+frobulator.crimson () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${crimson}${prompt}${reset}"
+}
+
+frobulator.green () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${green}${prompt}${reset}"
+}
+
+frobulator.lime () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lime}${prompt}${reset}"
+}
+
+frobulator.yellow () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${yellow}${prompt}${reset}"
+}
+
+frobulator.orange () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${orange}${prompt}${reset}"
+}
+
+frobulator.blue () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${blue}${prompt}${reset}"
+}
+
+frobulator.navy () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${navy}${prompt}${reset}"
+}
+
+frobulator.magenta () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${prompt}${reset}"
+}
+
+frobulator.purple () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${purple}${prompt}${reset}"
+}
+
+frobulator.fuschia () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${fuschia}${prompt}${reset}"
+}
+
+frobulator.pink () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${pink}${prompt}${reset}"
+}
+
+frobulator.aqua () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${aqua}${prompt}${reset}"
+}
+
+frobulator.teal () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${prompt}${reset}"
+}
+
+# prompt marking ///////////////////////////////////////////////////////////////
+
+# colored string highlights with built-in prompt arguments, line padding and line markers
+
+# usage:      frobulator.[color] "[string]" "[string]" "[span character]"
+
+# command:    frobulator.[color] "[string]"
+# result:     string
+
+# command:    frobulator.[color] "[string]" "[string]"
+# result:     string //////////////////////////////////////////////.../// string
+
+# command:    frobulator.[color] "[string]" "[string]" "[\]"
+# result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
+
+# line markers:
+
+# top [  △  ]
+# bot [  ▽  ]
+
+# cpt [  ¤  ]
+
+# fwd [  ▷  ]
+# rev [  ◁  ]
+# stp [  □  ]
+
+# add [  +  ]
+# rem [  -  ]
+
+# ret [  ●  ]
+# rel [  ○  ]
+
+# ask [  ?  ]
+# inf [  i  ]
+# wrn [  !  ]
+
+# ipt [  >  ]
+# msg [  #  ]
+# usr [  ~  ]
+
+# yes [  ✓  ]
+# not [  𐄂  ]
+
+# url [  /  ]
+
+# empty line marker ////////////////////////////////////////////////////////////
+
+frobulator.nil () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${white}${marker_inf}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${white}")
+}
+
+# information line marker //////////////////////////////////////////////////////
+
+frobulator.inf () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${blue}")
+}
+
+# warning line marker //////////////////////////////////////////////////////
+
+frobulator.wrn () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${orange}${marker_wrn}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${orange}")
+}
+
+# message line marker //////////////////////////////////////////////////////////
+
+frobulator.msg () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${navy}${marker_msg}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${navy}")
+}
+
+# add line marker //////////////////////////////////////////////////////////////
+
+frobulator.add () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lime}${marker_add}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${lime}")
+}
+
+# remove line marker ///////////////////////////////////////////////////////////
+
+frobulator.rem () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${crimson}${marker_rem}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${crimson}")
+}
+
+# retain line marker ///////////////////////////////////////////////////////////
+
+frobulator.ret () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${aqua}${marker_ret}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${aqua}")
+}
+
+# release line marker //////////////////////////////////////////////////////////
+
+frobulator.rel () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${marker_rel}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${teal}")
+}
+
+# forward line marker //////////////////////////////////////////////////////////
+
+frobulator.fwd () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_fwd}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${silver}")
+}
+
+# reverse line marker //////////////////////////////////////////////////////////
+
+frobulator.rev () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_rev}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${silver}")
+}
+
+# stop line marker /////////////////////////////////////////////////////////////
+
+frobulator.stp () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${grey}${marker_stp}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${grey}")
+}
+
+# download line marker /////////////////////////////////////////////////////////
+
+frobulator.dwl () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${marker_bot}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${magenta}")
+}
+
+# upload line marker ///////////////////////////////////////////////////////////
+
+frobulator.upl () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${purple}${marker_top}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${purple}")
+}
+
+# link line marker /////////////////////////////////////////////////////////////
+
+frobulator.lnk () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${yellow}${marker_stp}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${yellow}")
+}
+
+# success line marker //////////////////////////////////////////////////////////
+
+frobulator.scs () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${green}${marker_yes}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${green}")
+}
+
+# error line marker ////////////////////////////////////////////////////////////
+
+frobulator.err () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${red}${marker_not}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${red}")
+}
+
+# insert line marker ///////////////////////////////////////////////////////////
+
+frobulator.ins () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${teal}")
+}
+
+# complete line marker /////////////////////////////////////////////////////////
+
+frobulator.cpt () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${magenta}${marker_cpt}${marker_spc}${prompt}${reset}"
+
+	color_entry=("${magenta}")
+}
+
+# url line marker //////////////////////////////////////////////////////////////
+
+frobulator.url () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${silver}${marker_url}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${grey}")
+}
+
+# user input prompts ///////////////////////////////////////////////////////////
+
+# use for questions, input, user input dependant inquiries
+
+# note:
+# use 'echo -n -e' to prevent adding new line after prompt:
+# keeps user input beside prompt
+# also includes space after prompt to separate input
+
+# ask line marker //////////////////////////////////////////////////////////////
+
+frobulator.ask () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${fuschia}${marker_ask}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${fuschia}")
+}
+
+# input line marker ////////////////////////////////////////////////////////////
+
+frobulator.ipt () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${pink}${marker_add}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${pink}")
+}
+
+# user line marker /////////////////////////////////////////////////////////////
+
+frobulator.usr () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	color_entry=("${grey}")
+}
+
+# null line marker /////////////////////////////////////////////////////////////
+
+# use to carry over prompts without adding a line marker while retaining color
+
+frobulator.nul () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	color_entry=${color_entry[@]}
+
+	echo -e "${color_entry}${marker_spc}${marker_spc}${marker_nul}${marker_spc}${prompt}${reset}"
+
+	unset color_entry
+}
+
+# index line marker ////////////////////////////////////////////////////////////
+
+# use to carry over prompts without adding a line marker without retaining color
+
+frobulator.ind () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	unset color_entry
+
+	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+
+}
+
+# letter line marker ///////////////////////////////////////////////////////////
+
+# use to indicate lettered steps, directives or instructions
+# letter prompt is inserted as line marker
+
+# usage:      frobulator.ltr "[letter]" "[string]" "[string]" "[span character]"
+
+# command:    frobulator.num "[letter]" "[string]"
+# result:     [ l ] string
+
+# command:    frobulator.num "[letter]" "[string]" "[string]"
+# result:     [ l ] string ////////////////////////////////////////.../// string
+
+# command:    frobulator.num "[letter]" "[string]" "[string]" "[\]"
+# result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
+
+frobulator.ltr () {
+
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
+
+	letter="${1}"
+
+	shift
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${before}${aqua}${letter}${reset}${after}${marker_spc}${prompt}"
+}
+
+# number line marker ///////////////////////////////////////////////////////////
+
+# use to indicate numbered steps, directives or instructions
+# number prompt is inserted as line marker
+
+# usage:      frobulator.num "[number]" "[string]" "[string]" "[span character]"
+
+# command:    frobulator.num "[number]" "[string]"
+# result:     [ n ] string
+
+# command:    frobulator.num "[number]" "[string]" "[string]"
+# result:     [ n ] string ////////////////////////////////////////.../// string
+
+# command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
+# result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
+
+frobulator.num () {
+
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
+
+	number="${1}"
+
+	shift
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${before}${teal}${number}${reset}${after}${marker_spc}${prompt}"
+}
+
+# separator line marker ////////////////////////////////////////////////////////
+
+# use to separate notices and messages from execution blocks
+
+# note:
+# no line marker
+
+# usage:      frobulator.sep
+
+# command:    frobulator.sep
+# result:     ////////////////////////////////////////////////////////////...///
+
+frobulator.sep () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	color=${color[@]}
+
+	echo -e "${color}${marker_sep}${prompt}${reset}"
+
+	unset color_entry
+}
+
+# notify ///////////////////////////////////////////////////////////////////////
+#
+# framed message block with header:
+# use to separate notices and messages from execution blocks
+# supports message type designation for colorized output
+#
+#
+# usage:	frobulator.ntf "title" "message"
+#			frobulator.ntf [style] [split] [type] "title" "message"
+#
+# command:	frobulator.ntf style "title" "message"
+# result:
+#
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ title                                                                      │
+# ├────────────────────────────────────────────────────────────────────────────┤
+# │ message                                                                    │
+# └────────────────────────────────────────────────────────────────────────────┘
+#
+# command:	frobulator.ntf style split "title" "message"
+# result:
+#
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ title                                                                      │
+# └────────────────────────────────────────────────────────────────────────────┘
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ message                                                                    │
+# └────────────────────────────────────────────────────────────────────────────┘
+
+frobulator.ntf () {
+
+	local style
+	local title
+	local split
+	local message
+	local prompt_type
+	local color
+
+	local character_count
+	local content_span
+	local title_width
+	local message_width
+
+	local frame_horizontal_top
+	local frame_horizontal_middle
+	local frame_horizontal_bottom
+
+	local frame_vertical_left
+	local frame_vertical_right
+
+	local frame_top_left
+	local frame_top_right
+	local frame_middle_left
+	local frame_middle_right
+	local frame_bottom_left
+	local frame_bottom_right
+
+	local frame_vertical_left_count
+	local frame_vertical_right_count
+	local marker_elp_count
+	local marker_spc_count
+
+	local line_top
+	local line_middle
+	local line_bottom
+
+	local frame_top
+	local frame_middle
+	local frame_bottom
+
+	local message_line
+
+	style="square"
+
+	title="Notice"
+
+	split=""
+
+	color=""
+
+	# arguments
+
+	while true
+	do
+		if [ "${1}" = "square" ] || \
+		   [ "${1}" = "round"  ] || \
+		   [ "${1}" = "heavy"  ] || \
+		   [ "${1}" = "double" ] || \
+		   [ "${1}" = "dots"   ] || \
+		   [ "${1}" = "matrix" ] || \
+		   [ "${1}" = "tech"   ] || \
+		   [ "${1}" = "skel"   ] || \
+		   [ "${1}" = "ascii"  ]
+		then
+			style="${1}"
+
+			shift
+
+		elif [ "${1}" = "split" ]
+		then
+			split="true"
+
+			shift
+
+		elif [ "${1}" = "nil" ] || \
+			 [ "${1}" = "inf" ] || \
+		     [ "${1}" = "wrn" ] || \
+		     [ "${1}" = "msg" ] || \
+		     [ "${1}" = "add" ] || \
+		     [ "${1}" = "rem" ] || \
+		     [ "${1}" = "ret" ] || \
+		     [ "${1}" = "rel" ] || \
+		     [ "${1}" = "fwd" ] || \
+		     [ "${1}" = "rev" ] || \
+		     [ "${1}" = "stp" ] || \
+		     [ "${1}" = "dwl" ] || \
+		     [ "${1}" = "upl" ] || \
+		     [ "${1}" = "lnk" ] || \
+		     [ "${1}" = "scs" ] || \
+		     [ "${1}" = "err" ] || \
+		     [ "${1}" = "ins" ] || \
+		     [ "${1}" = "cpt" ] || \
+		     [ "${1}" = "url" ]
+		then
+			prompt_type="${1}"
+
+			shift
+
+			frobulator."${prompt_type}" > ${sink}
+
+			color=${color_entry[@]}
+
+		else
+			break
+		fi
+	done
+
+	if [ $# -eq 0 ]
+	then
+		title="${title}"
+		message=""
+
+	elif [ $# -eq 1 ]
+	then
+		title="${title}"
+		message="${1}"
+
+	else
+		title="${1}"
+
+		shift
+
+		if [ "${1}" = "split" ]
+		then
+			split="true"
+
+			shift
+		fi
+
+		message="${@}"
+	fi
+
+	# columns
+
+	if [ -z "${terminal_columns}" ]
+	then
+		character_count="${span_characters}"
+	else
+		character_count="${terminal_columns}"
+	fi
+
+	# default frame style
+
+	frame_horizontal_top='─'
+	frame_horizontal_middle='─'
+	frame_horizontal_bottom='─'
+
+	frame_vertical_left='│'
+	frame_vertical_right='│'
+
+	frame_top_left='┌'
+	frame_top_right='┐'
+	frame_middle_left='├'
+	frame_middle_right='┤'
+	frame_bottom_left='└'
+	frame_bottom_right='┘'
+
+	# alternate frame styles
+
+	if [ "${style}" = "round" ]
+	then
+		frame_top_left='╭'
+		frame_top_right='╮'
+		frame_bottom_left='╰'
+		frame_bottom_right='╯'
+
+	elif [ "${style}" = "skel" ]
+	then
+		frame_vertical_left=' '
+		frame_vertical_right=' '
+
+	elif [ "${style}" = "heavy" ]
+	then
+		frame_horizontal_top='━'
+		frame_horizontal_middle='━'
+		frame_horizontal_bottom='━'
+
+		frame_vertical_left='┃'
+		frame_vertical_right='┃'
+
+		frame_top_left='┏'
+		frame_top_right='┓'
+		frame_middle_left='┣'
+		frame_middle_right='┫'
+		frame_bottom_left='┗'
+		frame_bottom_right='┛'
+
+	elif [ "${style}" = "double" ]
+	then
+		frame_horizontal_top='═'
+		frame_horizontal_middle='═'
+		frame_horizontal_bottom='═'
+
+		frame_vertical_left='║'
+		frame_vertical_right='║'
+
+		frame_top_left='╔'
+		frame_top_right='╗'
+		frame_middle_left='╠'
+		frame_middle_right='╣'
+		frame_bottom_left='╚'
+		frame_bottom_right='╝'
+
+	elif [ "${style}" = "ascii" ]
+	then
+		frame_horizontal_top='-'
+		frame_horizontal_middle='-'
+		frame_horizontal_bottom='-'
+
+		frame_vertical_left='|'
+		frame_vertical_right='|'
+
+		frame_top_left='+'
+		frame_top_right='+'
+		frame_middle_left='+'
+		frame_middle_right='+'
+		frame_bottom_left='+'
+		frame_bottom_right='+'
+
+	elif [ "${style}" = "dots" ]
+	then
+		frame_horizontal_top='⠉'
+		frame_horizontal_middle='⠒'
+		frame_horizontal_bottom='⠤'
+
+		frame_vertical_left='⠇'
+		frame_vertical_right='⠸'
+
+		frame_top_left='⠏'
+		frame_top_right='⠹'
+		frame_middle_left='⠗'
+		frame_middle_right='⠺'
+		frame_bottom_left='⠧'
+		frame_bottom_right='⠼'
+
+	elif [ "${style}" = "matrix" ]
+	then
+		frame_horizontal_top='▓'
+		frame_horizontal_middle='▓'
+		frame_horizontal_bottom='▓'
+
+		frame_vertical_left='▓'
+		frame_vertical_right='▓'
+
+		frame_top_left='▓'
+		frame_top_right='▓'
+		frame_middle_left='▓'
+		frame_middle_right='▓'
+		frame_bottom_left='▓'
+		frame_bottom_right='▓'
+
+	elif [ "${style}" = "tech" ]
+	then
+		frame_vertical_left='║'
+		frame_vertical_right='║'
+
+		frame_top_left='╓'
+		frame_top_right='╖'
+		frame_middle_left='╟'
+		frame_middle_right='╢'
+		frame_bottom_left='╙'
+		frame_bottom_right='╜'
+	fi
+
+	# width setup
+
+	frame_vertical_left_count=${#frame_vertical_left}
+	frame_vertical_right_count=${#frame_vertical_right}
+
+	marker_elp_count=${#marker_elp}
+	marker_spc_count=${#marker_spc}
+
+	content_span=$(( character_count - frame_vertical_left_count - frame_vertical_right_count ))
+
+	title_width=$(( content_span - marker_spc_count - marker_spc_count ))
+	message_width=$(( content_span - marker_spc_count - marker_spc_count ))
+
+	# horizontal frame setup
+
+	while [ ${#line_top} -lt "${content_span}" ]
+	do
+		line_top="${line_top}${frame_horizontal_top}"
+	done
+
+	while [ ${#line_middle} -lt "${content_span}" ]
+	do
+		line_middle="${line_middle}${frame_horizontal_middle}"
+	done
+
+	while [ ${#line_bottom} -lt "${content_span}" ]
+	do
+		line_bottom="${line_bottom}${frame_horizontal_bottom}"
+	done
+
+	frame_top="${frame_top_left}${line_top}${frame_top_right}"
+	frame_middle="${frame_middle_left}${line_middle}${frame_middle_right}"
+	frame_bottom="${frame_bottom_left}${line_bottom}${frame_bottom_right}"
+
+	# title frame
+
+	echo "${frame_top}"
+
+	title="${marker_spc}${title}${marker_spc}"
+
+	if [ ${#title} -gt "${content_span}" ]
+	then
+		title="${title:0:$(( content_span - marker_elp_count - marker_spc_count ))}${marker_elp}${marker_spc}"
+	fi
+
+	while [ ${#title} -lt "${content_span}" ]
+	do
+		title="${title}${marker_spc}"
+	done
+
+	echo -e "${frame_vertical_left}${color}${title}${reset}${frame_vertical_right}"
+
+	# message frame
+
+	if [ -n "${message}" ]
+	then
+		if [ -n "${split}" ]
+		then
+			echo "${frame_bottom}"
+			echo "${frame_top}"
+		else
+			echo "${frame_middle}"
+		fi
+
+		if [ ${#message} -gt "${message_width}" ]
+		then
+			message=$(echo "${message}" | fold -s -w "${message_width}")
+		else
+			message="${message}"
+		fi
+
+		while IFS= read -r message_line
+		do
+			message_line="${marker_spc}${message_line}"
+
+			while [ ${#message_line} -lt "${content_span}" ]
+			do
+				message_line="${message_line}${marker_spc}"
+			done
+
+			message_line="${message_line:0:${content_span}}"
+
+			echo -e "${frame_vertical_left}${color}${message_line}${reset}${frame_vertical_right}"
+
+		done <<< "${message}"
+	fi
+
+	echo "${frame_bottom}"
+
+	# cleanup
+
+	unset style
+	unset title
+	unset split
+	unset message
+	unset prompt_type
+	unset color
+
+	unset character_count
+	unset content_span
+	unset title_width
+	unset message_width
+
+	unset frame_horizontal_top
+	unset frame_horizontal_middle
+	unset frame_horizontal_bottom
+
+	unset frame_vertical_left
+	unset frame_vertical_right
+
+	unset frame_top_left
+	unset frame_top_right
+	unset frame_middle_left
+	unset frame_middle_right
+	unset frame_bottom_left
+	unset frame_bottom_right
+
+	unset frame_vertical_left_count
+	unset frame_vertical_right_count
+	unset marker_elp_count
+	unset marker_spc_count
+
+	unset line_top
+	unset line_middle
+	unset line_bottom
+
+	unset frame_top
+	unset frame_middle
+	unset frame_bottom
+
+	unset message_line
+
+	unset IFS
+}
+
+# separate /////////////////////////////////////////////////////////////////////
+
+# use to separate instructions or warnings from prompts
+
+# note:
+# set up as predefined separator
+
+# usage:      frobulator.separate
+
+# command:    frobulator.separate
+# result:     ////////////////////////////////////////////////////////////...///
+
+frobulator.separate () {
+
+	frobulator.sep
+
+	echo
+}
+
+# read /////////////////////////////////////////////////////////////////////////
+
+# use to capture user input through frobulator.ask / frobulator.interrupt
+
+# sets newline for next prompt clearance
+
+frobulator.read () {
+
+	read ${@}
+
+	echo
+}
+
+# script ///////////////////////////////////////////////////////////////////////
+
+# use to mark the beginning of a script process
+# derives title from script name:
+# script name must be separated with '-' character as 'script-name'
+
+# usage:      frobulator.script
+
+# command:    frobulator.script "Setting up ${script#*-}"
+# result:     [ # ] Setting up 'script' /////////////////////////.../// [ name ]
+
+frobulator.script () {
+
+	description="${1}"
+
+	if [[ "${script}" = *-* ]]
+	then
+		message="${script%-*}${marker_spc}${marker_spc}${marker_hnt}${marker_spc}${marker_spc}${version}"
+	else
+		message="${script}"
+	fi
+
+	frobulator.msg "${description}" "[ ${message} ]"
+
+	echo
+}
+
+# type /////////////////////////////////////////////////////////////////////////
+
+# use to emulate typing on prompts:
+# timeout is randomized to create human-like typing effect
+# interval value must be an integer
+
+# usage:      frobulator.type "[interval]" "[string]"
+
+frobulator.type () {
+
+	string="${1}"
+	interval="${2}"
+
+	string_length=${#string}
+
+	if [ -z "${interval}" ]
+	then
+		interval=2
+	fi
+
+	for (( characters=0 ; characters<=${string_length} ; characters++ ))
+	do
+		decimal=$(( (RANDOM % ${interval}) + 1 ))
+
+		seconds="0.${decimal}"
+
+		echo -n -e "${1:${characters}:1}"
+
+		sleep "${seconds}"
+	done
+
+	echo
+}
+
+# timeout //////////////////////////////////////////////////////////////////////
+
+# use to mark timeout in between commands in seconds
+
+# usage:      frobulator.timeout "[seconds]"
+
+frobulator.timeout () {
+
+	seconds="${1}"
+
+	# set defaults
+
+	if [ -z "${seconds}" ]
+	then
+		seconds="1"
+	fi
+
+	sleep "${seconds}"
+}
+
+# clear ////////////////////////////////////////////////////////////////////////
+
+# use for script process 'paging':
+# clears previous step when all checkpoint markers are met
+
+frobulator.clear () {
+
+	frobulator.timeout
+
+	clear
+}
+
+# countdown ////////////////////////////////////////////////////////////////////
+
+# use as countdown marker before next command runs:
+# leaves preset time for long interaction with prompts and other long strings
+
+# usage:      frobulator.countdown "[seconds]" "[string]" "[string]"
+
+frobulator.countdown () {
+
+	counter="${1}"
+
+	shift
+
+	seconds="1"
+
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	shift
+
+	while [ "${counter}" -ge 0 ]
+	do
+		if [ "${counter}" -eq 0 ]
+		then
+			ticker="-"
+
+			echo -n -e "\r${before}${orange}${ticker}${reset}${after}${marker_spc}${prompt}\c"
+
+			break
+		else
+			echo -n -e "\r${before}${red}$((counter--))${reset}${after}${marker_spc}${prompt}\c"
+		fi
+
+		sleep "${seconds}"
+
+	done
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
+
+# actions //////////////////////////////////////////////////////////////////////
+
+# action verbage parser:
+# handles simple action verb placement and syntax substitution
+# use in frobulator status item calls
+
+frobulator.action () {
+
+	action="${1}"
+
+	shift
+
+	detail=("${@}")
+
+	# verb dictionaries
+
+	magenta_list=(
+		extract
+		download
+		render
+		play
+		stream
+		decode
+		unpack
+		expand
+		transcode
+		preview
+	)
+
+	purple_list=(
+		archive
+		upload
+		rasterize
+		compress
+		package
+		bundle
+		backup
+		publish
+		encode
+		distribute
+	)
+
+	blue_list=(
+		install
+		export
+		convert
+		configure
+		enable
+		register
+		mount
+		compile
+		integrate
+		initialize
+	)
+
+	navy_list=(
+		reinstall
+		import
+		move
+		restore
+		migrate
+		transfer
+		relocate
+		recover
+		merge
+		adopt
+	)
+
+	red_list=(
+		remove
+		exclude
+		clear
+		delete
+		erase
+		unlink
+		detach
+		disable
+		unload
+		discard
+	)
+
+	crimson_list=(
+		purge
+		expunge
+		sanitize
+		reset
+		obliterate
+		destroy
+		vacuum
+		shred
+		annihilate
+		sterilize
+	)
+
+	yellow_list=(
+		update
+		refresh
+		clone
+		sync
+		fetch
+		pull
+		mirror
+		retrieve
+		reconcile
+		reindex
+	)
+
+	orange_list=(
+		upgrade
+		enhance
+		optimize
+		accelerate
+		improve
+		modernize
+		tune
+		refine
+		strengthen
+		amplify
+	)
+
+	aqua_list=(
+		hold
+		keep
+		wait
+		pause
+		retain
+		reserve
+		preserve
+		cache
+		buffer
+		queue
+	)
+
+	teal_list=(
+		release
+		scan
+		deploy
+		build
+		inspect
+		verify
+		validate
+		test
+		audit
+		check
+	)
+
+	black_list=(
+		clean
+		wipe
+		scrub
+		sweep
+		polish
+		filter
+		normalize
+		tidy
+		repair
+		maintain
+	)
+
+	green_list=(
+		parse
+		resolve
+		analyze
+		interpret
+		evaluate
+		detect
+		identify
+		locate
+		match
+		discover
+	)
+
+	lime_list=(
+		generate
+		spawn
+		create
+		produce
+		make
+		assemble
+		synthesize
+		instantiate
+		fabricate
+		construct
+	)
+
+	silver_list=(
+		evaluate
+		probe
+		assess
+		measure
+		benchmark
+		survey
+		inspect
+		examine
+		diagnose
+		investigate
+	)
+
+	grey_list=(
+		process
+		procede
+		execute
+		run
+		handle
+		perform
+		operate
+		work
+		continue
+		frobulate
+	)
+
+	# action fallback
+
+	if [ -z "${action}" ]
+	then
+		action="frobulate"
+
+		color="${white}"
+	fi
+
+	# color selection
+
+	if [[ "${action}" =~ [a-zA-Z] ]]
+	then
+		if [[ ${magenta_list[*]} =~ "${action}" ]]
+		then
+			color="${magenta}"
+
+		elif [[ ${purple_list[*]} =~ "${action}" ]]
+		then
+			color="${purple}"
+
+		elif [[ ${blue_list[*]} =~ "${action}" ]]
+		then
+			color="${blue}"
+
+		elif [[ ${navy_list[*]} =~ "${action}" ]]
+		then
+			color="${navy}"
+
+		elif [[ ${red_list[*]} =~ "${action}" ]]
+		then
+			color="${red}"
+
+		elif [[ ${crimson_list[*]} =~ "${action}" ]]
+		then
+			color="${crimson}"
+
+		elif [[ ${yellow_list[*]} =~ "${action}" ]]
+		then
+			color="${yellow}"
+
+		elif [[ ${orange_list[*]} =~ "${action}" ]]
+		then
+			color="${orange}"
+
+		elif [[ ${aqua_list[*]} =~ "${action}" ]]
+		then
+			color="${aqua}"
+
+		elif [[ ${teal_list[*]} =~ "${action}" ]]
+		then
+			color="${teal}"
+
+		elif [[ ${black_list[*]} =~ "${action}" ]]
+		then
+			color="${black}"
+
+		elif [[ ${green_list[*]} =~ "${action}" ]]
+		then
+			color="${green}"
+
+		elif [[ ${lime_list[*]} =~ "${action}" ]]
+		then
+			color="${lime}"
+
+		elif [[ ${silver_list[*]} =~ "${action}" ]]
+		then
+			color="${silver}"
+
+		elif [[ ${grey_list[*]} =~ "${action}" ]]
+		then
+			color="${grey}"
+
+		else
+			action="process"
+
+			color="${grey}"
+		fi
+	fi
+
+	# action conjugation / syntactical substitution
+
+	action="${action^}"
+
+	if [ "${action: -2}" = "ie" ]
+	then
+		# die      >>> dying
+		# tie      >>> tying
+
+		action="${action/%ie/y}"
+
+	elif [ "${action: -2}" = "ee" ]
+	then
+		# see      >>> seeing
+		# flee     >>> fleeing
+
+		:
+
+	elif [ "${action: -2}" = "ue" ]
+	then
+		# queue    >>> queueing
+		# issue    >>> issueing
+
+		:
+
+	elif [ "${action: -1}" = "e" ]
+	then
+		# move     >>> moving
+		# remove   >>> removing
+		# archive  >>> archiving
+		# sanitize >>> sanitizing
+		# generate >>> generating
+		# evaluate >>> evaluating
+
+		action="${action/%e/}"
+
+	elif [ "${action: -1}" = "c" ]
+	then
+		# sync     >>> syncing
+		# panic    >>> panicking
+		# picnic   >>> picnicking
+
+		action="${action}k"
+
+	elif [[   "${action}" =~ [aeiou][bcdfghjklmnpqrstvwxyz]$        ]] && \
+	     [[ ! "${action}" =~ [aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] && \
+	     [[ ! "${action}" =~ [wxy]$                                 ]]
+	then
+		# run      >>> running
+		# scrub    >>> scrubbing
+		# begin    >>> beginning
+		# stop     >>> stopping
+
+		action="${action}${action: -1}"
+	fi
+
+	action="${action/%/ing}"
+
+	if [ "${#detail[@]}" -eq 0 ]
+	then
+		action="${action/%/$marker_elp}"
+	fi
+
+	# prompt
+
+	if [ "${#detail[@]}" -gt 0 ]
+	then
+		frobulator.pmt "${action}" "${detail[@]}"
+	else
+		frobulator.pmt "${action}"
+	fi
+
+	progress_prompt="${prompt_string[@]}"
+	progress_color="${color}"
+
+	# cleanup
+
+	unset action
+	unset color
+
+	detail=()
+
+	unset magenta_list
+	unset purple_list
+	unset blue_list
+	unset navy_list
+	unset red_list
+	unset crimson_list
+	unset yellow_list
+	unset orange_list
+	unset aqua_list
+	unset teal_list
+	unset black_list
+	unset green_list
+	unset lime_list
+	unset silver_list
+	unset grey_list
+}
+
+# process //////////////////////////////////////////////////////////////////////
+
+# use as ticker line marker to mark process completion or progress
+# use after process marked for background operation
+
+# usage:      [process] &
+#             frobulator.process "[string]"
+
+frobulator.process () {
+
+	# catch process identifier of last command
+
+	PID=$!
+
+	seconds="0.25"
+
+	ticker='/\'
+
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	instance=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		if [ ! -d /proc/"${PID}" ]
+		then
+			break
+		fi
+
+		ticker_frame="${ticker:instance++%${#ticker}:1}"
+
+		echo -n -e "\r${before}${color} \b${ticker_frame}${reset}${after}${marker_spc}${prompt}\c"
+
+		sleep "${seconds}"
+	done
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+}
+
+# progress /////////////////////////////////////////////////////////////////////
+
+# use as ticker line marker to mark process wait progress
+# use after process marked to for in background
+# refer to frobulator.action for actions list
+
+# usage:      [process] &
+#             frobulator.progress "[action]"
+
+# progress /////////////////////////////////////////////////////////////////////
+
+frobulator.progress () {
+
+	# catch process identifier of last command
+
+	PID=$!
+
+	seconds="0.25"
+
+	ticker='⎺⎻⎼⎽⎼⎻'
+
+	before="[${marker_spc}${marker_spc}"
+	after="${marker_spc}${marker_spc}]"
+
+	frobulator.action "${@}"
+
+	instance=1
+
+	while [ -d /proc/"${PID}" ]
+	do
+		ticker_frame="${ticker:instance++%${#ticker}:1}"
+
+		echo -n -e "\r${before}${progress_color} \b${ticker_frame}${reset}${after}${marker_spc}${progress_prompt}\c"
+
+		sleep "${seconds}"
+	done
+
+	unset color_entry
+
+	echo
+
+	# normalize line spacing:
+	# additional 'echo' required due to carriage return
+
+	echo
+
+	# cleanup
+
+	unset PID
+	unset seconds
+	unset ticker
+	unset before
+	unset after
+	unset instance
+	unset ticker_frame
+	unset progress_prompt
+	unset progress_color
+}
+
+# bar //////////////////////////////////////////////////////////////////////////
+
+# progress bar /////////////////////////////////////////////////////////////////
+#
+# use to run a command with an estimated activity bar
+#
+# note:
+#	this is not a true progress meter
+#	it estimates progress while the process is running
+#	it only reaches 100 percent when the process exits
+#
+# usage:
+#	frobulator.bar sleep 5
+#	frobulator.bar apt-get update
+#	frobulator.bar rsync -av source/ destination/
+
+frobulator.bar () {
+
+	local command
+
+	local process_id
+	local process_exit
+
+	local seconds
+
+	local character_count
+	local before_count
+	local after_count
+	local buffer_count
+
+	local progress_current
+	local progress_limit
+	local progress_percent
+
+	local progress_done
+	local progress_left
+
+	local progress_done_line
+	local progress_left_line
+	local progress_line
+
+	local progress_label
+
+	local job_control
+
+	if [ $# -eq 0 ]
+	then
+		frobulator.err "Missing command"
+		echo
+
+		return 1
+	fi
+
+	# defaults
+
+	seconds="0.25"
+
+	progress_current=0
+	progress_limit=99
+
+	# columns
+
+	if [ -z "${terminal_columns}" ]
+	then
+		character_count="${span_characters}"
+	else
+		character_count="${terminal_columns}"
+	fi
+
+	# reserved output width
+
+	before_count=0
+	after_count=12
+
+	buffer_count=$(( character_count - before_count - after_count ))
+
+	# run command
+
+	command=${@}
+
+	"${SHELL}" -c "${command}" >> "${sink}" 2>&1 &
+
+	process_id=$!
+
+	# monitor process
+
+	while [ -d /proc/"${process_id}" ]
+	do
+		# simulated progress
+
+		if [ "${progress_current}" -lt 70 ]
+		then
+			progress_current=$(( progress_current + 2 ))
+
+		elif [ "${progress_current}" -lt 90 ]
+		then
+			progress_current=$(( progress_current + 1 ))
+
+		elif [ "${progress_current}" -lt "${progress_limit}" ]
+		then
+			progress_current=$(( progress_current + 0 ))
+
+		fi
+
+		# progress calculation
+
+		progress_percent="${progress_current}"
+
+		progress_done=$(( progress_percent * buffer_count / 100 ))
+		progress_left=$(( buffer_count - progress_done ))
+
+		# progress line
+
+		progress_done_line=$(printf "%${progress_done}s")
+		progress_left_line=$(printf "%${progress_left}s")
+
+		progress_done_line="${progress_done_line// />}"
+		progress_left_line="${progress_left_line// /-}"
+
+		progress_line="${progress_done_line}${progress_left_line}"
+
+		# percentage padding
+
+		if [ "${progress_percent}" -lt 10 ]
+		then
+			progress_label="00${progress_percent}"
+
+		elif [ "${progress_percent}" -lt 100 ]
+		then
+			progress_label="0${progress_percent}"
+
+		else
+			progress_label="${progress_percent}"
+		fi
+
+		# output
+
+		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}|${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
+
+		sleep "${seconds}"
+	done
+
+	# collect exit code
+
+	wait ${process_id}
+
+	process_exit=$?
+
+	# force completion
+
+	progress_percent=100
+
+	progress_done=$(( progress_percent * buffer_count / 100 ))
+	progress_left=$(( buffer_count - progress_done ))
+
+	progress_done_line=$(printf "%${progress_done}s")
+	progress_left_line=$(printf "%${progress_left}s")
+
+	progress_done_line="${progress_done_line// />}"
+	progress_left_line="${progress_left_line// /-}"
+
+	progress_line="${progress_done_line}${progress_left_line}"
+
+	progress_label="100"
+
+	# final output
+
+	if [ "${process_exit}" -eq 0 ]
+	then
+		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}|${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
+	fi
+
+	echo
+
+	# cleanup
+
+	unset command
+
+	unset process_id
+	unset process_exit
+
+	unset seconds
+
+	unset character_count
+	unset before_count
+	unset after_count
+	unset buffer_count
+
+	unset progress_current
+	unset progress_limit
+	unset progress_percent
+
+	unset progress_done
+	unset progress_left
+
+	unset progress_done_line
+	unset progress_left_line
+	unset progress_line
+
+	unset progress_label
+
+	return ${process_exit}
+
+}
+
+# temporary ////////////////////////////////////////////////////////////////////
+
+# use to generate temporary directory from argument or array list
+# generates directory template as 'frobulator_temporary_XXXXXX'
+# useful for program builds and process transfer features
+
+# usage:      frobulator.temporary "[directory name]" | "[array name]"
+
+frobulator.temporary () {
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		directory="${1}"
+
+		list=()
+
+		list+=("${directory}")
+	fi
+
+	template="frobulator.tmp.XXXXXX"
+
+	for directory in ${list[@]}
+	do
+		temporary_directory=$(mktemp -d -t "${template}")
+
+		eval directory="${temporary_directory}"
+
+		frobulator.add "Generating temporary directory" "[ ${directory} ]"
+		echo
+
+		frobulator_return+=( "${directory}" )
+	done
+}
+
+# trap /////////////////////////////////////////////////////////////////////////
+
+# use to cleanup temporary directory or other process driven execution
+# handles exit codes and signals to ensure proper cleanup
+# specify directory name as variable
+# variable is returned from 'eval' into frobulator.temporary
+
+# usage:         frobulator.temporary "[directory name]" | "[array name]"
+# assignment:    directory="${frobulator_return[@]}"
+#                frobulator.trap "${directory name}"
+
+# Signal        Value    Action    Comment
+# ------------------------------------------------------------------------------
+# SIGTERM       15       Term      Termination signal
+# SIGINT         2       Term      CONTROL+C interrupt from keyboard
+# SIGHUP         1       Term      Disconnected terminal or parent died
+# SIGPIPE       13       Term      Broken pipe
+# SIGALRM(*)    14       Term      Timer signal from alarm
+# SIGUSR2(*)    12       Term      User-defined signal 2
+# SIGUSR1(*)    10       Term      User-defined signal 1
+# SIGQUIT        3       Core      CONTRL+\ or quit from keyboard
+# SIGABRT        6       Core      Abort signal from abort(3)
+# SIGSEGV       11       Core      Invalid memory reference
+# SIGILL         4       Core      Illegal Instruction
+# SIGFPE         8       Core      Floating point exception
+# SIGKILL        9       Term      Kill signal
+# ------------------------------------------------------------------------------
+
+frobulator.trap () {
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		directory="${1}"
+
+		list=()
+
+		list+=("${directory}")
+	fi
+
+	for directory in ${list[@]}
+	do
+		# clean on interruption or error
+
+		trap "exit 1"					HUP INT PIPE QUIT TERM
+
+		# clean on exit
+
+		trap 'rm --recursive --force "${directory}"'	EXIT
+	done
+
+}
+
+# continue /////////////////////////////////////////////////////////////////////
+
+# BASH exit status codes ///////////////////////////////////////////////////////
+
+# exit status codes are integers returned by commands upon completion.
+# a successful command typically returns an exit status of 0.
+# non-zero values generally indicate an error or abnormal termination.
+
+# common exit status codes /////////////////////////////////////////////////////
+
+# CODE     DEFINITION                           EXAMPLE
+
+# 0        success                              true
+# 1        generic error                        false
+# 2        misuse of shell builtins             'cd /nonexistent/directory'
+
+# 126      command invoked cannot execute       'bash /nonexistent_script'  (assume script lacks executable permissions)
+# 127      command not found                    'nonexistent_command'
+# 128+n    fatal error  - signal "n"            'kill -9 $$'                (send SIGKILL to current process)
+# 130      terminated - signal 2 (sigint)       'kill -2 $!'                (send SIGINT to background process)
+# 137      terminated - signal 9 (sigkill)      'kill -9 $!'                (send SIGKILL to background process)
+# 139      terminated - signal 11 (sigsegv)                                 (program with memory access violations)
+# 143      terminated - signal 15 (sigterm)     'kill -15 $!'               (send SIGTERM to background process)
+
+# 255*     out of range - exit -1
+
+# use to validate previous command's exit status
+# use in tandem with frobulator.complete
+
+# example:	function () {
+
+#				frobulator.continue
+
+#					[function commands]
+
+#				frobulator.complete
+
+#			}
+
+frobulator.continue () {
+
+	# catch process exit status of last command
+
+	PES=${?}
+
+	command="${1}"
+
+	if [[ "${PES}" = 1 ]]
+	then
+		frobulator.stp "Aborting${marker_elp}"
+		echo
+
+		exit 1
+
+	elif [[ "${PES}" = 0 ]]
+	then
+		frobulator.fwd "Continuing${marker_elp}"
+		echo
+
+	fi
+
+}
+
+# complete /////////////////////////////////////////////////////////////////////
+
+# use to confirm running command's exit status
+# use in tandem with frobulator.continue
+
+# usage:      frobulator.complete "[command]"
+
+# example:	function () {
+
+#				frobulator.continue
+
+#					[function commands]
+
+#				frobulator.complete
+
+#			}
+
+frobulator.complete () {
+
+	# catch process exit status of last command
+
+	PES=${?}
+
+	command="${1}"
+
+	if [[ "${PES}" = 1 ]]
+	then
+		frobulator.err "Incomplete - error status" "[ ${command} ]"
+		echo
+
+		return 1
+	else
+		frobulator.cpt "Complete - success status" "[ ${command} ]"
+		echo
+
+		return 0
+	fi
+
+}
+
+# ownership ////////////////////////////////////////////////////////////////////
+
+# use to restore ownership after privileged operations
+
+# usage:      frobulator.ownership [target]
+
+frobulator.ownership () {
+
+	if [ $# -eq 0 ]
+	then
+		frobulator.err "Missing ownership target" "[ target : null ]"
+		echo
+
+		return 1
+	fi
+
+	list=("${@}")
+
+	# determine user ownership source
+
+	if [ -n "${SUDO_USER}" ]
+	then
+		user_name="${SUDO_USER}"
+	else
+		user_name="$(id -u -n)"
+	fi
+
+	# determine user home
+
+	user_home="/home/${user_name}"
+
+	if [ "${user_name}" = "root" ]
+	then
+		user_home="/root"
+	fi
+
+	# system ownership paths
+
+	system_paths_list=(
+		/root
+		/usr
+		/etc
+		/var
+		/opt
+		/boot
+	)
+
+	for target in "${list[@]}"
+	do
+		system_path="false"
+
+		# resolve target path
+
+		target_path=$(realpath -m "${target}")
+
+		for path in "${system_paths_list[@]}"
+		do
+			if [[ "${target_path}" = "${path}"   ]] || \
+			   [[ "${target_path}" = "${path}/"* ]]
+			then
+				system_path="true"
+
+				break
+			fi
+		done
+
+		# determine ownership context
+
+		if [[ "${target_path}" = "${user_home}"   ]] || \
+		   [[ "${target_path}" = "${user_home}/"* ]]
+		then
+			owner_name="${user_name}"
+
+		elif [ "${system_path}" = "true" ]
+		then
+			owner_name="root"
+
+		else
+			owner_name="${user_name}"
+		fi
+
+		# resolve ownership identities
+
+		user_id=$(id -u "${owner_name}")
+
+		group_id=$(id -g "${owner_name}")
+
+		# apply ownership
+
+		chown							\
+			"${user_id}:${group_id}"	\
+			--recursive					\
+										"${target}"
+
+	done
+
+	system_paths_list=()
+
+	# cleanup
+
+	unset target
+
+	unset user_name
+	unset user_home
+
+	unset target_path
+
+	unset system_path
+
+	unset path
+
+	unset owner_name
+
+	unset user_id
+	unset group_id
+}
+
+# directory ////////////////////////////////////////////////////////////////////
+
+# use to generate directory from argument or array list
+
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.directory "[/path/string]" | "[path]" "[directory name]" | "[array name]"
+
+frobulator.directory () {
+
+	if [ $# -eq 1 ]
+	then
+
+		if [[ "${1}" = */* ]]
+		then
+			path="${1%/*}"
+
+			directory_item="${1##*/}"
+		else
+			path="${PWD}"
+
+			directory_item="${1}"
+		fi
+
+		list=()
+
+		list+=("${directory_item}")
+
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		path="${1}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			directory_item="${2}"
+
+			list=()
+
+			list+=("${directory_item}")
+		fi
+
+		shift
+
+	fi
+
+	for directory in ${list[@]}
+	do
+		frobulator.add "Generating directory" "[ ${directory} ]"
+		echo
+
+		# create directory and set permissions
+
+		if [ ! -d "${path}"/"${directory}" ]
+		then
+			mkdir			\
+				--parents	\
+							"${path}"/"${directory}"
+		fi
+
+		# set ownership
+
+		frobulator.ownership "${path}"/"${directory}"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# write ////////////////////////////////////////////////////////////////////////
+
+# use to generate and write to file(s) from argument or array list
+# appends content to file
+
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.write "[content]" "[path]" "[file]"
+
+frobulator.write () {
+
+	content="${1}"
+
+	if [ $# -eq 2 ]
+	then
+		path="${PWD}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ $# -eq 3 ]
+	then
+		path="${2}"
+
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ ! -d "${path}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${path}"
+	fi
+
+	for file in ${list[@]}
+	do
+		frobulator.add "Writing" "[ ${file} ]"
+		echo
+
+		# write to file and set permissions
+
+		echo "${content}" >> "${path}"/"${file}"
+
+		# set ownership
+
+		frobulator.ownership "${path}"/"${file}"
+
+	done
+
+	# unset array
+
+	list=()
+}
+
+# flag / ///////////////////////////////////////////////////////////////////////
+
+# use to generate and write to file(s) from argument or array list
+# overwrites content to file
+
+# "${path}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.flag "[content]" "[path]" "[file]"
+
+frobulator.flag () {
+
+	content="${1}"
+
+	if [ $# -eq 2 ]
+	then
+		path="${PWD}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ $# -eq 3 ]
+	then
+		path="${2}"
+
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${3} - array
+
+			list=(${@:3})
+		else
+			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ ! -d "${path}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${path}"
+	fi
+
+	for file in ${list[@]}
+	do
+		frobulator.add "Flagging" "[ ${file} ]"
+		echo
+
+		# write to file and set permissions
+
+		echo "${content}" > "${path}"/"${file}"
+
+		# set ownership
+
+		frobulator.ownership "${path}"/"${file}"
+
+		# set permissions
+
+		chmod a+rx "${path}"/"${file}"
+	done
+}
+
+# file /////////////////////////////////////////////////////////////////////////
+
+# use to generate file(s) from argument or array list
+
+# usage:      frobulator.file "[path]" "[file]" | "[array]"
+
+frobulator.file () {
+
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ $# -eq 2 ]
+	then
+		path="${1}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ ! -d "${path}" ]
+	then
+		 mkdir			\
+			--parents	\
+						"${path}"
+	fi
+
+	for file in ${list[@]}
+	do
+		frobulator.add "Generating" "[ ${file} ]"
+		echo
+
+		# create file and set permissions
+
+		if [ ! -f "${path}"/"${file}" ]
+		then
+			touch "${path}"/"${file}"
+		fi
+
+		# set ownership
+
+		frobulator.ownership "${path}"/"${file}"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# keep /////////////////////////////////////////////////////////////////////////
+
+# use to reverse-select file(s) for deletion from argument or array list
+# keeps selected files in directory
+
+# usage:      frobulator.keep "[path]" "[file]" | "[array]"
+
+frobulator.keep () {
+
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			file="${1}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ $# -ge 2 ]
+	then
+		path="${1}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			file="${2}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+
+		shift
+
+	fi
+
+	if [ -d "${path}" ]
+	then
+		# enter path and parse items
+
+		cd "${path}"
+
+		for item in *
+		do
+			keep=0
+
+			for file in ${list[@]}
+			do
+				# mark for keeping
+
+				if [[ "${path}"/"$file" = "${path}"/"$item" ]]
+				then
+					keep=1
+
+					frobulator.ret "Keeping" "[ ${file} ]"
+					echo
+				fi
+			done
+
+			# remove unmarked items
+
+			if [[ "$keep" = 0 ]]
+			then
+				rm					\
+					--recursive		\
+					--force			\
+									"${path}"/"${item}"
+			fi
+		done
+	else
+		frobulator.err "Path does not exist" "[ ${path} ]"
+		echo
+	fi
+
+	unset keep
+
+	# unset array
+
+	list=()
+}
+
+# delete ///////////////////////////////////////////////////////////////////////
+
+# use to select file(s) for deletion from argument or array list
+# removes selected file in directory
+
+# usage:      frobulator.delete "[path]" "[file]" | "[array]"
+
+frobulator.delete () {
+
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${1} - array
+
+			list=(${@:1})
+		else
+			item="${1}"
+
+			list=()
+
+			list+=("${item}")
+		fi
+	fi
+
+	if [ $# -eq 2 ]
+	then
+		path="${1}"
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${2} - array
+
+			list=(${@:2})
+		else
+			item="${2}"
+
+			list=()
+
+			list+=("${item}")
+		fi
+	fi
+
+	for item in ${list[@]}
+	do
+		frobulator.rem "Deleting" "[ ${item} ]"
+		echo
+
+		# remove file
+
+		rm					\
+			--recursive		\
+			--force			\
+							"${path}"/"${item}"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# copy /////////////////////////////////////////////////////////////////////////
+
+# use to copy file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.copy "[source]" "[target]" "[file]" | "[array]"
+
+frobulator.copy () {
+
+	source="${1}"
+	target="${2}"
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${2} - array
+
+		list=(${@:3})
+	else
+		file="${3}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${target}"
+	fi
+
+	for file in ${list[@]}
+	do
+		frobulator.lnk "Copying" "[ ${file} ]"
+		echo
+
+		cp					\
+			--recursive		\
+			--force			\
+							"${source}"/"${file}" "${target}"/"${file}"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# move /////////////////////////////////////////////////////////////////////////
+
+# use to move file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.move "[source]" "[target]" "[file]" | "[array]"
+
+frobulator.move () {
+
+	source="${1}"
+	target="${2}"
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${2} - array
+
+		list=(${@:3})
+	else
+		file="${3}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${target}"
+	fi
+
+	for file in ${list[@]}
+	do
+		if [ -z "${source}" ]
+		then
+			source="${PWD}"
+		fi
+
+		frobulator.lnk "Moving" "[ ${file} ]"
+		echo
+
+		mv "${source}"/"${file}" "${target}"/"${file}"
+
+		# set permissions
+
+		chmod a+rx "${target}"/"${file}"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# link /////////////////////////////////////////////////////////////////////////
+
+# use to link file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.link "[source]" "[target]" "[item]" | "[array]"
+
+frobulator.link () {
+
+	source="${1}"
+	target="${2}"
+
+	# validation
+
+	if [ -z "${source}" ] || [ -z "${target}" ]
+	then
+		frobulator.err "Missing link source or target"
+		echo
+
+		return 1
+	fi
+
+	if [ $# -lt 3 ]
+	then
+		frobulator.err "Missing link item"
+		echo
+
+		return 1
+	fi
+
+	# target directory
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${target}"
+	fi
+
+	# link single item
+
+	if [ $# -eq 3 ]
+	then
+		item="${3}"
+		link="${3}"
+
+		if [ -e "${source}"/"${item}" ]
+		then
+			if [ -d "${source}"/"${item}" ]
+			then
+				type="directory"
+			fi
+
+			if [ -f "${source}"/"${item}" ]
+			then
+				type="file"
+			fi
+
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
+			echo
+
+			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
+
+			frobulator.ownership "${target}"/"${link}"
+		fi
+	fi
+
+	# link renamed item
+
+	if [ $# -eq 4 ]
+	then
+		item="${3}"
+		link="${4}"
+
+		if [ -e "${source}"/"${item}" ]
+		then
+			if [ -d "${source}"/"${item}" ]
+			then
+				type="directory"
+			fi
+
+			if [ -f "${source}"/"${item}" ]
+			then
+				type="file"
+			fi
+
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
+			echo
+
+			ln -s -f "${source}"/"${item}" "${target}"/"${link}"
+
+			frobulator.ownership "${target}"/"${link}"
+		fi
+	fi
+
+	# link array
+
+	if [ $# -gt 4 ]
+	then
+		list=("${@:3}")
+
+		for item in "${list[@]}"
+		do
+			link="${item}"
+
+			if [ -e "${source}"/"${item}" ]
+			then
+				if [ -d "${source}"/"${item}" ]
+				then
+					type="directory"
+				fi
+
+				if [ -f "${source}"/"${item}" ]
+				then
+					type="file"
+				fi
+
+				frobulator.lnk "Linking ${type}" "[ ${link} ]"
+				echo
+
+				ln -s -f "${source}"/"${item}" "${target}"/"${link}"
+
+				frobulator.ownership "${target}"/"${link}"
+			fi
+		done
+	fi
+
+	# cleanup
+
+	list=()
+
+	unset source
+	unset target
+
+	unset item
+	unset link
+	unset type
+}
+
+# image ////////////////////////////////////////////////////////////////////////
+
+frobulator.image () {
+
+	if [ $# -eq 1 ]
+	then
+		image="${1}"
+
+		width=${terminal_columns}
+
+	elif [ $# -eq 2 ]
+	then
+		image="${1}"
+		width="${2}"
+
+		ratio="1"
+
+	elif [ $# -eq 3 ]
+	then
+		image="${1}"
+		width="${2}"
+		height="${3}"
+
+		ratio="0"
+	fi
+
+	if [ -z "${width}" ]
+	then
+		width=${terminal_columns}
+	fi
+
+	if [ -t 0 ]
+	then
+		# 'stdin' is a tty
+
+		input="tty"
+	else
+		input="stdin"
+	fi
+
+	# verify image source:
+	# url / local file
+
+	if [[ "${image}" =~ ^(https?://)?[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?(:[0-9]{1,5})?(/.*)?$ ]]
+	then
+		encoding=$(curl -s -L "${image}" | base64 -w 0)
+
+	elif [ -r "${image}" ]
+	then
+		encoding=$(cat "${image}" | base64 -w 0)
+	fi
+
+	image_osc () {
+
+		# osc - opening sequence characters
+		# verify terminal multiplexer instance and type
+
+		if [[ "${TERM}" == screen* || "${TERM}" == tmux* ]]
+		then
+			printf "\033Ptmux;\033\033]"
+		else
+			printf "\033]"
+		fi
+	}
+
+	image_tsc () {
+
+		# tsc - termination secquence characters
+		# verify terminal multiplexer instance and type
+
+		if [[ "${TERM}" == screen* ]] || \
+		   [[ "${TERM}" == tmux*   ]]
+		then
+			printf "\a\033\\"
+		else
+			printf "\a"
+		fi
+	}
+
+	image_parse () {
+
+		# parameters
+
+		image="${image}"
+
+		input="${input}"
+
+		encoding="${encoding}"
+
+		inline="1"
+
+		name="0"
+
+		width="${width}"
+
+		height="${height}"
+
+		ratio="${ratio}"
+
+		type=""
+
+		block="1"
+
+		echo
+
+		# open sequence - begin transfer
+
+		image_osc
+
+		printf "1337;"
+
+		if [[ "${block}" -eq 1 ]]
+		then
+			printf "File"
+		else
+			printf "MultipartFile"
+		fi
+
+		printf "=inline=%s" "${inline}"
+
+		printf ";size=%d" $(printf "%s" "${encoding}" | base64 -d -i | wc -c)
+
+		if [ -n "${image}" ]
+		then
+			printf ";name=%s" "$(printf "%s" "${image}" | base64 -w 0)"
+		fi
+
+		if [ -n "${width}" ]
+		then
+			printf ";width=%s" "${width}"
+		fi
+
+		if [ -n "${height}" ]
+		then
+			printf ";height=%s" "${height}"
+		fi
+
+		if [ -n "${ratio}" ]
+		then
+			printf ";preserveAspectRatio=%s" "${ratio}"
+		fi
+
+		#[ -n "${type}" ] && printf ";type=%s" "${type}"
+
+		if [[ "${block}" -eq 1 ]]
+		then
+			printf ":%s" "${encoding}"
+
+			image_tsc
+		else
+			image_tsc
+
+			# split into 200-byte parts:
+			# optimizes parsing through terminal multiplexer
+
+			bytes=200
+
+			split=$(fold -w ${bytes})
+
+			parts=$(printf "%s" "${encoding}" | ${split})
+
+			# load byte stream
+
+			for part in "${parts}"
+			do
+				image_osc
+
+				printf '1337;FilePart=%s' "${part}"
+
+				image_tsc
+			done
+
+			# terminate sequence
+
+			image_osc
+
+			printf '1337;FileEnd'
+
+			image_tsc
+		fi
+
+		echo
+
+		if [ "${name}" = "1" ]
+		then
+			echo "Image: ${image}"
+			echo
+		fi
+	}
+
+	image_print () {
+
+		if [ "${input}" = "stdin" ]
+		then
+			image=""
+			inline="1"
+			encoding=$(cat | base64 -w 0)
+
+		elif [ "${input}" = "tty" ]
+		then
+			inline="1"
+		fi
+
+		image_parse "${image}" "${inline}" "${encoding}" "${name}" "${width}" "${height}" "${ratio}" "${type}" "${block}"
+
+	}
+
+	if [ -z "${image}" ]
+	then
+		frobulator.err "No image supplied"
+		echo
+
+		exit 1
+	fi
+
+	image_print
+}
+
+# http /////////////////////////////////////////////////////////////////////////
+
+# use to validate http status code prior to download / upload operations
+# use for url addresses [url] and data download validations [content]
+
+# usage:      frobulator.status "[url]"				type: url		[default]
+
+#             frobulator.status "[type]" "[url]"	type: content
+
+frobulator.http () {
+
+	# HTTP response status codes:
+
+	# informational responses //////////////////////////////////////////////////
+
+	# 100 continue:                            client can proceed
+	# 101 switching protocols:                 server switching protocols
+	# 102 processing:                          request received, status pending
+	# 103 early hints:                         preload resources early
+
+	# successful responses /////////////////////////////////////////////////////
+
+	# 200 ok:                                  request successful
+	# 201 created:                             new resource created
+	# 202 accepted:                            request received, not processed
+	# 203 non-authoritative:                   metadata from a copy
+	# 204 no content:                          no content, headers updated
+	# 205 reset content:                       reset document
+	# 206 partial content:                     partial content sent
+	# 207 multi-status:                        multiple resource statuses
+	# 208 already reported:                    avoids repeated enumeration
+
+	# 226 im used:                             result of manipulations applied
+
+	# redirection messages /////////////////////////////////////////////////////
+
+	# 300 multiple choices:                    choose one response
+	# 301 moved permanently:                   resource permanently moved
+	# 302 found:                               resource temporarily moved
+	# 303 see other:                           get resource at another uri
+	# 304 not modified:                        resource not modified
+	# 307 temporary redirect:                  redirect, keep method
+	# 308 permanent redirect:                  redirect, keep method
+
+	# client error responses ///////////////////////////////////////////////////
+
+	# 400 bad request:                         invalid request
+	# 401 unauthorized:                        authentication required
+	# 403 forbidden:                           access denied
+	# 404 not found:                           resource not found
+	# 405 method not allowed:                  method not supported
+	# 406 not acceptable:                      no matching content
+	# 408 request timeout:                     connection idle
+	# 409 conflict:                            request conflicts with server
+
+	# 410 gone:                                resource permanently deleted
+	# 413 content too large:                   request body too large
+	# 414 uri too long:                        uri too long
+	# 415 unsupported media type:              media type not supported
+	# 416 range not satisfiable:               range not satisfiable
+	# 417 expectation failed:                  expectation failed
+	# 418 im a teapot:                         not a teapot
+
+	# 421 misdirected request:                 request misdirected
+	# 429 too many requests:                   rate limiting exceeded
+
+	# 431 header fields too large:             headers too large
+
+	# 451 unavailable for legal reasons:       access denied by law
+
+	# server error responses ///////////////////////////////////////////////////
+
+	# 500 internal server error:              server error
+	# 501 not implemented:                    method not implemented
+	# 502 bad gateway:                        invalid gateway response
+	# 503 service unavailable:                server unavailable
+	# 504 gateway timeout:                    gateway timeout
+	# 505 http version not supported:         http version not supported
+
+	# 511 network authentication required:    network authentication required
+
+	http_code="%{http_code}\n"
+
+	if [ $# -eq 1 ]
+	then
+		url="${1}"
+
+		url_status=$(curl									\
+						--silent							\
+						--output		"${sink}"			\
+						--write-out 	"${http_code}"		\
+															"${url}"
+					)
+
+	elif [ $# -eq 2 ]
+	then
+		url="${1}"
+		data="${2}"
+
+		url_status=$(curl														\
+					--silent													\
+					--output		"${sink}"									\
+					--write-out		"${http_code}"								\
+					--location		"${url}/${data}"		| tail -n 1			\
+															| cut -d ':' -f 1
+				)
+	fi
+
+}
+
+# status ///////////////////////////////////////////////////////////////////////
+
+# use to parse and validate HTTP status responses and manage download actions
+# use in tandem with frobulator.http
+
+# usage:    frobulator.http [url]
+#           frobulator.status
+
+frobulator.status () {
+
+frobulator.fwd "Validating URL${marker_elp}"
+echo
+
+if [[ "${url_status}" = [1][0-9][0-9] ]]
+	then
+		url_status_label="information"
+
+		frobulator.inf "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [2][0-9][0-9] ]]
+	then
+		url_status_label="success"
+
+		frobulator.scs "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [3][0-9][0-9] ]]
+	then
+		url_status_label="redirect"
+
+		frobulator.wrn "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		echo
+
+		proceed=1
+
+	elif [[ "${url_status}" = [4][0-9][0-9] ]]
+	then
+		url_status_label="error"
+
+		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		echo
+
+		reason="client"
+
+		proceed=0
+
+	elif [[ "${url_status}" = [5][0-9][0-9] ]]
+	then
+		url_status_label="error"
+
+		frobulator.err "Download status""[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		echo
+
+		reason="server"
+
+		proceed=0
+	fi
+
+}
+
+# download /////////////////////////////////////////////////////////////////////
+
+# use to download file(s) with url status verification from argument or array list
+
+# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
+#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
+#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
+
+frobulator.download () {
+
+	url="${1}"
+
+	frobulator.http "${url}"
+
+	frobulator.status
+
+	if [[ "${proceed}" = 1 ]]
+	then
+		if [ $# -eq 2 ]
+		then
+			path="${PWD}"
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${2} - array
+
+				list=(${@:2})
+			else
+				file="${2}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 3 ]
+		then
+			path="${2}"
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ $# -eq 4 ]
+		then
+			source_file="${2}"
+			path="${3}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${4} - array
+
+				list=(${@:4})
+			else
+				file="${4}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		else
+			path="${2}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${3} - array
+
+				list=(${@:3})
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+		fi
+
+		if [ ! -d "${path}" ]
+		then
+			mkdir			\
+				--parents	\
+							"${path}"
+		fi
+
+		for file in "${list[@]}"
+		do
+			if [ $# -eq 4 ]
+			then
+				data="${source_file}"
+			else
+				data="${file}"
+			fi
+
+			frobulator.http "${url}" "${data}"
+
+			frobulator.status
+
+			if [[ "${proceed}" = 1 ]]
+			then
+				if [ $# -eq 2 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}" > "${path}"/"${file}" &
+
+				elif [ $# -eq 3 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${file}" > "${path}"/"${file}" &
+
+				elif [ $# -eq 4 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${source_file}" > "${path}"/"${file}" &
+
+				else
+					curl			\
+						--silent	\
+						--location	\
+									"${url}"/"${file}" > "${path}"/"${file}" &
+				fi
+
+				frobulator.progress "download" "[ '${file}' ]"
+
+				# set permissions
+
+				chmod a+rx "${path}"/"${file}"
+
+			elif [[ "${proceed}" = 0 ]]
+			then
+				frobulator.stp "Skipping" "[ '${file}' ]"
+				echo
+
+				frobulator.wrn "File missing or unavailable."
+				frobulator.nul "Review file spelling or availability for URL at:"
+				frobulator.url "${marker_web}${url}"
+				echo
+			fi
+
+		done
+
+		unset data
+
+		# unset array
+
+		list=()
+
+		return 0
+
+	elif [[ "${proceed}" = 0 ]]
+	then
+
+		frobulator.err "Download error" "[ response${marker_hnt}${url_status} ]"
+		frobulator.nul "Cannot continue - ${reason} unavailable."
+		echo
+
+		frobulator.stp "Aborting${marker_elp}"
+		echo
+
+		return 1
+	fi
+
+	unset proceed
+}
+
+# upload ///////////////////////////////////////////////////////////////////////
+
+# use to upload data or file(s) with url from argument or array list
+
+# usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
+
+#             item as path to item
+#             array as array of items
+
+frobulator.upload () {
+
+	request="${1}" # POST / PUT
+	url="${2}"
+	data="${3}"
+
+	frobulator.status "${url}"
+
+	frobulator.probe "${url}"
+
+	if [[ "${proceed}" = 1 ]]
+	then
+		unset command_upload
+
+		command_upload+="curl"
+		command_upload+=" --request ${request}"
+
+		header="--header Content-Type: "
+
+		if [[ -z "${data}" ]]
+		then
+			# no data
+
+			frobulator.err "Error: No data provided for  request." "[ ${request} ]" >&2
+			echo
+
+			return 1
+
+		elif [[ "${data}" =~ ^\{.*\}$ ]]
+		then
+			# json data
+
+			header+="application/json"
+
+		elif [[ "${data}" =~ ^@ ]]
+		then
+			data="${data#@}"
+
+			if [[ -f "${data}" ]] || \
+			[[ -s "${data}" ]]
+			then
+
+				# file / form data
+
+				header+="multipart/form-data"
+
+				data="--file=@"
+				data+="${data}"
+			else
+				frobulator.err "file is empty or does not exist" "[ ${data} ]" >&2
+				echo
+
+				return 1
+
+			fi
+
+		else
+			# form data (urlencoded)
+
+			header="application/x-www-form-urlencoded"
+		fi
+
+		command_upload+="${marker_spc}${header}"
+		command_upload+="${marker_spc}${data}"
+		command_upload+="${marker_spc}${url}"
+
+		${command_upload}
+
+		return 0
+
+	elif [[ "${proceed}" = 0 ]]
+	then
+
+		frobulator.err "Upload error" "[ response${marker_hnt}${url_status} ]"
+		frobulator.nul "Cannot continue - ${reason} unavailable."
+		echo
+
+		frobulator.stp "Aborting${marker_elp}"
+		echo
+
+		return 1
+	fi
+
+	unset proceed
+
+}
+
+# silence //////////////////////////////////////////////////////////////////////
+
+# use to wrap command execution and redirect all output to null sink
+# provides fully silent execution
+
+# usage:      frobulator.silence "[command]"
+
+frobulator.silence () {
+
+	command="${@}"
+
+	"${SHELL}" -c "${command}" >> "${sink}" 2>&1
+}
+
+# log //////////////////////////////////////////////////////////////////////////
+
+# use to wrap command and redirect all output to "${script}"-"${stamp}".log file
+# provides fully silent execution
+
+# usage:      frobulator.log "[command]"
+
+frobulator.log () {
+
+	if [ -z "${SUDO:-$HOME}" ]
+	then
+		log_directory="${PREFIX}"/var/log
+	else
+		if [ ! -d "${HOME}"/.local/var/log ]
+		then
+			mkdir			\
+				--parents	\
+							"${HOME}"/.local/var/log
+		fi
+
+		log_directory="${HOME}"/.local/var/log
+	fi
+
+	if [ -z "${script}" ]
+	then
+		script=$(basename -- "${BASH_SOURCE[0]}")
+	fi
+
+	command="${@}"
+
+	script="${script##*/}"
+
+	log="${log_directory}"/"${script}"-"${stamp}".log
+
+	"${SHELL}" -c "$(echo ${command})" >>  "${log}" 2>&1
+
+	unset log
+}
+
+# password /////////////////////////////////////////////////////////////////////
+
+# use to obfuscate password input with custom mask character
+
+# usage:      frobulator.password
+
+frobulator.password () {
+
+	mask_character="•"
+
+	while  read -p "${mask}" -r -s -n 1 input_character
+	do
+		# enter / accept password
+
+		if [[ "${input_character}" == $'\0' ]]
+		then
+			# break on 'NUL'
+
+			break
+		fi
+
+		# handle backspace / delete character input
+
+		if [[ "${input_character}" == $'\177' ]]
+		then
+			# remove input on 'BACKSPACE'/'DEL'
+
+			mask=$'\b \b'
+
+			password="${password%?}"
+		else
+			# set character mask
+
+			mask="${mask_character}"
+
+			# append user input and fomr password
+
+			password+="${input_character}"
+		fi
+	done
+
+	input="${password}"
+
+	# normalize line spacing:
+	# additional 'echo' required due to 'read'
+
+	echo
+}
+
+# input ////////////////////////////////////////////////////////////////////////
+
+# use to capture user input
+
+# usage:      frobulator.input "[array]"
+
+frobulator.input () {
+
+	list=($@)
+
+	for prompt in "${list[@]}"
+	do
+		label=${prompt^}
+		prompt="$(echo ${label} | sed 's/_/ /'):"
+
+		frobulator.ipt "${prompt}"
+
+		if [[ "${prompt}" = *password* ]]
+		then
+			frobulator.password
+		else
+			read input
+		fi
+
+		# prevent empty input
+
+		while true
+		do
+			if [ -z "${input}" ]
+			then
+				echo
+				frobulator.err "${prompt%:} cannot be empty"
+				echo
+
+				prompt="$(echo ${label} | sed 's/_/ /'):"
+
+				frobulator.ipt "${prompt}"
+
+				if [[ "${prompt}" = *password* ]]
+				then
+					frobulator.password
+				else
+					read input
+				fi
+			else
+				break
+			fi
+		done
+
+		prompt=${label,}
+
+		frobulator_return+=("${prompt}=${input}")
+
+	done
+
+	# normalize line spacing:
+	# additional 'echo' required due to 'read'
+
+	echo
+}
+
+# clean ////////////////////////////////////////////////////////////////////////
+
+# use to run package and installer post-install cleanup
+
+# usage:      frobulator.clean
+
+frobulator.clean () {
+
+	command_autoremove="apt-get autoremove"
+	command_autoclean="apt-get autoclean"
+	command_clean="apt-get clean"
+
+	frobulator.log "${command_autoremove}" &
+
+	frobulator.process "Flushing package(s)"
+
+	frobulator.log "${command_clean}" &
+
+	frobulator.progress "clean"
+
+	# fix 'dpkg' lock and errors:
+	# remove all post-install logs - prevent package configuration errors
+
+	if [ -d "${PREFIX}"/var/lib/dpkg/info ]
+	then
+		rm					\
+			--recursive		\
+			--force			"${PREFIX}"/var/lib/dpkg/info/*.postinst >> "${sink}" 2>&1
+	fi
+}
+
+# hold /////////////////////////////////////////////////////////////////////////
+
+# use to hold package(s) from argument or array list
+# marks package(s) for version freeze
+
+# usage:      frobulator.hold "[package]" | "[array]"
+
+frobulator.hold () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_hold="apt-mark hold"
+
+	frobulator.inf "Holding package(s)"
+	echo
+
+	for package in ${list[@]}
+	do
+		frobulator.wrn "Holding" "[ '${package}' ]"
+		echo
+
+		frobulator.log "${command_hold} ${package}" &
+
+		frobulator.progress "hold"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# release //////////////////////////////////////////////////////////////////////
+
+# use to release package(s) from argument or array list
+# unmarks package(s) for version freeze
+
+# usage:      frobulator.release "[package]" | "[array]"
+
+frobulator.release () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_unhold="apt-mark unhold"
+
+	frobulator.inf "Releasing package(s)"
+	echo
+
+	for package in ${list[@]}
+	do
+		frobulator.wrn "Releasing" "[ '${package}' ]"
+		echo
+
+		frobulator.log "${command_unhold} ${package}" &
+
+		frobulator.progress "release"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# failsafe /////////////////////////////////////////////////////////////////////
+
+# use to install package(s) and update system
+# helps avoid 'ignore' or 'not found' errors returned by package manager
+# useful as failsafe to fetch all up-to-date content before batch installs
+
+# usage:      frobulator.failsafe "[package]" | "[array]"
+
+frobulator.failsafe () {
+
+	failsafe_intent () {
+
+		# run failsafepackage and repository update:
+		# mitigate general deployment setup issues
+		# mitigate skipped packages on install
+
+		yes | apt update       > "${sink}" 2>&1
+
+		yes | apt full-upgrade > "${sink}" 2>&1
+
+	}
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_update="apt-get --assume-yes update"
+	command_upgrade="apt-get --assume-yes dist upgrade"
+	command_install="apt-get --assume-yes install"
+
+	failsafe_intent &
+
+	frobulator.process "Please wait"
+
+	frobulator.fwd "Loading${marker_elp}"
+	echo
+
+	for package in ${list[@]}
+	do
+		frobulator.log "${command_update}"
+
+		frobulator.log "${command_upgrade}"
+
+		frobulator.log "${command_install} ${package}"
+
+	done
+
+	# unset array
+
+	list=()
+}
+
+# install //////////////////////////////////////////////////////////////////////
+
+# use to install package(s) from argument or array list
+
+# usage:      frobulator.install "[package]" | "[array]"
+
+frobulator.install () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_install="apt-get --assume-yes install"
+
+	frobulator.inf "Installing package(s)"
+	echo
+
+	for package in ${list[@]}
+	do
+		if [[ "${package}" = "*.deb" ]]
+		then
+			frobulator.msg "Local package(s) selected"
+			echo
+
+			frobulator.log "$(echo ${command_install} ${package})" &
+
+			frobulator.progress "install"
+		else
+			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+
+			if [[ -z "${query_filter}" ]]
+			then
+				frobulator.wrn "Absent on system" "[ '${package}' ]"
+				echo
+
+				frobulator.log "$(echo ${command_install} ${package})" &
+
+				frobulator.progress "install"
+
+			else
+				frobulator.scs "Present on system" "[ '${package}' ]"
+				echo
+
+				frobulator.fwd "Continuing${marker_elp}"
+				echo
+			fi
+		fi
+	done
+
+	# unset array
+
+	list=()
+}
+
+# require //////////////////////////////////////////////////////////////////////
+
+# use to install required package(s) from argument or array list
+# use to search and validate required package dependencies for operations
+
+# usage:      frobulator.require "[package]" | "[array]"
+
+frobulator.require () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	frobulator.failsafe apt-file
+
+	frobulator.log "apt-file update"
+
+	list=("${@}")
+
+	frobulator.fwd "Validating requirement(s)${marker_elp}"
+	echo
+
+	for command in "${list[@]}"
+	do
+		if [[ "${command}" == *'*'* ]]
+		then
+			frobulator.fwd "Expanding package selection query" "[ '${command}' ]"
+			echo
+
+			packages=$(apt-cache pkgnames)
+
+			while IFS= read -r query_package
+			do
+				if [[ "${query_package}" == ${command} ]]
+				then
+					frobulator.add "Package selection found" "[ '${query_package}' ]"
+					echo
+
+					install_list+=("${query_package}")
+				fi
+
+			done <<< "${packages}"
+
+			unset packages
+
+			echo
+
+			if [[ "${#install_list[@]}" -ge 1 ]]
+			then
+				frobulator.install "${install_list[@]}"
+
+				install_list=()
+			else
+				frobulator.err "Package selection not found" "[ '${command}' ]"
+				echo
+			fi
+
+		elif [[ -z $(command -v "${command}") ]]
+		then
+			frobulator.fwd "Probing${marker_elp}"
+			echo
+
+			IFS="${marker_spc}"
+
+			query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
+
+			unset IFS
+
+			while read query_line
+			do
+				IFS=':'
+
+				read query_package query_content <<< "${query_line}"
+
+				unset IFS
+
+				system_binary_directory=/usr/bin
+
+				query_command="${system_binary_directory}"/"${command}"
+
+				if  [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" == "${query_command}" ]]
+				then
+					frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
+					echo
+
+					install_list+=("${query_package}")
+
+					break
+
+				elif [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
+				then
+					frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
+					echo
+
+					install_list+=("${query_package}")
+
+					break
+
+				elif [[ "${query_line}" = "" ]]
+				then
+					IFS="${marker_spc}"
+
+					query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
+
+					unset IFS
+
+					while read query_line
+					do
+						IFS=':'
+
+						read query_package query_content <<< "${query_line}"
+
+						unset IFS
+
+						if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
+						then
+							frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
+							echo
+
+							install_list+=("${query_package}")
+
+							break
+						else
+							frobulator.err "Command provision not found" "[ '${command}' ]"
+							echo
+						fi
+
+					done <<< "${query_filter[@]}"
+				fi
+
+			done <<< "${query_filter[@]}"
+
+			if [[ "${#install_list[@]}" -ge 1 ]]
+			then
+				frobulator.install "${install_list[@]}"
+
+				install_list=()
+			fi
+
+		else
+			frobulator.scs "Command provision already present on system" "[ '${command}' ]"
+			echo
+		fi
+	done
+}
+
+# reinstall ////////////////////////////////////////////////////////////////////
+
+# use to reinstall package(s) from argument or array list
+
+# usage:      frobulator.reinstall "[package]" | "[array]"
+
+frobulator.reinstall () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_reinstall="apt-get --assume-yes install --reinstall"
+
+	frobulator.inf "Reinstalling package(s)"
+	echo
+
+	for package in ${list[@]}
+	do
+		frobulator.log "${command_reinstall} ${package}" &
+
+		frobulator.progress "reinstall"
+	done
+
+	# unset array
+
+	list=()
+}
+
+# update ///////////////////////////////////////////////////////////////////////
+
+# use to update system package(s)
+
+# usage:      frobulator.update
+
+frobulator.update () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	command_update="apt-get update"
+
+	frobulator.inf "Processing package and repository information"
+	echo
+
+	frobulator.log "${command_update}" &
+
+	frobulator.progress "update"
+}
+
+# upgrade //////////////////////////////////////////////////////////////////////
+
+# use to upgrade system packages
+
+# usage:      frobulator.upgrade
+
+frobulator.upgrade () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	command_upgrade="apt-get --assume-yes dist-upgrade"
+
+	frobulator.inf "Processing installed package(s)"
+	echo
+
+	frobulator.log "${command_upgrade}" &
+
+	frobulator.progress "upgrade"
+}
+
+# purge ////////////////////////////////////////////////////////////////////////
+
+# use to purge package(s) from argument or array list
+
+# usage:      frobulator.purge "[package]" | "[array]"
+
+frobulator.purge () {
+
+	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
+	fi
+
+	command_purge="apt-get --assume-yes purge --autoremove"
+
+	frobulator.inf "Purging selected package(s)"
+	echo
+
+	for package in ${list[@]}
+	do
+		if [[ ! -z $(apt search "${package}" 2> "${sink}" | grep -i -o installed) ]]
+		then
+			frobulator.wrn "Selecting" "[ '${package}' ]"
+			echo
+
+			frobulator.log "$(echo ${command_purge} ${package})" &
+
+			frobulator.progress "purge"
+		else
+			frobulator.scs "Absent on system" "[ '${package}' ]"
+			echo
+
+			frobulator.fwd "Continuing${marker_elp}"
+			echo
+
+			:
+		fi
+	done
+
+	# unset array
+
+	list=()
+}
+
+# dialog ///////////////////////////////////////////////////////////////////////
+
+# use to generate standard dialogs using desktop environement plugins:
+# supports:
+# gnome - zenity
+# kde - kdialog
+
+frobulator.dialog () {
+
+	# dialog window title
+
+	title="${script%.sh} - ${1}"
+
+	dialog_command="${@}"
+
+	# gtk dialog - zenity
+
+	g_dialog () {
+
+		zenity						\
+			--file-selection		\
+			--multiple				\
+			--directory				\
+			--separator=$'\n'		\
+			--title="${title}"		"${dialog_command}"
+	}
+
+	# kde dialog - kdialog
+
+	k_dialog () {
+
+		kdialog						\
+			--getopenfilename		\
+			--multiple				\
+			--separate-output		\
+			--title "${title}"		"${dialog_command}"
+	}
+
+	# define dialog usage
+
+	if [[ $(command -v zenity) ]]
+	then
+		dialog=$(g_dialog)
+
+	elif [[ $(command -v kdialog) ]]
+	then
+		dialog=$(k_dialog)
+	else
+		frobulator.wrn "This utility must be run using the 'directory' option"
+		echo
+
+		frobulator.fwd "Exiting${marker_elp}"
+		echo
+
+		exit 1
+	fi
+}
+
+# terminate ////////////////////////////////////////////////////////////////////
+
+# use to forcefully terminate rogue processes
+
+# usage:      frobulator.terminate "[process]"
+
+frobulator.terminate () {
+
+	process_name="${1}"
+
+	if [[ $(command -v pgrep) ]] && [[ $(command -v pkill) ]]
+	then
+		while [[ $(pgrep -f "${process_name}") ]]
+		do
+			pkill "${process_name}"
+		done
+	fi
+}
+
+# exit /////////////////////////////////////////////////////////////////////////
+
+# use to exit process or program instance
+
+# usage:      frobulator.exit "[instance]"
+
+frobulator.exit () {
+
+	instance="${1}"
+
+	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
+
+	frobulator.terminate "${SHELL}"
+}
+
+# result ///////////////////////////////////////////////////////////////////////
+
+# use to flag process checkpoint results such as installations and deployments
+
+# usage:      frobulator.result "[file]"
+
+frobulator.result () {
+
+	if [ $# -eq 1 ]
+	then
+		path="${PWD}"
+
+		checkpoint="${1}"
+		instance="${2}"
+	else
+		path="${1}"
+
+		checkpoint="${2}"
+		instance="${3}"
+	fi
+
+	if [ -f "${path}"/"${checkpoint}" ]
+	then
+		frobulator.scs "Setup complete" "[ ${instance} ]"
+		echo
+	else
+		frobulator.err "Setup errors may have been encountered" "[ ${instance} ]"
+		echo
+
+		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
+		echo
+	fi
+}
+
+# user /////////////////////////////////////////////////////////////////////////
+
+# use to identify 'user' name
+# useful for priviledged execution status checks
+
+# usage:      frobulator.user
+
+frobulator.user () {
+
+	seconds="1"
+
+	frobulator.msg "Active shell user" "[ '${SUDO_USER:-$USER}' ]"
+	echo
+
+	sleep "${seconds}"
+}
+
+# assess ///////////////////////////////////////////////////////////////////////
+
+# use to assess 'superuser' status and prompt for priviledged execution
+# useful for in-script dependency assessment and installation
+
+# usage:      frobulator.assess "[package]" | "[array]"
+
+frobulator.assess () {
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${1} - array
+
+		list=(${@:1})
+	else
+		command="${1}"
+
+		list=()
+
+		list+=("${command}")
+	fi
+
+	if [[ $(id -u -n) = "root" ]]
+	then
+		frobulator.require ${list[@]}
+
+		frobulator.msg "Requirement(s) installed" "[ ${script} ]"
+		echo
+
+		frobulator.inf "Restart as '${USER}' to proceed" "[ '${script}' ]"
+		echo
+	else
+		for command in ${list[@]}
+		do
+			if [[ -z $(command -v "${command}") ]]
+			then
+				frobulator.err "Missing" "[ '${command}' ]"
+				echo
+
+				frobulator.wrn "Privilege escalation required to proceed" "[ '${script}' ]"
+				echo
+
+				frobulator.ask "Launch as 'root'?"
+
+				read reply
+				echo
+
+				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
+				then
+					frobulator.escalate
+				else
+					frobulator.wrn "Launch as 'root' to install requirement(s)" "[ '${script}' ]"
+					echo
+				fi
+			fi
+		done
+	fi
+
+	# unset array
+
+	list=()
+}
+
+# escalate /////////////////////////////////////////////////////////////////////
+
+# use to provide priviledged command or script execution
+# restarts process as 'superuser' once status is granted
+
+# usage:      export self_arguments="${@}"
+#             frobulator.escalate
+
+frobulator.escalate () {
+
+	self="${0}"
+	self_arguments=("${self_arguments}")
+
+	if [[ $(id -u -n) = "root" ]]
+	then
+		frobulator.fwd "Validating privilege escalation" "[ '${USER}' ]"
+		echo
+
+		USER="${SUDO_USER}"
+
+		HOME=/home/"${SUDO_USER}"
+	else
+		frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-$USER}' ]"
+		echo
+
+		frobulator.fwd "Restarting" "[ '${self}' ]"
+		echo
+
+		frobulator.user
+
+		if [[ -z $(command -v sudo) ]]
+		then
+			frobulator.require sudo
+		fi
+
+		# set superuser password prompt
+
+		export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
+
+		# restart as superuser
+
+		exec sudo "${SHELL}" "${self}" ${self_arguments[@]}
+		echo
+	fi
+
+	unset self_arguments
+
+}
+
+# archive //////////////////////////////////////////////////////////////////////
+
+# use to archive content and for backup procedures
+
+# "${directory}" defaults to "${PWD}" when omitted
+
+# usage:      frobulator.archive "[archive]" "[type]" "[directory]"
+
+frobulator.archive () {
+
+	list+=(
+		7zip
+		bzip2
+		gzip
+		rar
+		tar
+		zip
+	)
+
+	frobulator.install ${list[@]}
+
+	# unset array
+
+	list=()
+
+	file="${1}"
+	extension="${2}"
+	directory="${3}"
+
+	archive="${file}.${extension}"
+
+	if [ -z "${directory}" ]
+	then
+		directory="${PWD}"
+	fi
+
+	if [ ! -d "${directory}" ]
+	then
+		echo
+		frobulator.err "Unavailable" "[ '${directory}' ]"
+		echo
+
+		exit 1
+	fi
+
+	case "${extension}"
+	in
+		tar.bz2|tbz2)
+			tar								\
+				--create					\
+				--bzip						\
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
+
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
+
+		tar.gz|tgz)
+			tar								\
+				--create					\
+				--gzip						\
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
+
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
+
+		tar)
+			tar								\
+				--create					\
+				--file="${archive}"			"${directory}" > "${sink}" 2>&1
+
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
+
+		7z)
+			7z a "${archive}" -o "${directory}" > "${sink}" 2>&1
+
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
+
+			*.rar)
+ 				rar a "${archive}" "${directory}" > "${sink}" 2>&1
+
+ 					frobulator.inf "Archiving" "[ ${archive} ]"
+ 					echo
+ 			;;
+
+		zip)
+			zip								\
+				-f							\
+				-qq 						\
+				-r "${archive}"				"${directory}"
+
+				frobulator.inf "Archiving" "[ ${archive} ]"
+				echo
+		;;
+
+		*)
+			echo
+			frobulator.err "Unsupported archive type" "[ '${archive}' ]"
+			echo
+		;;
+	esac
+}
+
+
+# extract //////////////////////////////////////////////////////////////////////
+
+# use to extract known archive types for script dependency or process resolution
+
+# "${directory}" defaults to "${PWD}" when omitted
+
+# "${extension}" assumes file name does not contain any periods '.'
+
+# usage:      frobulator.extract "[archive]" "[directory]"
+
+frobulator.extract () {
+
+	list+=(
+		7zip
+		bunzip2
+		gunzip
+		tar
+		unrar-free
+		unzip
+	)
+
+	frobulator.require ${list[@]}
+
+	# unset array
+
+	list=()
+
+	file="${1}"
+	directory="${2}"
+
+	archive="${file##*/}"
+
+	extension="${file#*.}"
+
+	if [ -z "${directory}" ]
+	then
+		directory="${PWD}"
+	fi
+
+	if [ ! -d "${directory}" ]
+	then
+		mkdir			\
+			--parents	\
+						"${directory}"
+	fi
+
+	case "${extension}"
+	in
+		tar.bz2|tbz2)
+			tar								\
+				--extract					\
+				--no-same-owner				\
+				--bzip2						\
+				--file="${file}" 			\
+				--directory="${directory}"
+		;;
+
+		tar.gz|tgz)
+			tar								\
+				--extract					\
+				--no-same-owner				\
+				--gzip						\
+				--file="${file}" 			\
+				--directory="${directory}"
+		;;
+
+		tar)
+			tar								\
+				--extract					\
+				--no-same-owner				\
+				--file="${file}" 			\
+				--directory="${directory}"
+		;;
+
+		7z)
+			7z								\
+				x "${file}" 				\
+				-o							"${directory}"
+		;;
+
+		rar)
+			unrar e "${file}" "${directory}"
+		;;
+
+		zip)
+			unzip							\
+				-o							\
+				-qq "${file}"				\
+				-d							"${directory}"
+		;;
+
+		*)
+			frobulator.err "Unsupported archive type" "[ '${archive}' ]"
+			echo
+
+			exit 1
+		;;
+
+	esac
+
+	frobulator.inf "Extracting" "[ ${archive} ]"
+	echo
+
+}
+
+# TO DO ////////////////////////////////////////////////////////////////////////
+
+# frobulator.install ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes install package
+#
+# pipx equivalent:
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip install package
+#
+# status:
+#	true equivalent
+
+# frobulator.require ///////////////////////////////////////////////////////////
+
+# apt:
+#	command -v command
+#	apt-file search command
+#	frobulator.install resolved-package
+#
+# pipx equivalent:
+#	command -v command
+#	python3 -m pip index versions package
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip show package
+#	python3 -m pip install package
+#
+# status:
+#	true equivalent, but resolver logic differs
+
+# frobulator.reinstall /////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes install --reinstall package
+#
+# pipx equivalent:
+#	pipx reinstall package
+#
+# pip equivalent:
+#	python3 -m pip install --force-reinstall package
+#
+# status:
+#	true equivalent
+
+# frobulator.purge /////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes purge --autoremove package
+#
+# pipx equivalent:
+#	pipx uninstall package
+#
+# pip equivalent:
+#	python3 -m pip uninstall --yes package
+#
+# status:
+#	close equivalent
+#	pip/pipx do not have apt-style purge/autoremove behavior
+
+# frobulator.hold //////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-mark hold package
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no clean equivalent
+#	can only approximate by avoiding upgrade/reinstall
+
+# frobulator.release ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-mark unhold package
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no clean equivalent
+
+# frobulator.failsafe //////////////////////////////////////////////////////////
+
+# apt:
+#	apt update
+#	apt full-upgrade
+#	apt-get install package
+#
+# pipx equivalent:
+#	python3 -m pip install --user --upgrade pipx
+#	pipx ensurepath
+#	pipx install package
+#
+# pip equivalent:
+#	python3 -m pip install --upgrade pip
+#	python3 -m pip install package
+#
+# status:
+#	partial equivalent only
+
+# frobulator.update ////////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get update
+#
+# pipx equivalent:
+#	none
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	no equivalent
+#	pip/pipx query live indexes directly
+
+# frobulator.upgrade ///////////////////////////////////////////////////////////
+
+# apt:
+#	apt-get --assume-yes dist-upgrade
+#
+# pipx equivalent:
+#	pipx upgrade-all
+#
+# pip equivalent:
+#	none
+#
+# status:
+#	pipx has a good equivalent
+#	pip does not
+
+# TO DO ////////////////////////////////////////////////////////////////////////
+
+# prompt line //////////////////////////////////////////////////////////////////
+
+# normalize line spacing:
+
+echo

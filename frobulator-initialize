@@ -16,7 +16,7 @@ then
 	yes | apt-get install curl
 fi
 
-	if [ ! -d "${HOME}"/.local/bin ]
+if [ ! -d "${HOME}"/.local/bin ]
 then
 	mkdir -p "${HOME}"/.local/bin
 fi

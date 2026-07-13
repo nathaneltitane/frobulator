@@ -5116,6 +5116,14 @@ frobulator.require () {
 
 	list=("${@}")
 
+	if [ "${#list[@]}" -eq 0 ]
+	then
+		frobulator.fwd "No requirement(s) specified${marker_elp}"
+		echo
+
+		return 0
+	fi
+
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
 	echo
 

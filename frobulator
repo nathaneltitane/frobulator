@@ -5118,8 +5118,10 @@ frobulator.require () {
 
 	if [ "${#list[@]}" -eq 0 ]
 	then
-		frobulator.fwd "No requirement(s) specified${marker_elp}"
+		frobulator.stp "No requirement(s) specified"
 		echo
+
+		frobulator.fwd "Continuing${marker_elp}"
 
 		return 0
 	fi

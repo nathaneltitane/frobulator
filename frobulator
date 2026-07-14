@@ -972,11 +972,11 @@ frobulator.pmt () {
 	if [ "${begin_length}" -ge "${fold_count}" ]
 	then
 		begin=$(
-				echo "${begin}"							|
-					fold -s -w "${fold_count}"			|
-					sed 								\
-						-e '2,$'"s/^/${marker_idt}/g"	|
-					sed 								\
+				echo "${begin}"										|
+					fold -s -w "${fold_count}"						|
+					sed 											\
+						-e '2,$'"s/^/${marker_idt}${marker_spc}/g"	|
+					sed 											\
 						-e 's/ \\n /\\n\n      /g'
 		)
 	fi

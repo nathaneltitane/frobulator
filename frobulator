@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-13-2026"
+# version="07-14-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -5122,6 +5122,7 @@ frobulator.require () {
 		echo
 
 		frobulator.fwd "Continuing${marker_elp}"
+		echo
 
 		return 0
 	fi

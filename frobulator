@@ -5568,59 +5568,101 @@ frobulator.password () {
 
 frobulator.input () {
 
+	local status=0
+
 	local prompt
 	local label
-	local input_type
-	local input_value
-	local -a list=("${@}")
+	local input
+
+	list=("${@}")
 
 	for prompt in "${list[@]}"
 	do
 		label="${prompt^}"
-		input_type="${prompt,,}"
-		prompt="${label//_/ }:"
+		prompt="$(echo "${label}" | sed 's/_/ /'):"
 
 		frobulator.ipt "${prompt}"
 
-		if [[ "${input_type}" = *password* ]]
+		if [[ "${prompt}" = *password* ]]
 		then
 			frobulator.password
 
-			input_value="${input}"
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
+
+			input="${password}"
 		else
-			read -r input_value
+			read -r input
+
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
 		fi
 
 		# prevent empty input
 
-		while [ -z "${input_value}" ]
+		while true
 		do
-			echo
-
-			frobulator.err "${prompt%:} cannot be empty"
-			echo
-
-			frobulator.ipt "${prompt}"
-
-			if [[ "${input_type}" = *password* ]]
+			if [ -z "${input}" ]
 			then
-				frobulator.password
+				echo
+				frobulator.err "${prompt%:} cannot be empty"
+				echo
 
-				input_value="${input}"
+				prompt="$(echo "${label}" | sed 's/_/ /'):"
+
+				frobulator.ipt "${prompt}"
+
+				if [[ "${prompt}" = *password* ]]
+				then
+					frobulator.password
+
+					if [ "${?}" -ne 0 ]
+					then
+						status=1
+
+						break
+					fi
+
+					input="${password}"
+				else
+					read -r input
+
+					if [ "${?}" -ne 0 ]
+					then
+						status=1
+
+						break
+					fi
+				fi
 			else
-				read -r input_value
+				break
 			fi
 		done
 
 		label="${label,}"
-		label="${label// /_}"
 
-		frobulator_return+=("${label}=${input_value}")
+		frobulator_return+=("${label}=${input}")
 	done
+
+	# unset array
+
+	list=()
+
+	# normalize line spacing:
+	# additional 'echo' required due to 'read'
 
 	echo
 
-	return 0
+	return "${status}"
+
 }
 
 # clean ////////////////////////////////////////////////////////////////////////

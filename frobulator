@@ -6334,9 +6334,10 @@ frobulator.purge () {
 # dialog ///////////////////////////////////////////////////////////////////////
 
 # use to generate standard dialogs using desktop environement plugins:
+
 # supports:
-# gnome - zenity
-# kde - kdialog
+#              gnome - zenity
+#              kde   - kdialog
 
 frobulator.dialog () {
 
@@ -6475,13 +6476,11 @@ frobulator.exit () {
 
 # usage:      frobulator.user
 
-# user /////////////////////////////////////////////////////////////////////////
-
 frobulator.user () {
 
 	local status=0
 
-	local seconds=1
+	local seconds="1"
 
 	frobulator.msg "Active shell user" "[ '${SUDO_USER:-${USER}}' ]"
 	echo

@@ -6510,17 +6510,31 @@ frobulator.assess () {
 
 	local command
 	local reply
-	local -a list=("${@}")
+	local user_current
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No requirement specified"
-		echo
+		# ${1} - array
+
+		list=("${@:1}")
+	else
+		command="${1}"
+
+		list=()
+
+		list+=("${command}")
+	fi
+
+	user_current="$(id -u -n)"
+
+	if [ "${?}" -ne 0 ]
+	then
+		list=()
 
 		return 1
 	fi
 
-	if [ "$(id -u -n)" = "root" ]
+	if [ "${user_current}" = "root" ]
 	then
 		frobulator.require "${list[@]}"
 
@@ -6531,13 +6545,13 @@ frobulator.assess () {
 			frobulator.msg "Requirement(s) installed" "[ ${script} ]"
 			echo
 
-			frobulator.inf "Restart as '${SUDO_USER:-${USER}}' to proceed" "[ '${script}' ]"
+			frobulator.inf "Restart as '${USER}' to proceed" "[ '${script}' ]"
 			echo
 		fi
 	else
 		for command in "${list[@]}"
 		do
-			if [ -z "$(command -v "${command}")" ]
+			if [[ -z $(command -v "${command}") ]]
 			then
 				frobulator.err "Missing" "[ '${command}' ]"
 				echo
@@ -6550,8 +6564,7 @@ frobulator.assess () {
 				read -r reply
 				echo
 
-				if [[ "${reply}" = [yY]         ]] || \
-				   [[ "${reply}" = [yY][eE][sS] ]]
+				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
 				then
 					frobulator.escalate
 
@@ -6565,11 +6578,13 @@ frobulator.assess () {
 
 					status=1
 				fi
-
-				break
 			fi
 		done
 	fi
+
+	# unset array
+
+	list=()
 
 	return "${status}"
 
@@ -6588,9 +6603,19 @@ frobulator.escalate () {
 	local status=0
 
 	local self="${0}"
-	local -a arguments=("${self_arguments[@]}")
+	local user_current
+	local self_arguments_list=()
 
-	if [ "$(id -u -n)" = "root" ]
+	read -r -a self_arguments_list <<< "${self_arguments}"
+
+	user_current="$(id -u -n)"
+
+	if [ "${?}" -ne 0 ]
+	then
+		return 1
+	fi
+
+	if [ "${user_current}" = "root" ]
 	then
 		frobulator.fwd "Validating privilege escalation" "[ '${USER}' ]"
 		echo
@@ -6598,8 +6623,10 @@ frobulator.escalate () {
 		if [ -n "${SUDO_USER}" ]
 		then
 			USER="${SUDO_USER}"
-
 			HOME="/home/${SUDO_USER}"
+		else
+			USER="root"
+			HOME="/root"
 		fi
 	else
 		frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-${USER}}' ]"
@@ -6610,12 +6637,7 @@ frobulator.escalate () {
 
 		frobulator.user
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
-
-		if [ -z "$(command -v sudo)" ]
+		if [[ -z $(command -v sudo) ]]
 		then
 			frobulator.require sudo
 
@@ -6631,9 +6653,12 @@ frobulator.escalate () {
 
 		# restart as superuser
 
-		exec sudo "${SHELL}" "${self}" "${arguments[@]}"
+		exec sudo "${SHELL}" "${self}" "${self_arguments_list[@]}"
 
-		status="${?}"
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	fi
 
 	return "${status}"
@@ -6728,12 +6753,12 @@ frobulator.archive () {
 
 	if [ "${extension}" = "tar.bz2" ] || [ "${extension}" = "tbz2" ]
 	then
-		tar											\
-			--create								\
-			--bzip2									\
-			--file="${archive}"						\
-			--directory="$(dirname "${directory}")"	\
-			"$(basename "${directory}")"		> "${sink}" 2>&1
+		tar												\
+			--create									\
+			--bzip2										\
+			--file="${archive}"							\
+			--directory="$(dirname "${directory}")"		\
+			"$(basename "${directory}")"				> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -6742,12 +6767,12 @@ frobulator.archive () {
 
 	elif [ "${extension}" = "tar.gz" ] || [ "${extension}" = "tgz" ]
 	then
-		tar											\
-			--create								\
-			--gzip									\
-			--file="${archive}"						\
-			--directory="$(dirname "${directory}")"	\
-			"$(basename "${directory}")"		> "${sink}" 2>&1
+		tar												\
+			--create									\
+			--gzip										\
+			--file="${archive}"							\
+			--directory="$(dirname "${directory}")"		\
+			"$(basename "${directory}")"				> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -6756,11 +6781,11 @@ frobulator.archive () {
 
 	elif [ "${extension}" = "tar" ]
 	then
-		tar											\
-			--create								\
-			--file="${archive}"						\
-			--directory="$(dirname "${directory}")"	\
-			"$(basename "${directory}")"		> "${sink}" 2>&1
+		tar												\
+			--create									\
+			--file="${archive}"							\
+			--directory="$(dirname "${directory}")"		\
+			"$(basename "${directory}")"				> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -6769,10 +6794,10 @@ frobulator.archive () {
 
 	elif [ "${extension}" = "7z" ]
 	then
-		7z									\
-			a								\
-			"${archive}"					\
-			"${directory}"					> "${sink}" 2>&1
+		7z												\
+			a											\
+			"${archive}"								\
+			"${directory}"								> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -6781,10 +6806,10 @@ frobulator.archive () {
 
 	elif [ "${extension}" = "rar" ]
 	then
-		rar									\
-			a								\
-			"${archive}"					\
-			"${directory}"					> "${sink}" 2>&1
+		rar												\
+			a											\
+			"${archive}"								\
+			"${directory}"								> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -6793,11 +6818,11 @@ frobulator.archive () {
 
 	elif [ "${extension}" = "zip" ]
 	then
-		zip									\
-			--quiet							\
-			--recurse-paths					\
-			"${archive}"					\
-			"${directory}"					> "${sink}" 2>&1
+		zip												\
+			--quiet										\
+			--recurse-paths								\
+			"${archive}"								\
+			"${directory}"								> "${sink}" 2>&1
 
 		if [ "${?}" -ne 0 ]
 		then

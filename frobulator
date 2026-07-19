@@ -3226,10 +3226,26 @@ frobulator.trap () {
 
 # complete /////////////////////////////////////////////////////////////////////
 
-# use to run command when checkpoint is absent
+# frobulator.complete
+#         │
+#         ├── execute command
+#         ├── record checkpoint
+#         ├── record status
+#         └── continue execution
+#                     │
+#                     ▼
+#            frobulator.result
+#                     │
+#                     ├── summarize statuses
+#                     ├── clear checkpoints
+#                     ├── clear statuses
+#                     └── return overall status
+
+# execute command and record checkpoint status
+# skip execution when checkpoint already completed successfully
 # use in tandem with frobulator.result
 
-# usage:      frobulator.complete "[path]" "[checkpoint]" "[command]" "[arguments]"
+# usage:      frobulator.complete "[checkpoint]" command [arguments...]
 
 frobulator.complete () {
 
@@ -3337,25 +3353,38 @@ frobulator.complete () {
 
 # result ///////////////////////////////////////////////////////////////////////
 
-# use to evaluate statuses collected by frobulator.complete
+# frobulator.result
+#         │
+#         ├── evaluate recorded statuses
+#         ├── count failed checkpoints
+#         ├── report final outcome
+#         ├── clear recorded collections
+#         └── return overall status
+
+# evaluate statuses collected by frobulator.complete:
+# report success when all checkpoints completed successfully
+# report failure count when one or more checkpoints failed
+# clear checkpoint and status collections after evaluation
+# use in tandem with frobulator.complete
 
 # usage:      frobulator.result "[instance]"
 
 frobulator.result () {
 
-	instance="${1}"
+	local status=0
 
-	error=false
+	local count_error=0
 
-	count_error=0
+	local instance="${1}"
+	local complete_status
 
 	# evaluate statuses
 
-	for status in "${frobulator_complete_statuses[@]}"
+	for complete_status in "${frobulator_complete_statuses[@]}"
 	do
-		if [ "${status}" -ne 0 ]
+		if [ "${complete_status}" -ne 0 ]
 		then
-			error=true
+			status=1
 
 			count_error=$(( count_error + 1 ))
 		fi
@@ -3368,21 +3397,19 @@ frobulator.result () {
 
 	# report result
 
-	if [ "${error}" = true ]
+	if [ "${status}" -ne 0 ]
 	then
-		frobulator.err "Setup errors encountered" "[ ${count_error} ] [ ${instance} ]"
+		frobulator.err "${count_error} setup errors encountered" "[ ${instance} ]"
 		echo
 
 		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
-
-		return 1
 	else
 		frobulator.scs "Setup complete" "[ ${instance} ]"
 		echo
-
-		return 0
 	fi
+
+	return "${status}"
 
 }
 
@@ -3392,17 +3419,38 @@ frobulator.result () {
 
 # usage:      frobulator.ownership [target]
 
+# ownership ////////////////////////////////////////////////////////////////////
+
 frobulator.ownership () {
 
-	if [ $# -eq 0 ]
+	local status=0
+
+	local user_name
+	local user_home
+	local owner_name
+	local target
+	local target_path
+	local path
+	local system_path=false
+	local user_id
+	local group_id
+	local -a list=("${@}")
+	local -a system_paths_list=(
+		/root
+		/usr
+		/etc
+		/var
+		/opt
+		/boot
+	)
+
+	if [ "${#list[@]}" -eq 0 ]
 	then
-		frobulator.err "Missing ownership target" "[ target : null ]"
+		frobulator.err "Missing ownership target"
 		echo
 
 		return 1
 	fi
-
-	list=("${@}")
 
 	# determine user ownership source
 
@@ -3415,38 +3463,36 @@ frobulator.ownership () {
 
 	# determine user home
 
-	user_home="/home/${user_name}"
-
 	if [ "${user_name}" = "root" ]
 	then
 		user_home="/root"
+	else
+		user_home="/home/${user_name}"
 	fi
-
-	# system ownership paths
-
-	system_paths_list=(
-		/root
-		/usr
-		/etc
-		/var
-		/opt
-		/boot
-	)
 
 	for target in "${list[@]}"
 	do
-		system_path="false"
+		system_path=false
 
 		# resolve target path
 
-		target_path=$(realpath -m "${target}")
+		target_path="$(realpath -m "${target}")"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
+
+		# determine whether target is system owned
 
 		for path in "${system_paths_list[@]}"
 		do
-			if [[ "${target_path}" = "${path}"   ]] || \
+			if [ "${target_path}" = "${path}" ] || \
 			   [[ "${target_path}" = "${path}/"* ]]
 			then
-				system_path="true"
+				system_path=true
 
 				break
 			fi
@@ -3454,12 +3500,12 @@ frobulator.ownership () {
 
 		# determine ownership context
 
-		if [[ "${target_path}" = "${user_home}"   ]] || \
+		if [ "${target_path}" = "${user_home}" ] || \
 		   [[ "${target_path}" = "${user_home}/"* ]]
 		then
 			owner_name="${user_name}"
 
-		elif [ "${system_path}" = "true" ]
+		elif [ "${system_path}" = true ]
 		then
 			owner_name="root"
 
@@ -3469,38 +3515,24 @@ frobulator.ownership () {
 
 		# resolve ownership identities
 
-		user_id=$(id -u "${owner_name}")
-
-		group_id=$(id -g "${owner_name}")
+		user_id="$(id -u "${owner_name}")"
+		group_id="$(id -g "${owner_name}")"
 
 		# apply ownership
 
-		chown							\
-			"${user_id}:${group_id}"	\
-			--recursive					\
-										"${target}"
+		chown								\
+			--recursive						\
+			"${user_id}:${group_id}"		\
+											"${target}"
 
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
 
-	system_paths_list=()
+	return "${status}"
 
-	# cleanup
-
-	unset target
-
-	unset user_name
-	unset user_home
-
-	unset target_path
-
-	unset system_path
-
-	unset path
-
-	unset owner_name
-
-	unset user_id
-	unset group_id
 }
 
 # directory ////////////////////////////////////////////////////////////////////

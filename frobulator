@@ -3170,20 +3170,63 @@ frobulator.continue () {
 
 frobulator.complete () {
 
-	# catch process exit status of last command
+	# capture command exit status before any other command runs
 
-	PES=${?}
+	PES="${?}"
 
 	command="${1}"
 
-	if [[ "${PES}" = 1 ]]
+	# initialize status collections
+
+	if [ -z "${frobulator_complete_initialized}" ]
 	then
-		frobulator.err "Incomplete - error status" "[ ${command} ]"
+		frobulator_complete_statuses=()
+		frobulator_complete_commands=()
+
+		frobulator_complete_initialized=true
+	fi
+
+	# record command status
+
+	if [ -n "${command}" ]
+	then
+		frobulator_complete_statuses+=("${status}")
+		frobulator_complete_commands+=("${command}")
+
+		if [ "${status}" -ne 0 ]
+		then
+			frobulator.err "Incomplete - error status" "[ ${status} ] [ ${command} ]"
+			echo
+
+			return "${status}"
+		else
+			frobulator.cpt "Complete - success status" "[ ${status} ] [ ${command} ]"
+			echo
+
+			return 0
+		fi
+	fi
+
+	# evaluate recorded statuses
+
+	error=false
+
+	for status in "${frobulator_complete_statuses[@]}"
+	do
+		if [ "${status}" -ne 0 ]
+		then
+			error=true
+		fi
+	done
+
+	if [ "${error}" = true ]
+	then
+		frobulator.err "Incomplete - error status"
 		echo
 
 		return 1
 	else
-		frobulator.cpt "Complete - success status" "[ ${command} ]"
+		frobulator.cpt "Complete - success status"
 		echo
 
 		return 0

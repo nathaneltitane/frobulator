@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-17-2026"
+# version="07-18-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -3088,7 +3088,7 @@ frobulator.trap () {
 
 }
 
-# continue /////////////////////////////////////////////////////////////////////
+# complete /////////////////////////////////////////////////////////////////////
 
 # BASH exit status codes ///////////////////////////////////////////////////////
 
@@ -3114,119 +3114,114 @@ frobulator.trap () {
 
 # 255*     out of range - exit -1
 
-# use to validate previous command's exit status
-# use in tandem with frobulator.complete
-
-# example:	function () {
-
-#				frobulator.continue
-
-#					[function commands]
-
-#				frobulator.complete
-
-#			}
-
-frobulator.continue () {
-
-	# catch process exit status of last command
-
-	PES=${?}
-
-	command="${1}"
-
-	if [[ "${PES}" = 1 ]]
-	then
-		frobulator.stp "Aborting${marker_elp}"
-		echo
-
-		exit 1
-
-	elif [[ "${PES}" = 0 ]]
-	then
-		frobulator.fwd "Continuing${marker_elp}"
-		echo
-
-	fi
-
-}
-
 # complete /////////////////////////////////////////////////////////////////////
 
-# use to confirm running command's exit status
-# use in tandem with frobulator.continue
+# use immediately after command to collect exit status and manage checkpoint
+# use in tandem with frobulator.result
 
-# usage:      frobulator.complete "[command]"
-
-# example:	function () {
-
-#				frobulator.continue
-
-#					[function commands]
-
-#				frobulator.complete
-
-#			}
+# usage:      frobulator.complete "[path]" "[checkpoint]"
 
 frobulator.complete () {
 
-	# capture command exit status before any other command runs
+	# capture previous command exit status
 
-	PES="${?}"
+	status="${?}"
 
-	command="${1}"
+	path="${1}"
+	checkpoint="${2}"
 
-	# initialize status collections
+	# initialize collections
 
 	if [ -z "${frobulator_complete_initialized}" ]
 	then
 		frobulator_complete_statuses=()
-		frobulator_complete_commands=()
+		frobulator_complete_checkpoints=()
 
 		frobulator_complete_initialized=true
 	fi
 
-	# record command status
+	# validate arguments
 
-	if [ -n "${command}" ]
+	if [ -z "${path}" ]
 	then
-		frobulator_complete_statuses+=("${status}")
-		frobulator_complete_commands+=("${command}")
+		status=1
 
-		if [ "${status}" -ne 0 ]
+		checkpoint="undefined checkpoint path"
+
+	elif [ -z "${checkpoint}" ]
+	then
+		status=1
+
+		checkpoint="undefined checkpoint"
+	fi
+
+	# collect status
+
+	frobulator_complete_statuses+=("${status}")
+	frobulator_complete_checkpoints+=("${checkpoint}")
+
+	# manage checkpoint
+
+	if [ "${status}" -eq 0 ]
+	then
+		frobulator.file "${path}" "${checkpoint}"
+	else
+		if [ -f "${path}/${checkpoint}" ]
 		then
-			frobulator.err "Incomplete - error status" "[ ${status} ] [ ${command} ]"
-			echo
-
-			return "${status}"
-		else
-			frobulator.cpt "Complete - success status" "[ ${status} ] [ ${command} ]"
-			echo
-
-			return 0
+			rm -f -- "${path}/${checkpoint}"
 		fi
 	fi
 
-	# evaluate recorded statuses
+	# continue process
+
+	return 0
+
+}
+
+# result ///////////////////////////////////////////////////////////////////////
+
+# use to evaluate statuses collected by frobulator.complete
+
+# usage:      frobulator.result "[instance]"
+
+frobulator.result () {
+
+	instance="${1}"
 
 	error=false
+
+	count_error=0
+
+	# evaluate statuses
 
 	for status in "${frobulator_complete_statuses[@]}"
 	do
 		if [ "${status}" -ne 0 ]
 		then
 			error=true
+
+			count_error=$(( count_error + 1 ))
 		fi
 	done
 
+	# clear collections
+
+	frobulator_complete_statuses=()
+	frobulator_complete_checkpoints=()
+
+	# report result
+
 	if [ "${error}" = true ]
 	then
-		frobulator.err "Incomplete - error status"
+		frobulator.err "Setup errors encountered" "[ ${count_error} ] [ ${instance} ]"
+		echo
+
+		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
 
 		return 1
 	else
-		frobulator.cpt "Complete - success status"
+		frobulator.scs "Setup complete" "[ ${instance} ]"
 		echo
 
 		return 0
@@ -5522,40 +5517,6 @@ frobulator.exit () {
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
 	frobulator.terminate "${SHELL}"
-}
-
-# result ///////////////////////////////////////////////////////////////////////
-
-# use to flag process checkpoint results such as installations and deployments
-
-# usage:      frobulator.result "[file]"
-
-frobulator.result () {
-
-	if [ $# -eq 1 ]
-	then
-		path="${PWD}"
-
-		checkpoint="${1}"
-		instance="${2}"
-	else
-		path="${1}"
-
-		checkpoint="${2}"
-		instance="${3}"
-	fi
-
-	if [ -f "${path}"/"${checkpoint}" ]
-	then
-		frobulator.scs "Setup complete" "[ ${instance} ]"
-		echo
-	else
-		frobulator.err "Setup errors may have been encountered" "[ ${instance} ]"
-		echo
-
-		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
-		echo
-	fi
 }
 
 # user /////////////////////////////////////////////////////////////////////////

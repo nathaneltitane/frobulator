@@ -4819,135 +4819,55 @@ frobulator.image () {
 # use to validate http status code prior to download / upload operations
 # use for url addresses [url] and data download validations [content]
 
-# usage:      frobulator.status "[url]"				type: url		[default]
+# usage:      frobulator.http "[url]"				type: url		[default]
 
-#             frobulator.status "[type]" "[url]"	type: content
+#             frobulator.http "[url]" "[content]"	type: content
 
 frobulator.http () {
 
-	# HTTP response status codes:
+	local status=0
 
-	# informational responses //////////////////////////////////////////////////
-
-	# 100 continue:                            client can proceed
-	# 101 switching protocols:                 server switching protocols
-	# 102 processing:                          request received, status pending
-	# 103 early hints:                         preload resources early
-
-	# successful responses /////////////////////////////////////////////////////
-
-	# 200 ok:                                  request successful
-	# 201 created:                             new resource created
-	# 202 accepted:                            request received, not processed
-	# 203 non-authoritative:                   metadata from a copy
-	# 204 no content:                          no content, headers updated
-	# 205 reset content:                       reset document
-	# 206 partial content:                     partial content sent
-	# 207 multi-status:                        multiple resource statuses
-	# 208 already reported:                    avoids repeated enumeration
-
-	# 226 im used:                             result of manipulations applied
-
-	# redirection messages /////////////////////////////////////////////////////
-
-	# 300 multiple choices:                    choose one response
-	# 301 moved permanently:                   resource permanently moved
-	# 302 found:                               resource temporarily moved
-	# 303 see other:                           get resource at another uri
-	# 304 not modified:                        resource not modified
-	# 307 temporary redirect:                  redirect, keep method
-	# 308 permanent redirect:                  redirect, keep method
-
-	# client error responses ///////////////////////////////////////////////////
-
-	# 400 bad request:                         invalid request
-	# 401 unauthorized:                        authentication required
-	# 403 forbidden:                           access denied
-	# 404 not found:                           resource not found
-	# 405 method not allowed:                  method not supported
-	# 406 not acceptable:                      no matching content
-	# 408 request timeout:                     connection idle
-	# 409 conflict:                            request conflicts with server
-
-	# 410 gone:                                resource permanently deleted
-	# 413 content too large:                   request body too large
-	# 414 uri too long:                        uri too long
-	# 415 unsupported media type:              media type not supported
-	# 416 range not satisfiable:               range not satisfiable
-	# 417 expectation failed:                  expectation failed
-	# 418 im a teapot:                         not a teapot
-
-	# 421 misdirected request:                 request misdirected
-	# 429 too many requests:                   rate limiting exceeded
-
-	# 431 header fields too large:             headers too large
-
-	# 451 unavailable for legal reasons:       access denied by law
-
-	# server error responses ///////////////////////////////////////////////////
-
-	# 500 internal server error:              server error
-	# 501 not implemented:                    method not implemented
-	# 502 bad gateway:                        invalid gateway response
-	# 503 service unavailable:                server unavailable
-	# 504 gateway timeout:                    gateway timeout
-	# 505 http version not supported:         http version not supported
-
-	# 511 network authentication required:    network authentication required
-
+	local http_code="%{http_code}\n"
 	local url="${1}"
 	local data="${2}"
-	local http_code="%{http_code}\n"
-	local status
 
-	url_status=""
-
-	# validation
-
-	if [ -z "${url}" ]
+	if [ "${#}" -eq 1 ]
 	then
-		frobulator.err "No URL specified"
-		echo
+		url_status="$(
+			curl						\
+				--silent				\
+				--output "${sink}"		\
+				--write-out "${http_code}"	\
+				"${url}"
+		)"
 
-		return 1
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+
+	elif [ "${#}" -eq 2 ]
+	then
+		url_status="$(
+			curl							\
+				--silent					\
+				--output "${sink}"			\
+				--write-out "${http_code}"		\
+				--location					\
+				"${url}/${data}"				\
+			| tail -n 1					\
+			| cut -d ':' -f 1
+		)"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	else
+		status=1
 	fi
 
-	if [ $# -gt 2 ]
-	then
-		frobulator.err "Invalid argument count"
-		echo
-
-		return 1
-	fi
-
-	# construct url
-
-	if [ -n "${data}" ]
-	then
-		url="${url}/${data}"
-	fi
-
-	# retrieve http status
-
-	url_status=$(
-		curl \
-			--silent \
-			--output "${sink}" \
-			--write-out "${http_code}" \
-			--location \
-			"${url}"
-	)
-
-	status="${?}"
-
-	if [ "${status}" -ne 0 ]
-	then
-		url_status=""
-
-		return "${status}"
-	fi
-
-	return 0
+	return "${status}"
 
 }
 
@@ -4956,22 +4876,12 @@ frobulator.http () {
 # use to parse and validate HTTP status responses and manage download actions
 # use in tandem with frobulator.http
 
-# usage:    frobulator.http [url]
-#           frobulator.status
+# usage:      frobulator.http "[url]"
+#             frobulator.status
 
 frobulator.status () {
 
-	local url_status_label
-	local reason
-	local proceed=0
-
-	if [ -z "${url_status}" ]
-	then
-		frobulator.err "No HTTP status available"
-		echo
-
-		return 1
-	fi
+	local status=0
 
 	frobulator.fwd "Validating URL${marker_elp}"
 	echo
@@ -5006,32 +4916,42 @@ frobulator.status () {
 	elif [[ "${url_status}" = [4][0-9][0-9] ]]
 	then
 		url_status_label="error"
-		reason="client"
 
 		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
+
+		reason="client"
+
+		proceed=0
+
+		status=1
 
 	elif [[ "${url_status}" = [5][0-9][0-9] ]]
 	then
 		url_status_label="error"
-		reason="server"
 
 		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
+		reason="server"
+
+		proceed=0
+
+		status=1
 	else
-		frobulator.err "Invalid HTTP status" "[ ${url_status} ]"
+		url_status_label="unknown"
+
+		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
 		echo
 
-		return 1
+		reason="response"
+
+		proceed=0
+
+		status=1
 	fi
 
-	if [ "${proceed}" -eq 0 ]
-	then
-		return 1
-	fi
-
-	return 0
+	return "${status}"
 
 }
 
@@ -5054,6 +4974,11 @@ frobulator.download () {
 	local data
 
 	frobulator.http "${url}"
+
+	if [ "${?}" -ne 0 ]
+	then
+		return 1
+	fi
 
 	frobulator.status
 
@@ -5115,7 +5040,6 @@ frobulator.download () {
 
 				list+=("${file}")
 			fi
-
 		else
 			path="${2}"
 
@@ -5163,6 +5087,13 @@ frobulator.download () {
 
 			frobulator.http "${url}" "${data}"
 
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
+
 			frobulator.status
 
 			if [[ "${proceed}" = 1 ]]
@@ -5187,7 +5118,6 @@ frobulator.download () {
 						--silent	\
 						--location	\
 									"${url}/${source_file}" > "${path}/${file}" &
-
 				else
 					curl			\
 						--silent	\
@@ -5230,6 +5160,8 @@ frobulator.download () {
 				frobulator.url "${marker_web}${url}"
 				echo
 
+				status=1
+			else
 				status=1
 			fi
 		done
@@ -5275,7 +5207,7 @@ frobulator.upload () {
 
 	local status=0
 
-	local request="${1}" # POST / PUT
+	local request="${1}"
 	local url="${2}"
 	local data
 	local file
@@ -5313,11 +5245,20 @@ frobulator.upload () {
 		list+=("${data}")
 	fi
 
-	# probe upload target
+	# validate upload target
 
-	frobulator.status "${url}"
+	frobulator.http "${url}"
 
-	frobulator.probe "${url}"
+	if [ "${?}" -ne 0 ]
+	then
+		list=()
+
+		unset proceed
+
+		return 1
+	fi
+
+	frobulator.status
 
 	if [[ "${proceed}" = 0 ]]
 	then
@@ -5373,7 +5314,7 @@ frobulator.upload () {
 				--data "${data}"
 			)
 
-		elif [[ "${data}" =~ ^@ ]]
+		elif [[ "${data}" = @* ]]
 		then
 			# file / form data
 

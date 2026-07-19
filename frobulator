@@ -2250,20 +2250,41 @@ frobulator.clear () {
 
 frobulator.countdown () {
 
-	counter="${1}"
+	local status=0
+
+	local counter="${1}"
+	local seconds=1
+	local ticker
+	local prompt
+	local before="[${marker_spc}${marker_spc}"
+	local after="${marker_spc}${marker_spc}]"
 
 	shift
 
-	seconds="1"
+	if [ -z "${counter}" ]
+	then
+		frobulator.err "No countdown specified"
+		echo
 
-	before="[${marker_spc}${marker_spc}"
-	after="${marker_spc}${marker_spc}]"
+		return 1
+	fi
+
+	if [[ ! "${counter}" =~ ^[0-9]+$ ]]
+	then
+		frobulator.err "Invalid countdown" "[ ${counter} ]"
+		echo
+
+		return 1
+	fi
 
 	frobulator.pmt "${@}"
 
-	prompt="${prompt_string[@]}"
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
 
-	shift
+	prompt="${prompt_string[*]}"
 
 	while [ "${counter}" -ge 0 ]
 	do
@@ -2275,19 +2296,26 @@ frobulator.countdown () {
 
 			break
 		else
-			echo -n -e "\r${before}${red}$((counter--))${reset}${after}${marker_spc}${prompt}\c"
+			echo -n -e "\r${before}${red}${counter}${reset}${after}${marker_spc}${prompt}\c"
+
+			counter=$(( counter - 1 ))
 		fi
 
 		sleep "${seconds}"
 
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			break
+		fi
 	done
 
 	echo
-
-	# normalize line spacing:
-	# additional 'echo' required due to carriage return
-
 	echo
+
+	return "${status}"
+
 }
 
 # actions //////////////////////////////////////////////////////////////////////
@@ -2298,15 +2326,14 @@ frobulator.countdown () {
 
 frobulator.action () {
 
-	action="${1}"
+	local status=0
 
-	shift
-
-	detail=("${@}")
-
-	# verb dictionaries
-
-	magenta_list=(
+	local action="${1}"
+	local color="${white}"
+	local item
+	local progress_detail
+	local -a detail=()
+	local -a magenta_list=(
 		extract
 		download
 		render
@@ -2318,8 +2345,7 @@ frobulator.action () {
 		transcode
 		preview
 	)
-
-	purple_list=(
+	local -a purple_list=(
 		archive
 		upload
 		rasterize
@@ -2331,8 +2357,7 @@ frobulator.action () {
 		encode
 		distribute
 	)
-
-	blue_list=(
+	local -a blue_list=(
 		install
 		export
 		convert
@@ -2344,8 +2369,7 @@ frobulator.action () {
 		integrate
 		initialize
 	)
-
-	navy_list=(
+	local -a navy_list=(
 		reinstall
 		import
 		move
@@ -2357,8 +2381,7 @@ frobulator.action () {
 		merge
 		adopt
 	)
-
-	red_list=(
+	local -a red_list=(
 		remove
 		exclude
 		clear
@@ -2370,8 +2393,7 @@ frobulator.action () {
 		unload
 		discard
 	)
-
-	crimson_list=(
+	local -a crimson_list=(
 		purge
 		expunge
 		sanitize
@@ -2383,8 +2405,7 @@ frobulator.action () {
 		annihilate
 		sterilize
 	)
-
-	yellow_list=(
+	local -a yellow_list=(
 		update
 		refresh
 		clone
@@ -2397,8 +2418,7 @@ frobulator.action () {
 		reindex
 		rebuild
 	)
-
-	orange_list=(
+	local -a orange_list=(
 		upgrade
 		enhance
 		optimize
@@ -2410,8 +2430,7 @@ frobulator.action () {
 		strengthen
 		amplify
 	)
-
-	aqua_list=(
+	local -a aqua_list=(
 		hold
 		keep
 		wait
@@ -2423,21 +2442,18 @@ frobulator.action () {
 		buffer
 		queue
 	)
-
-	teal_list=(
+	local -a teal_list=(
 		release
 		scan
 		deploy
 		build
-		inspect
 		verify
 		validate
 		test
 		audit
 		check
 	)
-
-	black_list=(
+	local -a black_list=(
 		clean
 		wipe
 		scrub
@@ -2449,21 +2465,18 @@ frobulator.action () {
 		repair
 		maintain
 	)
-
-	green_list=(
+	local -a green_list=(
 		parse
 		resolve
 		analyze
 		interpret
-		evaluate
 		detect
 		identify
 		locate
 		match
 		discover
 	)
-
-	lime_list=(
+	local -a lime_list=(
 		generate
 		spawn
 		create
@@ -2475,8 +2488,7 @@ frobulator.action () {
 		fabricate
 		construct
 	)
-
-	silver_list=(
+	local -a silver_list=(
 		evaluate
 		probe
 		assess
@@ -2488,10 +2500,9 @@ frobulator.action () {
 		diagnose
 		investigate
 	)
-
-	grey_list=(
+	local -a grey_list=(
 		process
-		procede
+		proceed
 		execute
 		run
 		handle
@@ -2502,183 +2513,278 @@ frobulator.action () {
 		frobulate
 	)
 
-	# action fallback
+	shift
+
+	detail=("${@}")
+
+	# set action fallback
 
 	if [ -z "${action}" ]
 	then
 		action="frobulate"
-
-		color="${white}"
 	fi
 
-	# color selection
+	action="${action,,}"
 
-	if [[ "${action}" =~ [a-zA-Z] ]]
-	then
-		if [[ ${magenta_list[*]} =~ "${action}" ]]
+	# select action color
+
+	for item in "${magenta_list[@]}"
+	do
+		if [ "${action}" = "${item}" ]
 		then
 			color="${magenta}"
 
-		elif [[ ${purple_list[*]} =~ "${action}" ]]
-		then
-			color="${purple}"
-
-		elif [[ ${blue_list[*]} =~ "${action}" ]]
-		then
-			color="${blue}"
-
-		elif [[ ${navy_list[*]} =~ "${action}" ]]
-		then
-			color="${navy}"
-
-		elif [[ ${red_list[*]} =~ "${action}" ]]
-		then
-			color="${red}"
-
-		elif [[ ${crimson_list[*]} =~ "${action}" ]]
-		then
-			color="${crimson}"
-
-		elif [[ ${yellow_list[*]} =~ "${action}" ]]
-		then
-			color="${yellow}"
-
-		elif [[ ${orange_list[*]} =~ "${action}" ]]
-		then
-			color="${orange}"
-
-		elif [[ ${aqua_list[*]} =~ "${action}" ]]
-		then
-			color="${aqua}"
-
-		elif [[ ${teal_list[*]} =~ "${action}" ]]
-		then
-			color="${teal}"
-
-		elif [[ ${black_list[*]} =~ "${action}" ]]
-		then
-			color="${black}"
-
-		elif [[ ${green_list[*]} =~ "${action}" ]]
-		then
-			color="${green}"
-
-		elif [[ ${lime_list[*]} =~ "${action}" ]]
-		then
-			color="${lime}"
-
-		elif [[ ${silver_list[*]} =~ "${action}" ]]
-		then
-			color="${silver}"
-
-		elif [[ ${grey_list[*]} =~ "${action}" ]]
-		then
-			color="${grey}"
-
-		else
-			action="process"
-
-			color="${grey}"
+			break
 		fi
+	done
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${purple_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${purple}"
+
+				break
+			fi
+		done
 	fi
 
-	# action conjugation / syntactical substitution
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${blue_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${blue}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${navy_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${navy}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${red_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${red}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${crimson_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${crimson}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${yellow_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${yellow}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${orange_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${orange}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${aqua_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${aqua}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${teal_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${teal}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${black_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${black}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${green_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${green}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${lime_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${lime}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${silver_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${silver}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		for item in "${grey_list[@]}"
+		do
+			if [ "${action}" = "${item}" ]
+			then
+				color="${grey}"
+
+				break
+			fi
+		done
+	fi
+
+	if [ "${color}" = "${white}" ]
+	then
+		action="process"
+		color="${grey}"
+	fi
+
+	# conjugate action
 
 	action="${action^}"
 
 	if [ "${action: -2}" = "ie" ]
 	then
-		# die      >>> dying
-		# tie      >>> tying
-
 		action="${action/%ie/y}"
 
 	elif [ "${action: -2}" = "ee" ]
 	then
-		# see      >>> seeing
-		# flee     >>> fleeing
-
 		:
 
 	elif [ "${action: -2}" = "ue" ]
 	then
-		# queue    >>> queueing
-		# issue    >>> issueing
-
 		:
 
 	elif [ "${action: -1}" = "e" ]
 	then
-		# move     >>> moving
-		# remove   >>> removing
-		# archive  >>> archiving
-		# sanitize >>> sanitizing
-		# generate >>> generating
-		# evaluate >>> evaluating
-
 		action="${action/%e/}"
 
 	elif [ "${action: -1}" = "c" ]
 	then
-		# sync     >>> syncing
-		# panic    >>> panicking
-		# picnic   >>> picnicking
-
 		action="${action}k"
 
-	elif [[   "${action}" =~ [aeiou][bcdfghjklmnpqrstvwxyz]$        ]] && \
+	elif [[ "${action}" =~   [aeiou][bcdfghjklmnpqrstvwxyz]$        ]] && \
 	     [[ ! "${action}" =~ [aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] && \
-	     [[ ! "${action}" =~ [wxy]$                                 ]]
+	     [[ ! "${action}" =~ [wxy]$ ]]
 	then
-		# run      >>> running
-		# scrub    >>> scrubbing
-		# begin    >>> beginning
-		# stop     >>> stopping
-
 		action="${action}${action: -1}"
 	fi
 
-	action="${action/%/ing}"
+	action="${action}ing"
 
 	if [ "${#detail[@]}" -eq 0 ]
 	then
-		action="${action/%/$marker_elp}"
+		action="${action}${marker_elp}"
 	fi
 
-	# prompt
+	# generate prompt
 
 	if [ "${#detail[@]}" -gt 0 ]
 	then
-		frobulator.pmt "${action}" "${detail[@]}"
+		progress_detail="${detail[*]}"
+
+		frobulator.pmt "${action}" "${progress_detail}"
 	else
 		frobulator.pmt "${action}"
 	fi
 
-	progress_prompt="${prompt_string[@]}"
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	progress_prompt="${prompt_string[*]}"
 	progress_color="${color}"
 
-	# cleanup
+	return "${status}"
 
-	unset action
-	unset color
-
-	detail=()
-
-	unset magenta_list
-	unset purple_list
-	unset blue_list
-	unset navy_list
-	unset red_list
-	unset crimson_list
-	unset yellow_list
-	unset orange_list
-	unset aqua_list
-	unset teal_list
-	unset black_list
-	unset green_list
-	unset lime_list
-	unset silver_list
-	unset grey_list
 }
 
 # process //////////////////////////////////////////////////////////////////////

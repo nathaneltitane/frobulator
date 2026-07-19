@@ -2332,7 +2332,9 @@ frobulator.action () {
 	local color="${white}"
 	local item
 	local progress_detail
+
 	local -a detail=()
+
 	local -a magenta_list=(
 		extract
 		download
@@ -2345,6 +2347,7 @@ frobulator.action () {
 		transcode
 		preview
 	)
+
 	local -a purple_list=(
 		archive
 		upload
@@ -2357,6 +2360,7 @@ frobulator.action () {
 		encode
 		distribute
 	)
+
 	local -a blue_list=(
 		install
 		export
@@ -2369,6 +2373,7 @@ frobulator.action () {
 		integrate
 		initialize
 	)
+
 	local -a navy_list=(
 		reinstall
 		import
@@ -2381,6 +2386,7 @@ frobulator.action () {
 		merge
 		adopt
 	)
+
 	local -a red_list=(
 		remove
 		exclude
@@ -2393,6 +2399,7 @@ frobulator.action () {
 		unload
 		discard
 	)
+
 	local -a crimson_list=(
 		purge
 		expunge
@@ -2405,6 +2412,7 @@ frobulator.action () {
 		annihilate
 		sterilize
 	)
+
 	local -a yellow_list=(
 		update
 		refresh
@@ -2418,6 +2426,7 @@ frobulator.action () {
 		reindex
 		rebuild
 	)
+
 	local -a orange_list=(
 		upgrade
 		enhance
@@ -2430,6 +2439,7 @@ frobulator.action () {
 		strengthen
 		amplify
 	)
+
 	local -a aqua_list=(
 		hold
 		keep
@@ -2442,6 +2452,7 @@ frobulator.action () {
 		buffer
 		queue
 	)
+
 	local -a teal_list=(
 		release
 		scan
@@ -2453,6 +2464,7 @@ frobulator.action () {
 		audit
 		check
 	)
+
 	local -a black_list=(
 		clean
 		wipe
@@ -2465,6 +2477,7 @@ frobulator.action () {
 		repair
 		maintain
 	)
+
 	local -a green_list=(
 		parse
 		resolve
@@ -2476,6 +2489,7 @@ frobulator.action () {
 		match
 		discover
 	)
+
 	local -a lime_list=(
 		generate
 		spawn
@@ -2488,6 +2502,7 @@ frobulator.action () {
 		fabricate
 		construct
 	)
+
 	local -a silver_list=(
 		evaluate
 		probe
@@ -2500,6 +2515,7 @@ frobulator.action () {
 		diagnose
 		investigate
 	)
+
 	local -a grey_list=(
 		process
 		proceed
@@ -3114,11 +3130,17 @@ frobulator.bar () {
 
 frobulator.temporary () {
 
+	local status=0
+
+	local directory
+	local temporary_directory
+	local template="frobulator.tmp.XXXXXX"
+
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
-		list=(${@:1})
+		list=("${@:1}")
 	else
 		directory="${1}"
 
@@ -3127,19 +3149,38 @@ frobulator.temporary () {
 		list+=("${directory}")
 	fi
 
-	template="frobulator.tmp.XXXXXX"
-
-	for directory in ${list[@]}
+	for directory in "${list[@]}"
 	do
-		temporary_directory=$(mktemp -d -t "${template}")
+		temporary_directory="$(mktemp -d -t "${template}")"
 
-		eval directory="${temporary_directory}"
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
+
+		eval "${directory}=\"${temporary_directory}\""
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
 
 		frobulator.add "Generating temporary directory" "[ ${directory} ]"
 		echo
 
-		frobulator_return+=( "${directory}" )
+		frobulator_return+=("${directory}")
 	done
+
+	# unset array
+
+	list=()
+
+	return "${status}"
+
 }
 
 # trap /////////////////////////////////////////////////////////////////////////
@@ -3228,6 +3269,8 @@ frobulator.trap () {
 
 # frobulator.complete
 #         │
+#         ├── capture previous command status
+#         │       or
 #         ├── execute command
 #         ├── record checkpoint
 #         ├── record status
@@ -3241,18 +3284,25 @@ frobulator.trap () {
 #                     ├── clear statuses
 #                     └── return overall status
 
-# execute command and record checkpoint status
+# capture previous command status when used without arguments
+# execute command and record checkpoint status when arguments are supplied
 # skip execution when checkpoint already completed successfully
+# use immediately after command when used without arguments
 # use in tandem with frobulator.result
 
-# usage:      frobulator.complete "[checkpoint]" command [arguments...]
+# usage:    command
+#           frobulator.complete
+
+#           frobulator.complete "[path]" "[checkpoint]" command [arguments...]
 
 frobulator.complete () {
 
-	path="${1}"
-	checkpoint="${2}"
+	local previous_status="${?}"
+	local status=0
 
-	shift 2
+	local path
+	local checkpoint
+	local checkpoint_number
 
 	# initialize collections
 
@@ -3263,6 +3313,37 @@ frobulator.complete () {
 
 		frobulator_complete_initialized=true
 	fi
+
+	# collect previous command status
+
+	if [ "${#}" -eq 0 ]
+	then
+		checkpoint_number=$(( ${#frobulator_complete_checkpoints[@]} + 1 ))
+
+		checkpoint="operation ${checkpoint_number}"
+		status="${previous_status}"
+
+		frobulator_complete_statuses+=("${status}")
+		frobulator_complete_checkpoints+=("${checkpoint}")
+
+		if [ "${status}" -eq 0 ]
+		then
+			frobulator.scs "Complete - success status" "[ ${checkpoint} ]"
+			echo
+		else
+			frobulator.err "Incomplete - error status" "[ ${status} ] [ ${checkpoint} ]"
+			echo
+		fi
+
+		return 0
+	fi
+
+	# assign checkpoint parameters
+
+	path="${1}"
+	checkpoint="${2}"
+
+	shift 2
 
 	# validate path
 
@@ -3292,7 +3373,7 @@ frobulator.complete () {
 
 	# validate command
 
-	if [ $# -eq 0 ]
+	if [ "${#}" -eq 0 ]
 	then
 		frobulator_complete_statuses+=("1")
 		frobulator_complete_checkpoints+=("${checkpoint}")
@@ -3333,12 +3414,29 @@ frobulator.complete () {
 	then
 		frobulator.file "${path}" "${checkpoint}"
 
-		frobulator.scs "Complete - success status" "[ ${checkpoint} ]"
-		echo
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			frobulator_complete_statuses[-1]="${status}"
+
+			frobulator.err "Checkpoint creation failed" "[ ${checkpoint} ]"
+			echo
+		else
+			frobulator.scs "Complete - success status" "[ ${checkpoint} ]"
+			echo
+		fi
 	else
 		if [ -f "${path}/${checkpoint}" ]
 		then
 			rm --force -- "${path}/${checkpoint}"
+
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				frobulator_complete_statuses[-1]="${status}"
+			fi
 		fi
 
 		frobulator.err "Incomplete - error status" "[ ${status} ] [ ${checkpoint} ]"
@@ -3348,7 +3446,6 @@ frobulator.complete () {
 	# continue process
 
 	return 0
-
 }
 
 # result ///////////////////////////////////////////////////////////////////////
@@ -3419,19 +3516,17 @@ frobulator.result () {
 
 # usage:      frobulator.ownership [target]
 
-# ownership ////////////////////////////////////////////////////////////////////
-
 frobulator.ownership () {
 
 	local status=0
 
+	local target
 	local user_name
 	local user_home
-	local owner_name
-	local target
 	local target_path
+	local system_path
 	local path
-	local system_path=false
+	local owner_name
 	local user_id
 	local group_id
 	local -a list=("${@}")
@@ -3444,9 +3539,9 @@ frobulator.ownership () {
 		/boot
 	)
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [ "${#}" -eq 0 ]
 	then
-		frobulator.err "Missing ownership target"
+		frobulator.err "Missing ownership target" "[ target : null ]"
 		echo
 
 		return 1
@@ -3459,20 +3554,25 @@ frobulator.ownership () {
 		user_name="${SUDO_USER}"
 	else
 		user_name="$(id -u -n)"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
 	fi
 
 	# determine user home
 
+	user_home="/home/${user_name}"
+
 	if [ "${user_name}" = "root" ]
 	then
 		user_home="/root"
-	else
-		user_home="/home/${user_name}"
 	fi
 
 	for target in "${list[@]}"
 	do
-		system_path=false
+		system_path="false"
 
 		# resolve target path
 
@@ -3485,14 +3585,11 @@ frobulator.ownership () {
 			continue
 		fi
 
-		# determine whether target is system owned
-
 		for path in "${system_paths_list[@]}"
 		do
-			if [ "${target_path}" = "${path}" ] || \
-			   [[ "${target_path}" = "${path}/"* ]]
+			if [[ "${target_path}" = "${path}" ]] || [[ "${target_path}" = "${path}/"* ]]
 			then
-				system_path=true
+				system_path="true"
 
 				break
 			fi
@@ -3500,12 +3597,11 @@ frobulator.ownership () {
 
 		# determine ownership context
 
-		if [ "${target_path}" = "${user_home}" ] || \
-		   [[ "${target_path}" = "${user_home}/"* ]]
+		if [[ "${target_path}" = "${user_home}" ]] || [[ "${target_path}" = "${user_home}/"* ]]
 		then
 			owner_name="${user_name}"
 
-		elif [ "${system_path}" = true ]
+		elif [ "${system_path}" = "true" ]
 		then
 			owner_name="root"
 
@@ -3516,14 +3612,26 @@ frobulator.ownership () {
 		# resolve ownership identities
 
 		user_id="$(id -u "${owner_name}")"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
+
 		group_id="$(id -g "${owner_name}")"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
 
 		# apply ownership
 
-		chown								\
-			--recursive						\
-			"${user_id}:${group_id}"		\
-											"${target}"
+		chown --recursive "${user_id}:${group_id}" "${target}"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -3545,9 +3653,14 @@ frobulator.ownership () {
 
 frobulator.directory () {
 
-	if [ $# -eq 1 ]
-	then
+	local status=0
 
+	local path
+	local directory
+	local directory_item
+
+	if [ "${#}" -eq 1 ]
+	then
 		if [[ "${1}" = */* ]]
 		then
 			path="${1%/*}"
@@ -3562,10 +3675,9 @@ frobulator.directory () {
 		list=()
 
 		list+=("${directory_item}")
-
 	fi
 
-	if [ $# -ge 2 ]
+	if [ "${#}" -ge 2 ]
 	then
 		path="${1}"
 
@@ -3573,7 +3685,7 @@ frobulator.directory () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			directory_item="${2}"
 
@@ -3583,31 +3695,43 @@ frobulator.directory () {
 		fi
 
 		shift
-
 	fi
 
-	for directory in ${list[@]}
+	for directory in "${list[@]}"
 	do
 		frobulator.add "Generating directory" "[ ${directory} ]"
 		echo
 
 		# create directory and set permissions
 
-		if [ ! -d "${path}"/"${directory}" ]
+		if [ ! -d "${path}/${directory}" ]
 		then
-			mkdir			\
-				--parents	\
-							"${path}"/"${directory}"
+			mkdir --parents "${path}/${directory}"
+
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
 		fi
 
 		# set ownership
 
-		frobulator.ownership "${path}"/"${directory}"
+		frobulator.ownership "${path}/${directory}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
 
 	# unset array
 
 	list=()
+
+	return "${status}"
+
 }
 
 # write ////////////////////////////////////////////////////////////////////////
@@ -3621,9 +3745,13 @@ frobulator.directory () {
 
 frobulator.write () {
 
-	content="${1}"
+	local status=0
 
-	if [ $# -eq 2 ]
+	local content="${1}"
+	local path
+	local file
+
+	if [ "${#}" -eq 2 ]
 	then
 		path="${PWD}"
 
@@ -3631,7 +3759,7 @@ frobulator.write () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			file="${2}"
 
@@ -3641,7 +3769,7 @@ frobulator.write () {
 		fi
 	fi
 
-	if [ $# -eq 3 ]
+	if [ "${#}" -eq 3 ]
 	then
 		path="${2}"
 
@@ -3654,7 +3782,7 @@ frobulator.write () {
 		then
 			# ${3} - array
 
-			list=(${@:3})
+			list=("${@:3}")
 		else
 			file="${3}"
 
@@ -3666,29 +3794,46 @@ frobulator.write () {
 
 	if [ ! -d "${path}" ]
 	then
-		mkdir			\
-			--parents	\
-						"${path}"
+		mkdir --parents "${path}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
 	fi
 
-	for file in ${list[@]}
+	for file in "${list[@]}"
 	do
 		frobulator.add "Writing" "[ ${file} ]"
 		echo
 
 		# write to file and set permissions
 
-		echo "${content}" >> "${path}"/"${file}"
+		echo "${content}" >> "${path}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
 
 		# set ownership
 
-		frobulator.ownership "${path}"/"${file}"
+		frobulator.ownership "${path}/${file}"
 
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
 
 	# unset array
 
 	list=()
+
+	return "${status}"
+
 }
 
 # flag /////////////////////////////////////////////////////////////////////////
@@ -3702,9 +3847,13 @@ frobulator.write () {
 
 frobulator.flag () {
 
-	content="${1}"
+	local status=0
 
-	if [ $# -eq 2 ]
+	local content="${1}"
+	local path
+	local file
+
+	if [ "${#}" -eq 2 ]
 	then
 		path="${PWD}"
 
@@ -3712,7 +3861,7 @@ frobulator.flag () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			file="${2}"
 
@@ -3722,7 +3871,7 @@ frobulator.flag () {
 		fi
 	fi
 
-	if [ $# -eq 3 ]
+	if [ "${#}" -eq 3 ]
 	then
 		path="${2}"
 
@@ -3735,7 +3884,7 @@ frobulator.flag () {
 		then
 			# ${3} - array
 
-			list=(${@:3})
+			list=("${@:3}")
 		else
 			file="${3}"
 
@@ -3747,28 +3896,55 @@ frobulator.flag () {
 
 	if [ ! -d "${path}" ]
 	then
-		mkdir			\
-			--parents	\
-						"${path}"
+		mkdir --parents "${path}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
 	fi
 
-	for file in ${list[@]}
+	for file in "${list[@]}"
 	do
 		frobulator.add "Flagging" "[ ${file} ]"
 		echo
 
 		# write to file and set permissions
 
-		echo "${content}" > "${path}"/"${file}"
+		echo "${content}" > "${path}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+
+			continue
+		fi
 
 		# set ownership
 
-		frobulator.ownership "${path}"/"${file}"
+		frobulator.ownership "${path}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 
 		# set permissions
 
-		chmod a+rx "${path}"/"${file}"
+		chmod a+rx "${path}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
+
+	# unset array
+
+	list=()
+
+	return "${status}"
+
 }
 
 # file /////////////////////////////////////////////////////////////////////////
@@ -3779,7 +3955,12 @@ frobulator.flag () {
 
 frobulator.file () {
 
-	if [ $# -eq 1 ]
+	local status=0
+
+	local path
+	local file
+
+	if [ "${#}" -eq 1 ]
 	then
 		path="${PWD}"
 
@@ -3787,7 +3968,7 @@ frobulator.file () {
 		then
 			# ${1} - array
 
-			list=(${@:1})
+			list=("${@:1}")
 		else
 			file="${1}"
 
@@ -3797,7 +3978,7 @@ frobulator.file () {
 		fi
 	fi
 
-	if [ $# -eq 2 ]
+	if [ "${#}" -eq 2 ]
 	then
 		path="${1}"
 
@@ -3805,7 +3986,7 @@ frobulator.file () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			file="${2}"
 
@@ -3817,31 +3998,49 @@ frobulator.file () {
 
 	if [ ! -d "${path}" ]
 	then
-		 mkdir			\
-			--parents	\
-						"${path}"
+		mkdir --parents "${path}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
 	fi
 
-	for file in ${list[@]}
+	for file in "${list[@]}"
 	do
 		frobulator.add "Generating" "[ ${file} ]"
 		echo
 
 		# create file and set permissions
 
-		if [ ! -f "${path}"/"${file}" ]
+		if [ ! -f "${path}/${file}" ]
 		then
-			touch "${path}"/"${file}"
+			touch "${path}/${file}"
+
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
 		fi
 
 		# set ownership
 
-		frobulator.ownership "${path}"/"${file}"
+		frobulator.ownership "${path}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
 
 	# unset array
 
 	list=()
+
+	return "${status}"
+
 }
 
 # keep /////////////////////////////////////////////////////////////////////////
@@ -3853,7 +4052,14 @@ frobulator.file () {
 
 frobulator.keep () {
 
-	if [ $# -eq 1 ]
+	local status=0
+
+	local path
+	local file
+	local item
+	local keep
+
+	if [ "${#}" -eq 1 ]
 	then
 		path="${PWD}"
 
@@ -3861,7 +4067,7 @@ frobulator.keep () {
 		then
 			# ${1} - array
 
-			list=(${@:1})
+			list=("${@:1}")
 		else
 			file="${1}"
 
@@ -3871,7 +4077,7 @@ frobulator.keep () {
 		fi
 	fi
 
-	if [ $# -ge 2 ]
+	if [ "${#}" -ge 2 ]
 	then
 		path="${1}"
 
@@ -3879,7 +4085,7 @@ frobulator.keep () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			file="${2}"
 
@@ -3889,7 +4095,6 @@ frobulator.keep () {
 		fi
 
 		shift
-
 	fi
 
 	if [ -d "${path}" ]
@@ -3898,15 +4103,20 @@ frobulator.keep () {
 
 		cd "${path}"
 
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
+
 		for item in *
 		do
 			keep=0
 
-			for file in ${list[@]}
+			for file in "${list[@]}"
 			do
 				# mark for keeping
 
-				if [[ "${path}"/"$file" = "${path}"/"$item" ]]
+				if [[ "${path}/${file}" = "${path}/${item}" ]]
 				then
 					keep=1
 
@@ -3917,24 +4127,28 @@ frobulator.keep () {
 
 			# remove unmarked items
 
-			if [[ "$keep" = 0 ]]
+			if [ "${keep}" -eq 0 ]
 			then
-				rm					\
-					--recursive		\
-					--force			\
-									"${path}"/"${item}"
+				rm --recursive --force "${path}/${item}"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+				fi
 			fi
 		done
 	else
 		frobulator.err "Path does not exist" "[ ${path} ]"
 		echo
-	fi
 
-	unset keep
+		return 1
+	fi
 
 	# unset array
 
 	list=()
+
+	return "${status}"
 }
 
 # delete ///////////////////////////////////////////////////////////////////////
@@ -3946,7 +4160,12 @@ frobulator.keep () {
 
 frobulator.delete () {
 
-	if [ $# -eq 1 ]
+	local status=0
+
+	local path
+	local item
+
+	if [ "${#}" -eq 1 ]
 	then
 		path="${PWD}"
 
@@ -3954,7 +4173,7 @@ frobulator.delete () {
 		then
 			# ${1} - array
 
-			list=(${@:1})
+			list=("${@:1}")
 		else
 			item="${1}"
 
@@ -3964,7 +4183,7 @@ frobulator.delete () {
 		fi
 	fi
 
-	if [ $# -eq 2 ]
+	if [ "${#}" -eq 2 ]
 	then
 		path="${1}"
 
@@ -3972,7 +4191,7 @@ frobulator.delete () {
 		then
 			# ${2} - array
 
-			list=(${@:2})
+			list=("${@:2}")
 		else
 			item="${2}"
 
@@ -3982,22 +4201,27 @@ frobulator.delete () {
 		fi
 	fi
 
-	for item in ${list[@]}
+	for item in "${list[@]}"
 	do
 		frobulator.rem "Deleting" "[ ${item} ]"
 		echo
 
 		# remove file
 
-		rm					\
-			--recursive		\
-			--force			\
-							"${path}"/"${item}"
+		rm --recursive --force "${path}/${item}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
 
 	# unset array
 
 	list=()
+
+	return "${status}"
+
 }
 
 # copy /////////////////////////////////////////////////////////////////////////
@@ -4008,14 +4232,17 @@ frobulator.delete () {
 
 frobulator.copy () {
 
-	source="${1}"
-	target="${2}"
+	local status=0
+
+	local source="${1}"
+	local target="${2}"
+	local file
 
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		# ${2} - array
+		# ${3} - array
 
-		list=(${@:3})
+		list=("${@:3}")
 	else
 		file="${3}"
 
@@ -4026,68 +4253,7 @@ frobulator.copy () {
 
 	if [ ! -d "${target}" ]
 	then
-		mkdir			\
-			--parents	\
-						"${target}"
-	fi
-
-	for file in ${list[@]}
-	do
-		frobulator.lnk "Copying" "[ ${file} ]"
-		echo
-
-		cp					\
-			--recursive		\
-			--force			\
-							"${source}"/"${file}" "${target}"/"${file}"
-	done
-
-	# unset array
-
-	list=()
-}
-
-# move /////////////////////////////////////////////////////////////////////////
-
-# use to move file(s) and/or directories from argument list
-
-# usage:      frobulator.move "[source]" "[target]" "[file] [...]"
-
-frobulator.move () {
-
-	local status=0
-
-	local source="${1}"
-	local target="${2}"
-	local file
-	local -a list=("${@:3}")
-
-	if [ -z "${source}" ]
-	then
-		source="${PWD}"
-	fi
-
-	if [ -z "${target}" ]
-	then
-		frobulator.err "No target specified"
-		echo
-
-		return 1
-	fi
-
-	if [ "${#list[@]}" -eq 0 ]
-	then
-		frobulator.err "No file specified"
-		echo
-
-		return 1
-	fi
-
-	if [ ! -d "${target}" ]
-	then
-		mkdir \
-			--parents \
-			"${target}"
+		mkdir --parents "${target}"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -4097,6 +4263,68 @@ frobulator.move () {
 
 	for file in "${list[@]}"
 	do
+		frobulator.lnk "Copying" "[ ${file} ]"
+		echo
+
+		cp --recursive --force "${source}/${file}" "${target}/${file}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	done
+
+	# unset array
+
+	list=()
+
+	return "${status}"
+}
+
+# move /////////////////////////////////////////////////////////////////////////
+
+# use to move file(s) and/or diretories from argument or array list
+
+# usage:      frobulator.move "[source]" "[target]" "[file]" | "[array]"
+
+frobulator.move () {
+
+	local status=0
+
+	local source="${1}"
+	local target="${2}"
+	local file
+
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		# ${3} - array
+
+		list=("${@:3}")
+	else
+		file="${3}"
+
+		list=()
+
+		list+=("${file}")
+	fi
+
+	if [ ! -d "${target}" ]
+	then
+		mkdir --parents "${target}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
+	fi
+
+	for file in "${list[@]}"
+	do
+		if [ -z "${source}" ]
+		then
+			source="${PWD}"
+		fi
+
 		frobulator.lnk "Moving" "[ ${file} ]"
 		echo
 
@@ -4109,6 +4337,8 @@ frobulator.move () {
 			continue
 		fi
 
+		# set permissions
+
 		chmod a+rx "${target}/${file}"
 
 		if [ "${?}" -ne 0 ]
@@ -4116,6 +4346,10 @@ frobulator.move () {
 			status=1
 		fi
 	done
+
+	# unset array
+
+	list=()
 
 	return "${status}"
 
@@ -4136,7 +4370,6 @@ frobulator.link () {
 	local item
 	local link
 	local type
-	local -a list=()
 
 	# validation
 
@@ -4148,7 +4381,7 @@ frobulator.link () {
 		return 1
 	fi
 
-	if [ $# -lt 3 ]
+	if [ "${#}" -lt 3 ]
 	then
 		frobulator.err "Missing link item"
 		echo
@@ -4160,9 +4393,7 @@ frobulator.link () {
 
 	if [ ! -d "${target}" ]
 	then
-		mkdir \
-			--parents \
-			"${target}"
+		mkdir --parents "${target}"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -4172,95 +4403,83 @@ frobulator.link () {
 
 	# link single item
 
-	if [ $# -eq 3 ]
+	if [ "${#}" -eq 3 ]
 	then
 		item="${3}"
 		link="${3}"
 
-		if [ ! -e "${source}/${item}" ]
+		if [ -e "${source}/${item}" ]
 		then
-			return 1
-		fi
+			if [ -d "${source}/${item}" ]
+			then
+				type="directory"
+			fi
 
-		if [ -d "${source}/${item}" ]
-		then
-			type="directory"
-		elif [ -f "${source}/${item}" ]
-		then
-			type="file"
-		else
-			type="item"
-		fi
+			if [ -f "${source}/${item}" ]
+			then
+				type="file"
+			fi
 
-		frobulator.lnk "Linking ${type}" "[ ${link} ]"
-		echo
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
+			echo
 
-		ln \
-			--symbolic \
-			--force \
-			"${source}/${item}" \
-			"${target}/${link}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		else
-			frobulator.ownership "${target}/${link}"
+			ln -s -f "${source}/${item}" "${target}/${link}"
 
 			if [ "${?}" -ne 0 ]
 			then
 				status=1
+			else
+				frobulator.ownership "${target}/${link}"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+				fi
 			fi
 		fi
 	fi
 
 	# link renamed item
 
-	if [ $# -eq 4 ]
+	if [ "${#}" -eq 4 ]
 	then
 		item="${3}"
 		link="${4}"
 
-		if [ ! -e "${source}/${item}" ]
+		if [ -e "${source}/${item}" ]
 		then
-			return 1
-		fi
+			if [ -d "${source}/${item}" ]
+			then
+				type="directory"
+			fi
 
-		if [ -d "${source}/${item}" ]
-		then
-			type="directory"
-		elif [ -f "${source}/${item}" ]
-		then
-			type="file"
-		else
-			type="item"
-		fi
+			if [ -f "${source}/${item}" ]
+			then
+				type="file"
+			fi
 
-		frobulator.lnk "Linking ${type}" "[ ${link} ]"
-		echo
+			frobulator.lnk "Linking ${type}" "[ ${link} ]"
+			echo
 
-		ln \
-			--symbolic \
-			--force \
-			"${source}/${item}" \
-			"${target}/${link}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		else
-			frobulator.ownership "${target}/${link}"
+			ln -s -f "${source}/${item}" "${target}/${link}"
 
 			if [ "${?}" -ne 0 ]
 			then
 				status=1
+			else
+				frobulator.ownership "${target}/${link}"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+				fi
 			fi
 		fi
 	fi
 
 	# link array
 
-	if [ $# -gt 4 ]
+	if [ "${#}" -gt 4 ]
 	then
 		list=("${@:3}")
 
@@ -4268,68 +4487,104 @@ frobulator.link () {
 		do
 			link="${item}"
 
-			if [ ! -e "${source}/${item}" ]
+			if [ -e "${source}/${item}" ]
 			then
-				status=1
+				if [ -d "${source}/${item}" ]
+				then
+					type="directory"
+				fi
 
-				continue
-			fi
+				if [ -f "${source}/${item}" ]
+				then
+					type="file"
+				fi
 
-			if [ -d "${source}/${item}" ]
-			then
-				type="directory"
-			elif [ -f "${source}/${item}" ]
-			then
-				type="file"
-			else
-				type="item"
-			fi
+				frobulator.lnk "Linking ${type}" "[ ${link} ]"
+				echo
 
-			frobulator.lnk "Linking ${type}" "[ ${link} ]"
-			echo
+				ln -s -f "${source}/${item}" "${target}/${link}"
 
-			ln \
-				--symbolic \
-				--force \
-				"${source}/${item}" \
-				"${target}/${link}"
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
+					continue
+				fi
 
-				continue
-			fi
+				frobulator.ownership "${target}/${link}"
 
-			frobulator.ownership "${target}/${link}"
-
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+				fi
 			fi
 		done
 	fi
 
+	# unset array
+
+	list=()
+
 	return "${status}"
+
+}
 
 # image ////////////////////////////////////////////////////////////////////////
 
+# use to display local or remote images directly in supported terminals
+# supports local files, remote urls and stdin
+# width defaults to terminal width
+# preserves aspect ratio unless explicit height is specified
+
+# image:
+#              local image path
+#              http/https image url
+
+# width:
+#              terminal cells or percentage
+#              defaults to terminal width
+
+# height:
+#              terminal cells or percentage
+#              disables automatic aspect ratio preservation
+
+# usage:      frobulator.image "[image]"
+#             frobulator.image "[image]" "[width]"
+#             frobulator.image "[image]" "[width]" "[height]"
+
 frobulator.image () {
 
-	if [ $# -eq 1 ]
+	local status=0
+
+	local image
+	local width
+	local height
+	local ratio
+	local input
+	local encoding
+	local inline
+	local name
+	local type
+	local block
+	local bytes
+	local split
+	local parts
+	local part
+
+	if [ "${#}" -eq 1 ]
 	then
 		image="${1}"
 
 		width=${terminal_columns}
 
-	elif [ $# -eq 2 ]
+	elif [ "${#}" -eq 2 ]
 	then
 		image="${1}"
 		width="${2}"
 
 		ratio="1"
 
-	elif [ $# -eq 3 ]
+	elif [ "${#}" -eq 3 ]
 	then
 		image="${1}"
 		width="${2}"
@@ -4357,11 +4612,21 @@ frobulator.image () {
 
 	if [[ "${image}" =~ ^(https?://)?[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?(:[0-9]{1,5})?(/.*)?$ ]]
 	then
-		encoding=$(curl -s -L "${image}" | base64 -w 0)
+		encoding="$(curl -s -L "${image}" | base64 -w 0)"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 
 	elif [ -r "${image}" ]
 	then
-		encoding=$(cat "${image}" | base64 -w 0)
+		encoding="$(cat "${image}" | base64 -w 0)"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	fi
 
 	image_osc () {
@@ -4432,7 +4697,7 @@ frobulator.image () {
 
 		printf "=inline=%s" "${inline}"
 
-		printf ";size=%d" $(printf "%s" "${encoding}" | base64 -d -i | wc -c)
+		printf ";size=%d" "$(printf "%s" "${encoding}" | base64 -d -i | wc -c)"
 
 		if [ -n "${image}" ]
 		then
@@ -4516,7 +4781,6 @@ frobulator.image () {
 		fi
 
 		image_parse "${image}" "${inline}" "${encoding}" "${name}" "${width}" "${height}" "${ratio}" "${type}" "${block}"
-
 	}
 
 	if [ -z "${image}" ]
@@ -4524,10 +4788,18 @@ frobulator.image () {
 		frobulator.err "No image supplied"
 		echo
 
-		exit 1
+		return 1
 	fi
 
 	image_print
+
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	return "${status}"
+
 }
 
 # http /////////////////////////////////////////////////////////////////////////
@@ -4753,347 +5025,390 @@ frobulator.status () {
 
 # download /////////////////////////////////////////////////////////////////////
 
-# use to download file(s) with url status verification from argument list
+# use to download file(s) with url status verification from argument or array list
 
-# usage:      frobulator.download "[url]"                    "[item]"
-#             frobulator.download "[url]"                    "[directory]"             "[item] [...]"
-#             frobulator.download "[url]"                    "[source item]"            "[directory]"             "[target item]"
+# usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
+#             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
+#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
 
 frobulator.download () {
 
 	local status=0
 
 	local url="${1}"
-	local source_file
 	local path
 	local file
+	local source_file
 	local data
-	local download_url
-	local -a list=()
-
-	# validation
-
-	if [ -z "${url}" ]
-	then
-		frobulator.err "No URL specified"
-		echo
-
-		return 1
-	fi
-
-	if [ $# -lt 2 ]
-	then
-		frobulator.err "No download item specified"
-		echo
-
-		return 1
-	fi
-
-	# validate base url
 
 	frobulator.http "${url}"
 
-	if [ "${?}" -ne 0 ]
-	then
-		frobulator.err "Download error" "[ ${url} ]"
-		echo
-
-		return 1
-	fi
-
 	frobulator.status
 
-	if [ "${?}" -ne 0 ]
+	if [[ "${proceed}" = 1 ]]
+	then
+		if [ "${#}" -eq 2 ]
+		then
+			path="${PWD}"
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${2} - array
+
+				list=("${@:2}")
+			else
+				file="${2}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ "${#}" -eq 3 ]
+		then
+			path="${2}"
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${3} - array
+
+				list=("${@:3}")
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		elif [ "${#}" -eq 4 ]
+		then
+			source_file="${2}"
+			path="${3}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${4} - array
+
+				list=("${@:4}")
+			else
+				file="${4}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+
+		else
+			path="${2}"
+
+			if [ -z "${path}" ]
+			then
+				path="${PWD}"
+			fi
+
+			if [[ "${#list[@]}" -gt 0 ]]
+			then
+				# ${3} - array
+
+				list=("${@:3}")
+			else
+				file="${3}"
+
+				list=()
+
+				list+=("${file}")
+			fi
+		fi
+
+		if [ ! -d "${path}" ]
+		then
+			mkdir --parents "${path}"
+
+			if [ "${?}" -ne 0 ]
+			then
+				list=()
+
+				unset proceed
+
+				return 1
+			fi
+		fi
+
+		for file in "${list[@]}"
+		do
+			if [ "${#}" -eq 4 ]
+			then
+				data="${source_file}"
+			else
+				data="${file}"
+			fi
+
+			frobulator.http "${url}" "${data}"
+
+			frobulator.status
+
+			if [[ "${proceed}" = 1 ]]
+			then
+				if [ "${#}" -eq 2 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}" > "${path}/${file}" &
+
+				elif [ "${#}" -eq 3 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}/${file}" > "${path}/${file}" &
+
+				elif [ "${#}" -eq 4 ]
+				then
+					curl			\
+						--silent	\
+						--location	\
+									"${url}/${source_file}" > "${path}/${file}" &
+
+				else
+					curl			\
+						--silent	\
+						--location	\
+									"${url}/${file}" > "${path}/${file}" &
+				fi
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+
+					continue
+				fi
+
+				frobulator.progress "download" "[ '${file}' ]"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+
+					continue
+				fi
+
+				# set permissions
+
+				chmod a+rx "${path}/${file}"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+				fi
+
+			elif [[ "${proceed}" = 0 ]]
+			then
+				frobulator.stp "Skipping" "[ '${file}' ]"
+				echo
+
+				frobulator.wrn "File missing or unavailable."
+				frobulator.nul "Review file spelling or availability for URL at:"
+				frobulator.url "${marker_web}${url}"
+				echo
+
+				status=1
+			fi
+		done
+
+		# unset array
+
+		list=()
+
+		unset proceed
+
+		return "${status}"
+
+	elif [[ "${proceed}" = 0 ]]
 	then
 		frobulator.err "Download error" "[ response${marker_hnt}${url_status} ]"
-		frobulator.nul "Cannot continue - URL unavailable."
+		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 
 		frobulator.stp "Aborting${marker_elp}"
 		echo
 
-		return 1
-	fi
-
-	# determine download mode
-
-	if [ $# -eq 2 ]
-	then
-		path="${PWD}"
-		list=("${2}")
-
-	elif [ $# -eq 4 ]
-	then
-		source_file="${2}"
-		path="${3}"
-		list=("${4}")
-
-	else
-		path="${2}"
-		list=("${@:3}")
-	fi
-
-	if [ -z "${path}" ]
-	then
-		path="${PWD}"
-	fi
-
-	if [ "${#list[@]}" -eq 0 ]
-	then
-		frobulator.err "No download item specified"
-		echo
+		unset proceed
 
 		return 1
 	fi
 
-	# create target directory
+	unset proceed
 
-	if [ ! -d "${path}" ]
-	then
-		mkdir \
-			--parents \
-			"${path}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			frobulator.err "Unable to create directory" "[ ${path} ]"
-			echo
-
-			return 1
-		fi
-	fi
-
-	# download items
-
-	for file in "${list[@]}"
-	do
-		if [ -n "${source_file}" ]
-		then
-			data="${source_file}"
-		else
-			data="${file}"
-		fi
-
-		if [ $# -eq 2 ]
-		then
-			download_url="${url}"
-		else
-			download_url="${url}/${data}"
-		fi
-
-		frobulator.http "${download_url}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			frobulator.stp "Skipping" "[ '${file}' ]"
-			echo
-
-			frobulator.wrn "Unable to retrieve HTTP status"
-			echo
-
-			continue
-		fi
-
-		frobulator.status
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			frobulator.stp "Skipping" "[ '${file}' ]"
-			echo
-
-			frobulator.wrn "File missing or unavailable."
-			frobulator.nul "Review file spelling or availability for URL at:"
-			frobulator.url "${marker_web}${download_url}"
-			echo
-
-			continue
-		fi
-
-		curl \
-			--silent \
-			--show-error \
-			--location \
-			--output "${path}/${file}" \
-			"${download_url}" &
-
-		frobulator.progress "download" "[ '${file}' ]"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			rm \
-				--force \
-				"${path}/${file}"
-
-			frobulator.err "Download failed" "[ ${file} ]"
-			echo
-
-			continue
-		fi
-
-		chmod a+rx "${path}/${file}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			frobulator.err "Unable to set permissions" "[ ${file} ]"
-			echo
-		fi
-	done
-
-	return "${status}"
+	return 1
 
 }
 
 # upload ///////////////////////////////////////////////////////////////////////
 
-# use to upload data or file with url
+# use to upload data or file(s) with url from argument or array list
 
-# usage:      frobulator.upload "[request]" "[url]" "[data]"
-#
-#             json:    '{"key":"value"}'
-#             file:    @"/path/to/file"
-#             form:    "key=value"
+# usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
+
+#             item as data or path to item prefixed with @
+#             array as array of data or items
 
 frobulator.upload () {
 
-	local request="${1}"
+	local status=0
+
+	local request="${1}" # POST / PUT
 	local url="${2}"
-	local data="${3}"
+	local data
 	local file
-	local status
-	local -a command_upload=()
+	local header
+	local command_upload=()
 
 	# validation
 
-	if [ -z "${request}" ]
+	if [ -z "${request}" ] || [ -z "${url}" ]
 	then
-		frobulator.err "No request specified"
+		frobulator.err "Missing upload request or url"
 		echo
 
 		return 1
 	fi
 
-	if [ "${request}" != "POST" ] && [ "${request}" != "PUT" ]
+	if [ "${#}" -lt 3 ]
 	then
-		frobulator.err "Invalid request" "[ ${request} ]"
+		frobulator.err "No data provided for request" "[ ${request} ]" >&2
 		echo
 
 		return 1
 	fi
 
-	if [ -z "${url}" ]
-	then
-		frobulator.err "No URL specified"
-		echo
+	# set upload list
 
-		return 1
+	if [[ "${#list[@]}" -gt 0 ]]
+	then
+		list=("${@:3}")
+	else
+		data="${3}"
+
+		list=()
+
+		list+=("${data}")
 	fi
 
-	if [ -z "${data}" ]
-	then
-		frobulator.err "No data provided" "[ ${request} ]"
-		echo
+	# probe upload target
 
-		return 1
-	fi
+	frobulator.status "${url}"
 
-	# validate url
+	frobulator.probe "${url}"
 
-	frobulator.http "${url}"
-
-	if [ "${?}" -ne 0 ]
-	then
-		frobulator.err "Unable to retrieve HTTP status" "[ ${url} ]"
-		echo
-
-		return 1
-	fi
-
-	frobulator.status
-
-	if [ "${?}" -ne 0 ]
+	if [[ "${proceed}" = 0 ]]
 	then
 		frobulator.err "Upload error" "[ response${marker_hnt}${url_status} ]"
+		frobulator.nul "Cannot continue - ${reason} unavailable."
 		echo
 
 		frobulator.stp "Aborting${marker_elp}"
 		echo
 
+		list=()
+
+		unset proceed
+
 		return 1
 	fi
 
-	# construct upload command
-
-	command_upload=(
-		curl
-		--silent
-		--show-error
-		--location
-		--request "${request}"
-	)
-
-	if [[ "${data}" = \{*\} ]]
+	if [[ "${proceed}" != 1 ]]
 	then
-		command_upload+=(
-			--header "Content-Type: application/json"
-			--data "${data}"
-		)
+		list=()
 
-	elif [[ "${data}" = @* ]]
-	then
-		file="${data#@}"
+		unset proceed
 
-		if [ ! -f "${file}" ]
-		then
-			frobulator.err "File does not exist" "[ ${file} ]"
-			echo
-
-			return 1
-		fi
-
-		if [ ! -s "${file}" ]
-		then
-			frobulator.err "File is empty" "[ ${file} ]"
-			echo
-
-			return 1
-		fi
-
-		command_upload+=(
-			--form "file=@${file}"
-		)
-
-	else
-		command_upload+=(
-			--header "Content-Type: application/x-www-form-urlencoded"
-			--data "${data}"
-		)
+		return 1
 	fi
 
-	command_upload+=("${url}")
+	# upload items
 
-	# upload data
+	for data in "${list[@]}"
+	do
+		command_upload=(
+			curl
+			--request "${request}"
+		)
 
-	"${command_upload[@]}"
+		if [ -z "${data}" ]
+		then
+			frobulator.err "No data provided for request" "[ ${request} ]" >&2
+			echo
 
-	status="${?}"
+			status=1
 
-	if [ "${status}" -ne 0 ]
-	then
-		frobulator.err "Upload failed" "[ ${url} ]"
-		echo
+			continue
 
-		return "${status}"
-	fi
+		elif [[ "${data}" =~ ^\{.*\}$ ]]
+		then
+			# json data
 
-	return 0
+			header="Content-Type: application/json"
+
+			command_upload+=(
+				--header "${header}"
+				--data "${data}"
+			)
+
+		elif [[ "${data}" =~ ^@ ]]
+		then
+			# file / form data
+
+			file="${data#@}"
+
+			if [ ! -s "${file}" ]
+			then
+				frobulator.err "File is empty or does not exist" "[ ${file} ]" >&2
+				echo
+
+				status=1
+
+				continue
+			fi
+
+			command_upload+=(
+				--form "file=@${file}"
+			)
+
+		else
+			# form data
+
+			header="Content-Type: application/x-www-form-urlencoded"
+
+			command_upload+=(
+				--header "${header}"
+				--data "${data}"
+			)
+		fi
+
+		command_upload+=("${url}")
+
+		"${command_upload[@]}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	done
+
+	# unset array
+
+	list=()
+
+	unset proceed
+
+	return "${status}"
 
 }
 
@@ -5102,28 +5417,22 @@ frobulator.upload () {
 # use to wrap command execution and redirect all output to null sink
 # provides fully silent execution
 
-# frobulator.complete "[path]" "[checkpoint]" frobulator.silence "command"
-
 # usage:      frobulator.silence "[command]"
 
 frobulator.silence () {
 
+	local status=0
+
 	local command="${*}"
 
-	if [ -z "${command}" ]
-	then
-		frobulator.err "No command specified"
-		echo
+	"${SHELL}" -c "${command}" >> "${sink}" 2>&1
 
-		return 1
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
 	fi
 
-	"${SHELL}"				\
-		-c "${command}"		\
-		>> "${sink}"		\
-							2>&1
-
-	return "${?}"
+	return "${status}"
 
 }
 
@@ -5151,9 +5460,9 @@ frobulator.log () {
 
 		if [ ! -d "${log_directory}" ]
 		then
-			mkdir			\
-				--parents	\
-							"${log_directory}"
+			mkdir				\
+				--parents		\
+								"${log_directory}"
 
 			if [ "${?}" -ne 0 ]
 			then
@@ -5378,16 +5687,20 @@ frobulator.hold () {
 
 	local package
 	local command_hold="apt-mark hold"
-	local -a list=("${@}")
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	frobulator.inf "Holding package(s)"
@@ -5400,13 +5713,17 @@ frobulator.hold () {
 
 		frobulator.log "${command_hold} ${package}" &
 
-		frobulator.progress "Hold"
+		frobulator.progress "hold"
 
 		if [ "${?}" -ne 0 ]
 		then
 			status=1
 		fi
 	done
+
+	# unset array
+
+	list=()
 
 	return "${status}"
 }
@@ -5418,24 +5735,26 @@ frobulator.hold () {
 
 # usage:      frobulator.release "[package]" | "[array]"
 
-# release //////////////////////////////////////////////////////////////////////
-
 frobulator.release () {
 
 	local status=0
 
 	local package
 	local command_unhold="apt-mark unhold"
-	local -a list=("${@}")
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	frobulator.inf "Releasing package(s)"
@@ -5448,13 +5767,17 @@ frobulator.release () {
 
 		frobulator.log "${command_unhold} ${package}" &
 
-		frobulator.progress "Release"
+		frobulator.progress "release"
 
 		if [ "${?}" -ne 0 ]
 		then
 			status=1
 		fi
 	done
+
+	# unset array
+
+	list=()
 
 	return "${status}"
 
@@ -5470,33 +5793,37 @@ frobulator.release () {
 
 frobulator.failsafe () {
 
-	failsafe_intent () {
-
-		# run failsafe package and repository update
-		# mitigate general deployment setup issues
-		# mitigate skipped packages on install
-
-		yes | apt update			> "${sink}" 2>&1
-
-		yes | apt full-upgrade		> "${sink}" 2>&1
-	}
-
 	local status=0
 
 	local package
 	local command_update="apt-get --assume-yes update"
 	local command_upgrade="apt-get --assume-yes dist-upgrade"
 	local command_install="apt-get --assume-yes install"
-	local -a list=("${@}")
+
+	failsafe_intent () {
+
+		# run failsafe package and repository update
+		# mitigate general deployment setup issues
+		# mitigate skipped packages on install
+
+		yes | apt update > "${sink}" 2>&1
+
+		yes | apt full-upgrade > "${sink}" 2>&1
+	}
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	failsafe_intent &
@@ -5535,6 +5862,10 @@ frobulator.failsafe () {
 		fi
 	done
 
+	# unset array
+
+	list=()
+
 	return "${status}"
 
 }
@@ -5552,16 +5883,20 @@ frobulator.install () {
 	local package
 	local query_filter
 	local command_install="apt-get --assume-yes install"
-	local -a list=("${@}")
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	frobulator.inf "Installing package(s)"
@@ -5571,43 +5906,28 @@ frobulator.install () {
 	do
 		if [[ "${package}" = *.deb ]]
 		then
-			if [ ! -f "${package}" ]
-			then
-				frobulator.err "Local package not found" "[ '${package}' ]"
-				echo
-
-				status=1
-
-				continue
-			fi
-
-			frobulator.msg "Local package selected" "[ '${package}' ]"
+			frobulator.msg "Local package(s) selected"
 			echo
 
 			frobulator.log "${command_install} ${package}" &
 
-			frobulator.progress "Install"
+			frobulator.progress "install"
 
 			if [ "${?}" -ne 0 ]
 			then
 				status=1
 			fi
 		else
-			query_filter="$(
-				apt search "${package}" 2> "${sink}" |
-				grep "installed" |
-				cut -d "/" -f 1 |
-				grep -x "${package}"
-			)"
+			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
-			if [ -z "${query_filter}" ]
+			if [[ -z "${query_filter}" ]]
 			then
 				frobulator.wrn "Absent on system" "[ '${package}' ]"
 				echo
 
 				frobulator.log "${command_install} ${package}" &
 
-				frobulator.progress "Install"
+				frobulator.progress "install"
 
 				if [ "${?}" -ne 0 ]
 				then
@@ -5623,8 +5943,11 @@ frobulator.install () {
 		fi
 	done
 
-	return "${status}"
+	# unset array
 
+	list=()
+
+	return "${status}"
 }
 
 # require //////////////////////////////////////////////////////////////////////
@@ -5633,8 +5956,6 @@ frobulator.install () {
 # use to search and validate required package dependencies for operations
 
 # usage:      frobulator.require "[package]" | "[array]"
-
-# require //////////////////////////////////////////////////////////////////////
 
 frobulator.require () {
 
@@ -5645,11 +5966,11 @@ frobulator.require () {
 	local query_package
 	local query_content
 	local query_line
-	local query_filter
-	local system_binary_directory="/usr/bin"
 	local query_command
-	local provision_found
+	local system_binary_directory
+
 	local -a list=("${@}")
+	local -a query_filter=()
 	local -a install_list=()
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -5676,7 +5997,7 @@ frobulator.require () {
 		frobulator.fwd "Continuing${marker_elp}"
 		echo
 
-		return 0
+		return "${status}"
 	fi
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
@@ -5684,14 +6005,19 @@ frobulator.require () {
 
 	for command in "${list[@]}"
 	do
-		install_list=()
-
-		if [[ "${command}" == *"*"* ]]
+		if [[ "${command}" == *'*'* ]]
 		then
 			frobulator.fwd "Expanding package selection query" "[ '${command}' ]"
 			echo
 
 			packages="$(apt-cache pkgnames)"
+
+			if [ "${?}" -ne 0 ]
+			then
+				status=1
+
+				continue
+			fi
 
 			while IFS= read -r query_package
 			do
@@ -5706,7 +6032,7 @@ frobulator.require () {
 
 			echo
 
-			if [ "${#install_list[@]}" -gt 0 ]
+			if [[ "${#install_list[@]}" -ge 1 ]]
 			then
 				frobulator.install "${install_list[@]}"
 
@@ -5714,6 +6040,8 @@ frobulator.require () {
 				then
 					status=1
 				fi
+
+				install_list=()
 			else
 				frobulator.err "Package selection not found" "[ '${command}' ]"
 				echo
@@ -5721,80 +6049,80 @@ frobulator.require () {
 				status=1
 			fi
 
-		elif [ -z "$(command -v "${command}")" ]
+		elif [[ -z $(command -v "${command}") ]]
 		then
 			frobulator.fwd "Probing${marker_elp}"
 			echo
 
-			query_filter="$(apt-file search "${command}" 2> "${sink}")"
+			IFS="${marker_spc}"
 
-			query_command="${system_binary_directory}/${command}"
+			query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
 
-			provision_found=false
+			unset IFS
 
 			while IFS= read -r query_line
 			do
-				if [ -z "${query_line}" ]
-				then
-					continue
-				fi
+				IFS=':'
 
-				IFS=":" read -r query_package query_content <<< "${query_line}"
+				read -r query_package query_content <<< "${query_line}"
 
-				query_content="${query_content#"${query_content%%[![:space:]]*}"}"
+				unset IFS
 
-				if [ "${query_package}" = "${command}" ] && [ "${query_content}" = "${query_command}" ]
+				system_binary_directory=/usr/bin
+
+				query_command="${system_binary_directory}/${command}"
+
+				if [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" == "${query_command}" ]]
 				then
 					frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
 					echo
 
 					install_list+=("${query_package}")
 
-					provision_found=true
-
 					break
 
-				elif [ "${query_package}" = "${command}" ] && [[ "${query_content}" == *"/${command}" ]]
+				elif [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
 				then
 					frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
 					echo
 
 					install_list+=("${query_package}")
 
-					provision_found=true
-
 					break
+
+				elif [[ "${query_line}" = "" ]]
+				then
+					IFS="${marker_spc}"
+
+					query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
+
+					unset IFS
+
+					while IFS= read -r query_line
+					do
+						IFS=':'
+
+						read -r query_package query_content <<< "${query_line}"
+
+						unset IFS
+
+						if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
+						then
+							frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
+							echo
+
+							install_list+=("${query_package}")
+
+							break
+						else
+							frobulator.err "Command provision not found" "[ '${command}' ]"
+							echo
+						fi
+					done <<< "${query_filter[@]}"
 				fi
-			done <<< "${query_filter}"
+			done <<< "${query_filter[@]}"
 
-			if [ "${provision_found}" = false ]
-			then
-				while IFS= read -r query_line
-				do
-					if [ -z "${query_line}" ]
-					then
-						continue
-					fi
-
-					IFS=":" read -r query_package query_content <<< "${query_line}"
-
-					query_content="${query_content#"${query_content%%[![:space:]]*}"}"
-
-					if [ "${query_package}" = "${command}" ] && [[ "${query_content}" != *"/${command}" ]]
-					then
-						frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
-						echo
-
-						install_list+=("${query_package}")
-
-						provision_found=true
-
-						break
-					fi
-				done <<< "${query_filter}"
-			fi
-
-			if [ "${provision_found}" = true ]
+			if [[ "${#install_list[@]}" -ge 1 ]]
 			then
 				frobulator.install "${install_list[@]}"
 
@@ -5802,10 +6130,9 @@ frobulator.require () {
 				then
 					status=1
 				fi
-			else
-				frobulator.err "Command provision not found" "[ '${command}' ]"
-				echo
 
+				install_list=()
+			else
 				status=1
 			fi
 		else
@@ -5830,16 +6157,20 @@ frobulator.reinstall () {
 
 	local package
 	local command_reinstall="apt-get --assume-yes install --reinstall"
-	local -a list=("${@}")
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	frobulator.inf "Reinstalling package(s)"
@@ -5849,13 +6180,17 @@ frobulator.reinstall () {
 	do
 		frobulator.log "${command_reinstall} ${package}" &
 
-		frobulator.progress "Reinstall"
+		frobulator.progress "reinstall"
 
 		if [ "${?}" -ne 0 ]
 		then
 			status=1
 		fi
 	done
+
+	# unset array
+
+	list=()
 
 	return "${status}"
 
@@ -5866,8 +6201,6 @@ frobulator.reinstall () {
 # use to update system package(s)
 
 # usage:      frobulator.update
-
-# update ///////////////////////////////////////////////////////////////////////
 
 frobulator.update () {
 
@@ -5882,7 +6215,7 @@ frobulator.update () {
 
 	frobulator.log "${command_update}" &
 
-	frobulator.progress "Update"
+	frobulator.progress "update"
 
 	if [ "${?}" -ne 0 ]
 	then
@@ -5899,8 +6232,6 @@ frobulator.update () {
 
 # usage:      frobulator.upgrade
 
-# upgrade //////////////////////////////////////////////////////////////////////
-
 frobulator.upgrade () {
 
 	local status=0
@@ -5914,7 +6245,7 @@ frobulator.upgrade () {
 
 	frobulator.log "${command_upgrade}" &
 
-	frobulator.progress "Upgrade"
+	frobulator.progress "upgrade"
 
 	if [ "${?}" -ne 0 ]
 	then
@@ -5936,18 +6267,21 @@ frobulator.purge () {
 	local status=0
 
 	local package
-	local query_filter
 	local command_purge="apt-get --assume-yes purge --autoremove"
-	local -a list=("${@}")
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [[ "${#list[@]}" -gt 0 ]]
 	then
-		frobulator.err "No package specified"
-		echo
+		# ${1} - array
 
-		return 1
+		list=("${@:1}")
+	else
+		package="${1}"
+
+		list=()
+
+		list+=("${package}")
 	fi
 
 	frobulator.inf "Purging selected package(s)"
@@ -5955,12 +6289,7 @@ frobulator.purge () {
 
 	for package in "${list[@]}"
 	do
-		query_filter="$(
-			apt search "${package}" 2> "${sink}" |
-			grep -i -o "installed"
-		)"
-
-		if [ -n "${query_filter}" ]
+		if [[ -n $(apt search "${package}" 2> "${sink}" | grep -i -o installed) ]]
 		then
 			frobulator.wrn "Selecting" "[ '${package}' ]"
 			echo
@@ -5982,7 +6311,12 @@ frobulator.purge () {
 		fi
 	done
 
+	# unset array
+
+	list=()
+
 	return "${status}"
+
 }
 
 # dialog ///////////////////////////////////////////////////////////////////////
@@ -6515,7 +6849,7 @@ frobulator.extract () {
 	then
 		mkdir				\
 			--parents		\
-			"${directory}"
+							"${directory}"
 
 		if [ "${?}" -ne 0 ]
 		then

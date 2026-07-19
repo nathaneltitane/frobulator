@@ -3529,8 +3529,8 @@ frobulator.ownership () {
 	local owner_name
 	local user_id
 	local group_id
-	local -a list=("${@}")
-	local -a system_paths_list=(
+
+	local system_paths_list=(
 		/root
 		/usr
 		/etc
@@ -3547,6 +3547,8 @@ frobulator.ownership () {
 		return 1
 	fi
 
+	list=("${@}")
+
 	# determine user ownership source
 
 	if [ -n "${SUDO_USER}" ]
@@ -3557,6 +3559,8 @@ frobulator.ownership () {
 
 		if [ "${?}" -ne 0 ]
 		then
+			list=()
+
 			return 1
 		fi
 	fi
@@ -3587,7 +3591,8 @@ frobulator.ownership () {
 
 		for path in "${system_paths_list[@]}"
 		do
-			if [[ "${target_path}" = "${path}" ]] || [[ "${target_path}" = "${path}/"* ]]
+			if [[ "${target_path}" = "${path}"   ]] || \
+			   [[ "${target_path}" = "${path}/"* ]]
 			then
 				system_path="true"
 
@@ -3597,7 +3602,8 @@ frobulator.ownership () {
 
 		# determine ownership context
 
-		if [[ "${target_path}" = "${user_home}" ]] || [[ "${target_path}" = "${user_home}/"* ]]
+		if [[ "${target_path}" = "${user_home}"   ]] || \
+		   [[ "${target_path}" = "${user_home}/"* ]]
 		then
 			owner_name="${user_name}"
 
@@ -3631,7 +3637,10 @@ frobulator.ownership () {
 
 		# apply ownership
 
-		chown --recursive "${user_id}:${group_id}" "${target}"
+		chown							\
+			"${user_id}:${group_id}"	\
+			--recursive					\
+										"${target}"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -3639,8 +3648,11 @@ frobulator.ownership () {
 		fi
 	done
 
-	return "${status}"
+	# unset array
 
+	list=()
+
+	return "${status}"
 }
 
 # directory ////////////////////////////////////////////////////////////////////

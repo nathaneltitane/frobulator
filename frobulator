@@ -5455,59 +5455,53 @@ frobulator.silence () {
 
 # usage:      frobulator.log "[command]"
 
-# log /////////////////////////////////////////////////////////////////////////
-
 frobulator.log () {
 
+	local status=0
+
+	local command="${*}"
 	local log_directory
 	local log
-	local command
-	local script_name
 
-	if [ -z "${SUDO:-}" ]
+	if [ -z "${SUDO:-${HOME}}" ]
 	then
 		log_directory="${PREFIX}/var/log"
 	else
-		log_directory="${HOME}/.local/var/log"
-
-		if [ ! -d "${log_directory}" ]
+		if [ ! -d "${HOME}/.local/var/log" ]
 		then
-			mkdir				\
-				--parents		\
-								"${log_directory}"
+			mkdir --parents "${HOME}/.local/var/log"
 
 			if [ "${?}" -ne 0 ]
 			then
 				return 1
 			fi
 		fi
+
+		log_directory="${HOME}/.local/var/log"
 	fi
 
 	if [ -z "${script}" ]
 	then
-		script_name=$(basename -- "${BASH_SOURCE[0]}")
-	else
-		script_name="${script##*/}"
+		script="$(basename -- "${BASH_SOURCE[0]}")"
+
+		if [ "${?}" -ne 0 ]
+		then
+			return 1
+		fi
 	fi
 
-	command="${*}"
+	script="${script##*/}"
 
-	if [ -z "${command}" ]
+	log="${log_directory}/${script}-${stamp}.log"
+
+	"${SHELL}" -c "${command}" >> "${log}" 2>&1
+
+	if [ "${?}" -ne 0 ]
 	then
-		frobulator.err "No command specified"
-		echo
-
-		return 1
+		status=1
 	fi
 
-	log="${log_directory}/${script_name}-${stamp}.log"
-
-	"${SHELL}"				\
-		-c "${command}"		\
-		>> "${log}"			\
-							2>&1
-
-	return "${?}"
+	return "${status}"
 
 }
 
@@ -5517,48 +5511,67 @@ frobulator.log () {
 
 # usage:      frobulator.password
 
-# password /////////////////////////////////////////////////////////////////////
-
 frobulator.password () {
 
+	local status=0
+
 	local mask_character="•"
-	local mask
 	local input_character
-	local password=""
+	local mask=""
+
+	password=""
 
 	while read -p "${mask}" -r -s -n 1 input_character
 	do
 		# enter / accept password
 
-		if [[ "${input_character}" = $'\0' ]]
+		if [[ "${input_character}" == $'\0' ]]
 		then
+			# break on 'NUL'
+
 			break
 		fi
 
 		# handle backspace / delete character input
 
-		if [[ "${input_character}" = $'\177' ]]
+		if [[ "${input_character}" == $'\177' ]]
 		then
+			# remove input on 'BACKSPACE'/'DEL'
+
 			if [ -n "${password}" ]
 			then
 				mask=$'\b \b'
+
 				password="${password%?}"
 			else
 				mask=""
 			fi
 		else
+			# set character mask
+
 			mask="${mask_character}"
+
+			# append user input and form password
+
 			password+="${input_character}"
 		fi
 	done
 
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
 	input="${password}"
+
+	# normalize line spacing:
+	# additional 'echo' required due to 'read'
 
 	echo
 
-	return 0
+	return "${status}"
 
-}
+	}
 
 # input ////////////////////////////////////////////////////////////////////////
 

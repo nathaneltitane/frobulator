@@ -2612,7 +2612,7 @@ frobulator.bar () {
 	# reserved output width
 
 	before_count=0
-	after_count=12
+	after_count=8
 
 	buffer_count=$(( character_count - before_count - after_count ))
 
@@ -2677,7 +2677,7 @@ frobulator.bar () {
 
 		# output
 
-		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}[${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
+		echo -n -e "\r[${marker_spc}${progress_label}${marker_spc}${progress_line}${marker_spc}]"
 
 		sleep "${seconds}"
 	done
@@ -2698,7 +2698,7 @@ frobulator.bar () {
 	progress_done_line=$(printf "%${progress_done}s")
 	progress_left_line=$(printf "%${progress_left}s")
 
-	progress_done_line="${progress_done_line// />}"
+	progress_done_line="${progress_done_line// /|}"
 	progress_left_line="${progress_left_line// /-}"
 
 	progress_line="${progress_done_line}${progress_left_line}"
@@ -2709,9 +2709,10 @@ frobulator.bar () {
 
 	if [ "${process_exit}" -eq 0 ]
 	then
-		echo -n -e "\r[${marker_spc}${progress_line}${marker_spc}[${marker_spc}${progress_label}${marker_spc}${marker_prc}${marker_spc}]"
+		echo -n -e "\r[${marker_spc}${progress_label}${marker_spc}${progress_line}${marker_spc}]"
 	fi
 
+	echo
 	echo
 
 	# cleanup
@@ -6792,3 +6793,5 @@ frobulator.extract () {
 # normalize line spacing:
 
 echo
+
+frobulator.bar sleep 5

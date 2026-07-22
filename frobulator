@@ -2157,7 +2157,7 @@ frobulator.read () {
 # usage:      frobulator.script
 
 # command:    frobulator.script "Setting up ${script#*-}"
-# result:     [ # ] Setting up 'script' /////////////////////////.../// [ name ]
+# result:     [ # ] Setting up 'script' //////////////////.../// [ script name ]
 
 frobulator.script () {
 

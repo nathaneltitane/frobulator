@@ -6791,7 +6791,3 @@ frobulator.extract () {
 # prompt line //////////////////////////////////////////////////////////////////
 
 # normalize line spacing:
-
-echo
-
-frobulator.bar sleep 5

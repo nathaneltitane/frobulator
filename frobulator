@@ -3133,7 +3133,7 @@ frobulator.result () {
 
 	if [ "${status}" -ne 0 ]
 	then
-		frobulator.err "Setup incomplete" "[ ${instance} ]"
+		frobulator.err "Setup failure" "[ ${instance} ]"
 		echo
 
 		frobulator.wrn "Errors encountered" "[ ${count_error} ] [ ${instance} ]"
@@ -3142,7 +3142,7 @@ frobulator.result () {
 		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
 	else
-		frobulator.scs "Setup complete" "[ ${instance} ]"
+		frobulator.scs "Setup success" "[ ${instance} ]"
 		echo
 	fi
 

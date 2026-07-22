@@ -2323,7 +2323,7 @@ frobulator.countdown () {
 # action verbage parser:
 # handles simple action verb placement and syntax substitution
 
-# use in frobulator status item calls
+# use in frobulator action calls in frobulator.progress
 
 frobulator.action () {
 
@@ -2495,8 +2495,6 @@ frobulator.process () {
 
 # usage:      [process] &
 #             frobulator.progress "[action]"
-
-# progress /////////////////////////////////////////////////////////////////////
 
 # progress /////////////////////////////////////////////////////////////////////
 

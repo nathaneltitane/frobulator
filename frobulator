@@ -2656,7 +2656,7 @@ frobulator.bar () {
 		progress_done_line=$(printf "%${progress_done}s")
 		progress_left_line=$(printf "%${progress_left}s")
 
-		progress_done_line="${progress_done_line// />}"
+		progress_done_line="${progress_done_line// /|}"
 		progress_left_line="${progress_left_line// /-}"
 
 		progress_line="${progress_done_line}${progress_left_line}"

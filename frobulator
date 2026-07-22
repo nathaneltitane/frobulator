@@ -2496,8 +2496,6 @@ frobulator.process () {
 # usage:      [process] &
 #             frobulator.progress "[action]"
 
-# progress /////////////////////////////////////////////////////////////////////
-
 frobulator.progress () {
 
 	# capture process identifier of last background command

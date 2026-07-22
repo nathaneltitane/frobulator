@@ -2965,10 +2965,10 @@ frobulator.complete () {
 
 		if [ "${status}" -eq 0 ]
 		then
-			frobulator.cpt "Complete" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.cpt "Complete - ${checkpoint}" "[ status ${status} ]"
 			echo
 		else
-			frobulator.wrn "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.wrn "Incomplete - ${checkpoint}" "[ status ${status} ]"
 			echo
 		fi
 

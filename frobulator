@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-19-2026"
+# version="07-21-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2322,6 +2322,7 @@ frobulator.countdown () {
 
 # action verbage parser:
 # handles simple action verb placement and syntax substitution
+
 # use in frobulator status item calls
 
 frobulator.action () {
@@ -2329,207 +2330,33 @@ frobulator.action () {
 	local status=0
 
 	local action="${1}"
-	local color="${white}"
-	local item
+	local color
 	local progress_detail
 
 	local -a detail=()
 
-	local -a magenta_list=(
-		extract
-		download
-		render
-		play
-		stream
-		decode
-		unpack
-		expand
-		transcode
-		preview
+	local -a color_list=(
+		"${magenta}"
+		"${purple}"
+		"${blue}"
+		"${navy}"
+		"${red}"
+		"${crimson}"
+		"${yellow}"
+		"${orange}"
+		"${aqua}"
+		"${teal}"
+		"${black}"
+		"${green}"
+		"${lime}"
+		"${silver}"
+		"${grey}"
 	)
 
-	local -a purple_list=(
-		archive
-		upload
-		rasterize
-		compress
-		package
-		bundle
-		backup
-		publish
-		encode
-		distribute
-	)
-
-	local -a blue_list=(
-		install
-		export
-		convert
-		configure
-		enable
-		register
-		mount
-		compile
-		integrate
-		initialize
-	)
-
-	local -a navy_list=(
-		reinstall
-		import
-		move
-		restore
-		migrate
-		transfer
-		relocate
-		recover
-		merge
-		adopt
-	)
-
-	local -a red_list=(
-		remove
-		exclude
-		clear
-		delete
-		erase
-		unlink
-		detach
-		disable
-		unload
-		discard
-	)
-
-	local -a crimson_list=(
-		purge
-		expunge
-		sanitize
-		reset
-		obliterate
-		destroy
-		vacuum
-		shred
-		annihilate
-		sterilize
-	)
-
-	local -a yellow_list=(
-		update
-		refresh
-		clone
-		sync
-		fetch
-		pull
-		mirror
-		retrieve
-		reconcile
-		reindex
-		rebuild
-	)
-
-	local -a orange_list=(
-		upgrade
-		enhance
-		optimize
-		accelerate
-		improve
-		modernize
-		tune
-		refine
-		strengthen
-		amplify
-	)
-
-	local -a aqua_list=(
-		hold
-		keep
-		wait
-		pause
-		retain
-		reserve
-		preserve
-		cache
-		buffer
-		queue
-	)
-
-	local -a teal_list=(
-		release
-		scan
-		deploy
-		build
-		verify
-		validate
-		test
-		audit
-		check
-	)
-
-	local -a black_list=(
-		clean
-		wipe
-		scrub
-		sweep
-		polish
-		filter
-		normalize
-		tidy
-		repair
-		maintain
-	)
-
-	local -a green_list=(
-		parse
-		resolve
-		analyze
-		interpret
-		detect
-		identify
-		locate
-		match
-		discover
-	)
-
-	local -a lime_list=(
-		generate
-		spawn
-		create
-		produce
-		make
-		assemble
-		synthesize
-		instantiate
-		fabricate
-		construct
-	)
-
-	local -a silver_list=(
-		evaluate
-		probe
-		assess
-		measure
-		benchmark
-		survey
-		inspect
-		examine
-		diagnose
-		investigate
-	)
-
-	local -a grey_list=(
-		process
-		proceed
-		execute
-		run
-		handle
-		perform
-		operate
-		work
-		continue
-		frobulate
-	)
-
-	shift
+	if [ "${#}" -gt 0 ]
+	then
+		shift
+	fi
 
 	detail=("${@}")
 
@@ -2542,205 +2369,9 @@ frobulator.action () {
 
 	action="${action,,}"
 
-	# select action color
+	# select random action color
 
-	for item in "${magenta_list[@]}"
-	do
-		if [ "${action}" = "${item}" ]
-		then
-			color="${magenta}"
-
-			break
-		fi
-	done
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${purple_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${purple}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${blue_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${blue}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${navy_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${navy}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${red_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${red}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${crimson_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${crimson}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${yellow_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${yellow}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${orange_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${orange}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${aqua_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${aqua}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${teal_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${teal}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${black_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${black}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${green_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${green}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${lime_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${lime}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${silver_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${silver}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		for item in "${grey_list[@]}"
-		do
-			if [ "${action}" = "${item}" ]
-			then
-				color="${grey}"
-
-				break
-			fi
-		done
-	fi
-
-	if [ "${color}" = "${white}" ]
-	then
-		action="process"
-		color="${grey}"
-	fi
+	color="${color_list[RANDOM % ${#color_list[@]}]}"
 
 	# conjugate action
 

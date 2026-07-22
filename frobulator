@@ -2544,19 +2544,17 @@ frobulator.progress () {
 
 # bar //////////////////////////////////////////////////////////////////////////
 
-# progress bar /////////////////////////////////////////////////////////////////
-#
 # use to run a command with an estimated activity bar
-#
+
 # note:
-#	this is not a true progress meter
-#	it estimates progress while the process is running
-#	it only reaches 100 percent when the process exits
-#
+#	        not a true progress meter
+#	        estimates progress while the process is running
+#	        only reaches 100 percent when the process exits
+
 # usage:
-#	frobulator.bar sleep 5
-#	frobulator.bar apt-get update
-#	frobulator.bar rsync -av source/ destination/
+#	        frobulator.bar sleep 5
+#	        frobulator.bar apt-get update
+#	        frobulator.bar rsync -av source/ destination/
 
 frobulator.bar () {
 
@@ -2821,7 +2819,7 @@ frobulator.temporary () {
 # assignment:    directory="${frobulator_return[@]}"
 #                frobulator.trap "${directory name}"
 
-# Signal        Value    Action    Comment
+# signal        value    action    comment
 # ------------------------------------------------------------------------------
 # SIGTERM       15       Term      Termination signal
 # SIGINT         2       Term      CONTROL+C interrupt from keyboard
@@ -2840,11 +2838,16 @@ frobulator.temporary () {
 
 frobulator.trap () {
 
+	local status=0
+
+	local directory
+	local command_cleanup=""
+
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
 
-		list=(${@:1})
+		list=("${@:1}")
 	else
 		directory="${1}"
 
@@ -2853,16 +2856,36 @@ frobulator.trap () {
 		list+=("${directory}")
 	fi
 
-	for directory in ${list[@]}
+	for directory in "${list[@]}"
 	do
-		# clean on interruption or error
+		printf -v directory "%q" "${directory}"
 
-		trap "exit 1"					HUP INT PIPE QUIT TERM
-
-		# clean on exit
-
-		trap 'rm --recursive --force "${directory}"'	EXIT
+		command_cleanup+="rm --recursive --force -- ${directory}; "
 	done
+
+	# clean on interruption or error
+
+	trap "exit 1" HUP INT PIPE QUIT TERM
+
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	# clean on exit
+
+	trap "${command_cleanup}" EXIT
+
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	# unset array
+
+	list=()
+
+	return "${status}"
 
 }
 

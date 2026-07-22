@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-22-2026"
+# version="07-23-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2760,10 +2760,6 @@ frobulator.temporary () {
 
 	local status=0
 
-	local directory
-	local temporary_directory
-	local template="frobulator.tmp.XXXXXX"
-
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
@@ -2777,9 +2773,11 @@ frobulator.temporary () {
 		list+=("${directory}")
 	fi
 
+	template="frobulator.tmp.XXXXXX"
+
 	for directory in "${list[@]}"
 	do
-		temporary_directory="$(mktemp -d -t "${template}")"
+		temporary_directory=$(mktemp -d -t "${template}")
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -2788,14 +2786,7 @@ frobulator.temporary () {
 			continue
 		fi
 
-		eval "${directory}=\"${temporary_directory}\""
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		eval directory="${temporary_directory}"
 
 		frobulator.add "Generating temporary directory" "[ ${directory} ]"
 		echo
@@ -2803,12 +2794,9 @@ frobulator.temporary () {
 		frobulator_return+=("${directory}")
 	done
 
-	# unset array
-
 	list=()
 
 	return "${status}"
-
 }
 
 # trap /////////////////////////////////////////////////////////////////////////
@@ -2944,6 +2932,7 @@ frobulator.trap () {
 frobulator.complete () {
 
 	local previous_status="${?}"
+
 	local status=0
 
 	local path
@@ -2974,10 +2963,10 @@ frobulator.complete () {
 
 		if [ "${status}" -eq 0 ]
 		then
-			frobulator.scs "Complete - success status" "[ ${checkpoint} ]"
+			frobulator.scs "Complete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		else
-			frobulator.err "Incomplete - error status" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.err "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		fi
 
@@ -3024,7 +3013,7 @@ frobulator.complete () {
 		frobulator_complete_statuses+=("1")
 		frobulator_complete_checkpoints+=("${checkpoint}")
 
-		frobulator.err "Command not defined" "[ ${checkpoint} ]"
+		frobulator.err "Command not defined" "[ ${status} ] [ ${checkpoint} ]"
 		echo
 
 		return 0
@@ -3037,7 +3026,7 @@ frobulator.complete () {
 		frobulator_complete_statuses+=("0")
 		frobulator_complete_checkpoints+=("${checkpoint}")
 
-		frobulator.fwd "Already complete" "[ ${checkpoint} ]"
+		frobulator.fwd "Complete" "[ ${status} ] [ ${checkpoint} ]"
 		echo
 
 		return 0
@@ -3066,10 +3055,10 @@ frobulator.complete () {
 
 			frobulator_complete_statuses[-1]="${status}"
 
-			frobulator.err "Checkpoint creation failed" "[ ${checkpoint} ]"
+			frobulator.err "Checkpoint creation failed" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		else
-			frobulator.scs "Complete - success status" "[ ${checkpoint} ]"
+			frobulator.scs "Complete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		fi
 	else
@@ -3085,7 +3074,7 @@ frobulator.complete () {
 			fi
 		fi
 
-		frobulator.err "Incomplete - error status" "[ ${status} ] [ ${checkpoint} ]"
+		frobulator.err "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
 		echo
 	fi
 
@@ -3142,7 +3131,10 @@ frobulator.result () {
 
 	if [ "${status}" -ne 0 ]
 	then
-		frobulator.err "${count_error} setup errors encountered" "[ ${instance} ]"
+		frobulator.err "Setup incomplete" "[ ${instance} ]"
+		echo
+
+		frobulator.wrn "Errors encountered" "[ ${count_error} ] [ ${instance} ]"
 		echo
 
 		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
@@ -3187,7 +3179,7 @@ frobulator.ownership () {
 
 	if [ "${#}" -eq 0 ]
 	then
-		frobulator.err "Missing ownership target" "[ target : null ]"
+		frobulator.err "Missing ownership target"
 		echo
 
 		return 1

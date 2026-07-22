@@ -28,10 +28,10 @@ then
 	then
 		source "${BASH_SOURCE[0]}"
 
-		if return 0 2> "${sink}"
+		return 0 2> "${sink}"
+
+		if [ "${?}" -ne 0 ]
 		then
-			:
-		else
 			frobulator.scs "Implemented" "[ ${PWD}/${BASH_SOURCE[0]} ]"
 			echo
 		fi
@@ -43,26 +43,28 @@ then
 
 			-i|--install)
 
-				install_file="frobulator"
-				install_directory="${HOME}"/.local/bin
+				file_source="${BASH_SOURCE[0]}"
 
-				source_file="${BASH_SOURCE[0]}"
-				target_file="${install_directory}/${install_file}"
+				file_install="${file_source}"
 
-				if [ ! -d "${install_directory}" ]
+				directory_install="${HOME}"/.local/bin
+
+				file_target="${directory_install}/${file_install}"
+
+				if [ ! -d "${directory_install}" ]
 				then
-					mkdir -p "${install_directory}"
+					mkdir -p "${directory_install}"
 				fi
 
-				if [ "${source_file}" != "${target_file}" ]
+				if [ "${file_source}" != "${file_target}" ]
 				then
-					cp "${source_file}" "${target_file}"
+					cp "${file_source}" "${file_target}"
 
-					chmod a+rx "${target_file}"
+					chmod a+rx "${file_target}"
 
-					source "${target_file}"
+					source "${file_target}"
 
-					frobulator.scs "Installed" "[ ${target_file} ]"
+					frobulator.scs "Installed" "[ ${file_target} ]"
 
 					echo
 				fi

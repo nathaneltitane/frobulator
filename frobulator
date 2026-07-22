@@ -14,13 +14,13 @@ stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
 # script ///////////////////////////////////////////////////////////////////////
 
-script=$(basename -- "${BASH_SOURCE[0]}")
+script="${BASH_SOURCE[0]}"
 
 # defaults /////////////////////////////////////////////////////////////////////
 
 # usage ////////////////////////////////////////////////////////////////////////
 
-if [[ "${BASH_SOURCE[0]}" = "${0}" ]]
+if [[ "${script}" = "${0}" ]]
 then
 	# implement from local version
 
@@ -32,24 +32,24 @@ then
 
 		if [ "${?}" -ne 0 ]
 		then
-			frobulator.scs "Implemented" "[ ${PWD}/${BASH_SOURCE[0]} ]"
+			frobulator.scs "Implemented" "[ ${PWD}/${script} ]"
 			echo
 		fi
 	fi
+
+	file_source="${script}"
+
+	file_install="${file_source}"
+
+	directory_install="${HOME}"/.local/bin
+
+	file_target="${directory_install}/${file_install}"
 
 	while (($#))
 	do
 		case "${1}" in
 
 			-i|--install)
-
-				file_source="${BASH_SOURCE[0]}"
-
-				file_install="${file_source}"
-
-				directory_install="${HOME}"/.local/bin
-
-				file_target="${directory_install}/${file_install}"
 
 				if [ ! -d "${directory_install}" ]
 				then
@@ -77,8 +77,8 @@ then
 				echo
 				echo "Options:"
 				echo
-				echo "	-i, --install    Install frobulator to ${install_directory}"
-				echo "	-h, --help       Show this help menu"
+				echo "	-i, --install    [I]nstall "${script}" to ${directory_install}"
+				echo "	-h, --help       Show this [h]elp menu"
 				echo
 
 				exit

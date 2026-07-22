@@ -2840,9 +2840,6 @@ frobulator.trap () {
 
 	local status=0
 
-	local directory
-	local command_cleanup=""
-
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
@@ -2858,28 +2855,24 @@ frobulator.trap () {
 
 	for directory in "${list[@]}"
 	do
-		printf -v directory "%q" "${directory}"
+		# clean on interruption or error
 
-		command_cleanup+="rm --recursive --force -- ${directory}; "
+		trap "exit 1" HUP INT PIPE QUIT TERM
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+
+		# clean on exit
+
+		trap 'rm --recursive --force "${directory}"' EXIT
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
 	done
-
-	# clean on interruption or error
-
-	trap "exit 1" HUP INT PIPE QUIT TERM
-
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
-
-	# clean on exit
-
-	trap "${command_cleanup}" EXIT
-
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
 
 	# unset array
 
@@ -2891,31 +2884,31 @@ frobulator.trap () {
 
 # complete /////////////////////////////////////////////////////////////////////
 
-# BASH exit status codes ///////////////////////////////////////////////////////
+# BASH exit status codes -------------------------------------------------------
 
-# exit status codes are integers returned by commands upon completion.
-# a successful command typically returns an exit status of 0.
-# non-zero values generally indicate an error or abnormal termination.
+# exit status codes are integers returned by commands upon completion
+# a successful command typically returns an exit status of 0
+# non-zero values generally indicate an error or abnormal termination
 
-# common exit status codes /////////////////////////////////////////////////////
+# common exit status codes -----------------------------------------------------
 
-# CODE     DEFINITION                           EXAMPLE
+# code     definition                           example
 
 # 0        success                              true
 # 1        generic error                        false
 # 2        misuse of shell builtins             'cd /nonexistent/directory'
 
-# 126      command invoked cannot execute       'bash /nonexistent_script'  (assume script lacks executable permissions)
+# 126      command invoked cannot execute       'bash /nonexistent_script'    (assume script lacks executable permissions)
 # 127      command not found                    'nonexistent_command'
-# 128+n    fatal error  - signal "n"            'kill -9 $$'                (send SIGKILL to current process)
-# 130      terminated - signal 2 (sigint)       'kill -2 $!'                (send SIGINT to background process)
-# 137      terminated - signal 9 (sigkill)      'kill -9 $!'                (send SIGKILL to background process)
-# 139      terminated - signal 11 (sigsegv)                                 (program with memory access violations)
-# 143      terminated - signal 15 (sigterm)     'kill -15 $!'               (send SIGTERM to background process)
+# 128+n    fatal error - signal "n"             'kill -9 $$'                  (send SIGKILL to current process)
+# 130      terminated  - signal 2 (sigint)      'kill -2 $!'                  (send SIGINT to background process)
+# 137      terminated  - signal 9 (sigkill)     'kill -9 $!'                  (send SIGKILL to background process)
+# 139      terminated  - signal 11 (sigsegv)                                  (program with memory access violations)
+# 143      terminated  - signal 15 (sigterm)    'kill -15 $!'                 (send SIGTERM to background process)
 
 # 255*     out of range - exit -1
 
-# complete /////////////////////////////////////////////////////////////////////
+# complete ---------------------------------------------------------------------
 
 # frobulator.complete
 #         │

@@ -2965,10 +2965,10 @@ frobulator.complete () {
 
 		if [ "${status}" -eq 0 ]
 		then
-			frobulator.scs "Complete" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.cpt "Complete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		else
-			frobulator.err "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.wrn "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		fi
 
@@ -3028,7 +3028,7 @@ frobulator.complete () {
 		frobulator_complete_statuses+=("0")
 		frobulator_complete_checkpoints+=("${checkpoint}")
 
-		frobulator.fwd "Complete" "[ ${status} ] [ ${checkpoint} ]"
+		frobulator.cpt "Complete" "[ ${status} ] [ ${checkpoint} ]"
 		echo
 
 		return 0
@@ -3060,7 +3060,7 @@ frobulator.complete () {
 			frobulator.err "Checkpoint creation failed" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		else
-			frobulator.scs "Complete" "[ ${status} ] [ ${checkpoint} ]"
+			frobulator.cpt "Complete" "[ ${status} ] [ ${checkpoint} ]"
 			echo
 		fi
 	else
@@ -3076,7 +3076,7 @@ frobulator.complete () {
 			fi
 		fi
 
-		frobulator.err "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
+		frobulator.wrn "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
 		echo
 	fi
 

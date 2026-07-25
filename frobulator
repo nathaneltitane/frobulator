@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="07-22-2026"
+# version="07-23-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2957,7 +2957,7 @@ frobulator.complete () {
 	then
 		checkpoint_number=$(( ${#frobulator_complete_checkpoints[@]} + 1 ))
 
-		checkpoint="operation ${checkpoint_number}"
+		checkpoint="Operation ${checkpoint_number}"
 		status="${previous_status}"
 
 		frobulator_complete_statuses+=("${status}")
@@ -3133,7 +3133,7 @@ frobulator.result () {
 
 	if [ "${status}" -ne 0 ]
 	then
-		frobulator.err "Setup failure" "[ ${instance} ]"
+		frobulator.err "Execution failure" "[ ${instance} ]"
 		echo
 
 		frobulator.wrn "Errors encountered" "[ ${count_error} ] [ ${instance} ]"
@@ -3142,7 +3142,7 @@ frobulator.result () {
 		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
 	else
-		frobulator.scs "Setup success" "[ ${instance} ]"
+		frobulator.scs "Executionsuccess" "[ ${instance} ]"
 		echo
 	fi
 

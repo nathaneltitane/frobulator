@@ -6,7 +6,7 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="08-02-2026"
+# version="08-12-2026"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -3142,7 +3142,7 @@ frobulator.result () {
 		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
 		echo
 	else
-		frobulator.scs "Executionsuccess" "[ ${instance} ]"
+		frobulator.scs "Execution success" "[ ${instance} ]"
 		echo
 	fi
 

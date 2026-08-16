@@ -2385,15 +2385,7 @@ frobulator.action () {
 	then
 		action="${action/%ie/y}"
 
-	elif [ "${action: -2}" = "ee" ]
-	then
-		:
-
-	elif [ "${action: -2}" = "ue" ]
-	then
-		:
-
-	elif [ "${action: -1}" = "e" ]
+	elif [ "${action: -1}" = "e" ] && [ "${action: -2}" != "ee" ]
 	then
 		action="${action/%e/}"
 
@@ -2401,8 +2393,8 @@ frobulator.action () {
 	then
 		action="${action}k"
 
-	elif [[ "${action}" =~   [aeiou][bcdfghjklmnpqrstvwxyz]$        ]] && \
-	     [[ ! "${action}" =~ [aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] && \
+	elif [ "${#action}" -le 4 ] &&
+	     [[ "${action}" =~ [^aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] &&
 	     [[ ! "${action}" =~ [wxy]$ ]]
 	then
 		action="${action}${action: -1}"

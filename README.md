@@ -24,8 +24,8 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 - Streamlined file and directory commands
 - POSIX-compliant/compatible
 - BASH-centric scripting commands and functions:
-   - Customized Debian-based system commands (i.e.: apt/apt-get package commands)
-   - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
+   - Customized Debian-based and RPM-based system commands (i.e.: apt/apt-get, dnf/yum package commands)
+   - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude and dnf/yum commands
    - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
    - Countdown and progress items to add to your scripts
    - Customizable password obfuscation prompts
@@ -72,7 +72,16 @@ then
 
 	if [[ -z $(command -v curl) ]]
 	then
-		yes | apt-get install curl
+		if [[ $(command -v apt-get) ]]
+		then
+			yes | apt-get install curl
+		elif [[ $(command -v dnf) ]]
+		then
+			dnf install -y curl
+		elif [[ $(command -v yum) ]]
+		then
+			yum install -y curl
+		fi
 	fi
 
 	if [ ! -d "${HOME}"/.local/bin ]

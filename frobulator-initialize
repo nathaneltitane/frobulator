@@ -13,7 +13,16 @@ fi
 
 if [[ -z $(command -v curl) ]]
 then
-	yes | apt-get install curl
+		if [[ $(command -v apt-get) ]]
+		then
+			yes | apt-get install curl
+		elif [[ $(command -v dnf) ]]
+		then
+			dnf install -y curl
+		elif [[ $(command -v yum) ]]
+		then
+			yum install -y curl
+		fi
 fi
 
 if [ ! -d "${HOME}"/.local/bin ]

@@ -143,7 +143,7 @@ fi
 
 # detect package manager
 
-if [[ $(command -v apt) ]]
+if [[ $(command -v apt) ]] || [[ $(command -v apt-get) ]]
 then
 	package_manager="apt"
 
@@ -5267,6 +5267,19 @@ frobulator.clean () {
 	local command_autoclean="apt-get autoclean"
 	local command_clean="apt-get clean"
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_autoremove="dnf autoremove -y"
+		command_autoclean="dnf clean dbcache"
+		command_clean="dnf clean all"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_autoremove="yum autoremove -y"
+		command_autoclean="yum clean expire-cache"
+		command_clean="yum clean all"
+	fi
+
 	frobulator.log "${command_autoremove}" &
 
 	frobulator.process "Flushing package(s)"
@@ -5330,6 +5343,15 @@ frobulator.hold () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_hold="dnf versionlock add"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_hold="yum versionlock add"
+	fi
+
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
@@ -5383,6 +5405,15 @@ frobulator.release () {
 	local command_unhold="apt-mark unhold"
 
 	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_unhold="dnf versionlock delete"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_unhold="yum versionlock delete"
+	fi
 
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
@@ -5446,12 +5477,36 @@ frobulator.failsafe () {
 		# mitigate general deployment setup issues
 		# mitigate skipped packages on install
 
-		yes | apt update > "${sink}" 2>&1
+		if [[ "${package_manager}" = "dnf" ]]
+		then
+			dnf check-update -y > "${sink}" 2>&1
+			dnf upgrade -y > "${sink}" 2>&1
 
-		yes | apt full-upgrade > "${sink}" 2>&1
+		elif [[ "${package_manager}" = "yum" ]]
+		then
+			yum check-update -y > "${sink}" 2>&1
+			yum update -y > "${sink}" 2>&1
+
+		else
+			yes | apt update > "${sink}" 2>&1
+			yes | apt full-upgrade > "${sink}" 2>&1
+		fi
 	}
 
 	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_update="dnf check-update"
+		command_upgrade="dnf upgrade --assumeyes"
+		command_install="dnf install --assumeyes"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_update="yum check-update"
+		command_upgrade="yum update --assumeyes"
+		command_install="yum install --assumeyes"
+	fi
 
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
@@ -5526,6 +5581,15 @@ frobulator.install () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_install="dnf install --assumeyes"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_install="yum install --assumeyes"
+	fi
+
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
@@ -5544,7 +5608,7 @@ frobulator.install () {
 
 	for package in "${list[@]}"
 	do
-		if [[ "${package}" = *.deb ]]
+		if [[ "${package}" = *.deb ]] || [[ "${package}" = *.rpm ]]
 		then
 			frobulator.msg "Local package(s) selected"
 			echo
@@ -5558,7 +5622,17 @@ frobulator.install () {
 				status=1
 			fi
 		else
-			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			if [[ "${package_manager}" = "dnf" ]] || [[ "${package_manager}" = "yum" ]]
+			then
+				if rpm -q "${package}" > "${sink}" 2>&1
+				then
+					query_filter="${package}"
+				else
+					query_filter=""
+				fi
+			else
+				query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			fi
 
 			if [[ -z "${query_filter}" ]]
 			then
@@ -5614,6 +5688,113 @@ frobulator.require () {
 	local -a install_list=()
 
 	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${package_manager}" = "dnf" ]] || [[ "${package_manager}" = "yum" ]]
+	then
+		if [ "${#list[@]}" -eq 0 ]
+		then
+			frobulator.stp "No requirement(s) specified"
+			echo
+
+			frobulator.fwd "Continuing${marker_elp}"
+			echo
+
+			return "${status}"
+		fi
+
+		frobulator.fwd "Validating requirement(s)${marker_elp}"
+		echo
+
+		for command in "${list[@]}"
+		do
+			if [[ "${command}" == *'*'* ]]
+			then
+				frobulator.fwd "Expanding package selection query" "[ '${command}' ]"
+				echo
+
+				packages="$(${package_manager} list available 2> "${sink}" | awk '{print $1}' | cut -d'.' -f1)"
+
+				if [ "${?}" -ne 0 ]
+				then
+					status=1
+
+					continue
+				fi
+
+				while IFS= read -r query_package
+				do
+					if [[ "${query_package}" == ${command} ]]
+					then
+						frobulator.add "Package selection found" "[ '${query_package}' ]"
+						echo
+
+						install_list+=("${query_package}")
+					fi
+				done <<< "${packages}"
+
+				echo
+
+				if [[ "${#install_list[@]}" -ge 1 ]]
+				then
+					frobulator.install "${install_list[@]}"
+
+					if [ "${?}" -ne 0 ]
+					then
+						status=1
+					fi
+
+					install_list=()
+				else
+					frobulator.err "Package selection not found" "[ '${command}' ]"
+					echo
+
+					status=1
+				fi
+
+			elif [[ -z $(command -v "${command}") ]]
+			then
+				frobulator.fwd "Probing${marker_elp}"
+				echo
+
+				query_package="$(${package_manager} provides "${command}" 2> "${sink}" | grep -E -o '^[a-zA-Z0-9_-]+' | head -n 1)"
+
+				if [[ -z "${query_package}" ]]
+				then
+					query_package="$(${package_manager} provides "*/${command}" 2> "${sink}" | grep -E -o '^[a-zA-Z0-9_-]+' | head -n 1)"
+				fi
+
+				if [[ -n "${query_package}" ]]
+				then
+					frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
+					echo
+
+					install_list+=("${query_package}")
+				fi
+
+				if [[ "${#install_list[@]}" -ge 1 ]]
+				then
+					frobulator.install "${install_list[@]}"
+
+					if [ "${?}" -ne 0 ]
+					then
+						status=1
+					fi
+
+					install_list=()
+				else
+					frobulator.err "Command provision not found" "[ '${command}' ]"
+					echo
+
+					status=1
+				fi
+			else
+				frobulator.scs "Command provision already present on system" "[ '${command}' ]"
+				echo
+			fi
+		done
+
+		return "${status}"
+	fi
 
 	frobulator.failsafe apt-file
 
@@ -5800,6 +5981,15 @@ frobulator.reinstall () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_reinstall="dnf reinstall --assumeyes"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_reinstall="yum reinstall --assumeyes"
+	fi
+
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
 		# ${1} - array
@@ -5850,6 +6040,15 @@ frobulator.update () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_update="dnf check-update"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_update="yum check-update"
+	fi
+
 	frobulator.inf "Processing package and repository information"
 	echo
 
@@ -5880,6 +6079,15 @@ frobulator.upgrade () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_upgrade="dnf upgrade --assumeyes"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_upgrade="yum update --assumeyes"
+	fi
+
 	frobulator.inf "Processing installed package(s)"
 	echo
 
@@ -5907,9 +6115,19 @@ frobulator.purge () {
 	local status=0
 
 	local package
+	local query_filter
 	local command_purge="apt-get --assume-yes purge --autoremove"
 
 	export DEBIAN_FRONTEND=noninteractive
+
+	if [[ "${package_manager}" = "dnf" ]]
+	then
+		command_purge="dnf remove --assumeyes"
+
+	elif [[ "${package_manager}" = "yum" ]]
+	then
+		command_purge="yum remove --assumeyes"
+	fi
 
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
@@ -5929,7 +6147,19 @@ frobulator.purge () {
 
 	for package in "${list[@]}"
 	do
-		if [[ -n $(apt search "${package}" 2> "${sink}" | grep -i -o installed) ]]
+		if [[ "${package_manager}" = "dnf" ]] || [[ "${package_manager}" = "yum" ]]
+		then
+			if rpm -q "${package}" > "${sink}" 2>&1
+			then
+				query_filter="${package}"
+			else
+				query_filter=""
+			fi
+		else
+			query_filter="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
+		fi
+
+		if [[ -n "${query_filter}" ]]
 		then
 			frobulator.wrn "Selecting" "[ '${package}' ]"
 			echo
@@ -6639,6 +6869,12 @@ frobulator.extract () {
 # apt:
 #	apt-get --assume-yes install package
 #
+# dnf equivalent:
+#	dnf install --assumeyes package
+#
+# yum equivalent:
+#	yum install --assumeyes package
+#
 # pipx equivalent:
 #	pipx install package
 #
@@ -6654,6 +6890,16 @@ frobulator.extract () {
 #	command -v command
 #	apt-file search command
 #	frobulator.install resolved-package
+#
+# dnf equivalent:
+#	command -v command
+#	dnf provides command
+#	dnf install --assumeyes resolved-package
+#
+# yum equivalent:
+#	command -v command
+#	yum provides command
+#	yum install --assumeyes resolved-package
 #
 # pipx equivalent:
 #	command -v command
@@ -6672,6 +6918,12 @@ frobulator.extract () {
 # apt:
 #	apt-get --assume-yes install --reinstall package
 #
+# dnf equivalent:
+#	dnf reinstall --assumeyes package
+#
+# yum equivalent:
+#	yum reinstall --assumeyes package
+#
 # pipx equivalent:
 #	pipx reinstall package
 #
@@ -6685,6 +6937,12 @@ frobulator.extract () {
 
 # apt:
 #	apt-get --assume-yes purge --autoremove package
+#
+# dnf equivalent:
+#	dnf remove --assumeyes package
+#
+# yum equivalent:
+#	yum remove --assumeyes package
 #
 # pipx equivalent:
 #	pipx uninstall package
@@ -6701,6 +6959,12 @@ frobulator.extract () {
 # apt:
 #	apt-mark hold package
 #
+# dnf equivalent:
+#	dnf versionlock add package
+#
+# yum equivalent:
+#	yum versionlock add package
+#
 # pipx equivalent:
 #	none
 #
@@ -6708,14 +6972,19 @@ frobulator.extract () {
 #	none
 #
 # status:
-#	no clean equivalent
-#	can only approximate by avoiding upgrade/reinstall
+#	dnf/yum use versionlock plugin
 
 # frobulator.release ///////////////////////////////////////////////////////////
 
 # apt:
 #	apt-mark unhold package
 #
+# dnf equivalent:
+#	dnf versionlock delete package
+#
+# yum equivalent:
+#	yum versionlock delete package
+#
 # pipx equivalent:
 #	none
 #
@@ -6723,7 +6992,7 @@ frobulator.extract () {
 #	none
 #
 # status:
-#	no clean equivalent
+#	dnf/yum use versionlock plugin
 
 # frobulator.failsafe //////////////////////////////////////////////////////////
 
@@ -6731,6 +7000,16 @@ frobulator.extract () {
 #	apt update
 #	apt full-upgrade
 #	apt-get install package
+#
+# dnf equivalent:
+#	dnf check-update
+#	dnf upgrade --assumeyes
+#	dnf install --assumeyes package
+#
+# yum equivalent:
+#	yum check-update
+#	yum update --assumeyes
+#	yum install --assumeyes package
 #
 # pipx equivalent:
 #	python3 -m pip install --user --upgrade pipx
@@ -6749,6 +7028,12 @@ frobulator.extract () {
 # apt:
 #	apt-get update
 #
+# dnf equivalent:
+#	dnf check-update
+#
+# yum equivalent:
+#	yum check-update
+#
 # pipx equivalent:
 #	none
 #
@@ -6756,13 +7041,19 @@ frobulator.extract () {
 #	none
 #
 # status:
-#	no equivalent
+#	no equivalent for pip/pipx
 #	pip/pipx query live indexes directly
 
 # frobulator.upgrade ///////////////////////////////////////////////////////////
 
 # apt:
 #	apt-get --assume-yes dist-upgrade
+#
+# dnf equivalent:
+#	dnf upgrade --assumeyes
+#
+# yum equivalent:
+#	yum update --assumeyes
 #
 # pipx equivalent:
 #	pipx upgrade-all
@@ -6771,8 +7062,7 @@ frobulator.extract () {
 #	none
 #
 # status:
-#	pipx has a good equivalent
-#	pip does not
+#	dnf, yum and pipx have good equivalents
 
 # TO DO ////////////////////////////////////////////////////////////////////////
 

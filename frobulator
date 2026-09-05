@@ -6319,7 +6319,9 @@ frobulator.escalate () {
 		# clear bootstrap initialization messages:
 		# avoid redundant printing - focuses on escalated runtime messages
 
-		frobulator.erase 11
+		frobulator.erase 12
+
+		frobulator.timeout
 
 		if [[ -z $(command -v sudo) ]]
 		then

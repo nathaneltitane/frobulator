@@ -6330,6 +6330,12 @@ frobulator.escalate () {
 		then
 			status=1
 		fi
+
+		# clear bootstrap initialization messages:
+		# avoid redundant printing - focuses on escalated runtime messages
+
+		frobulator.plo 11
+
 	fi
 
 	return "${status}"

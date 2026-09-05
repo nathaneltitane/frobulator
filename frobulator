@@ -6368,7 +6368,7 @@ frobulator.escalate () {
 # actions:    reload, status, activate, enable, disable, start, stop, restart
 
 # usage:      frobulator.service "[action]"
-#             frobulator.service "[service]" "[action]"
+#             frobulator.service "[action]" "[service]"
 
 frobulator.service () {
 
@@ -6377,7 +6377,7 @@ frobulator.service () {
 	local service
 	local action
 
-	local systemctl_scope=()
+	local system_control_scope=()
 
 	if [ "${#}" -eq 1 ]
 	then
@@ -6386,8 +6386,9 @@ frobulator.service () {
 
 	if [ "${#}" -eq 2 ]
 	then
-		service="${1}"
-		action="${2}"
+		action="${1}"
+		service="${2}"
+
 	fi
 
 	if [ -z "${action}" ]
@@ -6400,18 +6401,18 @@ frobulator.service () {
 
 	if [ "$(id -u)" -ne 0 ]
 	then
-		systemctl_scope=(--user)
+		system_control_scope=(--user)
 	fi
 
 	if [ "${action}" = "reload" ]
 	then
 		if [ -z "${service}" ]
 		then
-			systemctl "${systemctl_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+			systemctl "${system_control_scope[@]}" daemon-reload > "${sink}" 2>&1 &
 
 			frobulator.process "Reloading"
 		else
-			systemctl "${systemctl_scope[@]}" reload "${service}" > "${sink}" 2>&1 &
+			systemctl "${system_control_scope[@]}" reload "${service}" > "${sink}" 2>&1 &
 
 			frobulator.process "Service reload" "[ ${service} ]"
 		fi
@@ -6432,7 +6433,7 @@ frobulator.service () {
 			return 1
 		fi
 
-		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		if [[ $(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running") ]]
 		then
 			frobulator.scs "Service active" "[ ${service} ]"
 			echo
@@ -6454,9 +6455,9 @@ frobulator.service () {
 			return 1
 		fi
 
-		systemctl "${systemctl_scope[@]}" daemon-reload
+		systemctl "${system_control_scope[@]}" daemon-reload
 
-		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		if [[ $(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running") ]]
 		then
 			frobulator.wrn "Service running" " [ ${service} ]"
 			echo
@@ -6474,13 +6475,13 @@ frobulator.service () {
 
 		for service_action in "${service_actions_list[@]}"
 		do
-			systemctl "${systemctl_scope[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
+			systemctl "${system_control_scope[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
 
 			frobulator.process "Service ${service_action}" "[ ${service} ]"
 
 			sleep 1
 
-			systemctl "${systemctl_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+			systemctl "${system_control_scope[@]}" daemon-reload > "${sink}" 2>&1 &
 
 			frobulator.process "Reloading"
 
@@ -6489,11 +6490,11 @@ frobulator.service () {
 
 		service_actions_list=()
 
-		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		if [[ $(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running") ]]
 		then
 			frobulator.scs "Service activation success" "[ ${service} ]"
 			echo
-		elif [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "inactive.*") ]]
+		elif [[ $(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "inactive.*") ]]
 		then
 			frobulator.err "Service activation failed" "[ ${service} ]"
 			echo
@@ -6512,7 +6513,7 @@ frobulator.service () {
 			return 1
 		fi
 
-		systemctl "${systemctl_scope[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
+		systemctl "${system_control_scope[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
 
 		frobulator.process "Service ${action}" "[ ${service} ]"
 

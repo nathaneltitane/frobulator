@@ -6352,7 +6352,7 @@ frobulator.escalate () {
 
 }
 
-# service /////////////////////////////////////////////////////////////////////
+# service //////////////////////////////////////////////////////////////////////
 
 # use to manage a systemd service, scoping automatically to '--user' or
 # system context depending on whether the runtime is escalated

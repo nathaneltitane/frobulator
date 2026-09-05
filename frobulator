@@ -6124,13 +6124,34 @@ frobulator.dialog () {
 
 }
 
+# exit /////////////////////////////////////////////////////////////////////////
+
+# use to cleanly exit the current script or process instance
+# does not terminate the shell - see frobulator.close for that behavior
+
+# usage:      frobulator.exit "[instance]" "[exit code]"
+
+frobulator.exit () {
+
+	local status="${2:-0}"
+
+	local instance="${1}"
+
+	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
+
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	exit "${status}"
+}
+
 # terminate ////////////////////////////////////////////////////////////////////
 
 # use to forcefully terminate rogue processes
 
 # usage:      frobulator.terminate "[process]"
-
-# terminate ////////////////////////////////////////////////////////////////////
 
 frobulator.terminate () {
 
@@ -6184,7 +6205,7 @@ frobulator.terminate () {
 
 # usage:      frobulator.exit "[instance]"
 
-frobulator.exit () {
+frobulator.close () {
 
 	local status=0
 

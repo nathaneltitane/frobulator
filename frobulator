@@ -115,7 +115,7 @@ fi
 
 # provide system shell
 
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${SHELL}" ]
+if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${SHELL}" ]]
 then
 	if [[ $(command -v /bin/bash) ]]
 	then

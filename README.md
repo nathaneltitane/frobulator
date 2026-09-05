@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 05-31-2026 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 09-04-2026 ]
 
 ---
 
@@ -136,17 +136,9 @@ normalizes prompt strings, handles span padding, and folds long lines.
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
 ```
 
-### frobulator.color
-
-generic color engine used by the named color wrappers.
-
-```bash
-frobulator.color blue "Building" "[ frobulator ]"
-```
-
 ## color commands
 
-All color wrappers use the same prompt formatting rules as `frobulator.color`.
+Each named color wrapper calls `frobulator.pmt` directly and applies its own color, so all color wrappers share the same prompt formatting rules as `frobulator.pmt`.
 
 | command               | example                                           |
 |-----------------------|---------------------------------------------------|
@@ -269,14 +261,6 @@ frobulator.wrn "Current user" "[ ${current_user} ]"
 
 All argument types are normalized internally through `frobulator.pmt`, allowing prompt formatting, alignment, wrapping, and span generation to remain consistent regardless of how values are supplied.
 
-### frobulator.prompt
-
-generic marker/color prompt engine used by status marker wrappers.
-
-```bash
-frobulator.prompt blue "${marker_inf}" true "" set "Building" "[ frobulator ]"
-```
-
 ## structured prompt helpers
 
 ### frobulator.ltr
@@ -370,6 +354,14 @@ frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
 
 ## process and progress helpers
 
+### frobulator.action
+
+generates a randomly colored, conjugated action prompt (e.g. `frobulate` → `Frobulating...`) from a verb, falling back to `frobulate` when none is given. Used internally by `frobulator.progress`, but callable directly.
+
+```bash
+frobulator.action "download" "[ ${file} ]"
+```
+
 ### frobulator.process
 
 waits on a background process and prints process completion feedback.
@@ -413,21 +405,17 @@ frobulator.temporary "build"
 frobulator.trap
 ```
 
-### frobulator.continue
+### frobulator.complete
 
-evaluates and reports the previous command exit status.
+runs a command against a checkpoint file and reports completion through frobulator status output, skipping the command on a later run if its checkpoint already exists. Called with no arguments, it instead evaluates the exit status of the immediately preceding command and records it as an anonymous operation — this covers the case previously handled by a separate `frobulator.continue` command.
+
+```bash
+frobulator.complete "${checkpoint_directory}" "make-all" make all
+```
 
 ```bash
 make all
-frobulator.continue
-```
-
-### frobulator.complete
-
-runs a command and reports completion through frobulator status output.
-
-```bash
-frobulator.complete "make all"
+frobulator.complete
 ```
 
 ## filesystem helpers
@@ -474,10 +462,15 @@ frobulator.keep "${HOME}/Downloads" "important.zip"
 
 ### frobulator.delete
 
-deletes selected files from a directory.
+deletes selected item(s) from a directory. A single argument is treated as an item relative to `${PWD}`; two arguments treat the first as the base path and the second as the item or array of items to remove from it. Warns instead of silently succeeding when the resolved target doesn't exist.
 
 ```bash
 frobulator.delete "${temporary_directory}" "old-file.tmp"
+```
+
+```bash
+list=( adb fastboot )
+frobulator.delete "${path_android}" list
 ```
 
 ### frobulator.copy
@@ -693,10 +686,18 @@ frobulator.exit "setup"
 
 ### frobulator.result
 
-reports checkpoint result status.
+evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count, then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
 
 ```bash
-frobulator.result "${checkpoint_file}"
+frobulator.result "setup"
+```
+
+### frobulator.ownership
+
+restores ownership on a target after privileged operations — attributes paths under the invoking user's home directory to that user, and paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) to root, applied recursively.
+
+```bash
+frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
 ```
 
 ### frobulator.user
@@ -748,7 +749,6 @@ frobulator.extract "backup.tar.gz" "${target_directory}"
 ```text
 frobulator.plo
 frobulator.pmt
-frobulator.color
 frobulator.black
 frobulator.silver
 frobulator.grey
@@ -767,7 +767,6 @@ frobulator.fuschia
 frobulator.pink
 frobulator.aqua
 frobulator.teal
-frobulator.prompt
 frobulator.nil
 frobulator.inf
 frobulator.wrn
@@ -803,13 +802,15 @@ frobulator.type
 frobulator.timeout
 frobulator.clear
 frobulator.countdown
+frobulator.action
 frobulator.process
 frobulator.progress
 frobulator.bar
 frobulator.temporary
 frobulator.trap
-frobulator.continue
 frobulator.complete
+frobulator.result
+frobulator.ownership
 frobulator.directory
 frobulator.write
 frobulator.flag
@@ -841,7 +842,6 @@ frobulator.purge
 frobulator.dialog
 frobulator.terminate
 frobulator.exit
-frobulator.result
 frobulator.user
 frobulator.assess
 frobulator.escalate
@@ -892,7 +892,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 05-31-2026 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 09-04-2026 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

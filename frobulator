@@ -473,7 +473,7 @@ colors_selection=(
 	teal="30"
 )
 
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "$(command -v tput)" ]
+if [ -z "$(command -v tput)" ]
 then
 	# handle color digit length for ansi fallback method
 

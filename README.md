@@ -182,10 +182,18 @@ frobulator.script "Setting up ${script#*-}"
 
 ### frobulator.plo
 
-clears and rewrites prompt output above the current cursor position — argument is the number of lines to move the cursor up before clearing.
+clears a defined number of lines above the current cursor position, wiping from that point down to the end of the screen — built on `terminal_cursor_up` and `terminal_clear_down`.
 
 ```bash
 frobulator.plo 1
+```
+
+### frobulator.erase
+
+thin wrapper around `frobulator.plo` — erases a defined number of lines above the current cursor position the same way.
+
+```bash
+frobulator.erase 3
 ```
 
 ### frobulator.pmt
@@ -827,6 +835,22 @@ export self_arguments="${@}"
 frobulator.escalate
 ```
 
+### frobulator.service
+
+manages a systemd service, scoping automatically to `--user` or system context depending on whether the runtime is escalated (root). A single argument is treated as a daemon-level action with no target unit; two arguments target a specific service with the given action forwarded to `systemctl`. `activate` runs a full enable/start cycle with status verification. `reload` is the only action that doesn't require a service. Supported actions: `reload`, `status`, `activate`, `enable`, `disable`, `start`, `stop`, `restart`.
+
+```bash
+frobulator.service reload
+```
+
+```bash
+frobulator.service reload "${service}"
+```
+
+```bash
+frobulator.service activate "${service}"
+```
+
 ### frobulator.ownership
 
 restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.flag`, `frobulator.file`, and `frobulator.link`.
@@ -904,6 +928,7 @@ frobulator.ltr
 frobulator.num
 frobulator.sep
 frobulator.ntf
+frobulator.erase
 frobulator.separate
 frobulator.read
 frobulator.script
@@ -955,6 +980,7 @@ frobulator.close
 frobulator.user
 frobulator.assess
 frobulator.escalate
+frobulator.service
 frobulator.archive
 frobulator.extract
 ```

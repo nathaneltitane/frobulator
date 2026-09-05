@@ -6182,7 +6182,7 @@ frobulator.terminate () {
 
 # use to exit process or program instance
 
-# usage:      frobulator.close "[instance]"
+# usage:      frobulator.exit "[instance]"
 
 frobulator.exit () {
 

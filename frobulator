@@ -785,15 +785,18 @@ marker_url='[  /  ]'
 
 marker_nul='       '
 
-# prompt line overwrite (plo) //////////////////////////////////////////////////
+# prompt line overwrite - block (plo.block) ////////////////////////////////////
 
-frobulator.plo () {
+# clears a block of previously printed lines, moving the cursor up and
+# wiping everything from that point to the end of the screen
 
-	terminal_clear_right
+# usage:      frobulator.plo.block "[lines]"
+
+frobulator.plo.block () {
 
 	terminal_cursor_up ${@}
 
-	terminal_clear_right
+	terminal_clear_down
 
 	echo
 }

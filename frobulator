@@ -135,11 +135,7 @@ terminal_columns=80
 
 self="${0}"
 
-<<<<<<< HEAD
 if [ -z "${script}" ]
-=======
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${script}" ]]
->>>>>>> ed6053d4bff66d4c1429888db94cc54cb938734f
 then
 	script="${self}"
 fi
@@ -2133,6 +2129,18 @@ frobulator.ntf () {
 	unset message_line
 
 	unset IFS
+}
+
+# erase ////////////////////////////////////////////////////////////////////////
+
+# erases a defined number of lines above the current cursor position:
+# wipes from that point down to the end of the screen
+
+frobulator.erase () {
+
+	lines="${1}"
+
+	frobulator.plo "${lines}"
 }
 
 # separate /////////////////////////////////////////////////////////////////////
@@ -6308,6 +6316,11 @@ frobulator.escalate () {
 
 		frobulator.user
 
+		# clear bootstrap initialization messages:
+		# avoid redundant printing - focuses on escalated runtime messages
+
+		frobulator.erase 11
+
 		if [[ -z $(command -v sudo) ]]
 		then
 			frobulator.require sudo
@@ -6330,11 +6343,6 @@ frobulator.escalate () {
 		then
 			status=1
 		fi
-
-		# clear bootstrap initialization messages:
-		# avoid redundant printing - focuses on escalated runtime messages
-
-		frobulator.plo 11
 
 	fi
 
@@ -6825,9 +6833,3 @@ frobulator.extract () {
 #	pip does not
 
 # TO DO ////////////////////////////////////////////////////////////////////////
-
-# prompt line //////////////////////////////////////////////////////////////////
-
-# normalize line spacing:
-
-echo

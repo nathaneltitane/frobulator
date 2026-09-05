@@ -54,100 +54,43 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 # dependencies /////////////////////////////////////////////////////////////////
 
-if [[ $(id -u -n) = "root" ]]
+if [ -f "${HOME}"/.local/bin/frobulator ]
 then
-	SUDO_HOME=/root
+	rm -r -f "${HOME}"/.local/bin/frobulator
+fi
 
-	USER="${SUDO_USER:-root}"
-
-	if [ "${USER}" = "root" ]
+if [[ -z $(command -v frobulator) ]]
+then
+	if [[ $(id -u -n) = "root" ]]
 	then
-		HOME=/root
-	else
-		HOME="/home/${USER}"
+		SUDO_HOME=/root
+
+		USER="${SUDO_USER}"
+
+		HOME=/home/"${USER}"
 	fi
-fi
 
-echo
-
-for ticker in '>  ' '>> ' '>>>'
-do
-	echo -n -e "\r[  ${ticker}  ] Checking..."
-
-	sleep 0.5
-done
-
-echo
-
-if [[ -z $(command -v curl) ]]
-then
-	if [[ -n $(command -v apt-get) ]]
+	if [[ -z $(command -v curl) ]]
 	then
-		apt-get -q -q update > /dev/null 2>&1
-		apt-get -q -q install -y curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v dnf) ]]
-	then
-		dnf -q install -y curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v yum) ]]
-	then
-		yum -q install -y curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v apk) ]]
-	then
-		apk add --quiet curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v pacman) ]]
-	then
-		pacman -S -y --noconfirm --noprogressbar curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v zypper) ]]
-	then
-		zypper --quiet --non-interactive install curl > /dev/null 2>&1
+		yes | apt-get install curl
 	fi
+
+	if [ ! -d "${HOME}"/.local/bin ]
+	then
+		mkdir -p "${HOME}"/.local/bin
+	fi
+
+	curl -s -L get.frbltr.app > "${HOME}"/.local/bin/frobulator
+
+	chmod +x "${HOME}"/.local/bin/frobulator
 fi
 
-if [[ -z $(command -v curl) ]]
-then
-	echo "[  !  ] Unable to install or binary not found /////////////////////// [ 'curl' ]"
-	echo
+. "${HOME}"/.local/bin/frobulator
+```
 
-	exit 1
-fi
+## standard script header
 
-mkdir -p "${HOME}"/.local/bin
-
-frobulator="${HOME}"/.local/bin/frobulator
-
-version_online=$(	curl -s -L get.frbltr.app | grep -m 1 '^# version=' | cut -d '"' -f 2)
-
-version_local=$(grep -m 1 '^# version=' "${frobulator}" 2>/dev/null | cut -d '"' -f 2)
-
-version_local="${version_local:-01-01-1970}"
-
-date_online="${version_online:6:4}${version_online:0:2}${version_online:3:2}"
-
-date_local="${version_local:6:4}${version_local:0:2}${version_local:3:2}"
-
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]
-then
-	curl -s -L get.frbltr.app > "${frobulator}"
-
-	chmod +x "${frobulator}"
-fi
-
-for ticker in '>  ' '>> ' '>>>'
-do
-	echo -n -e "\r[  ${ticker}  ] Initializing..."
-
-	sleep 0.5
-done
-
-echo
-
-source "${frobulator}"
-
+```bash
 # superuser ////////////////////////////////////////////////////////////////////
 
 export self_arguments="${@}"
@@ -779,10 +722,22 @@ frobulator.terminate "rogue-process"
 
 ### frobulator.exit
 
-runs a 3-second `frobulator.countdown` ("Exiting"), then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (Internal source comment still calls this `frobulator.close`; the callable name is `frobulator.exit`.)
+cleanly exits the current script or process instance — runs a 3-second `frobulator.countdown` ("Exiting"), then calls the `exit` builtin with an explicit exit code (defaults to `0`, or `1` if the countdown itself was interrupted). Does not touch the shell — see `frobulator.close` for that behavior. Being terminal, it never `return`s to its caller like the rest of the library does.
 
 ```bash
 frobulator.exit "setup"
+```
+
+```bash
+frobulator.exit "setup" "${status}"
+```
+
+### frobulator.close
+
+runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split; its internal doc comment still shows the old `frobulator.exit "[instance]"` usage line.)
+
+```bash
+frobulator.close "setup"
 ```
 
 ### frobulator.user
@@ -933,8 +888,9 @@ frobulator.update
 frobulator.upgrade
 frobulator.purge
 frobulator.dialog
-frobulator.terminate
 frobulator.exit
+frobulator.terminate
+frobulator.close
 frobulator.user
 frobulator.assess
 frobulator.escalate

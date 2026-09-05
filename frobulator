@@ -135,7 +135,7 @@ terminal_columns=80
 
 self="${0}"
 
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${script}" ]
+if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${script}" ]]
 then
 	script="${self}"
 fi

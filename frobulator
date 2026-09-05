@@ -135,7 +135,11 @@ terminal_columns=80
 
 self="${0}"
 
+<<<<<<< HEAD
 if [ -z "${script}" ]
+=======
+if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]-z "${script}" ]]
+>>>>>>> ed6053d4bff66d4c1429888db94cc54cb938734f
 then
 	script="${self}"
 fi
@@ -785,14 +789,14 @@ marker_url='[  /  ]'
 
 marker_nul='       '
 
-# prompt line overwrite - block (plo.block) ////////////////////////////////////
+# prompt line overwrite (plo) //////////////////////////////////////////////////
 
-# clears a block of previously printed lines, moving the cursor up and
-# wiping everything from that point to the end of the screen
+# clears a defined number of lines above the current cursor position:
+# wipes from that point down to the end of the screen
 
-# usage:      frobulator.plo.block "[lines]"
+# usage:      frobulator.plo "[lines]"
 
-frobulator.plo.block () {
+frobulator.plo () {
 
 	terminal_cursor_up ${@}
 

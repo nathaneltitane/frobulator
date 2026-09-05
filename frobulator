@@ -6352,6 +6352,195 @@ frobulator.escalate () {
 
 }
 
+# service /////////////////////////////////////////////////////////////////////
+
+# use to manage a systemd service, scoping automatically to '--user' or
+# system context depending on whether the runtime is escalated
+
+# a single argument is treated as a daemon-level action with no target unit
+# two arguments target a specific service with the given action
+# forwarded to systemctl
+
+# 'activate' runs a full enable/start cycle with status verification
+
+# 'reload' is the only action not requiring a service
+
+# actions:    reload, status, activate, enable, disable, start, stop, restart
+
+# usage:      frobulator.service "[action]"
+#             frobulator.service "[service]" "[action]"
+
+frobulator.service () {
+
+	local status=0
+
+	local service
+	local action
+
+	local systemctl_scope=()
+
+	if [ "${#}" -eq 1 ]
+	then
+		action="${1}"
+	fi
+
+	if [ "${#}" -eq 2 ]
+	then
+		service="${1}"
+		action="${2}"
+	fi
+
+	if [ -z "${action}" ]
+	then
+		frobulator.err "No action specified"
+		echo
+
+		return 1
+	fi
+
+	if [ "$(id -u)" -ne 0 ]
+	then
+		systemctl_scope=(--user)
+	fi
+
+	if [ "${action}" = "reload" ]
+	then
+		if [ -z "${service}" ]
+		then
+			systemctl "${systemctl_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+
+			frobulator.process "Reloading"
+		else
+			systemctl "${systemctl_scope[@]}" reload "${service}" > "${sink}" 2>&1 &
+
+			frobulator.process "Service reload" "[ ${service} ]"
+		fi
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	fi
+
+	if [ "${action}" = "status" ]
+	then
+		if [ -z "${service}" ]
+		then
+			frobulator.err "No service specified"
+			echo
+
+			return 1
+		fi
+
+		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		then
+			frobulator.scs "Service active" "[ ${service} ]"
+			echo
+		else
+			frobulator.err "Service inactive" "[ ${service} ]"
+			echo
+
+			status=1
+		fi
+	fi
+
+	if [ "${action}" = "activate" ]
+	then
+		if [ -z "${service}" ]
+		then
+			frobulator.err "No service specified"
+			echo
+
+			return 1
+		fi
+
+		systemctl "${systemctl_scope[@]}" daemon-reload
+
+		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		then
+			frobulator.wrn "Service running" " [ ${service} ]"
+			echo
+
+			service_actions_list=(
+				disable
+				stop
+			)
+		fi
+
+		service_actions_list+=(
+			enable
+			start
+		)
+
+		for service_action in "${service_actions_list[@]}"
+		do
+			systemctl "${systemctl_scope[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
+
+			frobulator.process "Service ${service_action}" "[ ${service} ]"
+
+			sleep 1
+
+			systemctl "${systemctl_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+
+			frobulator.process "Reloading"
+
+			sleep 1
+		done
+
+		service_actions_list=()
+
+		if [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "active.*running") ]]
+		then
+			frobulator.scs "Service activation success" "[ ${service} ]"
+			echo
+		elif [[ $(systemctl "${systemctl_scope[@]}" status "${service}" | grep -e "inactive.*") ]]
+		then
+			frobulator.err "Service activation failed" "[ ${service} ]"
+			echo
+
+			status=1
+		fi
+	fi
+
+	if [ "${action}" = "enable" ] || [ "${action}" = "disable" ] || [ "${action}" = "start" ] || [ "${action}" = "stop" ] || [ "${action}" = "restart" ]
+	then
+		if [ -z "${service}" ]
+		then
+			frobulator.err "No service specified"
+			echo
+
+			return 1
+		fi
+
+		systemctl "${systemctl_scope[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
+
+		frobulator.process "Service ${action}" "[ ${service} ]"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	fi
+
+	if 	[ "${action}" != "reload"   ] &&
+		[ "${action}" != "status"   ] &&
+		[ "${action}" != "activate" ] &&
+		[ "${action}" != "enable"   ] &&
+		[ "${action}" != "disable"  ] &&
+		[ "${action}" != "start"    ] &&
+		[ "${action}" != "stop"     ] &&
+		[ "${action}" != "restart"  ]
+	then
+		frobulator.err "Unknown action" "[ ${action} ]"
+		echo
+
+		status=1
+	fi
+
+	return "${status}"
+
+}
+
 # archive //////////////////////////////////////////////////////////////////////
 
 # use to archive content and for backup procedures

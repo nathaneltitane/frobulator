@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 09-04-2026 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-04 ]
 
 ---
 
@@ -54,10 +54,25 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 # dependencies /////////////////////////////////////////////////////////////////
 
+ticker () {
+
+	echo
+
+	for ticker in '>  ' '>> ' '>>>'
+	do
+		echo -n -e "\r[  ${ticker}  ] ${1^}..."
+
+		sleep 0.5
+	done
+
+	echo
+
+	echo
+
+}
+
 if [[ $(id -u -n) = "root" ]]
 then
-	SUDO_HOME=/root
-
 	USER="${SUDO_USER:-root}"
 
 	if [ "${USER}" = "root" ]
@@ -68,95 +83,61 @@ then
 	fi
 fi
 
-echo
+ticker checking
 
-for ticker in '>  ' '>> ' '>>>'
-do
-	echo -n -e "\r[  ${ticker}  ] Checking..."
+package_managers_list=(
+	"apt-get --quiet --quiet update > /dev/null 2>&1; apt-get --quiet --quiet install --yes"
+	"dnf --quiet install --assumeyes"
+	"yum --quiet install --assumeyes"
+	"apk add --quiet"
+	"pacman --sync --refresh --noconfirm --noprogressbar"
+	"zypper --quiet --non-interactive install"
+)
 
-	sleep 0.5
-done
+package="curl"
 
-echo
-
-if [[ -z $(command -v curl) ]]
+if [[ -z $(command -v "${package}") ]]
 then
-	if [[ -n $(command -v apt-get) ]]
-	then
-		apt-get -q -q update > /dev/null 2>&1
-		apt-get -q -q install -y curl > /dev/null 2>&1
+	for package_manager in "${package_managers_list[@]}"
+	do
+		entry="${package_manager%% *}"
 
-	elif [[ -n $(command -v dnf) ]]
-	then
-		dnf -q install -y curl > /dev/null 2>&1
+		if [[ -n $(command -v "${entry}") ]]
+		then
+			eval "${package_manager} ${package} > /dev/null 2>&1"
 
-	elif [[ -n $(command -v yum) ]]
-	then
-		yum -q install -y curl > /dev/null 2>&1
+			break
+		fi
+	done
 
-	elif [[ -n $(command -v apk) ]]
+	if [[ -z $(command -v "${package}") ]]
 	then
-		apk add --quiet curl > /dev/null 2>&1
+		echo "[  !  ] Unable to install or binary not found /////////////////////// [ '${package}' ]"
+		echo
 
-	elif [[ -n $(command -v pacman) ]]
-	then
-		pacman -S -y --noconfirm --noprogressbar curl > /dev/null 2>&1
-
-	elif [[ -n $(command -v zypper) ]]
-	then
-		zypper --quiet --non-interactive install curl > /dev/null 2>&1
+		exit 1
 	fi
-fi
-
-if [[ -z $(command -v curl) ]]
-then
-	echo "[  !  ] Unable to install or binary not found /////////////////////// [ 'curl' ]"
-	echo
-
-	exit 1
 fi
 
 mkdir -p "${HOME}"/.local/bin
 
 frobulator="${HOME}"/.local/bin/frobulator
 
-version_online=$(	curl -s -L get.frbltr.app | grep -m 1 '^# version=' | cut -d '"' -f 2)
-
+version_online=$(curl -s -L get.frbltr.app | grep -m 1 '^# version=' | cut -d '"' -f 2)
 version_local=$(grep -m 1 '^# version=' "${frobulator}" 2>/dev/null | cut -d '"' -f 2)
 
-version_local="${version_local:-01-01-1970}"
+version_local="${version_local:-1970-01-01}"
 
-date_online="${version_online:6:4}${version_online:0:2}${version_online:3:2}"
-
-date_local="${version_local:6:4}${version_local:0:2}${version_local:3:2}"
-
-if [ ! -f "${frobulator}" ] || [[ "${date_online}" > "${date_local}" ]]
+if [ ! -f "${frobulator}" ] || [[ "${version_online}" > "${version_local}" ]]
 then
 	curl -s -L get.frbltr.app > "${frobulator}"
 
 	chmod +x "${frobulator}"
 fi
 
-for ticker in '>  ' '>> ' '>>>'
-do
-	echo -n -e "\r[  ${ticker}  ] Initializing..."
-
-	sleep 0.5
-done
-
-echo
+ticker initializing
 
 source "${frobulator}"
-```
-
-## standard script header
-
-```bash
-# superuser ////////////////////////////////////////////////////////////////////
-
-export self_arguments="${@}"
-
-frobulator.escalate
 
 # script ///////////////////////////////////////////////////////////////////////
 
@@ -1029,7 +1010,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 09-04-2026 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-04 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

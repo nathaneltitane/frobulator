@@ -6268,6 +6268,13 @@ frobulator.assess () {
 # use to provide priviledged command or script execution
 # restarts process as 'superuser' once status is granted
 
+# scans the calling script's own content for known root-requiring patterns
+# (package installs, user/group management, writes to system paths) and
+# only escalates when one is found - otherwise proceeds as the current user
+
+# never escalates an interactive shell (tty startup: bashrc, bash_profile,
+# bash_login, etc.), regardless of pattern matching
+
 # usage:      export self_arguments="${@}"
 #             frobulator.escalate
 
@@ -6278,6 +6285,36 @@ frobulator.escalate () {
 	local self="${0}"
 	local user_current
 	local self_arguments_list=()
+	local requires_root=false
+	local root_pattern
+
+	local root_patterns_list=(
+		'apt-get[[:space:]]+(install|remove|purge)'
+		'apt[[:space:]]+(install|remove|purge)'
+		'dnf[[:space:]]+install'
+		'yum[[:space:]]+install'
+		'pacman[[:space:]]+(-S|--sync)'
+		'apk[[:space:]]+add'
+		'zypper[[:space:]]+install'
+		'useradd|usermod|userdel|groupadd|groupdel'
+		'frobulator\.(require|install|reinstall|purge|hold|release|failsafe|clean|update|upgrade)'
+		'/etc/'
+		'/usr/'
+		'/opt/'
+		'/boot/'
+		'/lib/'
+		'/lib64/'
+		'/srv/'
+		'/var/lib/'
+		'/var/cache/'
+		'/var/spool/'
+		'/var/log/'
+		'/root/'
+	)
+
+	IFS='|'
+	root_pattern="${root_patterns_list[*]}"
+	IFS=''
 
 	read -r -a self_arguments_list <<< "${self_arguments}"
 
@@ -6301,45 +6338,78 @@ frobulator.escalate () {
 			USER="root"
 			HOME="/root"
 		fi
-	else
-		frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-${USER}}' ]"
+
+		return "${status}"
+	fi
+
+	# never escalate an interactive shell - hard rule, independent of pattern matching
+	# tty startup: bashrc, bash_profile, bash_login, etc.
+
+	# a sourced dotfile's own '${0}' may resolve to a readable binary e.g. '/bin/bash'
+	# whose embedded strings could otherwise falsely match
+
+	if [[ $- == *i* ]]
+	then
+		frobulator.inf "Interactive shell - escalation prevented" "[ '${self}' ]"
 		echo
 
-		frobulator.fwd "Restarting" "[ '${self}' ]"
-		echo
+		return "${status}"
+	fi
 
-		frobulator.user
+	# determine whether the calling script actually requires root
 
-		# clear bootstrap initialization messages:
-		# avoid redundant printing - focuses on escalated runtime messages
-
-		frobulator.erase 12
-
-		frobulator.timeout
-
-		if [[ -z $(command -v sudo) ]]
+	if [ -r "${self}" ]
+	then
+		if grep -q -E "${root_pattern}" "${self}"
 		then
-			frobulator.require sudo
-
-			if [ "${?}" -ne 0 ]
-			then
-				return 1
-			fi
+			requires_root=true
 		fi
+	fi
 
-		# set superuser password prompt
+	if [ "${requires_root}" = false ]
+	then
+		frobulator.inf "Privilege escalation not required" "[ '${self}' ]"
+		echo
 
-		export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
+		return "${status}"
+	fi
 
-		# restart as superuser
+	frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-${USER}}' ]"
+	echo
 
-		exec sudo "${SHELL}" "${self}" "${self_arguments_list[@]}"
+	frobulator.fwd "Restarting" "[ '${self}' ]"
+	echo
+
+	frobulator.user
+
+	# clear bootstrap initialization messages:
+	# avoid redundant printing - focuses on escalated runtime messages
+
+	frobulator.erase 12
+
+	frobulator.timeout
+
+	if [[ -z $(command -v sudo) ]]
+	then
+		frobulator.require sudo
 
 		if [ "${?}" -ne 0 ]
 		then
-			status=1
+			return 1
 		fi
+	fi
 
+	# set superuser password prompt
+
+	export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
+
+	# restart as superuser
+
+	exec sudo "${SHELL}" "${self}" "${self_arguments_list[@]}"
+
+	if [ "${?}" -ne 0 ]
+	then
+		status=1
 	fi
 
 	return "${status}"

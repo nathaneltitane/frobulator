@@ -7050,9 +7050,7 @@ frobulator.self () {
 
 	local status=0
 
-	export frobulator_loaded="true"
-
-	export frobulator_loaded="${frobulator_loaded}"
+	frobulator_loaded="true"
 
 	return "${status}"
 }

@@ -8,7 +8,7 @@ script="$(basename -- ${BASH_SOURCE[0]})"
 
 # version //////////////////////////////////////////////////////////////////////
 
-# version="2026-09-05"
+version="2026-09-05"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2186,12 +2186,14 @@ frobulator.script () {
 
 	if [[ "${script}" = *-* ]]
 	then
-		message="${script%-*}${marker_spc}${marker_spc}${marker_hnt}${marker_spc}${marker_spc}${version}"
+		message="${script%-*}"
 	else
 		message="${script}"
 	fi
 
-	frobulator.msg "${description}" "[ ${message} ]"
+	message="${message}"$'\n'"Version: ${version:-unknown}"
+
+	frobulator.ntf msg "${description}" "${message}"
 
 	echo
 }
@@ -6285,10 +6287,11 @@ frobulator.escalate () {
 	local self="${0}"
 	local user_current
 	local self_arguments_list=()
-	local requires_root=false
+	local root_required=false
 	local root_pattern
 
 	local root_patterns_list=(
+		'frobulator\.(require|install|reinstall|purge|hold|release|failsafe|clean|update|upgrade)'
 		'apt-get[[:space:]]+(install|remove|purge)'
 		'apt[[:space:]]+(install|remove|purge)'
 		'dnf[[:space:]]+install'
@@ -6297,7 +6300,6 @@ frobulator.escalate () {
 		'apk[[:space:]]+add'
 		'zypper[[:space:]]+install'
 		'useradd|usermod|userdel|groupadd|groupdel'
-		'frobulator\.(require|install|reinstall|purge|hold|release|failsafe|clean|update|upgrade)'
 		'/etc/'
 		'/usr/'
 		'/opt/'
@@ -6362,11 +6364,11 @@ frobulator.escalate () {
 	then
 		if grep -q -E "${root_pattern}" "${self}"
 		then
-			requires_root=true
+			root_required=true
 		fi
 	fi
 
-	if [ "${requires_root}" = false ]
+	if [ "${root_required}" = false ]
 	then
 		frobulator.inf "Privilege escalation not required" "[ '${self}' ]"
 		echo

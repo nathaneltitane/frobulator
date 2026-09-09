@@ -151,7 +151,7 @@ version="MM-DD-YY"
 
 # prompt ///////////////////////////////////////////////////////////////////////
 
-frobulator.script "Setting up ${script#*-}"
+frobulator.script
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -374,7 +374,7 @@ frobulator.read reply
 prints a script startup banner. Derives the displayed script name/version by splitting `${script}` on its first `-` character (i.e. the running script should be named like `setup-myproject`), falling back to the full script name when no `-` is present.
 
 ```bash
-frobulator.script "Setting up ${script#*-}"
+frobulator.script
 ```
 
 ### frobulator.type

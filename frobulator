@@ -6884,11 +6884,13 @@ frobulator.extract () {
 
 frobulator.self () {
 
+	local status=0
+
 	export frobulator_loaded="true"
 
 	export frobulator_loaded="${frobulator_loaded}"
 
-	return 0
+	return "${status}"
 }
 
 frobulator.self

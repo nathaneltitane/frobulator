@@ -8,7 +8,7 @@ script="$(basename -- ${BASH_SOURCE[0]})"
 
 # version //////////////////////////////////////////////////////////////////////
 
-version="2026-09-05"
+version="2026-09-08"
 
 # variables ////////////////////////////////////////////////////////////////////
 
@@ -2188,14 +2188,7 @@ frobulator.script () {
 
 	description="${1}"
 
-	if [[ "${script}" = *-* ]]
-	then
-		message="${script%-*}"
-	else
-		message="${script}"
-	fi
-
-	message="Executing:${marker_spc}${message}"
+	message+="Executing:${marker_spc}'${script}'"
 	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
 
 	frobulator.ntf msg "Script" "${message}"
@@ -6392,7 +6385,7 @@ frobulator.escalate () {
 	# clear bootstrap initialization messages:
 	# avoid redundant printing - focuses on escalated runtime messages
 
-	frobulator.erase 12
+	frobulator.erase 14
 
 	frobulator.timeout
 
@@ -7115,5 +7108,3 @@ frobulator.self
 #	pip does not
 
 # TO DO ////////////////////////////////////////////////////////////////////////
-
-frobulator.script

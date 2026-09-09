@@ -6876,6 +6876,18 @@ frobulator.extract () {
 	return "${status}"
 }
 
+# self ////////////////////////////////////////////////////////////////////////
+
+# declares frobulator's existence and loaded status for the current shell
+
+# usage:      frobulator.self
+
+frobulator.self () {
+	export frobulator_loaded="true"
+}
+
+frobulator.self
+
 # TO DO ////////////////////////////////////////////////////////////////////////
 
 # frobulator.install ///////////////////////////////////////////////////////////

@@ -176,6 +176,10 @@ SPC="$(printf '\ ')"
 
 TAB="$(printf '\t')"
 
+# newline
+
+NLN=$'\n'
+
 # colors ///////////////////////////////////////////////////////////////////////
 
 # 256 colors terminal [0-255]
@@ -2191,9 +2195,10 @@ frobulator.script () {
 		message="${script}"
 	fi
 
-	message="${message}"$'\n'"Version: ${version:-unknown}"
+	message+="${NLN}"
+	message+="Version: ${version:-unknown}"
 
-	frobulator.ntf msg "${description}" "${message}"
+	frobulator.ntf msg Script "${description}" "${message}"
 
 	echo
 }
@@ -7110,3 +7115,5 @@ frobulator.self
 #	pip does not
 
 # TO DO ////////////////////////////////////////////////////////////////////////
+
+frobulator.script

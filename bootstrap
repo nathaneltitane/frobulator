@@ -99,4 +99,4 @@ script="$(basename -- ${BASH_SOURCE[0]})"
 
 # version //////////////////////////////////////////////////////////////////////
 
-version="MM-DD-YYYY"
+version="YYYY-MM-DD"

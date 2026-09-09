@@ -2195,10 +2195,10 @@ frobulator.script () {
 		message="${script}"
 	fi
 
-	message+="${NLN}"
-	message+="Version: ${version:-unknown}"
+	message="Executing:${marker_spc}${message}"
+	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
 
-	frobulator.ntf msg Script "${description}" "${message}"
+	frobulator.ntf msg "Script" "${message}"
 
 	echo
 }

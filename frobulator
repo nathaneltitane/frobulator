@@ -2,7 +2,7 @@
 
 # dependencies /////////////////////////////////////////////////////////////////
 
-script="$(basename -- ${BASH_SOURCE[0]})"
+frobulator_script="$(basename -- ${BASH_SOURCE[0]})"
 
 if [[ "${frobulator_loaded}" != "true" ]]
 then
@@ -95,25 +95,9 @@ then
 	export self_arguments="${@}"
 fi
 
-# superuser ////////////////////////////////////////////////////////////////////
-
-frobulator.escalate
-
-# script ///////////////////////////////////////////////////////////////////////
-
-frobulator.script
-
-# version //////////////////////////////////////////////////////////////////////
-
-version="2026-09-08"
-
 # variables ////////////////////////////////////////////////////////////////////
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
-
-# script ///////////////////////////////////////////////////////////////////////
-
-script="$(basename -- ${BASH_SOURCE[0]})"
 
 # defaults /////////////////////////////////////////////////////////////////////
 
@@ -174,11 +158,11 @@ then
 			-h|--help)
 
 				echo
-				echo -e "Usage: ./${script} | [OPTION]"
+				echo -e "Usage: ./${frobulator_script} | [OPTION]"
 				echo
 				echo "Options:"
 				echo
-				echo "	-i, --install    [I]nstall "${script}" to ${directory_install}"
+				echo "	-i, --install    [I]nstall "${frobulator_script}" to ${directory_install}"
 				echo "	-h, --help       Show this [h]elp menu"
 				echo
 
@@ -188,8 +172,8 @@ then
 			*)
 
 				echo
-				echo "${script}: Unknown option '${1}'"
-				echo "Type './${script} --help' for help and usage information."
+				echo "${frobulator_script}: Unknown option '${1}'"
+				echo "Type './${frobulator_script} --help' for help and usage information."
 				echo
 
 				exit 1

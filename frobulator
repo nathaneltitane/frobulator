@@ -3479,46 +3479,24 @@ frobulator.directory () {
 # write ////////////////////////////////////////////////////////////////////////
 
 # use to generate and write to file(s) from argument or array list
-# appends content to file
+# writes content to file according to mode: prepend, write, append
 
 # "${path}" defaults to "${PWD}" when omitted
 
-# usage:      frobulator.write "[content]" "[path]" "[file]"
+# usage:      frobulator.write "[mode]" "[content]" "[path]" "[file]"
 
 frobulator.write () {
 
 	local status=0
 
-	local content="${1}"
+	local mode="${1}"
+	local content="${2}"
 	local path
 	local file
 
-	if [ "${#}" -eq 2 ]
-	then
-		path="${PWD}"
-
-		if [[ "${#list[@]}" -gt 0 ]]
-		then
-			# ${2} - array
-
-			list=("${@:2}")
-		else
-			file="${2}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-	fi
-
 	if [ "${#}" -eq 3 ]
 	then
-		path="${2}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
+		path="${PWD}"
 
 		if [[ "${#list[@]}" -gt 0 ]]
 		then
@@ -3527,6 +3505,29 @@ frobulator.write () {
 			list=("${@:3}")
 		else
 			file="${3}"
+
+			list=()
+
+			list+=("${file}")
+		fi
+	fi
+
+	if [ "${#}" -eq 4 ]
+	then
+		path="${3}"
+
+		if [ -z "${path}" ]
+		then
+			path="${PWD}"
+		fi
+
+		if [[ "${#list[@]}" -gt 0 ]]
+		then
+			# ${4} - array
+
+			list=("${@:4}")
+		else
+			file="${4}"
 
 			list=()
 
@@ -3549,9 +3550,28 @@ frobulator.write () {
 		frobulator.add "Writing" "[ ${file} ]"
 		echo
 
-		# write to file and set permissions
+		# write to file according to mode
 
-		echo "${content}" >> "${path}/${file}"
+		if [ "${mode}" = "prepend" ]
+		then
+			temporary=$(mktemp)
+
+			echo "${content}" > "${temporary}"
+
+			if [ -f "${path}/${file}" ]
+			then
+				cat "${path}/${file}" >> "${temporary}"
+			fi
+
+			mv "${temporary}" "${path}/${file}"
+
+		elif [ "${mode}" = "write" ]
+		then
+			echo "${content}" > "${path}/${file}"
+
+		else
+			echo "${content}" >> "${path}/${file}"
+		fi
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -3563,117 +3583,6 @@ frobulator.write () {
 		# set ownership
 
 		frobulator.ownership "${path}/${file}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
-	done
-
-	# unset array
-
-	list=()
-
-	return "${status}"
-
-}
-
-# flag /////////////////////////////////////////////////////////////////////////
-
-# use to generate and write to file(s) from argument or array list
-# overwrites content to file
-
-# "${path}" defaults to "${PWD}" when omitted
-
-# usage:      frobulator.flag "[content]" "[path]" "[file]"
-
-frobulator.flag () {
-
-	local status=0
-
-	local content="${1}"
-	local path
-	local file
-
-	if [ "${#}" -eq 2 ]
-	then
-		path="${PWD}"
-
-		if [[ "${#list[@]}" -gt 0 ]]
-		then
-			# ${2} - array
-
-			list=("${@:2}")
-		else
-			file="${2}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-	fi
-
-	if [ "${#}" -eq 3 ]
-	then
-		path="${2}"
-
-		if [ -z "${path}" ]
-		then
-			path="${PWD}"
-		fi
-
-		if [[ "${#list[@]}" -gt 0 ]]
-		then
-			# ${3} - array
-
-			list=("${@:3}")
-		else
-			file="${3}"
-
-			list=()
-
-			list+=("${file}")
-		fi
-	fi
-
-	if [ ! -d "${path}" ]
-	then
-		mkdir --parents "${path}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			return 1
-		fi
-	fi
-
-	for file in "${list[@]}"
-	do
-		frobulator.add "Flagging" "[ ${file} ]"
-		echo
-
-		# write to file and set permissions
-
-		echo "${content}" > "${path}/${file}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
-
-		# set ownership
-
-		frobulator.ownership "${path}/${file}"
-
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
-
-		# set permissions
-
-		chmod a+rx "${path}/${file}"
 
 		if [ "${?}" -ne 0 ]
 		then

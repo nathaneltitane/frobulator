@@ -507,18 +507,14 @@ frobulator.directory "${HOME}/.config/frobulator"
 
 ### frobulator.write
 
-appends `content` to one or more files under `path` (`path` defaults to `${PWD}` when a 2-argument call is used), creating the directory first if needed, and sets ownership on each written file.
+writes `content` to one or more files under `path` (`path` defaults to `${PWD}` when a 3-argument call is used), creating the directory first if needed, and sets ownership on each written file. `mode` controls how content is applied:
+
+- `append` — adds content to the end of the file
+- `write` — overwrites the file entirely
+- `prepend` — adds content before the file's existing contents
 
 ```bash
-frobulator.write "enabled=true" "${HOME}/.config/frobulator" "config"
-```
-
-### frobulator.flag
-
-same as `frobulator.write`, but overwrites the file instead of appending, and additionally sets `a+rx` permissions after writing — useful for checkpoint flags.
-
-```bash
-frobulator.flag "ready" "${temporary_directory}" "checkpoint"
+frobulator.write "append" "enabled=true" "${HOME}/.config/frobulator" "config"
 ```
 
 ### frobulator.file
@@ -834,7 +830,7 @@ frobulator.service activate "${service}"
 
 ### frobulator.ownership
 
-restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.flag`, `frobulator.file`, and `frobulator.link`.
+restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.file`, and `frobulator.link`.
 
 ```bash
 frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
@@ -928,7 +924,6 @@ frobulator.result
 frobulator.ownership
 frobulator.directory
 frobulator.write
-frobulator.flag
 frobulator.file
 frobulator.keep
 frobulator.delete

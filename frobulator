@@ -848,7 +848,7 @@ frobulator.pmt () {
 	# set span character default:
 	# do not use '\' - reserved for BASH esacpe sequences
 
-	span_character="/"
+	span_character="─"
 
 	# 3 arguments - replace span character with argument 3
 

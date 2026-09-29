@@ -472,9 +472,7 @@ then
 
 	for color_entry in ${colors_selection[@]}
 	do
-		IFS='='
-
-		read color_name color_value <<< "${color_entry}"
+		IFS='=' read -r color_name color_value <<< "${color_entry}"
 
 		if [ ${#color_value} = 3 ]
 		then
@@ -490,8 +488,6 @@ then
 		then
 			color_value="00${color_value}"
 		fi
-
-		IFS=''
 
 		eval "${color_name}=${color_value}"
 
@@ -526,6 +522,9 @@ then
 		magenta=$(echo -e \\e\[38\;5\;"${magenta}"m)
 		purple=$(echo -e \\e\[38\;5\;"${purple}"m)
 
+		fuschia=$(echo -e \\e\[38\;5\;"${fuschia}"m)
+		pink=$(echo -e \\e\[38\;5\;"${pink}"m)
+
 		aqua=$(echo -e \\e\[38\;5\;"${aqua}"m)
 		teal=$(echo -e \\e\[38\;5\;"${teal}"m)
 
@@ -538,11 +537,7 @@ else
 
 	for color_entry in ${colors_selection[@]}
 	do
-		IFS='='
-
-		read color_name color_value <<< "${color_entry}"
-
-		IFS=''
+		IFS='=' read -r color_name color_value <<< "${color_entry}"
 
 		eval "${color_name}=${color_value}"
 
@@ -644,8 +639,8 @@ else
 
 		terminal_cursor_move () {
 
-			row="${1}"
-			col="${2}"
+			local row="${1}"
+			local column="${2}"
 
 			if [[ "${row}" =~ ^[0-9]+$ ]] && [[ "${column}" =~ ^[0-9]+$ ]]
 			then
@@ -707,14 +702,14 @@ else
 
 		terminal_clear_left () {
 
-			tput el
+			tput el1
 		}
 
 		# clear from cursor to end of line (right)
 
 		terminal_clear_right () {
 
-			tput el1
+			tput el
 		}
 
 		# clear from cursor to end of the screen (down)
@@ -732,6 +727,23 @@ else
 		}
 
 	fi
+fi
+
+# no terminal output (pipe, file, log): plain text -
+# clears unconverted color indexes so they never print as text
+
+if [[ ! -t 1 ]]
+then
+	for color_entry in ${colors_selection[@]}
+	do
+		IFS='=' read -r color_name color_value <<< "${color_entry}"
+
+		eval "${color_name}=''"
+
+		unset color_entry
+	done
+
+	reset=''
 fi
 
 # special case markers /////////////////////////////////////////////////////////
@@ -5541,6 +5553,19 @@ frobulator.require () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
+	# empty list: return before any root-requiring apt-file operation
+
+	if [ "${#list[@]}" -eq 0 ]
+	then
+		frobulator.stp "No requirement(s) specified"
+		echo
+
+		frobulator.fwd "Continuing${marker_elp}"
+		echo
+
+		return "${status}"
+	fi
+
 	frobulator.failsafe apt-file
 
 	if [ "${?}" -ne 0 ]
@@ -5553,17 +5578,6 @@ frobulator.require () {
 	if [ "${?}" -ne 0 ]
 	then
 		status=1
-	fi
-
-	if [ "${#list[@]}" -eq 0 ]
-	then
-		frobulator.stp "No requirement(s) specified"
-		echo
-
-		frobulator.fwd "Continuing${marker_elp}"
-		echo
-
-		return "${status}"
 	fi
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
@@ -6199,23 +6213,16 @@ frobulator.escalate () {
 		'apk[[:space:]]+add'
 		'zypper[[:space:]]+install'
 		'useradd|usermod|userdel|groupadd|groupdel'
-		'/etc/'
-		'/usr/'
-		'/opt/'
-		'/boot/'
-		'/lib/'
-		'/lib64/'
-		'/srv/'
-		'/var/lib/'
-		'/var/cache/'
-		'/var/spool/'
-		'/var/log/'
-		'/root/'
+		"(^|[[:space:]\"'=:(])/(etc|usr|opt|boot|lib|lib64|srv|root)/"
+		"(^|[[:space:]\"'=:(])/var/(lib|cache|spool|log)/"
 	)
 
-	IFS='|'
+	# scoped separator: joins patterns, then restores default word splitting
+	# for the argument list below - never leaks into the calling script
+
+	local IFS='|'
 	root_pattern="${root_patterns_list[*]}"
-	IFS=''
+	IFS=$' \t\n'
 
 	read -r -a self_arguments_list <<< "${self_arguments}"
 
@@ -6257,11 +6264,105 @@ frobulator.escalate () {
 		return "${status}"
 	fi
 
+	# scans the script body for root patterns: returns 0 on the first match
+	# skips the bootstrap header (up to the '# version' marker), comment lines
+	# and empty requirement lists - avoids false positives
+
+	escalate_scan () {
+
+		local file="${1}"
+		local -a lines=()
+		local line
+		local rest
+		local index
+		local list_open=false
+		local list_entries=0
+
+		local pattern_marker='^# version /+$'
+		local pattern_comment='^[[:space:]]*#'
+		local pattern_list_open='^[[:space:]]*list=\('
+		local pattern_list_close='^[[:space:]]*\)'
+		local pattern_content='[^[:space:]]'
+		local pattern_require='frobulator\.require[[:space:]]+"?\$\{list\[@\]\}"?[[:space:]]*$'
+
+		mapfile -t lines < "${file}"
+
+		# locate the bootstrap header's end: scan the whole file without marker
+
+		for (( index = 0; index < ${#lines[@]}; index++ ))
+		do
+			if [[ "${lines[index]}" =~ ${pattern_marker} ]]
+			then
+				break
+			fi
+		done
+
+		if [ "${index}" -eq "${#lines[@]}" ]
+		then
+			index=0
+		fi
+
+		for line in "${lines[@]:index}"
+		do
+			# comment lines
+
+			if [[ "${line}" =~ ${pattern_comment} ]]
+			then
+				continue
+			fi
+
+			# requirement list: count entries until closed
+
+			if [ "${list_open}" = true ]
+			then
+				if [[ "${line}" =~ ${pattern_list_close} ]]
+				then
+					list_open=false
+
+				elif [[ "${line}" =~ ${pattern_content} ]]
+				then
+					list_entries=$(( list_entries + 1 ))
+				fi
+
+			elif [[ "${line}" =~ ${pattern_list_open} ]]
+			then
+				rest="${line#*list=(}"
+
+				list_entries=0
+
+				if [[ "${rest}" == *')'* ]]
+				then
+					rest="${rest%%)*}"
+				else
+					list_open=true
+				fi
+
+				if [[ "${rest}" =~ ${pattern_content} ]]
+				then
+					list_entries=$(( list_entries + 1 ))
+				fi
+
+			# empty requirement list: nothing to install
+
+			elif [[ "${line}" =~ ${pattern_require} ]] && [ "${list_entries}" -eq 0 ]
+			then
+				continue
+			fi
+
+			if [[ "${line}" =~ ${root_pattern} ]]
+			then
+				return 0
+			fi
+		done
+
+		return 1
+	}
+
 	# determine whether the calling script actually requires root
 
 	if [ -r "${self}" ]
 	then
-		if grep -q -E "${root_pattern}" "${self}"
+		if escalate_scan "${self}"
 		then
 			root_required=true
 		fi

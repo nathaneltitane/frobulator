@@ -158,7 +158,10 @@ then
 
 	source "${frobulator}"
 
-	export self_arguments="${@}"
+	# script arguments for 'frobulator.escalate': kept as an array - restored
+	# exactly (spaces, quotes, empty arguments) when restarting as superuser
+
+	self_arguments=("${@}")
 fi
 
 # superuser ////////////////////////////////////////////////////////////////////
@@ -854,10 +857,10 @@ frobulator.assess "${requirements[@]}"
 
 ### frobulator.escalate
 
-relaunches the current script as root via `sudo`, preserving the original arguments (read back from the exported `self_arguments` variable). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching.
+relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching.
 
 ```bash
-export self_arguments="${@}"
+self_arguments=("${@}")
 frobulator.escalate
 ```
 

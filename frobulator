@@ -116,9 +116,37 @@ else
 	SHELL="${SHELL}"
 fi
 
-# provide terminal columns count
+# provide terminal columns count:
+# follows the terminal width - refreshed on window resize (WINCH),
+# bounded between 40 and 'terminal_columns_maximum' columns,
+# falls back to 80 without a terminal (pipe, file, log)
 
 terminal_columns=80
+
+terminal_columns_maximum=160
+
+frobulator.columns () {
+
+	local columns
+
+	columns=$(tput cols 2> /dev/null)
+
+	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -ge 40 ]
+	then
+		if [ "${columns}" -gt "${terminal_columns_maximum}" ]
+		then
+			columns="${terminal_columns_maximum}"
+		fi
+
+		terminal_columns="${columns}"
+	else
+		terminal_columns=80
+	fi
+}
+
+frobulator.columns
+
+trap 'frobulator.columns' WINCH
 
 # provide fallback for non 'root' assessments
 
@@ -808,8 +836,8 @@ frobulator.plo () {
 
 # prompt management tool (pmt) /////////////////////////////////////////////////
 
-# prompt management and standardizing with 80 charcters width:
-# adds line folding with word detection for strings over 80 characters long
+# prompt management and standardizing to the terminal width (terminal_columns):
+# adds line folding with word detection for strings wider than the terminal
 
 frobulator.pmt () {
 

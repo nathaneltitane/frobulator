@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-28-2211"
+update="2026-09-29-1859"
 
 version="${update}"
 
@@ -775,6 +775,38 @@ then
 
 	reset=''
 fi
+
+# terminal control fallbacks: no terminal (pipe, file, log) or no 'tput' -
+# cursor / screen helpers are left undefined above, define them as no-ops so
+# callers (frobulator.plo, frobulator.erase, ...) do nothing instead of failing
+
+terminal_functions_list=(
+	terminal_cursor_save
+	terminal_cursor_restore
+	terminal_cursor_hide
+	terminal_cursor_show
+	terminal_cursor_home
+	terminal_cursor_move
+	terminal_cursor_down
+	terminal_cursor_up
+	terminal_screen_save
+	terminal_screen_restore
+	terminal_clear_left
+	terminal_clear_right
+	terminal_clear_down
+	terminal_clear_all
+)
+
+for terminal_function in "${terminal_functions_list[@]}"
+do
+	if ! declare -F "${terminal_function}" > /dev/null
+	then
+		eval "${terminal_function} () { :; }"
+	fi
+done
+
+unset terminal_function
+unset terminal_functions_list
 
 # special case markers /////////////////////////////////////////////////////////
 

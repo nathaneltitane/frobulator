@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-29-1859"
+update="2026-09-29-1917"
 
 version="${update}"
 
@@ -6412,7 +6412,7 @@ frobulator.assess () {
 # never escalates an interactive shell (tty startup: bashrc, bash_profile,
 # bash_login, etc.), regardless of pattern matching
 
-# usage:      export self_arguments="${@}"
+# usage:      self_arguments=("${@}")
 #             frobulator.escalate
 
 frobulator.escalate () {
@@ -6446,7 +6446,15 @@ frobulator.escalate () {
 	root_pattern="${root_patterns_list[*]}"
 	IFS=$' \t\n'
 
-	read -r -a self_arguments_list <<< "${self_arguments}"
+	# restore the script's arguments: exactly from the header's array,
+	# word split for older headers exporting a plain string
+
+	if [[ "$(declare -p self_arguments 2> /dev/null)" == "declare -a"* ]]
+	then
+		self_arguments_list=("${self_arguments[@]}")
+	else
+		read -r -a self_arguments_list <<< "${self_arguments}"
+	fi
 
 	user_current="$(id -u -n)"
 

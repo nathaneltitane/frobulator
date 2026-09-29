@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-04 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-28-2211 ]
 
 ---
 
@@ -47,6 +47,20 @@ The current set of assertions upon which Frobulator is built restricts its funct
 . "${HOME}"/.local/bin/frobulator
 ```
 
+## install
+
+running the script directly installs it to `${HOME}/.local/bin` - no arguments default to `--install`. Sourcing is unaffected: the options only apply when the file is executed.
+
+```bash
+./frobulator              # install (default)
+./frobulator --install    # install
+./frobulator --help       # usage
+```
+
+## version
+
+the release is identified by the literal `update="YYYY-MM-DD-HHMM"` line at the top of the file. The bootstrap reads it as text (`grep '^update='`) and downloads a new copy when the online value sorts after the installed one - bump it (four-digit time) for every release, including same-day releases. `version` is derived from it.
+
 ## standard script bootstrap
 
 ```bash
@@ -54,110 +68,136 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 # dependencies /////////////////////////////////////////////////////////////////
 
-ticker () {
+script="$(basename -- ${BASH_SOURCE[0]})"
 
-	echo
-
-	for ticker in '>  ' '>> ' '>>>'
-	do
-		echo -n -e "\r[  ${ticker}  ] ${1^}..."
-
-		sleep 0.5
-	done
-
-	echo
-
-	echo
-
-}
-
-if [[ $(id -u -n) = "root" ]]
+if [[ "${frobulator_loaded}" != "true" ]]
 then
-	USER="${SUDO_USER:-root}"
+	echo
 
-	if [ "${USER}" = "root" ]
+	ticker () {
+
+		for ticker in '>  ' '>> ' '>>>'
+		do
+			echo -n -e "\r[  ${ticker}  ] ${1^}..."
+
+			sleep 0.5
+		done
+
+		echo
+
+		echo
+
+	}
+
+	if [[ $(id -u -n) = "root" ]]
 	then
-		HOME=/root
-	else
-		HOME="/home/${USER}"
-	fi
-fi
+		USER="${SUDO_USER:-root}"
 
-ticker checking
-
-package_managers_list=(
-	"apt-get --quiet --quiet update > /dev/null 2>&1; apt-get --quiet --quiet install --yes"
-	"dnf --quiet install --assumeyes"
-	"yum --quiet install --assumeyes"
-	"apk add --quiet"
-	"pacman --sync --refresh --noconfirm --noprogressbar"
-	"zypper --quiet --non-interactive install"
-)
-
-package="curl"
-
-if [[ -z $(command -v "${package}") ]]
-then
-	for package_manager in "${package_managers_list[@]}"
-	do
-		entry="${package_manager%% *}"
-
-		if [[ -n $(command -v "${entry}") ]]
+		if [ "${USER}" = "root" ]
 		then
-			eval "${package_manager} ${package} > /dev/null 2>&1"
-
-			break
+			HOME=/root
+		else
+			HOME="/home/${USER}"
 		fi
-	done
+	fi
+
+	ticker checking
+
+	package_managers_list=(
+		"apt-get --quiet --quiet update > /dev/null 2>&1; apt-get --quiet --quiet install --yes"
+		"dnf --quiet install --assumeyes"
+		"yum --quiet install --assumeyes"
+		"apk add --quiet"
+		"pacman --sync --refresh --noconfirm --noprogressbar"
+		"zypper --quiet --non-interactive install"
+	)
+
+	package="curl"
 
 	if [[ -z $(command -v "${package}") ]]
 	then
-		echo "[  !  ] Unable to install or binary not found /////////////////////// [ '${package}' ]"
-		echo
+		for package_manager in "${package_managers_list[@]}"
+		do
+			entry="${package_manager%% *}"
 
-		exit 1
+			if [[ -n $(command -v "${entry}") ]]
+			then
+				eval "${package_manager} ${package} > /dev/null 2>&1"
+
+				break
+			fi
+		done
+
+		if [[ -z $(command -v "${package}") ]]
+		then
+			echo "[  !  ] Unable to install or binary not found /////////////////////// [ '${package}' ]"
+			echo
+
+			exit 1
+		fi
 	fi
+
+	mkdir -p "${HOME}"/.local/bin
+
+	frobulator="${HOME}"/.local/bin/frobulator
+
+	version_online=$(curl -s -L get.frbltr.app | grep -m 1 '^update=' | cut -d '"' -f 2)
+
+	version_local=$(grep -m 1 '^update=' "${frobulator}" 2>/dev/null | cut -d '"' -f 2)
+
+	version_local="${version_local:-1970-01-01}"
+
+	if [ ! -f "${frobulator}" ] || [[ "${version_online}" > "${version_local}" ]]
+	then
+		curl -s -L get.frbltr.app > "${frobulator}"
+
+		chmod +x "${frobulator}"
+	fi
+
+	ticker initializing
+
+	source "${frobulator}"
+
+	export self_arguments="${@}"
 fi
 
-mkdir -p "${HOME}"/.local/bin
+# superuser ////////////////////////////////////////////////////////////////////
 
-frobulator="${HOME}"/.local/bin/frobulator
-
-version_online=$(curl -s -L get.frbltr.app | grep -m 1 '^# version=' | cut -d '"' -f 2)
-version_local=$(grep -m 1 '^# version=' "${frobulator}" 2>/dev/null | cut -d '"' -f 2)
-
-version_local="${version_local:-1970-01-01}"
-
-if [ ! -f "${frobulator}" ] || [[ "${version_online}" > "${version_local}" ]]
-then
-	curl -s -L get.frbltr.app > "${frobulator}"
-
-	chmod +x "${frobulator}"
-fi
-
-ticker initializing
-
-source "${frobulator}"
+frobulator.escalate
 
 # script ///////////////////////////////////////////////////////////////////////
 
-script=$(basename -- "${BASH_SOURCE[0]}")
+frobulator.script
 
 # version //////////////////////////////////////////////////////////////////////
 
-version="MM-DD-YY"
+version="YYYY-MM-DD"
 
 # usage ////////////////////////////////////////////////////////////////////////
-
-# prompt ///////////////////////////////////////////////////////////////////////
-
-frobulator.script
 
 # variables ////////////////////////////////////////////////////////////////////
 
 # defaults /////////////////////////////////////////////////////////////////////
 
 # functions ////////////////////////////////////////////////////////////////////
+
+# update ///////////////////////////////////////////////////////////////////////
+
+# frobulator.update
+
+# frobulator.upgrade
+
+# requirements /////////////////////////////////////////////////////////////////
+
+list=(
+
+)
+
+frobulator.require ${list[@]}
+
+list=()
+
+# configuration ////////////////////////////////////////////////////////////////
 ```
 ## prompt formatting
 
@@ -185,6 +225,15 @@ the shared prompt-formatting engine behind every color and marker command. Norma
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
 ```
 
+
+### frobulator.columns
+
+sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), bounded between 40 and `terminal_columns_maximum` (default `160`), with `80` when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
+
+```bash
+terminal_columns_maximum=120
+frobulator.columns
+```
 ## color commands
 
 Each named color wrapper calls `frobulator.pmt` directly, stores its color into `prompt_string`, and echoes the result — so every color wrapper shares the same prompt-formatting rules as `frobulator.pmt` above.
@@ -556,7 +605,7 @@ frobulator.copy "${source_directory}" "${target_directory}" "config"
 
 ### frobulator.move
 
-moves file(s)/directories, then sets `a+rx` permissions on the moved item(s) at the target. `source` defaults to `${PWD}` per item if left empty.
+moves file(s)/directories, then sets `public execute` permissions (`755`) on the moved item(s) at the target via `frobulator.permissions`. `source` defaults to `${PWD}` per item if left empty.
 
 ```bash
 frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"
@@ -605,7 +654,7 @@ frobulator.status
 
 ### frobulator.download
 
-downloads file(s) with URL status verification first. Several call shapes are supported depending on argument count — `"[url]" "[directory]" "[item]"` (or array), a combined `"[url]"/"[item]"` two-argument shorthand, or a 4-argument form that downloads a differently-named source item under a new local name. Runs each download in the background with `frobulator.progress "download"` as the visual indicator, and sets `a+rx` permissions on success.
+downloads file(s) with URL status verification first. Several call shapes are supported depending on argument count — `"[url]" "[directory]" "[item]"` (or array), a combined `"[url]"/"[item]"` two-argument shorthand, or a 4-argument form that downloads a differently-named source item under a new local name. Runs each download in the background with `frobulator.progress "download"` as the visual indicator, and sets `public execute` permissions (`755`) on success via `frobulator.permissions`.
 
 ```bash
 frobulator.download "https://get.frbltr.app" "${HOME}/.local/bin" "frobulator"
@@ -836,6 +885,40 @@ restores ownership on a target after privileged operations. Resolves the real pa
 frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
 ```
 
+### frobulator.permissions
+
+sets file / directory permissions from a scope and optional modifiers, in place of raw `chmod` modes. Takes the scope first, then any modifiers (any order), then one or more targets (or an array). Sets the exact mode; directories always keep `execute` for whoever can read them, since a directory cannot be opened without it.
+
+- **scope:** `public` (you edit, everyone reads), `group` (you edit, your group reads, no access for others), `private` (only you)
+- **modifiers:** `execute` (whoever can read can also run), `readonly` (nobody edits, including you)
+
+| call | file | directory | typical use |
+|---|---|---|---|
+| `public` | `644` `rw-r--r--` | `755` `rwxr-xr-x` | regular files, configs, shared data |
+| `public execute` | `755` `rwxr-xr-x` | `755` `rwxr-xr-x` | scripts, binaries, installed tools |
+| `public readonly` | `444` `r--r--r--` | `555` `r-xr-xr-x` | reference files that should not change |
+| `public readonly execute` | `555` `r-xr-xr-x` | `555` `r-xr-xr-x` | locked-down tools |
+| `group` | `640` `rw-r-----` | `750` `rwxr-x---` | files for your group only |
+| `group execute` | `750` `rwxr-x---` | `750` `rwxr-x---` | group-only scripts |
+| `group readonly` | `440` `r--r-----` | `550` `r-xr-x---` | group reference files |
+| `group readonly execute` | `550` `r-xr-x---` | `550` `r-xr-x---` | locked group tools |
+| `private` | `600` `rw-------` | `700` `rwx------` | credentials, keys, tokens |
+| `private execute` | `700` `rwx------` | `700` `rwx------` | personal scripts |
+| `private readonly` | `400` `r--------` | `500` `r-x------` | ssh keys, certificates |
+| `private readonly execute` | `500` `r-x------` | `500` `r-x------` | locked personal tools |
+
+```bash
+frobulator.permissions public execute "${path}/${file}"
+```
+
+```bash
+frobulator.permissions private "${HOME}/.git-credentials"
+```
+
+```bash
+frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"
+```
+
 ## archive helpers
 
 ### frobulator.archive
@@ -859,6 +942,7 @@ frobulator.extract "backup.tar.gz" "${target_directory}"
 ```text
 frobulator.plo
 frobulator.pmt
+frobulator.columns
 frobulator.black
 frobulator.silver
 frobulator.grey
@@ -922,6 +1006,7 @@ frobulator.trap
 frobulator.complete
 frobulator.result
 frobulator.ownership
+frobulator.permissions
 frobulator.directory
 frobulator.write
 frobulator.file
@@ -1005,7 +1090,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-04 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-28-2211 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

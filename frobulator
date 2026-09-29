@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-28"
+update="2026-09-28-2211"
 
 version="${update}"
 
@@ -58,9 +58,11 @@ then
 				then
 					cp "${file_source}" "${file_target}"
 
-					chmod a+rx "${file_target}"
+					# load installed version first: provides 'frobulator.permissions'
 
 					source "${file_target}"
+
+					frobulator.permissions public execute "${file_target}"
 
 					frobulator.scs "Installed" "[ ${file_target} ]"
 
@@ -3339,6 +3341,166 @@ frobulator.ownership () {
 	return "${status}"
 }
 
+# permissions //////////////////////////////////////////////////////////////////
+
+# use to set file / directory permissions from a scope and optional modifiers
+# sets the exact mode - directories always keep 'execute' for whoever can read
+# them (required to open a directory)
+
+# scope:      public     you edit, everyone reads
+#             group      you edit, your group reads, no access for others
+#             private    only you
+# modifiers:  execute    whoever can read can also run
+#             readonly   nobody edits, including you
+
+#                           file          directory     typical use
+# public                    644 rw-r--r-- 755 rwxr-xr-x regular files, configs, shared data
+# public execute            755 rwxr-xr-x 755 rwxr-xr-x scripts, binaries, installed tools
+# public readonly           444 r--r--r-- 555 r-xr-xr-x reference files that should not change
+# public readonly execute   555 r-xr-xr-x 555 r-xr-xr-x locked-down tools
+# group                     640 rw-r----- 750 rwxr-x--- files for your group only
+# group execute             750 rwxr-x--- 750 rwxr-x--- group-only scripts
+# group readonly            440 r--r----- 550 r-xr-x--- group reference files
+# group readonly execute    550 r-xr-x--- 550 r-xr-x--- locked group tools
+# private                   600 rw------- 700 rwx------ credentials, keys, tokens
+# private execute           700 rwx------ 700 rwx------ personal scripts
+# private readonly          400 r-------- 500 r-x------ ssh keys, certificates
+# private readonly execute  500 r-x------ 500 r-x------ locked personal tools
+
+# usage:      frobulator.permissions "[scope]" "[modifiers]" "[target]" | "[array]"
+
+# command:    frobulator.permissions public execute "${path}/${file}"
+# command:    frobulator.permissions private "${HOME}/.git-credentials"
+
+frobulator.permissions () {
+
+	local status=0
+
+	local scope="${1}"
+	local execute=false
+	local readonly=false
+	local target
+	local runnable
+	local mode_owner
+	local mode_group
+	local mode_others
+
+	# scope
+
+	if [ -z "${scope}" ]
+	then
+		frobulator.err "Missing permissions scope"
+		echo
+
+		return 1
+	fi
+
+	if [ "${scope}" != "public" ] && [ "${scope}" != "group" ] && [ "${scope}" != "private" ]
+	then
+		frobulator.err "Invalid permissions scope" "[ '${scope}' ]"
+		echo
+
+		return 1
+	fi
+
+	shift
+
+	# modifiers: any order, before the target(s)
+
+	while [ "${#}" -gt 0 ]
+	do
+		if [ "${1}" = "execute" ]
+		then
+			execute=true
+
+		elif [ "${1}" = "readonly" ]
+		then
+			readonly=true
+		else
+			break
+		fi
+
+		shift
+	done
+
+	# target(s)
+
+	if [ "${#}" -eq 0 ]
+	then
+		frobulator.err "Missing permissions target"
+		echo
+
+		return 1
+	fi
+
+	local -a list=("${@}")
+
+	for target in "${list[@]}"
+	do
+		# directories need 'execute' to be opened
+
+		runnable=false
+
+		if [ "${execute}" = true ] || [ -d "${target}" ]
+		then
+			runnable=true
+		fi
+
+		# owner: always reads, writes unless readonly
+
+		mode_owner="r"
+
+		if [ "${readonly}" = false ]
+		then
+			mode_owner+="w"
+		fi
+
+		if [ "${runnable}" = true ]
+		then
+			mode_owner+="x"
+		fi
+
+		# group: reads with 'public' and 'group'
+
+		mode_group=""
+
+		if [ "${scope}" = "public" ] || [ "${scope}" = "group" ]
+		then
+			mode_group="r"
+
+			if [ "${runnable}" = true ]
+			then
+				mode_group+="x"
+			fi
+		fi
+
+		# others: read with 'public' only
+
+		mode_others=""
+
+		if [ "${scope}" = "public" ]
+		then
+			mode_others="r"
+
+			if [ "${runnable}" = true ]
+			then
+				mode_others+="x"
+			fi
+		fi
+
+		# apply permissions
+
+		chmod "u=${mode_owner},g=${mode_group},o=${mode_others}" "${target}"
+
+		if [ "${?}" -ne 0 ]
+		then
+			status=1
+		fi
+	done
+
+	return "${status}"
+}
+
 # directory ////////////////////////////////////////////////////////////////////
 
 # use to generate directory from argument or array list
@@ -3952,7 +4114,7 @@ frobulator.move () {
 
 		# set permissions
 
-		chmod a+rx "${target}/${file}"
+		frobulator.permissions public execute "${target}/${file}"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -4741,7 +4903,7 @@ frobulator.download () {
 
 				# set permissions
 
-				chmod a+rx "${path}/${file}"
+				frobulator.permissions public execute "${path}/${file}"
 
 				if [ "${?}" -ne 0 ]
 				then

@@ -6595,9 +6595,11 @@ frobulator.escalate () {
 
 	export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
 
-	# restart as superuser
+	# restart as superuser:
+	# keeps the user's 'HOME' - sudo resets it to '/root', where no frobulator
+	# is installed - so any script header resolves '~/.local/bin/frobulator'
 
-	exec sudo "${SHELL}" "${self}" "${self_arguments_list[@]}"
+	exec sudo env HOME="${HOME}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
 
 	if [ "${?}" -ne 0 ]
 	then

@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-29-2038"
+update="2026-09-29-2047"
 
 version="${update}"
 
@@ -37,7 +37,7 @@ then
 
 	file_install=$(basename "${file_source}")
 
-	frobulator_script="${file_install}"
+	script="${file_install}"
 
 	directory_install="${HOME}"/.local/bin
 
@@ -47,9 +47,7 @@ then
 	do
 		case "${1}"
 		in
-
 			-i|--install)
-
 				if [ ! -d "${directory_install}" ]
 				then
 					mkdir -p "${directory_install}"
@@ -68,20 +66,24 @@ then
 					frobulator.scs "Installed" "[ ${file_target} ]"
 
 					echo
+				else
+					# already installed: reported once all functions are loaded
+
+					install_state="current"
 				fi
 			;;
 
 			-h|--help)
 				echo
-				echo -e "Usage: ./${frobulator_script} | [OPTION]"
+				echo -e "Usage: ./${script} -i | -h"
 				echo
 				echo -e "Options:"
 				echo
-				echo -e "-i, --install       Run [i]nstallation of ${frobulator_script} to ${directory_install}."
+				echo -e "-i, --install    Run [i]nstallation of ${script} to ${directory_install}."
 				echo
-				echo -e "-h, --help          Show [h]elp and usage information."
+				echo -e "-h, --help       Show [h]elp and usage information."
 				echo
-				echo -e "'${frobulator_script}' [ Version // ${version} ]"
+				echo -e "'${script}'      [ Version // ${version} ]"
 				echo
 
 				exit
@@ -96,10 +98,10 @@ then
 
 			*)
 				echo
-				echo -e "Usage: ./${frobulator_script} | [OPTION]"
+				echo -e "Usage: ./${script} -i | -h"
 				echo
-				echo -e "Unknown option: '${frobulator_script} ${1}':"
-				echo -e "Type './${frobulator_script} -h' for help and usage information."
+				echo -e "Unknown option: '${script} ${1}':"
+				echo -e "Type './${script} -h' for help and usage information."
 				echo
 
 				exit 1
@@ -7207,6 +7209,14 @@ frobulator.self () {
 }
 
 frobulator.self
+
+# report install state when executed directly: functions are loaded from here on
+
+if [ "${install_state}" = "current" ]
+then
+	frobulator.inf "Already installed" "[ ${file_target} ]"
+	echo
+fi
 
 # TO DO ////////////////////////////////////////////////////////////////////////
 

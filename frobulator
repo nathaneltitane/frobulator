@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-29-1917"
+update="2026-09-29-2038"
 
 version="${update}"
 
@@ -45,7 +45,8 @@ then
 
 	while (($#))
 	do
-		case "${1}" in
+		case "${1}"
+		in
 
 			-i|--install)
 
@@ -71,31 +72,41 @@ then
 			;;
 
 			-h|--help)
-
 				echo
 				echo -e "Usage: ./${frobulator_script} | [OPTION]"
 				echo
-				echo "Options:"
+				echo -e "Options:"
 				echo
-				echo "	-i, --install    [I]nstall ${frobulator_script} to ${directory_install}"
+				echo -e "-i, --install       Run [i]nstallation of ${frobulator_script} to ${directory_install}."
 				echo
-				echo "	-h, --help       Show this [h]elp menu"
+				echo -e "-h, --help          Show [h]elp and usage information."
+				echo
+				echo -e "'${frobulator_script}' [ Version // ${version} ]"
 				echo
 
 				exit
 			;;
 
-			*)
+			"")
+				# handle empty argument:
+				# use default values specified in script
 
+				:
+			;;
+
+			*)
 				echo
-				echo "${frobulator_script}: Unknown option '${1}'"
-				echo "Type './${frobulator_script} --help' for help and usage information."
+				echo -e "Usage: ./${frobulator_script} | [OPTION]"
+				echo
+				echo -e "Unknown option: '${frobulator_script} ${1}':"
+				echo -e "Type './${frobulator_script} -h' for help and usage information."
 				echo
 
 				exit 1
+
 			;;
 
-		esac
+			esac
 
 		shift
 

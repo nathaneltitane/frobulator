@@ -10,7 +10,7 @@
 
 # 'update' is read as text by the bootstrap for update checks: keep it literal
 
-update="2026-09-29-2047"
+update="2026-09-29-2059"
 
 version="${update}"
 
@@ -24,53 +24,23 @@ self="${BASH_SOURCE[0]}"
 
 # usage ////////////////////////////////////////////////////////////////////////
 
+# executed directly (not sourced): option handling here, installation once
+# all functions are loaded - see end of file
+
 if [[ "${self}" = "${0}" ]]
 then
-	# default to install when run without arguments
+	frobulator_executed="true"
 
-	if [ $# -eq 0 ]
-	then
-		set -- --install
-	fi
-
-	file_source="${self}"
-
-	file_install=$(basename "${file_source}")
-
-	script="${file_install}"
+	script="$(basename -- "${self}")"
 
 	directory_install="${HOME}"/.local/bin
-
-	file_target="${directory_install}/${file_install}"
 
 	while (($#))
 	do
 		case "${1}"
 		in
 			-i|--install)
-				if [ ! -d "${directory_install}" ]
-				then
-					mkdir -p "${directory_install}"
-				fi
-
-				if [ ! "${file_source}" -ef "${file_target}" ]
-				then
-					cp "${file_source}" "${file_target}"
-
-					# load installed version first: provides 'frobulator.permissions'
-
-					source "${file_target}"
-
-					frobulator.permissions public execute "${file_target}"
-
-					frobulator.scs "Installed" "[ ${file_target} ]"
-
-					echo
-				else
-					# already installed: reported once all functions are loaded
-
-					install_state="current"
-				fi
+				option="install"
 			;;
 
 			-h|--help)
@@ -113,6 +83,13 @@ then
 		shift
 
 	done
+
+	# default to install when run without arguments
+
+	if [ -z "${option}" ]
+	then
+		option="install"
+	fi
 fi
 
 # requirements /////////////////////////////////////////////////////////////////
@@ -7210,12 +7187,26 @@ frobulator.self () {
 
 frobulator.self
 
-# report install state when executed directly: functions are loaded from here on
+# install when executed directly: functions are loaded from here on
 
-if [ "${install_state}" = "current" ]
+if [ "${frobulator_executed}" = "true" ] && [ "${option}" = "install" ]
 then
-	frobulator.inf "Already installed" "[ ${file_target} ]"
-	echo
+	file_script="$(realpath "${BASH_SOURCE[0]}")"
+
+	directory_script="$(dirname "${file_script}")"
+
+	if [ "${directory_script}" -ef "${directory_install}" ]
+	then
+		frobulator.inf "Already installed" "[ ${directory_install}/${script} ]"
+		echo
+	else
+		frobulator.copy "${directory_script}" "${directory_install}" "${script}"
+
+		frobulator.permissions public execute "${directory_install}/${script}"
+
+		frobulator.scs "Installed" "[ ${directory_install}/${script} ]"
+		echo
+	fi
 fi
 
 # TO DO ////////////////////////////////////////////////////////////////////////

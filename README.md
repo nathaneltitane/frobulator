@@ -230,10 +230,10 @@ frobulator.pmt "Downloading" "[ package.tar.gz ]"
 
 ### frobulator.columns
 
-sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), bounded between 40 and `terminal_columns_maximum` (default `160`), with `80` when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
+sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), never below `terminal_columns_minimum` (default `80`), which is also used when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
 
 ```bash
-terminal_columns_maximum=120
+terminal_columns_minimum=100
 frobulator.columns
 ```
 ## color commands

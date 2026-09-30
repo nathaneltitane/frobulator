@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-09-29-2115"
+update="2026-09-29-2125"
 
 version="${update}"
 
@@ -107,9 +107,9 @@ fi
 
 # follow terminal width
 
-terminal_columns=80
+terminal_columns_minimum=80
 
-terminal_columns_maximum=160
+terminal_columns="${terminal_columns_minimum}"
 
 frobulator.columns () {
 
@@ -117,16 +117,11 @@ frobulator.columns () {
 
 	columns=$(tput cols 2> /dev/null)
 
-	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -ge 40 ]
+	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -gt "${terminal_columns_minimum}" ]
 	then
-		if [ "${columns}" -gt "${terminal_columns_maximum}" ]
-		then
-			columns="${terminal_columns_maximum}"
-		fi
-
 		terminal_columns="${columns}"
 	else
-		terminal_columns=80
+		terminal_columns="${terminal_columns_minimum}"
 	fi
 }
 

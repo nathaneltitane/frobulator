@@ -8,9 +8,9 @@
 
 # version //////////////////////////////////////////////////////////////////////
 
-# 'update' is read as text by the bootstrap for update checks: keep it literal
+# read as text by bootstrap
 
-update="2026-09-29-2059"
+update="2026-09-29-2115"
 
 version="${update}"
 
@@ -24,16 +24,13 @@ self="${BASH_SOURCE[0]}"
 
 # usage ////////////////////////////////////////////////////////////////////////
 
-# executed directly (not sourced): option handling here, installation once
-# all functions are loaded - see end of file
+# executed directly: handle options - install at end of file
+
+directory_install="${HOME}"/.local/bin
 
 if [[ "${self}" = "${0}" ]]
 then
-	frobulator_executed="true"
-
 	script="$(basename -- "${self}")"
-
-	directory_install="${HOME}"/.local/bin
 
 	while (($#))
 	do
@@ -84,7 +81,7 @@ then
 
 	done
 
-	# default to install when run without arguments
+	# default to install
 
 	if [ -z "${option}" ]
 	then
@@ -108,10 +105,7 @@ else
 	SHELL="${SHELL}"
 fi
 
-# provide terminal columns count:
-# follows the terminal width - refreshed on window resize (WINCH),
-# bounded between 40 and 'terminal_columns_maximum' columns,
-# falls back to 80 without a terminal (pipe, file, log)
+# follow terminal width
 
 terminal_columns=80
 
@@ -749,8 +743,7 @@ else
 	fi
 fi
 
-# no terminal output (pipe, file, log): plain text -
-# clears unconverted color indexes so they never print as text
+# no terminal: clear colors
 
 if [[ ! -t 1 ]]
 then
@@ -766,9 +759,7 @@ then
 	reset=''
 fi
 
-# terminal control fallbacks: no terminal (pipe, file, log) or no 'tput' -
-# cursor / screen helpers are left undefined above, define them as no-ops so
-# callers (frobulator.plo, frobulator.erase, ...) do nothing instead of failing
+# no terminal: helpers as no-ops
 
 terminal_functions_list=(
 	terminal_cursor_save
@@ -860,8 +851,8 @@ frobulator.plo () {
 
 # prompt management tool (pmt) /////////////////////////////////////////////////
 
-# prompt management and standardizing to the terminal width (terminal_columns):
-# adds line folding with word detection for strings wider than the terminal
+# prompt management and standardizing to terminal width:
+# adds line folding with word detection for strings wider than terminal
 
 frobulator.pmt () {
 
@@ -3365,9 +3356,7 @@ frobulator.ownership () {
 
 # permissions //////////////////////////////////////////////////////////////////
 
-# use to set file / directory permissions from a scope and optional modifiers
-# sets the exact mode - directories always keep 'execute' for whoever can read
-# them (required to open a directory)
+# use to set permissions from scope and modifiers
 
 # scope:      public     you edit, everyone reads
 #             group      you edit, your group reads, no access for others
@@ -3427,7 +3416,7 @@ frobulator.permissions () {
 
 	shift
 
-	# modifiers: any order, before the target(s)
+	# modifiers
 
 	while [ "${#}" -gt 0 ]
 	do
@@ -3445,7 +3434,7 @@ frobulator.permissions () {
 		shift
 	done
 
-	# target(s)
+	# targets
 
 	if [ "${#}" -eq 0 ]
 	then
@@ -3459,7 +3448,7 @@ frobulator.permissions () {
 
 	for target in "${list[@]}"
 	do
-		# directories need 'execute' to be opened
+		# directories need execute
 
 		runnable=false
 
@@ -3468,7 +3457,7 @@ frobulator.permissions () {
 			runnable=true
 		fi
 
-		# owner: always reads, writes unless readonly
+		# owner
 
 		mode_owner="r"
 
@@ -3482,7 +3471,7 @@ frobulator.permissions () {
 			mode_owner+="x"
 		fi
 
-		# group: reads with 'public' and 'group'
+		# group
 
 		mode_group=""
 
@@ -3496,7 +3485,7 @@ frobulator.permissions () {
 			fi
 		fi
 
-		# others: read with 'public' only
+		# others
 
 		mode_others=""
 
@@ -5765,7 +5754,7 @@ frobulator.require () {
 
 	export DEBIAN_FRONTEND=noninteractive
 
-	# empty list: return before any root-requiring apt-file operation
+	# empty list: nothing to require
 
 	if [ "${#list[@]}" -eq 0 ]
 	then
@@ -6429,15 +6418,13 @@ frobulator.escalate () {
 		"(^|[[:space:]\"'=:(])/var/(lib|cache|spool|log)/"
 	)
 
-	# scoped separator: joins patterns, then restores default word splitting
-	# for the argument list below - never leaks into the calling script
+	# join patterns
 
 	local IFS='|'
 	root_pattern="${root_patterns_list[*]}"
 	IFS=$' \t\n'
 
-	# restore the script's arguments: exactly from the header's array,
-	# word split for older headers exporting a plain string
+	# restore script arguments
 
 	if [[ "$(declare -p self_arguments 2> /dev/null)" == "declare -a"* ]]
 	then
@@ -6484,9 +6471,7 @@ frobulator.escalate () {
 		return "${status}"
 	fi
 
-	# scans the script body for root patterns: returns 0 on the first match
-	# skips the bootstrap header (up to the '# version' marker), comment lines
-	# and empty requirement lists - avoids false positives
+	# scan script body for root patterns
 
 	escalate_scan () {
 
@@ -6507,7 +6492,7 @@ frobulator.escalate () {
 
 		mapfile -t lines < "${file}"
 
-		# locate the bootstrap header's end: scan the whole file without marker
+		# skip bootstrap header
 
 		for (( index = 0; index < ${#lines[@]}; index++ ))
 		do
@@ -6524,14 +6509,14 @@ frobulator.escalate () {
 
 		for line in "${lines[@]:index}"
 		do
-			# comment lines
+			# skip comments
 
 			if [[ "${line}" =~ ${pattern_comment} ]]
 			then
 				continue
 			fi
 
-			# requirement list: count entries until closed
+			# count requirement entries
 
 			if [ "${list_open}" = true ]
 			then
@@ -6562,7 +6547,7 @@ frobulator.escalate () {
 					list_entries=$(( list_entries + 1 ))
 				fi
 
-			# empty requirement list: nothing to install
+			# skip empty requirements
 
 			elif [[ "${line}" =~ ${pattern_require} ]] && [ "${list_entries}" -eq 0 ]
 			then
@@ -6625,9 +6610,7 @@ frobulator.escalate () {
 
 	export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
 
-	# restart as superuser:
-	# keeps the user's 'HOME' - sudo resets it to '/root', where no frobulator
-	# is installed - so any script header resolves '~/.local/bin/frobulator'
+	# restart as superuser with user home
 
 	exec sudo env HOME="${HOME}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
 
@@ -7187,26 +7170,32 @@ frobulator.self () {
 
 frobulator.self
 
-# install when executed directly: functions are loaded from here on
+# install: default when executed
 
-if [ "${frobulator_executed}" = "true" ] && [ "${option}" = "install" ]
+if [ "${option}" = "install" ]
 then
 	file_script="$(realpath "${BASH_SOURCE[0]}")"
 
 	directory_script="$(dirname "${file_script}")"
 
+	file_name="$(basename "${file_script}")"
+
 	if [ "${directory_script}" -ef "${directory_install}" ]
 	then
-		frobulator.inf "Already installed" "[ ${directory_install}/${script} ]"
+		frobulator.inf "Already installed" "[ ${directory_install}/${file_name} ]"
 		echo
 	else
-		frobulator.copy "${directory_script}" "${directory_install}" "${script}"
+		frobulator.copy "${directory_script}" "${directory_install}" "${file_name}"
 
-		frobulator.permissions public execute "${directory_install}/${script}"
+		frobulator.permissions public execute "${directory_install}/${file_name}"
 
-		frobulator.scs "Installed" "[ ${directory_install}/${script} ]"
+		frobulator.scs "Installed" "[ ${directory_install}/${file_name} ]"
 		echo
 	fi
+
+	# release option
+
+	unset option
 fi
 
 # TO DO ////////////////////////////////////////////////////////////////////////

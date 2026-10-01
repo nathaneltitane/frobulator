@@ -269,6 +269,8 @@ frobulator.[color] "[string]" "[string]" "[span character]"
 
 These commands print standard frobulator markers by calling `frobulator.pmt` directly and prefixing its own colored marker glyph (e.g. `[  i  ]`, `[  !  ]`). Most accept a message, an optional detail string, and an optional fill character.
 
+Every marker line is followed by a blank line, printed by `frobulator.brk` - scripts do not add `echo` after messages. Carry-over lines (`frobulator.nul`, `frobulator.ind`) rejoin the line above on screen, so a message and its details stay together. Prompts (`ask`, `ipt`, `usr`) stay on the same line for the answer.
+
 | command | purpose | example |
 |--------------------|-----------------------------|---------------------------------------------|
 | `frobulator.nil` | empty marker line | `frobulator.nil "Message" "[ detail ]"` |

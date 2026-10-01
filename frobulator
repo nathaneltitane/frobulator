@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-09-30-2017"
+update="2026-09-30-2048"
 
 version="${update}"
 
@@ -1684,7 +1684,7 @@ frobulator.ask () {
 
 	color_entry=("${fuschia}")
 
-	marker_spaced=""
+	unset marker_spaced
 }
 
 # input line marker ////////////////////////////////////////////////////////////
@@ -1699,7 +1699,7 @@ frobulator.ipt () {
 
 	color_entry=("${pink}")
 
-	marker_spaced=""
+	unset marker_spaced
 }
 
 # user line marker /////////////////////////////////////////////////////////////
@@ -1714,7 +1714,7 @@ frobulator.usr () {
 
 	color_entry=("${grey}")
 
-	marker_spaced=""
+	unset marker_spaced
 }
 
 # null line marker /////////////////////////////////////////////////////////////

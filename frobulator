@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2317"
+update="2026-10-02-2329"
 
 version="${update}"
 
@@ -3085,8 +3085,9 @@ frobulator.trap () {
 #                     └── return overall status
 
 # capture previous command status when used without arguments
-# stop on failure when a message is given: frobulator.halt at script level,
-# frobulator.fail inside a function - follow with '|| return' there
+# continue (default): record and report failures, then carry on
+# halt: on failure report, log, print frobulator.result and exit the script
+# label: calling function name, else operation number - message replaces it on failure
 # execute command and record checkpoint status when arguments are supplied
 # skip execution when checkpoint already completed successfully
 # use immediately after command when used without arguments
@@ -3096,19 +3097,26 @@ frobulator.trap () {
 #           frobulator.complete
 
 #           command
-#           frobulator.complete "[message]" "[detail]"
+#           frobulator.complete continue "[message]" "[detail]"
+
+#           command
+#           frobulator.complete halt "[message]" "[detail]"
 
 #           frobulator.complete "[path]" "[checkpoint]" command [arguments...]
 
 frobulator.complete () {
 
 	local previous_status="${?}"
-
 	local status=0
-
+	local mode="continue"
+	local keyword=false
+	local message
+	local detail
+	local label
 	local path
 	local checkpoint
 	local checkpoint_number
+	local line
 
 	# initialize collections
 
@@ -3116,45 +3124,65 @@ frobulator.complete () {
 	then
 		frobulator_complete_statuses=()
 		frobulator_complete_checkpoints=()
-
 		frobulator_complete_initialized=true
 	fi
 
-	# message: stop on failure - exit at script level, return inside a function
+	# mode: continue (default) or halt
 
-	if [ "${#}" -ge 1 ] && [ "${#}" -le 2 ]
+	if [ "${1}" = "continue" ] || [ "${1}" = "halt" ]
 	then
-		if [ "${FUNCNAME[1]}" = "main" ] || [ "${FUNCNAME[1]}" = "source" ]
-		then
-			( exit "${previous_status}" )
+		mode="${1}"
+		keyword=true
 
-			frobulator.halt "${@}"
-		else
-			( exit "${previous_status}" )
-
-			frobulator.fail "${@}"
-		fi
-
-		return
+		shift
 	fi
 
-	# collect previous command status
+	# record previous command status: no arguments or message and detail
 
-	if [ "${#}" -eq 0 ]
+	if [ "${#}" -le 2 ] || [ "${keyword}" = true ]
 	then
-		checkpoint_number=$(( ${#frobulator_complete_checkpoints[@]} + 1 ))
-
-		checkpoint="Operation ${checkpoint_number}"
+		message="${1}"
+		detail="${2}"
 		status="${previous_status}"
 
+		# label: calling function name or operation number
+
+		if [ "${FUNCNAME[1]}" != "main" ] && [ "${FUNCNAME[1]}" != "source" ]
+		then
+			label="${FUNCNAME[1]#frobulator.}"
+			label="${label//_/ }"
+		else
+			label="Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))"
+		fi
+
 		frobulator_complete_statuses+=("${status}")
-		frobulator_complete_checkpoints+=("${checkpoint}")
+		frobulator_complete_checkpoints+=("${message:-${label}}")
 
 		if [ "${status}" -eq 0 ]
 		then
-			frobulator.cpt "Complete - ${checkpoint}" "[ status ${status} ]"
+			frobulator.cpt "Complete - ${label}" "[ status ${status} ]"
+
+			return 0
+		fi
+
+		if [ -n "${message}" ]
+		then
+			frobulator.err "${message}" "${detail}"
 		else
-			frobulator.wrn "Incomplete - ${checkpoint}" "[ status ${status} ]"
+			frobulator.wrn "Incomplete - ${label}" "[ status ${status} ]"
+		fi
+
+		# log failure
+
+		line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${message:-${label}}${detail:+ ${detail}} [ status ${status} ]"
+
+		frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+
+		if [ "${mode}" = "halt" ]
+		then
+			frobulator.result "${script##*/}"
+
+			exit "${status}"
 		fi
 
 		return 0
@@ -3308,6 +3336,8 @@ frobulator.halt () {
 
 	frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
 
+	frobulator.result "${script##*/}"
+
 	exit "${status}"
 }
 
@@ -3412,7 +3442,14 @@ frobulator.result () {
 
 		frobulator.wrn "Errors encountered" "[ ${count_error} ] [ ${instance} ]"
 
-		frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
+		# same directory as frobulator.log
+
+		if [ -z "${SUDO:-${HOME}}" ]
+		then
+			frobulator.inf "Review setup logs for details" "[ ${PREFIX}/var/log/ ]"
+		else
+			frobulator.inf "Review setup logs for details" "[ ${HOME}/.local/var/log/ ]"
+		fi
 	else
 		frobulator.scs "Execution success" "[ ${instance} ]"
 	fi

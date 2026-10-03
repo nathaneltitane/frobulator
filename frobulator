@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0028"
+update="2026-10-03-0037"
 
 version="${update}"
 
@@ -1901,6 +1901,7 @@ frobulator.sep () {
 # ┌────────────────────────────────────────────────────────────────────────────┐
 # │ message                                                                    │
 # └────────────────────────────────────────────────────────────────────────────┘
+#
 
 frobulator.ntf () {
 
@@ -2256,6 +2257,8 @@ frobulator.ntf () {
 
 	echo "${frame_bottom}"
 
+	frobulator.brk
+
 	# cleanup
 
 	unset style
@@ -2364,8 +2367,6 @@ frobulator.script () {
 	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
 
 	frobulator.ntf msg "Script" "${message}"
-
-	echo
 }
 
 # type ─────────────────────────────────────────────────────────────────────────

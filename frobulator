@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0103"
+update="2026-10-03-0107"
 
 version="${update}"
 
@@ -105,6 +105,13 @@ else
 	SHELL="${SHELL}"
 fi
 
+# provide null sink for argument / error / output silencing
+
+if [ -e /dev/null ]
+then
+	sink="/dev/null"
+fi
+
 # follow terminal width
 
 terminal_columns_minimum=80
@@ -115,7 +122,7 @@ frobulator.columns () {
 
 	local columns
 
-	columns=$(tput cols 2> /dev/null)
+	columns=$(tput cols 2> "${sink}")
 
 	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -gt "${terminal_columns_minimum}" ]
 	then
@@ -136,13 +143,6 @@ self="${0}"
 if [ -z "${script}" ]
 then
 	script="${self}"
-fi
-
-# provide null sink for argument / error / output silencing
-
-if [ -e /dev/null ]
-then
-	sink="/dev/null"
 fi
 
 # package manager ──────────────────────────────────────────────────────────────
@@ -775,7 +775,7 @@ terminal_functions_list=(
 
 for terminal_function in "${terminal_functions_list[@]}"
 do
-	if ! declare -F "${terminal_function}" > /dev/null
+	if ! declare -F "${terminal_function}" > "${sink}"
 	then
 		eval "${terminal_function} () { :; }"
 	fi
@@ -791,10 +791,16 @@ marker_hnt='//'
 marker_sep='───────'
 marker_elp='...'
 marker_idt='       '
-marker_web='https://'
 marker_prc='%'
 marker_spc=' '
 marker_tab='    '
+
+# protocol markers ─────────────────────────────────────────────────────────────
+
+marker_web='https://'
+marker_htp='http://'
+marker_fil='file://'
+marker_ssh='ssh://'
 
 # line markers ─────────────────────────────────────────────────────────────────
 
@@ -6677,7 +6683,7 @@ frobulator.escalate () {
 
 	# restore script arguments
 
-	if [[ "$(declare -p self_arguments 2> /dev/null)" == "declare -a"* ]]
+	if [[ "$(declare -p self_arguments 2> "${sink}")" == "declare -a"* ]]
 	then
 		self_arguments_list=("${self_arguments[@]}")
 	else

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2307"
+update="2026-10-02-2317"
 
 version="${update}"
 
@@ -3085,6 +3085,8 @@ frobulator.trap () {
 #                     └── return overall status
 
 # capture previous command status when used without arguments
+# stop on failure when a message is given: frobulator.halt at script level,
+# frobulator.fail inside a function - follow with '|| return' there
 # execute command and record checkpoint status when arguments are supplied
 # skip execution when checkpoint already completed successfully
 # use immediately after command when used without arguments
@@ -3092,6 +3094,9 @@ frobulator.trap () {
 
 # usage:    command
 #           frobulator.complete
+
+#           command
+#           frobulator.complete "[message]" "[detail]"
 
 #           frobulator.complete "[path]" "[checkpoint]" command [arguments...]
 
@@ -3113,6 +3118,24 @@ frobulator.complete () {
 		frobulator_complete_checkpoints=()
 
 		frobulator_complete_initialized=true
+	fi
+
+	# message: stop on failure - exit at script level, return inside a function
+
+	if [ "${#}" -ge 1 ] && [ "${#}" -le 2 ]
+	then
+		if [ "${FUNCNAME[1]}" = "main" ] || [ "${FUNCNAME[1]}" = "source" ]
+		then
+			( exit "${previous_status}" )
+
+			frobulator.halt "${@}"
+		else
+			( exit "${previous_status}" )
+
+			frobulator.fail "${@}"
+		fi
+
+		return
 	fi
 
 	# collect previous command status

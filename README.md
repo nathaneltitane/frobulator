@@ -523,6 +523,7 @@ frobulator.trap directory_temporary
 Two modes:
 
 - **No arguments** — captures the exit status of the command that ran immediately before it and records it as an anonymous "Operation N", printing complete/incomplete accordingly. Covers what a separate `frobulator.continue` command used to do; that command no longer exists.
+- **`frobulator.complete "[message]" "[detail]"`** - one-line status check after a command. On success it records the status silently. On failure it prints the message, logs it and stops: through `frobulator.halt` (exit) at script level, through `frobulator.fail` (return) inside a function - add `|| return` there to leave the function.
 - **`frobulator.complete "[path]" "[checkpoint]" command [arguments...]`** — skips running the command if `"${path}/${checkpoint}"` already exists (checkpoint already satisfied); otherwise runs it, records its status, and creates the checkpoint file on success (removing any stale checkpoint file on failure).
 
 Every call's status/checkpoint pair accumulates in memory for `frobulator.result` to evaluate afterward.
@@ -533,12 +534,17 @@ frobulator.complete
 ```
 
 ```bash
+make all
+frobulator.complete "Build failed" "[ ${target} ]"
+```
+
+```bash
 frobulator.complete "${checkpoint_directory}" "make-all" make all
 ```
 
 ### frobulator.halt
 
-stops the script when the command that ran immediately before it failed - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
+stops the script when the command that ran immediately before it failed - used by `frobulator.complete "[message]"` at script level, or called directly (for example inside a function that must end the whole script) - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
 
 ```bash
 zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
@@ -552,7 +558,7 @@ frobulator.halt
 
 ### frobulator.fail
 
-same as `frobulator.halt`, for use inside functions: instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with `|| return` to leave the calling function - a function cannot make its caller return on its own.
+same as `frobulator.halt`, for use inside functions (used by `frobulator.complete "[message]"` there): instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with `|| return` to leave the calling function - a function cannot make its caller return on its own.
 
 ```bash
 build () {

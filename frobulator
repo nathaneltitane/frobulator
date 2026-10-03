@@ -3067,14 +3067,27 @@ frobulator.trap () {
 
 # complete ---------------------------------------------------------------------
 
-# frobulator.complete
+# frobulator.complete [ continue | halt ] [ message ] [ detail ]
 #         │
 #         ├── capture previous command status
 #         │       or
-#         ├── execute command
-#         ├── record checkpoint
-#         ├── record status
-#         └── continue execution
+#         ├── execute command (checkpoint form)
+#         ├── record checkpoint and status
+#         │
+#         ├── success ── report complete ── continue execution
+#         │
+#         └── failure ── report message or incomplete ── log failure
+#                     │
+#                     ├── continue ── continue execution
+#                     └── halt ────── frobulator.result ── exit script
+#
+# frobulator.fail
+#         └── failure ── report and log ── return status to calling function
+#
+# frobulator.halt
+#         └── failure ── report and log ── frobulator.result ── exit script
+#
+#              end of script
 #                     │
 #                     ▼
 #            frobulator.result
@@ -3094,12 +3107,15 @@ frobulator.trap () {
 # use in tandem with frobulator.result
 
 # usage:    command
+
 #           frobulator.complete
 
 #           command
+
 #           frobulator.complete continue "[message]" "[detail]"
 
 #           command
+
 #           frobulator.complete halt "[message]" "[detail]"
 
 #           frobulator.complete "[path]" "[checkpoint]" command [arguments...]
@@ -3152,7 +3168,9 @@ frobulator.complete () {
 			label="${FUNCNAME[1]#frobulator.}"
 			label="${label//_/ }"
 		else
-			label="Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))"
+			frobulator_complete_operation=$(( ${frobulator_complete_operation:-0} + 1 ))
+
+			label="Operation ${frobulator_complete_operation}"
 		fi
 
 		frobulator_complete_statuses+=("${status}")
@@ -3315,15 +3333,26 @@ frobulator.halt () {
 		frobulator_complete_initialized=true
 	fi
 
-	checkpoint="${1:-Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))}"
-
-	frobulator_complete_statuses+=("${status}")
-	frobulator_complete_checkpoints+=("${checkpoint}")
-
 	if [ "${status}" -eq 0 ]
 	then
 		return 0
 	fi
+
+	# record failure: label from calling function when no message
+
+	if [ -n "${1}" ]
+	then
+		checkpoint="${1}"
+
+	elif [ "${FUNCNAME[1]}" != "main" ] && [ "${FUNCNAME[1]}" != "source" ]
+	then
+		checkpoint="${FUNCNAME[1]//_/ }"
+	else
+		checkpoint="Operation"
+	fi
+
+	frobulator_complete_statuses+=("${status}")
+	frobulator_complete_checkpoints+=("${checkpoint}")
 
 	if [ -n "${1}" ]
 	then
@@ -3366,15 +3395,26 @@ frobulator.fail () {
 		frobulator_complete_initialized=true
 	fi
 
-	checkpoint="${1:-Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))}"
-
-	frobulator_complete_statuses+=("${status}")
-	frobulator_complete_checkpoints+=("${checkpoint}")
-
 	if [ "${status}" -eq 0 ]
 	then
 		return 0
 	fi
+
+	# record failure: label from calling function when no message
+
+	if [ -n "${1}" ]
+	then
+		checkpoint="${1}"
+
+	elif [ "${FUNCNAME[1]}" != "main" ] && [ "${FUNCNAME[1]}" != "source" ]
+	then
+		checkpoint="${FUNCNAME[1]//_/ }"
+	else
+		checkpoint="Operation"
+	fi
+
+	frobulator_complete_statuses+=("${status}")
+	frobulator_complete_checkpoints+=("${checkpoint}")
 
 	if [ -n "${1}" ]
 	then
@@ -3433,6 +3473,8 @@ frobulator.result () {
 
 	frobulator_complete_statuses=()
 	frobulator_complete_checkpoints=()
+
+	unset frobulator_complete_operation
 
 	# report result
 

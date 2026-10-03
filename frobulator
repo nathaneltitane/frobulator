@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-1152"
+update="2026-10-03-1246"
 
 version="${update}"
 
@@ -3146,10 +3146,10 @@ frobulator.trap () {
 # frobulator.halt
 #         └── failure ── report and log ── frobulator.result ── exit script
 #
-#              end of script
+#                end of script
 #                     │
 #                     ▼
-#            frobulator.result
+#                frobulator.result
 #                     │
 #                     ├── summarize statuses
 #                     ├── clear checkpoints
@@ -5066,237 +5066,207 @@ frobulator.status () {
 
 # download ─────────────────────────────────────────────────────────────────────
 
-# use to download file(s) with url status verification from argument or array list
+# use to download file(s) from argument or array list
+# each file is reported with the http status code of its own download
+# a file is only written when the download succeeds (2xx)
 
 # usage:      frobulator.download "[url]"                    "[directory]"             "[item]" | "[array]"
 #             frobulator.download "[url]"/"[item]"           "[directory]"/"[item]"
-#             frobulator.download "[url]"/"[source item]"    "[directory]"/"[item]"
+#             frobulator.download "[url]"/"[item]"           "[directory]"
+#             frobulator.download "[url]"    "[source item]" "[directory]"             "[item]"
+
+#             a single item is fetched from "[url]" itself when the url already ends with
+#             the item or with a file name (extension), otherwise from "[url]"/"[item]"
 
 frobulator.download () {
 
 	local status=0
 
 	local url="${1}"
-	local path
-	local file
-	local source_file
-	local data
+	local url_path
+	local url_segment
+	local download_directory
+	local download_list=()
+	local download_sources=()
+	local download_item
+	local download_index
+	local download_source
+	local download_label
+	local download_target
+	local download_partial_file
+	local download_status_code
+	local download_url_display
 
-	frobulator.http "${url}"
+	# validation
 
-	if [ "${?}" -ne 0 ]
+	if [ -z "${url}" ] || [ -z "${2}" ]
 	then
+		frobulator.err "Download failure - missing url or directory" "[ download${marker_spc}${marker_hnt}${marker_spc}000 ]"
+
 		return 1
 	fi
 
-	frobulator.status
+	# url segments: path after the host, last segment of the path
 
-	if [[ "${proceed}" = 1 ]]
+	url_path="${url#*://}"
+	url_path="${url_path#*/}"
+	url_segment="${url%/}"
+	url_segment="${url_segment##*/}"
+
+	if [ "${url_path}" = "${url#*://}" ]
 	then
-		if [ "${#}" -eq 2 ]
+		unset url_path
+	fi
+
+	# call forms
+
+	if [ "${#}" -eq 2 ]
+	then
+		# url is the file: target is a directory or the file path
+
+		if [ -d "${2}" ] || [[ "${2}" = */ ]]
 		then
-			path="${PWD}"
-
-			if [[ "${#list[@]}" -gt 0 ]]
-			then
-				# ${2} - array
-
-				list=("${@:2}")
-			else
-				file="${2}"
-
-				list=()
-
-				list+=("${file}")
-			fi
-
-		elif [ "${#}" -eq 3 ]
-		then
-			path="${2}"
-
-			if [[ "${#list[@]}" -gt 0 ]]
-			then
-				# ${3} - array
-
-				list=("${@:3}")
-			else
-				file="${3}"
-
-				list=()
-
-				list+=("${file}")
-			fi
-
-		elif [ "${#}" -eq 4 ]
-		then
-			source_file="${2}"
-			path="${3}"
-
-			if [ -z "${path}" ]
-			then
-				path="${PWD}"
-			fi
-
-			if [[ "${#list[@]}" -gt 0 ]]
-			then
-				# ${4} - array
-
-				list=("${@:4}")
-			else
-				file="${4}"
-
-				list=()
-
-				list+=("${file}")
-			fi
+			download_directory="${2%/}"
+			download_list=("${url_segment}")
 		else
-			path="${2}"
-
-			if [ -z "${path}" ]
-			then
-				path="${PWD}"
-			fi
-
-			if [[ "${#list[@]}" -gt 0 ]]
-			then
-				# ${3} - array
-
-				list=("${@:3}")
-			else
-				file="${3}"
-
-				list=()
-
-				list+=("${file}")
-			fi
+			download_directory="$(dirname -- "${2}")"
+			download_list=("${2##*/}")
 		fi
 
-		if [ ! -d "${path}" ]
-		then
-			mkdir --parents "${path}"
+		download_sources=("${url}")
 
-			if [ "${?}" -ne 0 ]
-			then
-				list=()
+	elif [ "${#}" -eq 4 ] && [[ "${2}" != */* ]] && [[ "${3}" = */* || -d "${3}" ]]
+	then
+		# source item saved under a different name
 
-				unset proceed
+		download_directory="${3}"
+		download_list=("${4}")
+		download_sources=("${url%/}/${2}")
+	else
+		# items from the url into the directory
 
-				return 1
-			fi
-		fi
+		download_directory="${2}"
+		download_list=("${@:3}")
 
-		for file in "${list[@]}"
+		for download_item in "${download_list[@]}"
 		do
-			if [ "${#}" -eq 4 ]
+			if [ "${#download_list[@]}" -eq 1 ] && [ -n "${url_path}" ] &&
+			   [[ "${url_segment}" = "${download_item}" || "${url_segment}" = *.* ]]
 			then
-				data="${source_file}"
+				download_sources+=("${url}")
 			else
-				data="${file}"
-			fi
-
-			frobulator.http "${url}" "${data}"
-
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
-
-			frobulator.status
-
-			if [[ "${proceed}" = 1 ]]
-			then
-				if [ "${#}" -eq 2 ]
-				then
-					curl			\
-						--silent	\
-						--location	\
-									"${url}" > "${path}/${file}" &
-
-				elif [ "${#}" -eq 3 ]
-				then
-					curl			\
-						--silent	\
-						--location	\
-									"${url}/${file}" > "${path}/${file}" &
-
-				elif [ "${#}" -eq 4 ]
-				then
-					curl			\
-						--silent	\
-						--location	\
-									"${url}/${source_file}" > "${path}/${file}" &
-				else
-					curl			\
-						--silent	\
-						--location	\
-									"${url}/${file}" > "${path}/${file}" &
-				fi
-
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-
-					continue
-				fi
-
-				frobulator.progress "download" "[ '${file}' ]"
-
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-
-					continue
-				fi
-
-				# set permissions
-
-				frobulator.permissions public execute "${path}/${file}"
-
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
-
-			elif [[ "${proceed}" = 0 ]]
-			then
-				frobulator.stp "Skipping" "[ '${file}' ]"
-
-				frobulator.wrn "File missing or unavailable."
-				frobulator.nul "Review file spelling or availability for URL at:"
-				frobulator.url "${marker_hts}${url}"
-
-				status=1
-			else
-				status=1
+				download_sources+=("${url%/}/${download_item}")
 			fi
 		done
+	fi
 
-		# unset array
-
-		list=()
-
-		unset proceed
-
-		return "${status}"
-
-	elif [[ "${proceed}" = 0 ]]
+	if [ "${#download_list[@]}" -eq 0 ]
 	then
-		frobulator.err "Download error" "[ response${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
-		frobulator.nul "Cannot continue - ${reason} unavailable."
-
-		frobulator.stp "Aborting${marker_elp}"
-
-		unset proceed
+		frobulator.err "Download failure - no item" "[ download${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
 		return 1
 	fi
 
-	unset proceed
+	# directory
 
-	return 1
+	if [ ! -d "${download_directory}" ]
+	then
+		mkdir --parents "${download_directory}" 2> "${sink}"
 
+		if [ "${?}" -ne 0 ]
+		then
+			frobulator.err "Download failure - directory" "[ '${download_directory}'${marker_spc}${marker_hnt}${marker_spc}000 ]"
+
+			return 1
+		fi
+	fi
+
+	# download items
+
+	for download_index in "${!download_list[@]}"
+	do
+		download_item="${download_list[${download_index}]}"
+		download_source="${download_sources[${download_index}]}"
+		download_label="'${download_item}'"
+		download_target="${download_directory}/${download_item}"
+
+		# shown url always carries a protocol
+
+		if [[ "${download_source}" = *://* ]]
+		then
+			download_url_display="${download_source}"
+		else
+			download_url_display="${marker_hts}${download_source}"
+		fi
+
+		if [ -z "${download_item}" ]
+		then
+			frobulator.err "Download failure - no item" "[ download${marker_spc}${marker_hnt}${marker_spc}000 ]"
+
+			status=1
+
+			continue
+		fi
+
+		# download to a partial file beside the target, kept only on success
+
+		download_partial_file="$(mktemp "${download_directory}/.${download_item}.XXXXXX" 2> "${sink}")"
+
+		if [ -z "${download_partial_file}" ]
+		then
+			frobulator.err "Download failure - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.nul "Unable to write to '${download_directory}'."
+
+			status=1
+
+			continue
+		fi
+
+		curl								\
+			--silent						\
+			--location						\
+			--connect-timeout 30			\
+			--output "${download_partial_file}"	\
+			--write-out "%{http_code}"		\
+			"${download_source}" > "${download_partial_file}.status" &
+
+		frobulator.progress "download" "[ ${download_label} ]"
+
+		download_status_code="$(< "${download_partial_file}.status")"
+
+		rm -f "${download_partial_file}.status"
+
+		# report by http status code of the download itself
+
+		if [[ "${download_status_code}" =~ ^2[0-9][0-9]$ ]]
+		then
+			mv -f "${download_partial_file}" "${download_target}"
+
+			frobulator.permissions public execute "${download_target}" > "${sink}"
+
+			frobulator.scs "Download success - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}${download_status_code} ]"
+
+		elif [ -z "${download_status_code}" ] || [ "${download_status_code}" = "000" ]
+		then
+			# no response: curl reports 000
+
+			rm -f "${download_partial_file}"
+
+			frobulator.err "Server unreachable - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.nul "'${download_url_display}'"
+
+			status=1
+		else
+			rm -f "${download_partial_file}"
+
+			frobulator.err "Download failure - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}${download_status_code} ]"
+			frobulator.nul "'${download_url_display}'"
+
+			status=1
+		fi
+	done
+
+	return "${status}"
 }
 
 # upload ───────────────────────────────────────────────────────────────────────
@@ -5381,6 +5351,7 @@ frobulator.upload () {
 			curl
 			--silent
 			--location
+			--connect-timeout 30
 			--output "${sink}"
 			--write-out "%{http_code}"
 			--request "${request}"

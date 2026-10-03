@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-1124"
+update="2026-10-03-1152"
 
 version="${update}"
 
@@ -1013,11 +1013,38 @@ frobulator.pmt () {
 
 		if [ "${end_limit}" -gt 0 ] && [ "${end_length}" -gt "${end_limit}" ]
 		then
-			end_start=${end:0:${end_limit}}
+			# keep hint tail intact: [ 'name' // value ] truncates the name only
+			# closing quote of the name stays with the tail
 
-			# append ellipsis marker to end of truncation
+			unset end_tail
 
-			end="${end_start}${marker_elp}${end_end}"
+			if [[ "${end}" == *"${marker_spc}${marker_hnt}${marker_spc}"* ]]
+			then
+				end_tail="${marker_spc}${marker_hnt}${marker_spc}${end##*${marker_spc}${marker_hnt}${marker_spc}}"
+				end_head="${end%${end_tail}}"
+
+				if [[ "${end_head: -1:1}" = [\'\"] ]]
+				then
+					end_tail="${end_head: -1:1}${end_tail}"
+					end_head="${end_head:0:-1}"
+				fi
+
+				end_head_limit=$(( end_limit + ${#end_end} - ${#end_tail} ))
+			fi
+
+			if [ -n "${end_tail}" ] && [ "${end_head_limit}" -gt 4 ]
+			then
+				if [ "${#end_head}" -gt "${end_head_limit}" ]
+				then
+					end="${end_head:0:${end_head_limit}}${marker_elp}${end_tail}"
+				fi
+			else
+				end_start=${end:0:${end_limit}}
+
+				# append ellipsis marker to end of truncation
+
+				end="${end_start}${marker_elp}${end_end}"
+			fi
 		fi
 
 	fi
@@ -3951,6 +3978,7 @@ frobulator.write () {
 	local content="${2}"
 	local path
 	local file
+	local prepend_file
 
 	if [ "${#}" -eq 3 ]
 	then
@@ -4011,16 +4039,16 @@ frobulator.write () {
 
 		if [ "${mode}" = "prepend" ]
 		then
-			temporary=$(mktemp)
+			prepend_file="$(mktemp)"
 
-			echo "${content}" > "${temporary}"
+			echo "${content}" > "${prepend_file}"
 
 			if [ -f "${path}/${file}" ]
 			then
-				cat "${path}/${file}" >> "${temporary}"
+				cat "${path}/${file}" >> "${prepend_file}"
 			fi
 
-			mv "${temporary}" "${path}/${file}"
+			mv "${prepend_file}" "${path}/${file}"
 
 		elif [ "${mode}" = "write" ]
 		then
@@ -5274,10 +5302,11 @@ frobulator.download () {
 # upload ───────────────────────────────────────────────────────────────────────
 
 # use to upload data or file(s) with url from argument or array list
+# each item is sent as its own request and reported with its http status code
 
 # usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
 
-#             item as data or path to item prefixed with @
+#             item as json data {...} / [...], form data, or path to item prefixed with @
 #             array as array of data or items
 
 frobulator.upload () {
@@ -5286,115 +5315,90 @@ frobulator.upload () {
 
 	local request="${1}"
 	local url="${2}"
-	local data
-	local file
-	local header
+	local upload_list=("${@:3}")
+	local upload_item
+	local upload_file
+	local upload_type
+	local upload_name
+	local upload_label
+	local upload_response_file
+	local upload_status_code
 	local command_upload=()
 
 	# validation
 
 	if [ -z "${request}" ] || [ -z "${url}" ]
 	then
-		frobulator.err "Missing upload request or url"
+		frobulator.err "Upload failure - missing request or url" "[ upload${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
 		return 1
 	fi
 
-	if [ "${#}" -lt 3 ]
+	if [ "${#upload_list[@]}" -eq 0 ]
 	then
-		frobulator.err "No data provided for request" "[ ${request} ]" >&2
+		frobulator.err "Upload failure - no data" "[ ${request}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
 		return 1
 	fi
 
-	# set upload list
+	upload_response_file="$(mktemp)"
 
-	if [[ "${#list[@]}" -gt 0 ]]
-	then
-		list=("${@:3}")
-	else
-		data="${3}"
-
-		list=()
-
-		list+=("${data}")
-	fi
-
-	# validate upload target
-
-	frobulator.http "${url}"
-
-	if [ "${?}" -ne 0 ]
-	then
-		list=()
-
-		unset proceed
-
-		return 1
-	fi
-
-	frobulator.status
-
-	if [[ "${proceed}" = 0 ]]
-	then
-		frobulator.err "Upload error" "[ response${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
-		frobulator.nul "Cannot continue - ${reason} unavailable."
-
-		frobulator.stp "Aborting${marker_elp}"
-
-		list=()
-
-		unset proceed
-
-		return 1
-	fi
-
-	if [[ "${proceed}" != 1 ]]
-	then
-		list=()
-
-		unset proceed
-
-		return 1
-	fi
 
 	# upload items
 
-	for data in "${list[@]}"
+	for upload_item in "${upload_list[@]}"
 	do
-		command_upload=(
-			curl
-			--request "${request}"
-		)
-
-		if [ -z "${data}" ]
+		if [ -z "${upload_item}" ]
 		then
-			frobulator.err "No data provided for request" "[ ${request} ]" >&2
+			frobulator.err "Upload failure - no data" "[ ${request}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
 			status=1
 
 			continue
+		fi
 
-		elif [[ "${data}" =~ ^\{.*\}$ ]]
+		# item type and name
+
+		if [[ "${upload_item}" =~ ^\{.*\}$ ]] || [[ "${upload_item}" =~ ^\[.*\]$ ]]
 		then
-			# json data
+			upload_type="json data"
+			upload_name="${upload_item//${NLN}/${marker_spc}}"
 
-			header="Content-Type: application/json"
+		elif [[ "${upload_item}" = @* ]]
+		then
+			upload_file="${upload_item#@}"
 
+			upload_type="file"
+			upload_name="${upload_file##*/}"
+		else
+			upload_type="form data"
+			upload_name="${upload_item//${NLN}/${marker_spc}}"
+		fi
+
+		upload_label="'${upload_name}'"
+
+		command_upload=(
+			curl
+			--silent
+			--location
+			--output "${sink}"
+			--write-out "%{http_code}"
+			--request "${request}"
+		)
+
+		if [ "${upload_type}" = "json data" ]
+		then
 			command_upload+=(
-				--header "${header}"
-				--data "${data}"
+				--header "Content-Type: application/json"
+				--data "${upload_item}"
 			)
 
-		elif [[ "${data}" = @* ]]
+		elif [ "${upload_type}" = "file" ]
 		then
-			# file / form data
-
-			file="${data#@}"
-
-			if [ ! -s "${file}" ]
+			if [ ! -s "${upload_file}" ]
 			then
-				frobulator.err "File is empty or does not exist" "[ ${file} ]" >&2
+				frobulator.err "Upload failure - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+				frobulator.nul "File is empty or does not exist."
 
 				status=1
 
@@ -5402,38 +5406,46 @@ frobulator.upload () {
 			fi
 
 			command_upload+=(
-				--form "file=@${file}"
+				--form "file=@${upload_file}"
 			)
-
 		else
-			# form data
-
-			header="Content-Type: application/x-www-form-urlencoded"
-
 			command_upload+=(
-				--header "${header}"
-				--data "${data}"
+				--header "Content-Type: application/x-www-form-urlencoded"
+				--data "${upload_item}"
 			)
 		fi
 
 		command_upload+=("${url}")
 
-		"${command_upload[@]}"
+		"${command_upload[@]}" > "${upload_response_file}" &
 
-		if [ "${?}" -ne 0 ]
+		frobulator.progress "upload" "[ ${upload_label} ]"
+
+		upload_status_code="$(< "${upload_response_file}")"
+
+		# report by http status code of the upload itself
+
+		if [[ "${upload_status_code}" =~ ^2[0-9][0-9]$ ]]
 		then
+			frobulator.scs "Upload success - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}${upload_status_code} ]"
+
+		elif [ -z "${upload_status_code}" ] || [ "${upload_status_code}" = "000" ]
+		then
+			# no response: curl reports 000
+			frobulator.err "Server unreachable - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.nul "'${url}'"
+
+			status=1
+		else
+			frobulator.err "Upload failure - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}${upload_status_code} ]"
+
 			status=1
 		fi
 	done
 
-	# unset array
-
-	list=()
-
-	unset proceed
+	rm -f "${upload_response_file}"
 
 	return "${status}"
-
 }
 
 # silence ──────────────────────────────────────────────────────────────────────

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-1246"
+update="2026-10-03-1357"
 
 version="${update}"
 
@@ -2518,10 +2518,7 @@ frobulator.countdown () {
 
 	frobulator.pmt "${@}"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	prompt="${prompt_string[*]}"
 
@@ -2542,12 +2539,7 @@ frobulator.countdown () {
 
 		sleep "${seconds}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			break
-		fi
+		frobulator.track || break
 	done
 
 	echo
@@ -2653,10 +2645,7 @@ frobulator.action () {
 		frobulator.pmt "${action}"
 	fi
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	progress_prompt="${prompt_string[*]}"
 	progress_color="${color}"
@@ -3005,12 +2994,7 @@ frobulator.temporary () {
 	do
 		temporary_directory=$(mktemp -d -t "${template}")
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		eval "${directory}=\"${temporary_directory}\""
 
@@ -3075,19 +3059,13 @@ frobulator.trap () {
 
 		trap "exit 1" HUP INT PIPE QUIT TERM
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 		# clean on exit
 
 		trap 'rm --recursive --force "${directory}"' EXIT
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -3502,6 +3480,26 @@ frobulator.fail () {
 	return "${status}"
 }
 
+# track ────────────────────────────────────────────────────────────────────────
+
+# use after a command inside a function to record its failure in the caller's 'status'
+# keeps the command's own exit status for further checks:
+# frobulator.track || continue
+
+# usage:      frobulator.track
+
+frobulator.track () {
+
+	local track_status="${?}"
+
+	if [ "${track_status}" -ne 0 ]
+	then
+		status=1
+	fi
+
+	return "${track_status}"
+}
+
 # result ───────────────────────────────────────────────────────────────────────
 
 # frobulator.result
@@ -3643,12 +3641,7 @@ frobulator.ownership () {
 
 		target_path="$(realpath -m "${target}")"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		for path in "${system_paths_list[@]}"
 		do
@@ -3680,21 +3673,11 @@ frobulator.ownership () {
 
 		user_id="$(id -u "${owner_name}")"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		group_id="$(id -g "${owner_name}")"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		# apply ownership
 
@@ -3703,10 +3686,7 @@ frobulator.ownership () {
 			--recursive					\
 										"${target}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -3862,10 +3842,7 @@ frobulator.permissions () {
 
 		chmod "u=${mode_owner},g=${mode_group},o=${mode_others}" "${target}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	return "${status}"
@@ -3935,22 +3912,14 @@ frobulator.directory () {
 		then
 			mkdir --parents "${path}/${directory}"
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
+			frobulator.track || continue
 		fi
 
 		# set ownership
 
 		frobulator.ownership "${path}/${directory}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4058,21 +4027,13 @@ frobulator.write () {
 			echo "${content}" >> "${path}/${file}"
 		fi
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		# set ownership
 
 		frobulator.ownership "${path}/${file}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4152,22 +4113,14 @@ frobulator.file () {
 		then
 			touch "${path}/${file}"
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
+			frobulator.track || continue
 		fi
 
 		# set ownership
 
 		frobulator.ownership "${path}/${file}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4265,10 +4218,7 @@ frobulator.keep () {
 			then
 				rm --recursive --force "${path}/${item}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 			fi
 		done
 	else
@@ -4349,10 +4299,7 @@ frobulator.delete () {
 
 		rm --recursive --force "${path}/${item}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4406,10 +4353,7 @@ frobulator.copy () {
 
 		cp --recursive --force "${source}/${file}" "${target}/${file}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4467,21 +4411,13 @@ frobulator.move () {
 
 		mv "${source}/${file}" "${target}/${file}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			continue
-		fi
+		frobulator.track || continue
 
 		# set permissions
 
 		frobulator.permissions public execute "${target}/${file}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -4565,10 +4501,7 @@ frobulator.link () {
 			else
 				frobulator.ownership "${target}/${link}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 			fi
 		fi
 	fi
@@ -4602,10 +4535,7 @@ frobulator.link () {
 			else
 				frobulator.ownership "${target}/${link}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 			fi
 		fi
 	fi
@@ -4636,19 +4566,11 @@ frobulator.link () {
 
 				ln -s -f "${source}/${item}" "${target}/${link}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-
-					continue
-				fi
+				frobulator.track || continue
 
 				frobulator.ownership "${target}/${link}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 			fi
 		done
 	fi
@@ -4745,19 +4667,13 @@ frobulator.image () {
 	then
 		encoding="$(curl -s -L "${image}" | base64 -w 0)"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ -r "${image}" ]
 	then
 		encoding="$(cat "${image}" | base64 -w 0)"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	fi
 
 	image_osc () {
@@ -4921,10 +4837,7 @@ frobulator.image () {
 
 	image_print
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -4957,10 +4870,7 @@ frobulator.http () {
 				"${url}"
 		)"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${#}" -eq 2 ]
 	then
@@ -4975,10 +4885,7 @@ frobulator.http () {
 			| cut -d ':' -f 1
 		)"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	else
 		status=1
 	fi
@@ -5434,10 +5341,7 @@ frobulator.silence () {
 
 	"${SHELL}" -c "${command}" >> "${sink}" 2>&1
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -5491,10 +5395,7 @@ frobulator.log () {
 
 	"${SHELL}" -c "${command}" >> "${log}" 2>&1
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -5552,10 +5453,7 @@ frobulator.password () {
 		fi
 	done
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	input="${password}"
 
@@ -5595,23 +5493,13 @@ frobulator.input () {
 		then
 			frobulator.password
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
+			frobulator.track || continue
 
 			input="${password}"
 		else
 			read -r input
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
+			frobulator.track || continue
 		fi
 
 		# prevent empty input
@@ -5631,23 +5519,13 @@ frobulator.input () {
 				then
 					frobulator.password
 
-					if [ "${?}" -ne 0 ]
-					then
-						status=1
-
-						break
-					fi
+					frobulator.track || break
 
 					input="${password}"
 				else
 					read -r input
 
-					if [ "${?}" -ne 0 ]
-					then
-						status=1
-
-						break
-					fi
+					frobulator.track || break
 				fi
 			else
 				break
@@ -5692,28 +5570,19 @@ frobulator.clean () {
 
 	frobulator.process "Flushing package(s)"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	frobulator.log "${command_autoclean}" &
 
 	frobulator.progress "Autoclean"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	frobulator.log "${command_clean}" &
 
 	frobulator.progress "Clean"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	# fix dpkg lock and errors
 	# remove post-install logs to prevent package configuration errors
@@ -5725,10 +5594,7 @@ frobulator.clean () {
 			--force			"${PREFIX}"/var/lib/dpkg/info/*.postinst	\
 																		>> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	fi
 
 	return "${status}"
@@ -5774,10 +5640,7 @@ frobulator.hold () {
 
 		frobulator.progress "hold"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -5826,10 +5689,7 @@ frobulator.release () {
 
 		frobulator.progress "release"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -5887,10 +5747,7 @@ frobulator.failsafe () {
 
 	frobulator.process "Please wait"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	frobulator.fwd "Loading${marker_elp}"
 
@@ -5898,24 +5755,15 @@ frobulator.failsafe () {
 	do
 		frobulator.log "${command_update}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 		frobulator.log "${command_upgrade}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 		frobulator.log "${command_install} ${package}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -5967,10 +5815,7 @@ frobulator.install () {
 
 			frobulator.progress "install"
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-			fi
+			frobulator.track
 		else
 			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
@@ -5982,10 +5827,7 @@ frobulator.install () {
 
 				frobulator.progress "install"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 			else
 				frobulator.scs "Present on system" "[ '${package}' ]"
 
@@ -6019,6 +5861,7 @@ frobulator.require () {
 	local query_line
 	local query_command
 	local system_binary_directory
+	local requirements_missing=false
 
 	local -a requirements_list=("${@}")
 	local -a query_filter=()
@@ -6037,18 +5880,27 @@ frobulator.require () {
 		return "${status}"
 	fi
 
-	frobulator.failsafe apt-file
+	# apt-file is only needed to find the package providing a missing command
 
-	if [ "${?}" -ne 0 ]
+	for command in "${requirements_list[@]}"
+	do
+		if [[ "${command}" != *'*'* ]] && [ -z "$(command -v "${command}")" ]
+		then
+			requirements_missing=true
+
+			break
+		fi
+	done
+
+	if [ "${requirements_missing}" = true ]
 	then
-		status=1
-	fi
+		frobulator.failsafe apt-file
 
-	frobulator.log "apt-file update"
+		frobulator.track
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
+		frobulator.log "apt-file update"
+
+		frobulator.track
 	fi
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
@@ -6061,12 +5913,7 @@ frobulator.require () {
 
 			packages="$(apt-cache pkgnames)"
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-
-				continue
-			fi
+			frobulator.track || continue
 
 			while IFS= read -r query_package
 			do
@@ -6084,10 +5931,7 @@ frobulator.require () {
 			then
 				frobulator.install "${install_list[@]}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 
 				install_list=()
 			else
@@ -6168,10 +6012,7 @@ frobulator.require () {
 			then
 				frobulator.install "${install_list[@]}"
 
-				if [ "${?}" -ne 0 ]
-				then
-					status=1
-				fi
+				frobulator.track
 
 				install_list=()
 			else
@@ -6222,10 +6063,7 @@ frobulator.reinstall () {
 
 		frobulator.progress "reinstall"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	done
 
 	# unset array
@@ -6256,10 +6094,7 @@ frobulator.update () {
 
 	frobulator.progress "update"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -6285,10 +6120,7 @@ frobulator.upgrade () {
 
 	frobulator.progress "upgrade"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -6334,10 +6166,7 @@ frobulator.purge () {
 
 			frobulator.progress "purge"
 
-			if [ "${?}" -ne 0 ]
-			then
-				status=1
-			fi
+			frobulator.track
 		else
 			frobulator.scs "Absent on system" "[ '${package}' ]"
 
@@ -6421,10 +6250,7 @@ frobulator.exit () {
 
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	exit "${status}"
 }
@@ -6466,12 +6292,7 @@ frobulator.terminate () {
 	do
 		pkill -f "${process_name}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-
-			break
-		fi
+		frobulator.track || break
 	done
 
 	return "${status}"
@@ -6492,17 +6313,11 @@ frobulator.close () {
 
 	frobulator.countdown 3 "Exiting" "[ ${instance} ]"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	frobulator.terminate "${SHELL}"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 }
@@ -6524,10 +6339,7 @@ frobulator.user () {
 
 	sleep "${seconds}"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -6600,10 +6412,7 @@ frobulator.assess () {
 				then
 					frobulator.escalate
 
-					if [ "${?}" -ne 0 ]
-					then
-						status=1
-					fi
+					frobulator.track
 				else
 					frobulator.wrn "Launch as 'root' to install requirement(s)" "[ '${script}' ]"
 
@@ -6851,10 +6660,7 @@ frobulator.escalate () {
 
 	exec sudo env HOME="${HOME}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	return "${status}"
 
@@ -6924,10 +6730,7 @@ frobulator.service () {
 			frobulator.process "Service reload" "[ ${service} ]"
 		fi
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	fi
 
 	if [ "${action}" = "status" ]
@@ -7016,10 +6819,7 @@ frobulator.service () {
 
 		frobulator.process "Service ${action}" "[ ${service} ]"
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	fi
 
 	if 	[ "${action}" != "reload"   ] &&
@@ -7130,10 +6930,7 @@ frobulator.archive () {
 			--directory="$(dirname "${directory}")"		\
 			"$(basename "${directory}")"				> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${extension}" = "tar.gz" ] || [ "${extension}" = "tgz" ]
 	then
@@ -7144,10 +6941,7 @@ frobulator.archive () {
 			--directory="$(dirname "${directory}")"		\
 			"$(basename "${directory}")"				> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${extension}" = "tar" ]
 	then
@@ -7157,10 +6951,7 @@ frobulator.archive () {
 			--directory="$(dirname "${directory}")"		\
 			"$(basename "${directory}")"				> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${extension}" = "7z" ]
 	then
@@ -7169,10 +6960,7 @@ frobulator.archive () {
 			"${archive}"								\
 			"${directory}"								> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${extension}" = "rar" ]
 	then
@@ -7181,10 +6969,7 @@ frobulator.archive () {
 			"${archive}"								\
 			"${directory}"								> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 
 	elif [ "${extension}" = "zip" ]
 	then
@@ -7194,10 +6979,7 @@ frobulator.archive () {
 			"${archive}"								\
 			"${directory}"								> "${sink}" 2>&1
 
-		if [ "${?}" -ne 0 ]
-		then
-			status=1
-		fi
+		frobulator.track
 	fi
 
 	if [ "${status}" -ne 0 ]
@@ -7351,10 +7133,7 @@ frobulator.extract () {
 			--directory "${directory}"
 	fi
 
-	if [ "${?}" -ne 0 ]
-	then
-		status=1
-	fi
+	frobulator.track
 
 	if [ "${status}" -ne 0 ]
 	then

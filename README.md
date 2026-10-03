@@ -253,7 +253,7 @@ frobulator.plo 1
 
 [ p ] rompt [ m ] anagement [ t ] ool:
 
-The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`terminal_columns`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
+The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`terminal_columns`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style - a `[ 'name' // value ]` bracket keeps its whole ` // value ]` tail (and the closing quote), so only the name is shortened. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
 
 ```bash
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
@@ -762,7 +762,7 @@ frobulator.download "https://get.frbltr.app" "${HOME}/.local/bin" "frobulator"
 
 ### frobulator.upload
 
-Uploads data or file(s) after validating the target URL the same way `frobulator.download` does. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data.
+Uploads data or file(s), one request per item. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` or `[...]` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data. Each upload runs with a `frobulator.progress "upload"` indicator and is reported by the HTTP status code of the upload itself (`2xx` is success; any other code, or an unreachable server, is an error and makes the function return `1`). Every message ends its bracket with `// <status code>` - `000` when no response was received (unreachable server, or the request was never sent). The caller's arrays are left untouched.
 
 ```bash
 frobulator.upload POST "https://example.com/upload" "${archive_file}"
@@ -770,6 +770,11 @@ frobulator.upload POST "https://example.com/upload" "${archive_file}"
 
 ```bash
 frobulator.upload POST "https://example.com/upload" '{"key":"value"}'
+```
+
+```bash
+list=( "name=one" "name=two" )
+frobulator.upload PUT "https://example.com/items" "${list[@]}"
 ```
 
 ## command wrappers

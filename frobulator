@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0107"
+update="2026-10-03-1117"
 
 version="${update}"
 
@@ -799,6 +799,9 @@ marker_tab='    '
 
 marker_web='https://'
 marker_htp='http://'
+marker_hts='https://'
+marker_ftp='ftp://'
+marker_fts='ftps://'
 marker_fil='file://'
 marker_ssh='ssh://'
 

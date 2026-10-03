@@ -130,7 +130,7 @@ then
 
 		if [[ -z $(command -v "${package}") ]]
 		then
-			echo "[  !  ] Unable to install or binary not found /////////////////////// [ '${package}' ]"
+			echo "[  !  ] Unable to install or binary not found ─────────────────────── [ '${package}' ]"
 			echo
 
 			exit 1

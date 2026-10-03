@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# dependencies /////////////////////////////////////////////////////////////////
+# dependencies ─────────────────────────────────────────────────────────────────
 
-# superuser ////////////////////////////////////////////////////////////////////
+# superuser ────────────────────────────────────────────────────────────────────
 
-# script ///////////////////////////////////////////////////////////////////////
+# script ───────────────────────────────────────────────────────────────────────
 
-# version //////////////////////////////////////////////////////////////////////
+# version ──────────────────────────────────────────────────────────────────────
 
 # read as text by bootstrap
 
@@ -14,15 +14,15 @@ update="2026-10-03-0004"
 
 version="${update}"
 
-# variables ////////////////////////////////////////////////////////////////////
+# variables ────────────────────────────────────────────────────────────────────
 
 stamp=$(date +"%m-%d-%Y-%H-%M-%S")
 
-# defaults /////////////////////////////////////////////////////////////////////
+# defaults ─────────────────────────────────────────────────────────────────────
 
 self="${BASH_SOURCE[0]}"
 
-# usage ////////////////////////////////////////////////////////////////////////
+# usage ────────────────────────────────────────────────────────────────────────
 
 # executed directly: handle options - install at end of file
 
@@ -89,7 +89,7 @@ then
 	fi
 fi
 
-# requirements /////////////////////////////////////////////////////////////////
+# requirements ─────────────────────────────────────────────────────────────────
 
 # provide system shell
 
@@ -145,7 +145,7 @@ then
 	sink="/dev/null"
 fi
 
-# package manager //////////////////////////////////////////////////////////////
+# package manager ──────────────────────────────────────────────────────────────
 
 # detect package manager
 
@@ -184,7 +184,7 @@ TAB="$(printf '\t')"
 
 NLN=$'\n'
 
-# colors ///////////////////////////////////////////////////////////////////////
+# colors ───────────────────────────────────────────────────────────────────────
 
 # 256 colors terminal [0-255]
 
@@ -784,7 +784,7 @@ done
 unset terminal_function
 unset terminal_functions_list
 
-# special case markers /////////////////////////////////////////////////////////
+# special case markers ─────────────────────────────────────────────────────────
 
 marker_nil=''
 marker_hnt='//'
@@ -796,7 +796,7 @@ marker_prc='%'
 marker_spc=' '
 marker_tab='    '
 
-# line markers /////////////////////////////////////////////////////////////////
+# line markers ─────────────────────────────────────────────────────────────────
 
 marker_top='[  △  ]'
 marker_bot='[  ▽  ]'
@@ -828,7 +828,7 @@ marker_url='[  /  ]'
 
 marker_nul='       '
 
-# prompt line overwrite (plo) //////////////////////////////////////////////////
+# prompt line overwrite (plo) ──────────────────────────────────────────────────
 
 # clears a defined number of lines above the current cursor position:
 # wipes from that point down to the end of the screen
@@ -844,7 +844,7 @@ frobulator.plo () {
 	terminal_clear_down
 }
 
-# prompt management tool (pmt) /////////////////////////////////////////////////
+# prompt management tool (pmt) ─────────────────────────────────────────────────
 
 # prompt management and standardizing to terminal width:
 # adds line folding with word detection for strings wider than terminal
@@ -880,7 +880,7 @@ frobulator.pmt () {
 	fi
 
 	# prepare span for line marker usage:
-	# [     ] ------------------------------------------------------------...---
+	# [     ] ────────────────────────────────────────────────────────────...───
 
 	margin_left="${marker_nul}${marker_spc}"
 	margin_left_length=${#margin_left}
@@ -1106,7 +1106,7 @@ frobulator.pmt () {
 	unset character_count
 }
 
-# line break ///////////////////////////////////////////////////////////////////
+# line break ───────────────────────────────────────────────────────────────────
 
 # use to separate line markers with a blank line
 # carry-over markers (nul / ind) rejoin the line above instead
@@ -1120,7 +1120,7 @@ frobulator.brk () {
 	marker_spaced="true"
 }
 
-# highlights ///////////////////////////////////////////////////////////////////
+# highlights ───────────────────────────────────────────────────────────────────
 
 # colored string highlights with built-in prompt arguments and line padding
 #
@@ -1130,7 +1130,7 @@ frobulator.brk () {
 # result:     string
 #
 # command:    frobulator.[color] "[string]" "[string]"
-# result:     string //////////////////////////////////////////////.../// string
+# result:     string ──────────────────────────────────────────────...─── string
 #
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
@@ -1333,9 +1333,9 @@ frobulator.teal () {
 	frobulator.brk
 }
 
-# prompt marking ///////////////////////////////////////////////////////////////
+# prompt marking ───────────────────────────────────────────────────────────────
 
-# colored string highlights with built-in prompt arguments, line padding and line markers
+# colored string with built-in prompt arguments, line padding and line markers
 
 # usage:      frobulator.[color] "[string]" "[string]" "[span character]"
 
@@ -1343,7 +1343,7 @@ frobulator.teal () {
 # result:     string
 
 # command:    frobulator.[color] "[string]" "[string]"
-# result:     string //////////////////////////////////////////////.../// string
+# result:     string ──────────────────────────────────────────────...─── string
 
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
@@ -1378,7 +1378,7 @@ frobulator.teal () {
 
 # url [  /  ]
 
-# empty line marker ////////////////////////////////////////////////////////////
+# empty line marker ────────────────────────────────────────────────────────────
 
 frobulator.nil () {
 
@@ -1393,7 +1393,7 @@ frobulator.nil () {
 	frobulator.brk
 }
 
-# information line marker //////////////////////////////////////////////////////
+# information line marker ──────────────────────────────────────────────────────
 
 frobulator.inf () {
 
@@ -1408,7 +1408,7 @@ frobulator.inf () {
 	frobulator.brk
 }
 
-# warning line marker //////////////////////////////////////////////////////
+# warning line marker ──────────────────────────────────────────────────────────
 
 frobulator.wrn () {
 
@@ -1423,7 +1423,7 @@ frobulator.wrn () {
 	frobulator.brk
 }
 
-# message line marker //////////////////////////////////////////////////////////
+# message line marker ──────────────────────────────────────────────────────────
 
 frobulator.msg () {
 
@@ -1438,7 +1438,7 @@ frobulator.msg () {
 	frobulator.brk
 }
 
-# add line marker //////////////////////////////////////////////////////////////
+# add line marker ──────────────────────────────────────────────────────────────
 
 frobulator.add () {
 
@@ -1453,7 +1453,7 @@ frobulator.add () {
 	frobulator.brk
 }
 
-# remove line marker ///////////////////////////////////////////////////////////
+# remove line marker ───────────────────────────────────────────────────────────
 
 frobulator.rem () {
 
@@ -1468,7 +1468,7 @@ frobulator.rem () {
 	frobulator.brk
 }
 
-# retain line marker ///////////////////////////////////////////////////////////
+# retain line marker ───────────────────────────────────────────────────────────
 
 frobulator.ret () {
 
@@ -1483,7 +1483,7 @@ frobulator.ret () {
 	frobulator.brk
 }
 
-# release line marker //////////////////////////////////////////////////////////
+# release line marker ──────────────────────────────────────────────────────────
 
 frobulator.rel () {
 
@@ -1498,7 +1498,7 @@ frobulator.rel () {
 	frobulator.brk
 }
 
-# forward line marker //////////////////////////////////////////////////////////
+# forward line marker ──────────────────────────────────────────────────────────
 
 frobulator.fwd () {
 
@@ -1513,7 +1513,7 @@ frobulator.fwd () {
 	frobulator.brk
 }
 
-# reverse line marker //////////////////////////////////////////////////////////
+# reverse line marker ──────────────────────────────────────────────────────────
 
 frobulator.rev () {
 
@@ -1528,7 +1528,7 @@ frobulator.rev () {
 	frobulator.brk
 }
 
-# stop line marker /////////////////////////////////////////////////////////////
+# stop line marker ─────────────────────────────────────────────────────────────
 
 frobulator.stp () {
 
@@ -1543,7 +1543,7 @@ frobulator.stp () {
 	frobulator.brk
 }
 
-# download line marker /////////////////////////////////////////////////////////
+# download line marker ─────────────────────────────────────────────────────────
 
 frobulator.dwl () {
 
@@ -1558,7 +1558,7 @@ frobulator.dwl () {
 	frobulator.brk
 }
 
-# upload line marker ///////////////////////////////////////////////////////////
+# upload line marker ───────────────────────────────────────────────────────────
 
 frobulator.upl () {
 
@@ -1573,7 +1573,7 @@ frobulator.upl () {
 	frobulator.brk
 }
 
-# link line marker /////////////////////////////////////////////////////////////
+# link line marker ─────────────────────────────────────────────────────────────
 
 frobulator.lnk () {
 
@@ -1588,7 +1588,7 @@ frobulator.lnk () {
 	frobulator.brk
 }
 
-# success line marker //////////////////////////////////////////////////////////
+# success line marker ──────────────────────────────────────────────────────────
 
 frobulator.scs () {
 
@@ -1603,7 +1603,7 @@ frobulator.scs () {
 	frobulator.brk
 }
 
-# error line marker ////////////////////////////////////////////////////////////
+# error line marker ────────────────────────────────────────────────────────────
 
 frobulator.err () {
 
@@ -1618,7 +1618,7 @@ frobulator.err () {
 	frobulator.brk
 }
 
-# insert line marker ///////////////////////////////////////////////////////////
+# insert line marker ───────────────────────────────────────────────────────────
 
 frobulator.ins () {
 
@@ -1633,7 +1633,7 @@ frobulator.ins () {
 	frobulator.brk
 }
 
-# complete line marker /////////////////////////////////////////////////////////
+# complete line marker ─────────────────────────────────────────────────────────
 
 frobulator.cpt () {
 
@@ -1648,7 +1648,7 @@ frobulator.cpt () {
 	frobulator.brk
 }
 
-# url line marker //////////////////////////////////////////////////////////////
+# url line marker ──────────────────────────────────────────────────────────────
 
 frobulator.url () {
 
@@ -1663,7 +1663,7 @@ frobulator.url () {
 	frobulator.brk
 }
 
-# user input prompts ///////////////////////////////////////////////////////////
+# user input prompts ───────────────────────────────────────────────────────────
 
 # use for questions, input, user input dependant inquiries
 
@@ -1672,7 +1672,7 @@ frobulator.url () {
 # keeps user input beside prompt
 # also includes space after prompt to separate input
 
-# ask line marker //////////////////////////////////////////////////////////////
+# ask line marker ──────────────────────────────────────────────────────────────
 
 frobulator.ask () {
 
@@ -1687,7 +1687,7 @@ frobulator.ask () {
 	unset marker_spaced
 }
 
-# input line marker ////////////////////////////////////////////////////////////
+# input line marker ────────────────────────────────────────────────────────────
 
 frobulator.ipt () {
 
@@ -1702,7 +1702,7 @@ frobulator.ipt () {
 	unset marker_spaced
 }
 
-# user line marker /////////////////////////////////////////////////////////////
+# user line marker ─────────────────────────────────────────────────────────────
 
 frobulator.usr () {
 
@@ -1717,7 +1717,7 @@ frobulator.usr () {
 	unset marker_spaced
 }
 
-# null line marker /////////////////////////////////////////////////////////////
+# null line marker ─────────────────────────────────────────────────────────────
 
 # use to carry over prompts without adding a line marker while retaining color
 
@@ -1743,7 +1743,7 @@ frobulator.nul () {
 	frobulator.brk
 }
 
-# index line marker ////////////////////////////////////////////////////////////
+# index line marker ────────────────────────────────────────────────────────────
 
 # use to carry over prompts without adding a line marker without retaining color
 
@@ -1767,7 +1767,7 @@ frobulator.ind () {
 	frobulator.brk
 }
 
-# letter line marker ///////////////////////////////////////////////////////////
+# letter line marker ───────────────────────────────────────────────────────────
 
 # use to indicate lettered steps, directives or instructions
 # letter prompt is inserted as line marker
@@ -1778,7 +1778,7 @@ frobulator.ind () {
 # result:     [ l ] string
 
 # command:    frobulator.num "[letter]" "[string]" "[string]"
-# result:     [ l ] string ////////////////////////////////////////.../// string
+# result:     [ l ] string ────────────────────────────────────────...─── string
 
 # command:    frobulator.num "[letter]" "[string]" "[string]" "[\]"
 # result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
@@ -1801,7 +1801,7 @@ frobulator.ltr () {
 	frobulator.brk
 }
 
-# number line marker ///////////////////////////////////////////////////////////
+# number line marker ───────────────────────────────────────────────────────────
 
 # use to indicate numbered steps, directives or instructions
 # number prompt is inserted as line marker
@@ -1812,7 +1812,7 @@ frobulator.ltr () {
 # result:     [ n ] string
 
 # command:    frobulator.num "[number]" "[string]" "[string]"
-# result:     [ n ] string ////////////////////////////////////////.../// string
+# result:     [ n ] string ────────────────────────────────────────...─── string
 
 # command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
 # result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
@@ -1835,7 +1835,7 @@ frobulator.num () {
 	frobulator.brk
 }
 
-# separator line marker ////////////////////////////////////////////////////////
+# separator line marker ────────────────────────────────────────────────────────
 
 # use to separate notices and messages from execution blocks
 
@@ -1845,7 +1845,7 @@ frobulator.num () {
 # usage:      frobulator.sep
 
 # command:    frobulator.sep
-# result:     ////////////////////////////////////////////////////////////...///
+# result:     ────────────────────────────────────────────────────────────...───
 
 frobulator.sep () {
 
@@ -1873,7 +1873,7 @@ frobulator.sep () {
 	frobulator.brk
 }
 
-# notify ///////////////////////////////////////////////////////////////////////
+# notify ───────────────────────────────────────────────────────────────────────
 #
 # framed message block with header:
 # use to separate notices and messages from execution blocks
@@ -2302,7 +2302,7 @@ frobulator.ntf () {
 	unset IFS
 }
 
-# erase ////////////////////////////////////////////////////////////////////////
+# erase ────────────────────────────────────────────────────────────────────────
 
 # erases a defined number of lines above the current cursor position:
 # wipes from that point down to the end of the screen
@@ -2314,7 +2314,7 @@ frobulator.erase () {
 	frobulator.plo "${lines}"
 }
 
-# separate /////////////////////////////////////////////////////////////////////
+# separate ─────────────────────────────────────────────────────────────────────
 
 # use to separate instructions or warnings from prompts
 
@@ -2324,7 +2324,7 @@ frobulator.erase () {
 # usage:      frobulator.separate
 
 # command:    frobulator.separate
-# result:     ////////////////////////////////////////////////////////////...///
+# result:     ────────────────────────────────────────────────────────────...───
 
 frobulator.separate () {
 
@@ -2332,7 +2332,7 @@ frobulator.separate () {
 
 }
 
-# read /////////////////////////////////////////////////////////////////////////
+# read ─────────────────────────────────────────────────────────────────────────
 
 # use to capture user input through frobulator.ask / frobulator.interrupt
 
@@ -2345,7 +2345,7 @@ frobulator.read () {
 	echo
 }
 
-# script ///////////////////////////////////////////////////////////////////////
+# script ───────────────────────────────────────────────────────────────────────
 
 # use to mark the beginning of a script process
 # derives title from script name:
@@ -2354,7 +2354,7 @@ frobulator.read () {
 # usage:      frobulator.script
 
 # command:    frobulator.script
-# result:     [ # ] Setting up 'script' //////////////////.../// [ script name ]
+# result:     [ # ] Setting up 'script' ──────────────────...─── [ script name ]
 
 frobulator.script () {
 
@@ -2368,7 +2368,7 @@ frobulator.script () {
 	echo
 }
 
-# type /////////////////////////////////////////////////////////////////////////
+# type ─────────────────────────────────────────────────────────────────────────
 
 # use to emulate typing on prompts:
 # timeout is randomized to create human-like typing effect
@@ -2402,7 +2402,7 @@ frobulator.type () {
 	echo
 }
 
-# timeout //////////////////////////////////////////////////////////////////////
+# timeout ──────────────────────────────────────────────────────────────────────
 
 # use to mark timeout in between commands in seconds
 
@@ -2422,7 +2422,7 @@ frobulator.timeout () {
 	sleep "${seconds}"
 }
 
-# clear ////////////////////////////////////////////////////////////////////////
+# clear ────────────────────────────────────────────────────────────────────────
 
 # use for script process 'paging':
 # clears previous step when all checkpoint markers are met
@@ -2434,7 +2434,7 @@ frobulator.clear () {
 	clear
 }
 
-# countdown ////////////////////////////////////////////////////////////////////
+# countdown ────────────────────────────────────────────────────────────────────
 
 # use as countdown marker before next command runs:
 # leaves preset time for long interaction with prompts and other long strings
@@ -2509,7 +2509,7 @@ frobulator.countdown () {
 
 }
 
-# actions //////////////////////////////////////////////////////////////////////
+# actions ──────────────────────────────────────────────────────────────────────
 
 # action verbage parser:
 # handles simple action verb placement and syntax substitution
@@ -2617,7 +2617,7 @@ frobulator.action () {
 
 }
 
-# process //////////////////////////////////////////////////////////////////////
+# process ──────────────────────────────────────────────────────────────────────
 
 # use as ticker line marker to mark process completion or progress
 # use after process marked for background operation
@@ -2669,7 +2669,7 @@ frobulator.process () {
 	return "${status}"
 }
 
-# progress /////////////////////////////////////////////////////////////////////
+# progress ─────────────────────────────────────────────────────────────────────
 
 # use as ticker line marker to mark process wait progress
 # use after process marked to for in background
@@ -2723,7 +2723,7 @@ frobulator.progress () {
 	return "${status}"
 }
 
-# bar //////////////////////////////////////////////////////////////////////////
+# bar ──────────────────────────────────────────────────────────────────────────
 
 # use to run a command with an estimated activity bar
 
@@ -2926,7 +2926,7 @@ frobulator.bar () {
 
 }
 
-# temporary ////////////////////////////////////////////////////////////////////
+# temporary ────────────────────────────────────────────────────────────────────
 
 # use to generate temporary directory from argument or array list
 # generates directory template as 'frobulator_temporary_XXXXXX'
@@ -2976,7 +2976,7 @@ frobulator.temporary () {
 	return "${status}"
 }
 
-# trap /////////////////////////////////////////////////////////////////////////
+# trap ─────────────────────────────────────────────────────────────────────────
 
 # use to cleanup temporary directory or other process driven execution
 # handles exit codes and signals to ensure proper cleanup
@@ -2988,7 +2988,7 @@ frobulator.temporary () {
 #                frobulator.trap "${directory name}"
 
 # signal        value    action    comment
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 # SIGTERM       15       Term      Termination signal
 # SIGINT         2       Term      CONTROL+C interrupt from keyboard
 # SIGHUP         1       Term      Disconnected terminal or parent died
@@ -3002,7 +3002,7 @@ frobulator.temporary () {
 # SIGILL         4       Core      Illegal Instruction
 # SIGFPE         8       Core      Floating point exception
 # SIGKILL        9       Term      Kill signal
-# ------------------------------------------------------------------------------
+# ──────────────────────────────────────────────────────────────────────────────
 
 frobulator.trap () {
 
@@ -3050,15 +3050,15 @@ frobulator.trap () {
 
 }
 
-# complete /////////////////////////////////////////////////////////////////////
+# complete ─────────────────────────────────────────────────────────────────────
 
-# BASH exit status codes -------------------------------------------------------
+# BASH exit status codes ───────────────────────────────────────────────────────
 
 # exit status codes are integers returned by commands upon completion
 # a successful command typically returns an exit status of 0
 # non-zero values generally indicate an error or abnormal termination
 
-# common exit status codes -----------------------------------------------------
+# common exit status codes ─────────────────────────────────────────────────────
 
 # code     definition                           example
 
@@ -3076,7 +3076,7 @@ frobulator.trap () {
 
 # 255*     out of range - exit -1
 
-# complete ---------------------------------------------------------------------
+# complete ─────────────────────────────────────────────────────────────────────
 
 # frobulator.complete [ continue | halt ] [ message ] [ detail ]
 #         │
@@ -3333,7 +3333,7 @@ frobulator.complete () {
 	return 0
 }
 
-# halt /////////////////////////////////////////////////////////////////////////
+# halt ─────────────────────────────────────────────────────────────────────────
 
 # use to stop the script when the previous command failed
 # records the status for frobulator.result and logs the failure
@@ -3394,7 +3394,7 @@ frobulator.halt () {
 	exit "${status}"
 }
 
-# fail /////////////////////////////////////////////////////////////////////////
+# fail ─────────────────────────────────────────────────────────────────────────
 
 # use to leave a function when the previous command failed
 # records the status for frobulator.result and logs the failure
@@ -3454,7 +3454,7 @@ frobulator.fail () {
 	return "${status}"
 }
 
-# result ///////////////////////////////////////////////////////////////////////
+# result ───────────────────────────────────────────────────────────────────────
 
 # frobulator.result
 #         │
@@ -3524,7 +3524,7 @@ frobulator.result () {
 
 }
 
-# ownership ////////////////////////////////////////////////////////////////////
+# ownership ────────────────────────────────────────────────────────────────────
 
 # use to restore ownership after privileged operations
 
@@ -3668,7 +3668,7 @@ frobulator.ownership () {
 	return "${status}"
 }
 
-# permissions //////////////////////////////////////////////////////////////////
+# permissions ──────────────────────────────────────────────────────────────────
 
 # use to set permissions from scope and modifiers
 
@@ -3683,14 +3683,14 @@ frobulator.ownership () {
 # public execute            755 rwxr-xr-x 755 rwxr-xr-x scripts, binaries, installed tools
 # public readonly           444 r--r--r-- 555 r-xr-xr-x reference files that should not change
 # public readonly execute   555 r-xr-xr-x 555 r-xr-xr-x locked-down tools
-# group                     640 rw-r----- 750 rwxr-x--- files for your group only
-# group execute             750 rwxr-x--- 750 rwxr-x--- group-only scripts
-# group readonly            440 r--r----- 550 r-xr-x--- group reference files
-# group readonly execute    550 r-xr-x--- 550 r-xr-x--- locked group tools
-# private                   600 rw------- 700 rwx------ credentials, keys, tokens
-# private execute           700 rwx------ 700 rwx------ personal scripts
-# private readonly          400 r-------- 500 r-x------ ssh keys, certificates
-# private readonly execute  500 r-x------ 500 r-x------ locked personal tools
+# group                     640 rw-r───── 750 rwxr-x─── files for your group only
+# group execute             750 rwxr-x─── 750 rwxr-x─── group-only scripts
+# group readonly            440 r--r───── 550 r-xr-x─── group reference files
+# group readonly execute    550 r-xr-x─── 550 r-xr-x─── locked group tools
+# private                   600 rw─────── 700 rwx────── credentials, keys, tokens
+# private execute           700 rwx────── 700 rwx────── personal scripts
+# private readonly          400 r──────── 500 r-x────── ssh keys, certificates
+# private readonly execute  500 r-x────── 500 r-x────── locked personal tools
 
 # usage:      frobulator.permissions "[scope]" "[modifiers]" "[target]" | "[array]"
 
@@ -3823,7 +3823,7 @@ frobulator.permissions () {
 	return "${status}"
 }
 
-# directory ////////////////////////////////////////////////////////////////////
+# directory ────────────────────────────────────────────────────────────────────
 
 # use to generate directory from argument or array list
 
@@ -3913,7 +3913,7 @@ frobulator.directory () {
 
 }
 
-# write ////////////////////////////////////////////////////////////////////////
+# write ────────────────────────────────────────────────────────────────────────
 
 # use to generate and write to file(s) from argument or array list
 # writes content to file according to mode: prepend, write, append
@@ -4034,7 +4034,7 @@ frobulator.write () {
 
 }
 
-# file /////////////////////////////////////////////////////////////////////////
+# file ─────────────────────────────────────────────────────────────────────────
 
 # use to generate file(s) from argument or array list
 
@@ -4129,7 +4129,7 @@ frobulator.file () {
 
 }
 
-# keep /////////////////////////////////////////////////////////////////////////
+# keep ─────────────────────────────────────────────────────────────────────────
 
 # use to reverse-select file(s) for deletion from argument or array list
 # keeps selected files in directory
@@ -4235,7 +4235,7 @@ frobulator.keep () {
 	return "${status}"
 }
 
-# delete ///////////////////////////////////////////////////////////////////////
+# delete ───────────────────────────────────────────────────────────────────────
 
 # use to select file(s) for deletion from argument or array list
 # removes selected file in directory
@@ -4314,7 +4314,7 @@ frobulator.delete () {
 
 }
 
-# copy /////////////////////////////////////////////////////////////////////////
+# copy ─────────────────────────────────────────────────────────────────────────
 
 # use to copy file(s) and/or diretories from argument or array list
 
@@ -4370,7 +4370,7 @@ frobulator.copy () {
 	return "${status}"
 }
 
-# move /////////////////////////////////////////////////////////////////////////
+# move ─────────────────────────────────────────────────────────────────────────
 
 # use to move file(s) and/or diretories from argument or array list
 
@@ -4443,7 +4443,7 @@ frobulator.move () {
 
 }
 
-# link /////////////////////////////////////////////////////////////////////////
+# link ─────────────────────────────────────────────────────────────────────────
 
 # use to link file(s) and/or diretories from argument or array list
 
@@ -4612,7 +4612,7 @@ frobulator.link () {
 
 }
 
-# image ////////////////////////////////////////////////////////////////////////
+# image ────────────────────────────────────────────────────────────────────────
 
 # use to display local or remote images directly in supported terminals
 # supports local files, remote urls and stdin
@@ -4881,7 +4881,7 @@ frobulator.image () {
 
 }
 
-# http /////////////////////////////////////////////////////////////////////////
+# http ─────────────────────────────────────────────────────────────────────────
 
 # use to validate http status code prior to download / upload operations
 # use for url addresses [url] and data download validations [content]
@@ -4938,7 +4938,7 @@ frobulator.http () {
 
 }
 
-# status ///////////////////////////////////////////////////////////////////////
+# status ───────────────────────────────────────────────────────────────────────
 
 # use to parse and validate HTTP status responses and manage download actions
 # use in tandem with frobulator.http
@@ -5015,7 +5015,7 @@ frobulator.status () {
 
 }
 
-# download /////////////////////////////////////////////////////////////////////
+# download ─────────────────────────────────────────────────────────────────────
 
 # use to download file(s) with url status verification from argument or array list
 
@@ -5250,7 +5250,7 @@ frobulator.download () {
 
 }
 
-# upload ///////////////////////////////////////////////////////////////////////
+# upload ───────────────────────────────────────────────────────────────────────
 
 # use to upload data or file(s) with url from argument or array list
 
@@ -5415,7 +5415,7 @@ frobulator.upload () {
 
 }
 
-# silence //////////////////////////////////////////////////////////////////////
+# silence ──────────────────────────────────────────────────────────────────────
 
 # use to wrap command execution and redirect all output to null sink
 # provides fully silent execution
@@ -5439,7 +5439,7 @@ frobulator.silence () {
 
 }
 
-# log //////////////////////////////////////////////////////////////////////////
+# log ──────────────────────────────────────────────────────────────────────────
 
 # use to wrap command and redirect all output to "${script}"-"${stamp}".log file
 # provides fully silent execution
@@ -5496,7 +5496,7 @@ frobulator.log () {
 
 }
 
-# password /////////////////////////////////////////////////////////////////////
+# password ─────────────────────────────────────────────────────────────────────
 
 # use to obfuscate password input with custom mask character
 
@@ -5564,7 +5564,7 @@ frobulator.password () {
 
 	}
 
-# input ////////////////////////////////////////////////////////////////////////
+# input ────────────────────────────────────────────────────────────────────────
 
 # use to capture user input
 
@@ -5668,13 +5668,13 @@ frobulator.input () {
 
 }
 
-# clean ////////////////////////////////////////////////////////////////////////
+# clean ────────────────────────────────────────────────────────────────────────
 
 # use to run package and installer post-install cleanup
 
 # usage:      frobulator.clean
 
-# clean ////////////////////////////////////////////////////////////////////////
+# clean ────────────────────────────────────────────────────────────────────────
 
 frobulator.clean () {
 
@@ -5731,7 +5731,7 @@ frobulator.clean () {
 
 }
 
-# hold /////////////////////////////////////////////////////////////////////////
+# hold ─────────────────────────────────────────────────────────────────────────
 
 # use to hold package(s) from argument or array list
 # marks package(s) for version freeze
@@ -5783,7 +5783,7 @@ frobulator.hold () {
 	return "${status}"
 }
 
-# release //////////////////////////////////////////////////////////////////////
+# release ──────────────────────────────────────────────────────────────────────
 
 # use to release package(s) from argument or array list
 # unmarks package(s) for version freeze
@@ -5836,7 +5836,7 @@ frobulator.release () {
 
 }
 
-# failsafe /////////////////////////////////////////////////////////////////////
+# failsafe ─────────────────────────────────────────────────────────────────────
 
 # use to install package(s) and update system
 # helps avoid 'ignore' or 'not found' errors returned by package manager
@@ -5922,7 +5922,7 @@ frobulator.failsafe () {
 
 }
 
-# install //////////////////////////////////////////////////////////////////////
+# install ──────────────────────────────────────────────────────────────────────
 
 # use to install package(s) from argument or array list
 
@@ -5997,7 +5997,7 @@ frobulator.install () {
 	return "${status}"
 }
 
-# require //////////////////////////////////////////////////////////////////////
+# require ──────────────────────────────────────────────────────────────────────
 
 # use to install required package(s) from argument or array list
 # use to search and validate required package dependencies for operations
@@ -6182,7 +6182,7 @@ frobulator.require () {
 
 }
 
-# reinstall ////////////////////////////////////////////////////////////////////
+# reinstall ────────────────────────────────────────────────────────────────────
 
 # use to reinstall package(s) from argument or array list
 
@@ -6232,7 +6232,7 @@ frobulator.reinstall () {
 
 }
 
-# update ///////////////////////////////////////////////////////////////////////
+# update ───────────────────────────────────────────────────────────────────────
 
 # use to update system package(s)
 
@@ -6261,7 +6261,7 @@ frobulator.update () {
 
 }
 
-# upgrade //////////////////////////////////////////////////////////////////////
+# upgrade ──────────────────────────────────────────────────────────────────────
 
 # use to upgrade system packages
 
@@ -6290,7 +6290,7 @@ frobulator.upgrade () {
 
 }
 
-# purge ////////////////////////////////////////////////////////////////////////
+# purge ────────────────────────────────────────────────────────────────────────
 
 # use to purge package(s) from argument or array list
 
@@ -6349,7 +6349,7 @@ frobulator.purge () {
 
 }
 
-# dialog ///////////////////////////////////////////////////////////////////////
+# dialog ───────────────────────────────────────────────────────────────────────
 
 # use to generate standard dialogs using desktop environement plugins:
 
@@ -6402,7 +6402,7 @@ frobulator.dialog () {
 
 }
 
-# exit /////////////////////////////////////////////////////////////////////////
+# exit ─────────────────────────────────────────────────────────────────────────
 
 # use to cleanly exit the current script or process instance
 # does not terminate the shell - see frobulator.close for that behavior
@@ -6425,7 +6425,7 @@ frobulator.exit () {
 	exit "${status}"
 }
 
-# terminate ////////////////////////////////////////////////////////////////////
+# terminate ────────────────────────────────────────────────────────────────────
 
 # use to forcefully terminate rogue processes
 
@@ -6474,7 +6474,7 @@ frobulator.terminate () {
 
 }
 
-# close /////////////////////////////////////////////////////////////////////////
+# close ────────────────────────────────────────────────────────────────────────
 
 # use to exit process or program instance
 
@@ -6503,7 +6503,7 @@ frobulator.close () {
 	return "${status}"
 }
 
-# user /////////////////////////////////////////////////////////////////////////
+# user ─────────────────────────────────────────────────────────────────────────
 
 # use to identify 'user' name
 # useful for priviledged execution status checks
@@ -6529,7 +6529,7 @@ frobulator.user () {
 
 }
 
-# assess ///////////////////////////////////////////////////////////////////////
+# assess ───────────────────────────────────────────────────────────────────────
 
 # use to assess 'superuser' status and prompt for priviledged execution
 # useful for in-script dependency assessment and installation
@@ -6617,7 +6617,7 @@ frobulator.assess () {
 
 }
 
-# escalate /////////////////////////////////////////////////////////////////////
+# escalate ─────────────────────────────────────────────────────────────────────
 
 # use to provide priviledged command or script execution
 # restarts process as 'superuser' once status is granted
@@ -6719,7 +6719,7 @@ frobulator.escalate () {
 		local list_open=false
 		local list_entries=0
 
-		local pattern_marker='^# version /+$'
+		local pattern_marker='^# version [/─]+$'
 		local pattern_comment='^[[:space:]]*#'
 		local pattern_list_open='^[[:space:]]*list=\('
 		local pattern_list_close='^[[:space:]]*\)'
@@ -6856,7 +6856,7 @@ frobulator.escalate () {
 
 }
 
-# service //////////////////////////////////////////////////////////////////////
+# service ──────────────────────────────────────────────────────────────────────
 
 # use to manage a systemd service, scoping automatically to '--user' or
 # system context depending on whether the runtime is escalated
@@ -7036,7 +7036,7 @@ frobulator.service () {
 
 }
 
-# archive //////////////////////////////////////////////////////////////////////
+# archive ──────────────────────────────────────────────────────────────────────
 
 # use to archive content and for backup procedures
 
@@ -7207,7 +7207,7 @@ frobulator.archive () {
 
 }
 
-# extract //////////////////////////////////////////////////////////////////////
+# extract ──────────────────────────────────────────────────────────────────────
 
 # use to extract known archive types for script dependency or process resolution
 
@@ -7362,7 +7362,7 @@ frobulator.extract () {
 	return "${status}"
 }
 
-# self /////////////////////////////////////////////////////////////////////////
+# self ─────────────────────────────────────────────────────────────────────────
 
 # declares frobulator's existence and loaded status for the current shell
 
@@ -7405,9 +7405,9 @@ then
 	unset option
 fi
 
-# TO DO ////////////////////////////////////////////////////////////////////////
+# TO DO ────────────────────────────────────────────────────────────────────────
 
-# frobulator.install ///////////////////////////////////////////////////////////
+# frobulator.install ───────────────────────────────────────────────────────────
 
 # apt:
 #	apt-get --assume-yes install package
@@ -7421,7 +7421,7 @@ fi
 # status:
 #	true equivalent
 
-# frobulator.require ///////////////////////////////////////////////////////////
+# frobulator.require ───────────────────────────────────────────────────────────
 
 # apt:
 #	command -v command
@@ -7440,7 +7440,7 @@ fi
 # status:
 #	true equivalent, but resolver logic differs
 
-# frobulator.reinstall /////////////////////////////////////////////////////////
+# frobulator.reinstall ─────────────────────────────────────────────────────────
 
 # apt:
 #	apt-get --assume-yes install --reinstall package
@@ -7454,7 +7454,7 @@ fi
 # status:
 #	true equivalent
 
-# frobulator.purge /////////////////////////////////////////////////////////////
+# frobulator.purge ─────────────────────────────────────────────────────────────
 
 # apt:
 #	apt-get --assume-yes purge --autoremove package
@@ -7469,7 +7469,7 @@ fi
 #	close equivalent
 #	pip/pipx do not have apt-style purge/autoremove behavior
 
-# frobulator.hold //////////////////////////////////////////////////////////////
+# frobulator.hold ──────────────────────────────────────────────────────────────
 
 # apt:
 #	apt-mark hold package
@@ -7484,7 +7484,7 @@ fi
 #	no clean equivalent
 #	can only approximate by avoiding upgrade/reinstall
 
-# frobulator.release ///////////////////////////////////////////////////////////
+# frobulator.release ───────────────────────────────────────────────────────────
 
 # apt:
 #	apt-mark unhold package
@@ -7498,7 +7498,7 @@ fi
 # status:
 #	no clean equivalent
 
-# frobulator.failsafe //////////////////////////////////////////////////////////
+# frobulator.failsafe ──────────────────────────────────────────────────────────
 
 # apt:
 #	apt update
@@ -7517,7 +7517,7 @@ fi
 # status:
 #	partial equivalent only
 
-# frobulator.update ////////////////////////////////////////////////////////////
+# frobulator.update ────────────────────────────────────────────────────────────
 
 # apt:
 #	apt-get update
@@ -7532,7 +7532,7 @@ fi
 #	no equivalent
 #	pip/pipx query live indexes directly
 
-# frobulator.upgrade ///////////////////////////////////////////////////////////
+# frobulator.upgrade ───────────────────────────────────────────────────────────
 
 # apt:
 #	apt-get --assume-yes dist-upgrade
@@ -7547,4 +7547,4 @@ fi
 #	pipx has a good equivalent
 #	pip does not
 
-# TO DO ////////////////////////////////////////////////////////////////////////
+# TO DO ────────────────────────────────────────────────────────────────────────

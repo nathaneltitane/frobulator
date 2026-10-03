@@ -474,10 +474,10 @@ frobulator.script
 
 ### frobulator.type
 
-Prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the string, second argument is the maximum random interval in tenths of a second (defaults to `2`, i.e. up to ~0.2s per character).
+Prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the maximum random interval in tenths of a second (defaults to `2`, i.e. up to 0.2 s per character), second argument is the string.
 
 ```bash
-frobulator.type "Preparing environment..." 3
+frobulator.type 3 "Preparing environment..."
 ```
 
 ### frobulator.timeout

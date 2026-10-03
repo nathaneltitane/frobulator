@@ -388,7 +388,7 @@ frobulator.sep
 
 ### frobulator.ntf
 
-Prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the frame using that marker's color. Remaining arguments are `title` then `message`.
+Prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the title using that marker's color. Remaining arguments are `title` then `message`; a second marker-type keyword placed between them colors the message.
 
 ```bash
 frobulator.ntf round inf "Notice" "The setup process is ready."
@@ -396,6 +396,10 @@ frobulator.ntf round inf "Notice" "The setup process is ready."
 
 ```bash
 frobulator.ntf heavy split err "Failure" "Could not reach the update server."
+```
+
+```bash
+frobulator.ntf wrn "Disclaimer" inf "This action is permanent."
 ```
 
 ## prompt formatting

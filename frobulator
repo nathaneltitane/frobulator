@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2334"
+update="2026-10-02-2342"
 
 version="${update}"
 
@@ -3118,7 +3118,7 @@ frobulator.trap () {
 
 #           frobulator.complete halt "[message]" "[detail]"
 
-#           frobulator.complete "[path]" "[checkpoint]" command [arguments...]
+#           frobulator.complete [ continue | halt ] "[path]" "[checkpoint]" command [arguments...]
 
 frobulator.complete () {
 
@@ -3155,7 +3155,7 @@ frobulator.complete () {
 
 	# record previous command status: no arguments or message and detail
 
-	if [ "${#}" -le 2 ] || [ "${keyword}" = true ]
+	if [ "${#}" -le 2 ]
 	then
 		message="${1}"
 		detail="${2}"
@@ -3302,6 +3302,19 @@ frobulator.complete () {
 		fi
 
 		frobulator.wrn "Incomplete" "[ ${status} ] [ ${checkpoint} ]"
+
+		# log failure
+
+		line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint} [ status ${status} ]"
+
+		frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+
+		if [ "${mode}" = "halt" ]
+		then
+			frobulator.result "${script##*/}"
+
+			exit "${status}"
+		fi
 	fi
 
 	# continue process

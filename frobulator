@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0037"
+update="2026-10-03-0043"
 
 version="${update}"
 
@@ -1877,11 +1877,12 @@ frobulator.sep () {
 #
 # framed message block with header:
 # use to separate notices and messages from execution blocks
-# supports message type designation for colorized output
+# supports message type designation for colorized output:
+# a type before the title colors the title, a type before the message colors the message
 #
 #
 # usage:	frobulator.ntf "title" "message"
-#			frobulator.ntf [style] [split] [type] "title" "message"
+#			frobulator.ntf [style] [split] [type] "title" [type] "message"
 #
 # command:	frobulator.ntf style "title" "message"
 # result:
@@ -1910,7 +1911,9 @@ frobulator.ntf () {
 	local split
 	local message
 	local prompt_type
-	local color
+	local prompt_types
+	local title_color
+	local message_color
 
 	local character_count
 	local content_span
@@ -1952,7 +1955,10 @@ frobulator.ntf () {
 
 	split=""
 
-	color=""
+	unset title_color
+	unset message_color
+
+	prompt_types=(nil inf wrn msg add rem ret rel fwd rev stp dwl upl lnk scs err ins cpt url)
 
 	# arguments
 
@@ -1978,25 +1984,7 @@ frobulator.ntf () {
 
 			shift
 
-		elif [ "${1}" = "nil" ] ||
-			 [ "${1}" = "inf" ] ||
-		     [ "${1}" = "wrn" ] ||
-		     [ "${1}" = "msg" ] ||
-		     [ "${1}" = "add" ] ||
-		     [ "${1}" = "rem" ] ||
-		     [ "${1}" = "ret" ] ||
-		     [ "${1}" = "rel" ] ||
-		     [ "${1}" = "fwd" ] ||
-		     [ "${1}" = "rev" ] ||
-		     [ "${1}" = "stp" ] ||
-		     [ "${1}" = "dwl" ] ||
-		     [ "${1}" = "upl" ] ||
-		     [ "${1}" = "lnk" ] ||
-		     [ "${1}" = "scs" ] ||
-		     [ "${1}" = "err" ] ||
-		     [ "${1}" = "ins" ] ||
-		     [ "${1}" = "cpt" ] ||
-		     [ "${1}" = "url" ]
+		elif [[ " ${prompt_types[*]} " = *" ${1} "* ]]
 		then
 			prompt_type="${1}"
 
@@ -2004,7 +1992,7 @@ frobulator.ntf () {
 
 			frobulator."${prompt_type}" > ${sink}
 
-			color=${color_entry[@]}
+			title_color=${color_entry[@]}
 
 		else
 			break
@@ -2026,12 +2014,29 @@ frobulator.ntf () {
 
 		shift
 
-		if [ "${1}" = "split" ]
-		then
-			split="true"
+		# split and message type after the title
 
-			shift
-		fi
+		while [ $# -gt 1 ]
+		do
+			if [ "${1}" = "split" ]
+			then
+				split="true"
+
+				shift
+
+			elif [[ " ${prompt_types[*]} " = *" ${1} "* ]]
+			then
+				prompt_type="${1}"
+
+				shift
+
+				frobulator."${prompt_type}" > ${sink}
+
+				message_color=${color_entry[@]}
+			else
+				break
+			fi
+		done
 
 		message="${@}"
 	fi
@@ -2218,7 +2223,7 @@ frobulator.ntf () {
 		title="${title}${marker_spc}"
 	done
 
-	echo -e "${frame_vertical_left}${color}${title}${reset}${frame_vertical_right}"
+	echo -e "${frame_vertical_left}${title_color}${title}${reset}${frame_vertical_right}"
 
 	# message frame
 
@@ -2250,7 +2255,7 @@ frobulator.ntf () {
 
 			message_line="${message_line:0:${content_span}}"
 
-			echo -e "${frame_vertical_left}${color}${message_line}${reset}${frame_vertical_right}"
+			echo -e "${frame_vertical_left}${message_color}${message_line}${reset}${frame_vertical_right}"
 
 		done <<< "${message}"
 	fi
@@ -2266,7 +2271,9 @@ frobulator.ntf () {
 	unset split
 	unset message
 	unset prompt_type
-	unset color
+	unset prompt_types
+	unset title_color
+	unset message_color
 
 	unset character_count
 	unset content_span
@@ -2366,7 +2373,7 @@ frobulator.script () {
 	message+="Executing:${marker_spc}'${script}'"
 	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
 
-	frobulator.ntf msg "Script" "${message}"
+	frobulator.ntf msg "Script" msg "${message}"
 }
 
 # type ─────────────────────────────────────────────────────────────────────────

@@ -632,6 +632,21 @@ build () {
 }
 ```
 
+### frobulator.track
+
+One-line replacement for an `if [ "${?}" -ne 0 ]; then status=1; fi` block inside a function: records the failure of the command that ran immediately before it in the calling function's `status`, and returns that command's own exit status - so it can be chained to leave a loop or the function.
+
+```bash
+build () {
+	local status=0
+	make all
+	frobulator.track
+	make install
+	frobulator.track || return 1
+	return "${status}"
+}
+```
+
 ### frobulator.result
 
 Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at the log directory on failure: `${HOME}/.local/var/log/`, or `${PREFIX}/var/log/` for a system-context run - the same directory `frobulator.log` writes to), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
@@ -878,7 +893,7 @@ frobulator.install "curl"
 
 ### frobulator.require
 
-Checks whether each named *command* (not package name) is available, and if not, searches `apt-file` to find and install the package that provides it — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
+Checks whether each named *command* (not package name) is available, and if not, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when a command is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
 
 ```bash
 frobulator.require "curl"
@@ -1138,6 +1153,7 @@ frobulator.trap
 frobulator.complete
 frobulator.halt
 frobulator.fail
+frobulator.track
 frobulator.result
 frobulator.ownership
 frobulator.permissions

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2355"
+update="2026-10-02-2357"
 
 version="${update}"
 
@@ -1849,13 +1849,24 @@ frobulator.num () {
 
 frobulator.sep () {
 
+	local gap
+
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
 	color=${color[@]}
 
-	echo -e "${color}${marker_sep}${prompt}${reset}"
+	# gap after marker like other markers: space before text, line character otherwise
+
+	if [ -n "${1}" ]
+	then
+		gap="${marker_spc}"
+	else
+		gap="─"
+	fi
+
+	echo -e "${color}${marker_sep}${gap}${prompt}${reset}"
 
 	unset color_entry
 

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-1357"
+update="2026-10-03-1524"
 
 version="${update}"
 
@@ -2975,35 +2975,24 @@ frobulator.temporary () {
 
 	local status=0
 
-	if [[ "${#list[@]}" -gt 0 ]]
-	then
-		# ${1} - array
+	local temporary_variable
+	local temporary_directory
+	local temporary_template="frobulator.temporary.XXXXXX"
 
-		list=("${@:1}")
-	else
-		directory="${1}"
+	# each argument names a variable that receives a new temporary directory
 
-		list=()
-
-		list+=("${directory}")
-	fi
-
-	template="frobulator.temporary.XXXXXX"
-
-	for directory in "${list[@]}"
+	for temporary_variable in "${@}"
 	do
-		temporary_directory=$(mktemp -d -t "${template}")
+		temporary_directory="$(mktemp -d -t "${temporary_template}")"
 
 		frobulator.track || continue
 
-		eval "${directory}=\"${temporary_directory}\""
+		eval "${temporary_variable}=\"${temporary_directory}\""
 
-		frobulator.add "Generating temporary directory" "[ ${directory} ]"
+		frobulator.add "Generating temporary directory" "[ ${temporary_variable} ]"
 
 		frobulator_return+=("${temporary_directory}")
 	done
-
-	list=()
 
 	return "${status}"
 }
@@ -3015,9 +3004,8 @@ frobulator.temporary () {
 # specify directory name as variable
 # variable is returned from 'eval' into frobulator.temporary
 
-# usage:         frobulator.temporary "[directory name]" | "[array name]"
-# assignment:    directory="${frobulator_return[@]}"
-#                frobulator.trap "${directory name}"
+# usage:         frobulator.temporary "[variable name]"
+#                frobulator.trap "${variable name}" ["${other directory}" ...]
 
 # signal        value    action    comment
 # ──────────────────────────────────────────────────────────────────────────────
@@ -3040,40 +3028,38 @@ frobulator.trap () {
 
 	local status=0
 
-	if [[ "${#list[@]}" -gt 0 ]]
-	then
-		# ${1} - array
+	local trap_directory
+	local trap_command="rm --recursive --force --"
 
-		list=("${@:1}")
-	else
-		directory="${1}"
+	# every directory passed in any call is removed on exit:
+	# paths are fixed now, never read from variables at exit time
 
-		list=()
-
-		list+=("${directory}")
-	fi
-
-	for directory in "${list[@]}"
+	for trap_directory in "${@}"
 	do
-		# clean on interruption or error
-
-		trap "exit 1" HUP INT PIPE QUIT TERM
-
-		frobulator.track
-
-		# clean on exit
-
-		trap 'rm --recursive --force "${directory}"' EXIT
-
-		frobulator.track
+		if [ -n "${trap_directory}" ] && [ "${trap_directory}" != "/" ]
+		then
+			frobulator_trap_directories+=("${trap_directory}")
+		fi
 	done
 
-	# unset array
+	for trap_directory in "${frobulator_trap_directories[@]}"
+	do
+		trap_command+=" $(printf '%q' "${trap_directory}")"
+	done
 
-	list=()
+	# clean on interruption or error
+
+	trap "exit 1" HUP INT PIPE QUIT TERM
+
+	frobulator.track
+
+	# clean on exit
+
+	trap "${trap_command}" EXIT
+
+	frobulator.track
 
 	return "${status}"
-
 }
 
 # complete ─────────────────────────────────────────────────────────────────────

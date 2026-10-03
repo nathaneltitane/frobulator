@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-09-30-2048"
+update="2026-10-02-2302"
 
 version="${update}"
 
@@ -5793,7 +5793,7 @@ frobulator.require () {
 	local query_command
 	local system_binary_directory
 
-	local -a list=("${@}")
+	local -a requirements_list=("${@}")
 	local -a query_filter=()
 	local -a install_list=()
 
@@ -5801,7 +5801,7 @@ frobulator.require () {
 
 	# empty list: nothing to require
 
-	if [ "${#list[@]}" -eq 0 ]
+	if [ "${#requirements_list[@]}" -eq 0 ]
 	then
 		frobulator.stp "No requirement(s) specified"
 
@@ -5826,7 +5826,7 @@ frobulator.require () {
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
 
-	for command in "${list[@]}"
+	for command in "${requirements_list[@]}"
 	do
 		if [[ "${command}" == *'*'* ]]
 		then

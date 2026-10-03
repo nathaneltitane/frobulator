@@ -14,7 +14,7 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 
 - Colorized prompts
 - Line header markers for various message types
-- Intractive counters and timers
+- Interactive counters and timers
 - Interactive progress and process feedback
 - Standardized 80 character line parsing
 - Character limit overflow handling and line splitting with paragraph formatting
@@ -29,9 +29,9 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
    - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
    - Countdown and progress items to add to your scripts
    - Customizable password obfuscation prompts
-   - Script checkpoint solutions to interate over only failed elements or modules
+   - Script checkpoint solutions to iterate over only failed elements or modules
    - Streamlined archive detection and extraction routines
-   - Clean ogging, redirection and silencing functions for pretty execution and informed debugging
+   - Clean logging, redirection and silencing functions for pretty execution and informed debugging
 
 **...all while making redundant and complex code bits a thing of the past!**
 
@@ -209,7 +209,9 @@ Short names for the functions used most: prompt formatting and line markers. Eac
 |---|---|
 | `frobulator.plo` | prompt line overwrite |
 | `frobulator.pmt` | prompt management tool |
-| `frobulator.brk` | line break |
+| `frobulator.brk` | line break - carry-over line markers (nul / ind) |
+| `frobulator.nul` | null line - carry-over: keep color of the line above |
+| `frobulator.ind` | index line - carry-over: without color |
 | `frobulator.nil` | empty (nil) line |
 | `frobulator.inf` | information |
 | `frobulator.wrn` | warning |
@@ -229,11 +231,9 @@ Short names for the functions used most: prompt formatting and line markers. Eac
 | `frobulator.ins` | insert |
 | `frobulator.cpt` | complete |
 | `frobulator.url` | url |
-| `frobulator.ask` | ask - question prompt |
+| `frobulator.qst` | question prompt |
 | `frobulator.ipt` | input prompt |
 | `frobulator.usr` | user prompt |
-| `frobulator.nul` | null line - carry-over: keep color of the line above |
-| `frobulator.ind` | index line - carry-over: without color |
 | `frobulator.ltr` | letter |
 | `frobulator.num` | number |
 | `frobulator.sep` | separator |
@@ -259,12 +259,20 @@ The shared prompt-formatting engine behind every color and marker command. Norma
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
 ```
 
+### frobulator.brk
+
+Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (`frobulator.nul`, `frobulator.ind`) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own `echo` output.
+
+```bash
+frobulator.brk
+```
+
 
 ### prompt marker commands
 
 These commands print standard frobulator markers by calling `frobulator.pmt` directly and prefixing its own colored marker glyph (e.g. `[  i  ]`, `[  !  ]`). Most accept a message, an optional detail string, and an optional fill character.
 
-Every marker line is followed by a blank line, printed by `frobulator.brk` - scripts do not add `echo` after messages. Carry-over lines (`frobulator.nul`, `frobulator.ind`) rejoin the line above on screen, so a message and its details stay together. Prompts (`ask`, `ipt`, `usr`) stay on the same line for the answer.
+Every marker line is followed by a blank line, printed by `frobulator.brk` - scripts do not add `echo` after messages. Carry-over lines (`frobulator.nul`, `frobulator.ind`) rejoin the line above on screen, so a message and its details stay together. Prompts (`qst`, `ipt`, `usr`) stay on the same line for the answer.
 
 | command | purpose | example |
 |--------------------|-----------------------------|---------------------------------------------|
@@ -287,7 +295,7 @@ Every marker line is followed by a blank line, printed by `frobulator.brk` - scr
 | `frobulator.ins` | insert/input line | `frobulator.ins "Message" "[ detail ]"` |
 | `frobulator.cpt` | complete line | `frobulator.cpt "Message" "[ detail ]"` |
 | `frobulator.url` | url line | `frobulator.url "https://example.com"` |
-| `frobulator.ask` | question prompt (no newline) | `frobulator.ask "Enter value"` |
+| `frobulator.qst` | question prompt (no newline) | `frobulator.qst "Enter value"` |
 | `frobulator.ipt` | input prompt (no newline) | `frobulator.ipt "Enter value"` |
 | `frobulator.usr` | user prompt (no newline) | `frobulator.usr "Enter value"` |
 | `frobulator.nul` | continue line, retain color | `frobulator.nul "continued output"` |
@@ -317,7 +325,7 @@ frobulator.inf "${prompt_arguments[@]}"
 Output:
 
 ```text
-[ i ] Checking dependencies /////////////////////////////////////////// [ curl ]
+[  i  ] Checking dependencies ───────────────────────────────────────── [ curl ]
 ```
 
 This pattern applies to most commands that forward their arguments through `frobulator.pmt`, including color commands, marker commands, and structured prompt helpers.
@@ -388,7 +396,7 @@ frobulator.sep
 
 ### frobulator.ntf
 
-Prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the title using that marker's color. Remaining arguments are `title` then `message`; a second marker-type keyword placed between them colors the message.
+Prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the title using that marker's color. Remaining arguments are `title` then `message`; a second marker-type keyword placed between them colors the message. Like the line markers, the block is followed by a blank line.
 
 ```bash
 frobulator.ntf round inf "Notice" "The setup process is ready."
@@ -420,6 +428,7 @@ Sets `terminal_columns` - the width used by prompts, notifications, bars and ima
 terminal_columns_minimum=100
 frobulator.columns
 ```
+
 ## color commands
 
 Each named color wrapper calls `frobulator.pmt` directly, stores its color into `prompt_string`, and echoes the result — so every color wrapper shares the same prompt-formatting rules as `frobulator.pmt` above.
@@ -453,7 +462,7 @@ frobulator.[color] "[string]" "[string]" "[span character]"
 
 ### frobulator.separate
 
-Prints a predefined `frobulator.sep` line followed by a blank line — use to separate instructions or warnings from prompts.
+Prints a predefined `frobulator.sep` line (which prints its own blank line after it) — use to separate instructions or warnings from prompts.
 
 ```bash
 frobulator.separate
@@ -464,16 +473,20 @@ frobulator.separate
 Wraps the `read` builtin (forwarding all arguments to it) and prints a trailing blank line, so prompts stay evenly spaced after user input.
 
 ```bash
-frobulator.ask "Continue?" "[ y/n ]"
+frobulator.qst "Continue?" "[ y/n ]"
 frobulator.read reply
 ```
 
 ### frobulator.script
 
-Prints a script startup banner. Derives the displayed script name/version by splitting `${script}` on its first `-` character (i.e. the running script should be named like `setup-myproject`), falling back to the full script name when no `-` is present.
+Prints a script startup banner: a `msg`-colored notice block titled `Script` showing `Executing: '${script}'` and `Version:`. An optional description is shown above them.
 
 ```bash
 frobulator.script
+```
+
+```bash
+frobulator.script "Welcome to the Gutendex terminal library!"
 ```
 
 ### frobulator.type
@@ -621,7 +634,7 @@ build () {
 
 ### frobulator.result
 
-Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at `${PREFIX}/var/log/` for details on failure), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
+Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at the log directory on failure: `${HOME}/.local/var/log/`, or `${PREFIX}/var/log/` for a system-context run - the same directory `frobulator.log` writes to), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
 
 ```bash
 frobulator.result "setup"
@@ -916,7 +929,7 @@ frobulator.exit "setup" "${status}"
 
 ### frobulator.close
 
-Runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split; its internal doc comment still shows the old `frobulator.exit "[instance]"` usage line.)
+Runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split.)
 
 ```bash
 frobulator.close "setup"
@@ -946,6 +959,14 @@ Relaunches the current script as root via `sudo`, preserving the original argume
 ```bash
 self_arguments=("${@}")
 frobulator.escalate
+```
+
+### frobulator.self
+
+Declares frobulator as loaded in the current shell by setting `frobulator_loaded="true"` - the bootstrap header checks it to skip downloading and sourcing again. Runs automatically when frobulator is sourced.
+
+```bash
+frobulator.self
 ```
 
 ### frobulator.service
@@ -1018,7 +1039,7 @@ frobulator.archive "backup" "tar.gz" "${HOME}/Documents"
 
 ### frobulator.extract
 
-Extracts a known archive type (detected from the file's extension — the source assumes the filename contains no other periods) into `directory` (defaults to `${PWD}` when omitted), installing the needed extractor (`tar`, `7z`, `unrar`, `unzip`) via `frobulator.require` first.
+Extracts a known archive type (detected from everything after the first period of the file name, so names like `backup-1.2.tar.gz` are not recognized) into `directory` (defaults to `${PWD}` when omitted), installing the needed extractor (`tar`, `7z`, `unrar`, `unzip`) via `frobulator.require` first.
 
 ```bash
 frobulator.extract "backup.tar.gz" "${target_directory}"
@@ -1029,6 +1050,7 @@ frobulator.extract "backup.tar.gz" "${target_directory}"
 ```text
 frobulator.plo
 frobulator.pmt
+frobulator.brk
 frobulator.nil
 frobulator.inf
 frobulator.wrn
@@ -1048,7 +1070,7 @@ frobulator.err
 frobulator.ins
 frobulator.cpt
 frobulator.url
-frobulator.ask
+frobulator.qst
 frobulator.ipt
 frobulator.usr
 frobulator.nul
@@ -1130,6 +1152,7 @@ frobulator.close
 frobulator.user
 frobulator.assess
 frobulator.escalate
+frobulator.self
 frobulator.service
 frobulator.archive
 frobulator.extract

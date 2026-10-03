@@ -204,7 +204,7 @@ frobulator.nul "Test line 2"
 frobulator.ins "Test line 1 - insert"
 frobulator.nul "Test line 2"
 
-frobulator.ask "Test line 1 - question"
+frobulator.qst "Test line 1 - question"
 frobulator.nul "Test line 2"
 
 frobulator.ipt "Test line 1 - input"

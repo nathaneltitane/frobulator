@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0043"
+update="2026-10-03-0103"
 
 version="${update}"
 
@@ -813,7 +813,7 @@ marker_rem='[  -  ]'
 marker_ret='[  ●  ]'
 marker_rel='[  ○  ]'
 
-marker_ask='[  ?  ]'
+marker_qst='[  ?  ]'
 marker_inf='[  i  ]'
 marker_wrn='[  !  ]'
 
@@ -1365,7 +1365,7 @@ frobulator.teal () {
 # ret [  ●  ]
 # rel [  ○  ]
 
-# ask [  ?  ]
+# qst [  ?  ]
 # inf [  i  ]
 # wrn [  !  ]
 
@@ -1672,15 +1672,15 @@ frobulator.url () {
 # keeps user input beside prompt
 # also includes space after prompt to separate input
 
-# ask line marker ──────────────────────────────────────────────────────────────
+# question line marker ─────────────────────────────────────────────────────────
 
-frobulator.ask () {
+frobulator.qst () {
 
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
 
-	echo -n -e "${fuschia}${marker_ask}${marker_spc}${prompt}${marker_spc}${reset}"
+	echo -n -e "${fuschia}${marker_qst}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	color_entry=("${fuschia}")
 
@@ -2344,7 +2344,7 @@ frobulator.separate () {
 
 # read ─────────────────────────────────────────────────────────────────────────
 
-# use to capture user input through frobulator.ask / frobulator.interrupt
+# use to capture user input after frobulator.qst / frobulator.ipt / frobulator.usr
 
 # sets newline for next prompt clearance
 
@@ -2358,17 +2358,20 @@ frobulator.read () {
 # script ───────────────────────────────────────────────────────────────────────
 
 # use to mark the beginning of a script process
-# derives title from script name:
-# script name must be separated with '-' character as 'script-name'
+# shows the script name and version in a notice block
+# optional description is shown above them
 
-# usage:      frobulator.script
-
-# command:    frobulator.script
-# result:     [ # ] Setting up 'script' ──────────────────...─── [ script name ]
+# usage:      frobulator.script "[description]"
 
 frobulator.script () {
 
-	description="${1}"
+	local description="${1}"
+	local message
+
+	if [ -n "${description}" ]
+	then
+		message+="${description}${NLN}${NLN}"
+	fi
 
 	message+="Executing:${marker_spc}'${script}'"
 	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
@@ -6486,9 +6489,9 @@ frobulator.terminate () {
 
 # close ────────────────────────────────────────────────────────────────────────
 
-# use to exit process or program instance
+# use to close the current shell session
 
-# usage:      frobulator.exit "[instance]"
+# usage:      frobulator.close "[instance]"
 
 frobulator.close () {
 
@@ -6597,7 +6600,7 @@ frobulator.assess () {
 
 				frobulator.wrn "Privilege escalation required to proceed" "[ '${script}' ]"
 
-				frobulator.ask "Launch as 'root'?"
+				frobulator.qst "Launch as 'root'?"
 
 				read -r reply
 				echo
@@ -7223,7 +7226,7 @@ frobulator.archive () {
 
 # "${directory}" defaults to "${PWD}" when omitted
 
-# "${extension}" assumes file name does not contain any periods '.'
+# "${extension}" is everything after the first period of the file name
 
 # usage:      frobulator.extract "[archive]" "[directory]"
 
@@ -7252,7 +7255,7 @@ frobulator.extract () {
 	fi
 
 	archive="${file##*/}"
-	extension="${file#*.}"
+	extension="${archive#*.}"
 
 	if [ ! -d "${directory}" ]
 	then

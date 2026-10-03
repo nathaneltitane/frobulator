@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-30 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-02 ]
 
 ---
 
@@ -536,6 +536,31 @@ frobulator.complete
 frobulator.complete "${checkpoint_directory}" "make-all" make all
 ```
 
+### frobulator.halt
+
+stops the script when the command that ran immediately before it failed - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
+
+```bash
+zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
+frobulator.halt "Align failed" "[ ${file_aligned} ]"
+```
+
+```bash
+mkdir -p "${directory}"
+frobulator.halt
+```
+
+### frobulator.fail
+
+same as `frobulator.halt`, for use inside functions: instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with `|| return` to leave the calling function - a function cannot make its caller return on its own.
+
+```bash
+build () {
+	make all
+	frobulator.fail "Build failed" "[ ${target} ]" || return
+}
+```
+
 ### frobulator.result
 
 evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at `${PREFIX}/var/log/` for details on failure), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
@@ -1008,6 +1033,8 @@ frobulator.bar
 frobulator.temporary
 frobulator.trap
 frobulator.complete
+frobulator.halt
+frobulator.fail
 frobulator.result
 frobulator.ownership
 frobulator.permissions
@@ -1094,7 +1121,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-09-30 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-02 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

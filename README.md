@@ -561,7 +561,7 @@ frobulator.bar rsync -av source/ destination/
 
 ### frobulator.temporary
 
-Creates one or more temporary directories (template `frobulator.temporary.XXXXXX`, via `mktemp -d`) and, for each, `eval`-assigns the resulting path back into the *named variable you pass in* — so the argument is a variable name, not a path.
+Creates one or more temporary directories (template `frobulator.temporary.XXXXXX`, via `mktemp -d`) and, for each, `eval`-assigns the resulting path back into the *named variable you pass in* — so the argument is a variable name, not a path. Several variable names can be passed; the caller's own variables are left untouched.
 
 ```bash
 frobulator.temporary directory_temporary
@@ -570,11 +570,11 @@ frobulator.temporary directory_temporary
 
 ### frobulator.trap
 
-Registers `EXIT`/`HUP`/`INT`/`PIPE`/`QUIT`/`TERM` traps that recursively delete the named temporary directory on interruption or normal exit. Use immediately after `frobulator.temporary`.
+Registers `EXIT`/`HUP`/`INT`/`PIPE`/`QUIT`/`TERM` traps that recursively delete the given directories on interruption or normal exit. Paths are fixed when the trap is set, and directories from every call are kept - so several temporary directories can be cleaned up. Use immediately after `frobulator.temporary`.
 
 ```bash
 frobulator.temporary directory_temporary
-frobulator.trap directory_temporary
+frobulator.trap "${directory_temporary}"
 ```
 
 ### frobulator.complete

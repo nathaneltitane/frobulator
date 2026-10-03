@@ -540,10 +540,12 @@ frobulator.complete
 frobulator.result "${script}"
 ```
 
-The checkpoint form runs a command once and skips it on later runs: **`frobulator.complete "[path]" "[checkpoint]" command [arguments...]`** - skips the command if `"${path}/${checkpoint}"` exists, otherwise runs it, records its status and creates the checkpoint file on success.
+The checkpoint form runs a command once and skips it on later runs: **`frobulator.complete [ continue | halt ] "[path]" "[checkpoint]" command [arguments...]`** - skips the command if `"${path}/${checkpoint}"` exists, otherwise runs it, records its status and creates the checkpoint file on success. On failure the stale checkpoint is removed; `halt` then prints the summary and exits.
 
 ```bash
 frobulator.complete "${checkpoint_directory}" "make-all" make all
+
+frobulator.complete halt "${checkpoint_directory}" "image-checkpoint" download_image
 ```
 
 ### frobulator.halt

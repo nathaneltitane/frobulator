@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2342"
+update="2026-10-02-2355"
 
 version="${update}"
 
@@ -984,7 +984,7 @@ frobulator.pmt () {
 
 		for bracket_index in "${!brackets_open[@]}"
 		do
-			if [ "${end_open}" = "${brackets_open[${bracket_index}]}"   ] || \
+			if [ "${end_open}" = "${brackets_open[${bracket_index}]}"   ] ||
 			   [ "${end_close}" = "${brackets_close[${bracket_index}]}" ]
 			then
 				# include last string digit for recognition
@@ -1946,14 +1946,14 @@ frobulator.ntf () {
 
 	while true
 	do
-		if [ "${1}" = "square" ] || \
-		   [ "${1}" = "round"  ] || \
-		   [ "${1}" = "heavy"  ] || \
-		   [ "${1}" = "double" ] || \
-		   [ "${1}" = "dots"   ] || \
-		   [ "${1}" = "matrix" ] || \
-		   [ "${1}" = "tech"   ] || \
-		   [ "${1}" = "skel"   ] || \
+		if [ "${1}" = "square" ] ||
+		   [ "${1}" = "round"  ] ||
+		   [ "${1}" = "heavy"  ] ||
+		   [ "${1}" = "double" ] ||
+		   [ "${1}" = "dots"   ] ||
+		   [ "${1}" = "matrix" ] ||
+		   [ "${1}" = "tech"   ] ||
+		   [ "${1}" = "skel"   ] ||
 		   [ "${1}" = "ascii"  ]
 		then
 			style="${1}"
@@ -1966,24 +1966,24 @@ frobulator.ntf () {
 
 			shift
 
-		elif [ "${1}" = "nil" ] || \
-			 [ "${1}" = "inf" ] || \
-		     [ "${1}" = "wrn" ] || \
-		     [ "${1}" = "msg" ] || \
-		     [ "${1}" = "add" ] || \
-		     [ "${1}" = "rem" ] || \
-		     [ "${1}" = "ret" ] || \
-		     [ "${1}" = "rel" ] || \
-		     [ "${1}" = "fwd" ] || \
-		     [ "${1}" = "rev" ] || \
-		     [ "${1}" = "stp" ] || \
-		     [ "${1}" = "dwl" ] || \
-		     [ "${1}" = "upl" ] || \
-		     [ "${1}" = "lnk" ] || \
-		     [ "${1}" = "scs" ] || \
-		     [ "${1}" = "err" ] || \
-		     [ "${1}" = "ins" ] || \
-		     [ "${1}" = "cpt" ] || \
+		elif [ "${1}" = "nil" ] ||
+			 [ "${1}" = "inf" ] ||
+		     [ "${1}" = "wrn" ] ||
+		     [ "${1}" = "msg" ] ||
+		     [ "${1}" = "add" ] ||
+		     [ "${1}" = "rem" ] ||
+		     [ "${1}" = "ret" ] ||
+		     [ "${1}" = "rel" ] ||
+		     [ "${1}" = "fwd" ] ||
+		     [ "${1}" = "rev" ] ||
+		     [ "${1}" = "stp" ] ||
+		     [ "${1}" = "dwl" ] ||
+		     [ "${1}" = "upl" ] ||
+		     [ "${1}" = "lnk" ] ||
+		     [ "${1}" = "scs" ] ||
+		     [ "${1}" = "err" ] ||
+		     [ "${1}" = "ins" ] ||
+		     [ "${1}" = "cpt" ] ||
 		     [ "${1}" = "url" ]
 		then
 			prompt_type="${1}"
@@ -3593,7 +3593,7 @@ frobulator.ownership () {
 
 		for path in "${system_paths_list[@]}"
 		do
-			if [[ "${target_path}" = "${path}"   ]] || \
+			if [[ "${target_path}" = "${path}"   ]] ||
 			   [[ "${target_path}" = "${path}/"* ]]
 			then
 				system_path="true"
@@ -3604,7 +3604,7 @@ frobulator.ownership () {
 
 		# determine ownership context
 
-		if [[ "${target_path}" = "${user_home}"   ]] || \
+		if [[ "${target_path}" = "${user_home}"   ]] ||
 		   [[ "${target_path}" = "${user_home}/"* ]]
 		then
 			owner_name="${user_name}"
@@ -4718,7 +4718,7 @@ frobulator.image () {
 		# tsc - termination secquence characters
 		# verify terminal multiplexer instance and type
 
-		if [[ "${TERM}" == screen* ]] || \
+		if [[ "${TERM}" == screen* ]] ||
 		   [[ "${TERM}" == tmux*   ]]
 		then
 			printf "\a\033\\"
@@ -7066,12 +7066,12 @@ frobulator.archive () {
 
 	archive="${file}.${extension}"
 
-	if [ "${extension}" = "tar.bz2" ] || \
+	if [ "${extension}" = "tar.bz2" ] ||
 	   [ "${extension}" = "tbz2"    ]
 	then
 		dependency="tar"
 
-	elif [ "${extension}" = "tar.gz" ] || \
+	elif [ "${extension}" = "tar.gz" ] ||
 	     [ "${extension}" = "tgz"    ]
 	then
 		dependency="tar"
@@ -7247,12 +7247,12 @@ frobulator.extract () {
 		fi
 	fi
 
-	if [ "${extension}" = "tar.bz2" ] || \
+	if [ "${extension}" = "tar.bz2" ] ||
 	   [ "${extension}" = "tbz2"    ]
 	then
 		dependency="tar"
 
-	elif [ "${extension}" = "tar.gz" ] || \
+	elif [ "${extension}" = "tar.gz" ] ||
 	     [ "${extension}" = "tgz"    ]
 	then
 		dependency="tar"

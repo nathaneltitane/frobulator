@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-02-2302"
+update="2026-10-02-2307"
 
 version="${update}"
 
@@ -3238,6 +3238,103 @@ frobulator.complete () {
 	# continue process
 
 	return 0
+}
+
+# halt /////////////////////////////////////////////////////////////////////////
+
+# use to stop the script when the previous command failed
+# records the status for frobulator.result and logs the failure
+
+# usage:      command
+#             frobulator.halt
+#             frobulator.halt "[message]" "[detail]"
+
+frobulator.halt () {
+
+	local status="${?}"
+	local checkpoint
+	local line
+
+	# record status like frobulator.complete
+
+	if [ -z "${frobulator_complete_initialized}" ]
+	then
+		frobulator_complete_statuses=()
+		frobulator_complete_checkpoints=()
+		frobulator_complete_initialized=true
+	fi
+
+	checkpoint="${1:-Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))}"
+
+	frobulator_complete_statuses+=("${status}")
+	frobulator_complete_checkpoints+=("${checkpoint}")
+
+	if [ "${status}" -eq 0 ]
+	then
+		return 0
+	fi
+
+	if [ -n "${1}" ]
+	then
+		frobulator.err "${@}"
+	fi
+
+	# log failure
+
+	line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint}${2:+ ${2}} [ status ${status} ]"
+
+	frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+
+	exit "${status}"
+}
+
+# fail /////////////////////////////////////////////////////////////////////////
+
+# use to leave a function when the previous command failed
+# records the status for frobulator.result and logs the failure
+# returns the failed status: follow with '|| return' to leave the calling function
+
+# usage:      command
+#             frobulator.fail || return
+#             frobulator.fail "[message]" "[detail]" || return
+
+frobulator.fail () {
+
+	local status="${?}"
+	local checkpoint
+	local line
+
+	# record status like frobulator.complete
+
+	if [ -z "${frobulator_complete_initialized}" ]
+	then
+		frobulator_complete_statuses=()
+		frobulator_complete_checkpoints=()
+		frobulator_complete_initialized=true
+	fi
+
+	checkpoint="${1:-Operation $(( ${#frobulator_complete_checkpoints[@]} + 1 ))}"
+
+	frobulator_complete_statuses+=("${status}")
+	frobulator_complete_checkpoints+=("${checkpoint}")
+
+	if [ "${status}" -eq 0 ]
+	then
+		return 0
+	fi
+
+	if [ -n "${1}" ]
+	then
+		frobulator.err "${@}"
+	fi
+
+	# log failure
+
+	line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint}${2:+ ${2}} [ status ${status} ]"
+
+	frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+
+	return "${status}"
 }
 
 # result ///////////////////////////////////////////////////////////////////////

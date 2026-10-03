@@ -49,7 +49,7 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 ## install
 
-running the script directly installs it to `${HOME}/.local/bin` - no arguments default to `--install`. Sourcing is unaffected: the options only apply when the file is executed.
+Running the script directly installs it to `${HOME}/.local/bin` - no arguments default to `--install`. Sourcing is unaffected: the options only apply when the file is executed.
 
 ```bash
 ./frobulator              # install (default)
@@ -59,7 +59,7 @@ running the script directly installs it to `${HOME}/.local/bin` - no arguments d
 
 ## version
 
-the release is identified by the literal `update="YYYY-MM-DD-HHMM"` line at the top of the file. The bootstrap reads it as text (`grep '^update='`) and downloads a new copy when the online value sorts after the installed one - bump it (four-digit time) for every release, including same-day releases. `version` is derived from it.
+The release is identified by the literal `update="YYYY-MM-DD-HHMM"` line at the top of the file. The bootstrap reads it as text (`grep '^update='`) and downloads a new copy when the online value sorts after the installed one - bump it (four-digit time) for every release, including same-day releases. `version` is derived from it.
 
 ## standard script bootstrap
 
@@ -201,71 +201,66 @@ list=()
 
 # configuration ────────────────────────────────────────────────────────────────
 ```
-## prompt formatting
+## three-character functions
+
+Short names for the functions used most: prompt formatting and line markers. Each name abbreviates what it does:
+
+| function | stands for |
+|---|---|
+| `frobulator.plo` | prompt line overwrite |
+| `frobulator.pmt` | prompt management tool |
+| `frobulator.brk` | line break |
+| `frobulator.nil` | empty (nil) line |
+| `frobulator.inf` | information |
+| `frobulator.wrn` | warning |
+| `frobulator.msg` | message |
+| `frobulator.add` | add |
+| `frobulator.rem` | remove |
+| `frobulator.ret` | retain |
+| `frobulator.rel` | release |
+| `frobulator.fwd` | forward |
+| `frobulator.rev` | reverse |
+| `frobulator.stp` | stop |
+| `frobulator.dwl` | download |
+| `frobulator.upl` | upload |
+| `frobulator.lnk` | link |
+| `frobulator.scs` | success |
+| `frobulator.err` | error |
+| `frobulator.ins` | insert |
+| `frobulator.cpt` | complete |
+| `frobulator.url` | url |
+| `frobulator.ask` | ask - question prompt |
+| `frobulator.ipt` | input prompt |
+| `frobulator.usr` | user prompt |
+| `frobulator.nul` | null line - carry-over, keeps the color of the line above |
+| `frobulator.ind` | index line - carry-over, without color |
+| `frobulator.ltr` | letter |
+| `frobulator.num` | number |
+| `frobulator.sep` | separator |
+| `frobulator.ntf` | notify |
 
 ### frobulator.plo
 
-clears a defined number of lines above the current cursor position, wiping from that point down to the end of the screen — built on `terminal_cursor_up` and `terminal_clear_down`.
+**p**rompt **l**ine **o**verwrite.
+
+Clears a defined number of lines above the current cursor position, wiping from that point down to the end of the screen — built on `terminal_cursor_up` and `terminal_clear_down`.
 
 ```bash
 frobulator.plo 1
 ```
 
-### frobulator.erase
-
-thin wrapper around `frobulator.plo` — erases a defined number of lines above the current cursor position the same way.
-
-```bash
-frobulator.erase 3
-```
-
 ### frobulator.pmt
 
-the shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into an 80-column line: pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
+**p**rompt **m**anagement **t**ool.
+
+The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`terminal_columns`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
 
 ```bash
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
 ```
 
 
-### frobulator.columns
-
-sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), never below `terminal_columns_minimum` (default `80`), which is also used when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
-
-```bash
-terminal_columns_minimum=100
-frobulator.columns
-```
-## color commands
-
-Each named color wrapper calls `frobulator.pmt` directly, stores its color into `prompt_string`, and echoes the result — so every color wrapper shares the same prompt-formatting rules as `frobulator.pmt` above.
-
-```bash
-frobulator.[color] "[string]" "[string]" "[span character]"
-```
-
-| command | example |
-|-----------------------|---------------------------------------------------|
-| `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
-| `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |
-| `frobulator.grey` | `frobulator.grey "Highlighted" "[ value ]"` |
-| `frobulator.white` | `frobulator.white "Highlighted" "[ value ]"` |
-| `frobulator.red` | `frobulator.red "Highlighted" "[ value ]"` |
-| `frobulator.crimson` | `frobulator.crimson "Highlighted" "[ value ]"` |
-| `frobulator.green` | `frobulator.green "Highlighted" "[ value ]"` |
-| `frobulator.lime` | `frobulator.lime "Highlighted" "[ value ]"` |
-| `frobulator.yellow` | `frobulator.yellow "Highlighted" "[ value ]"` |
-| `frobulator.orange` | `frobulator.orange "Highlighted" "[ value ]"` |
-| `frobulator.blue` | `frobulator.blue "Highlighted" "[ value ]"` |
-| `frobulator.navy` | `frobulator.navy "Highlighted" "[ value ]"` |
-| `frobulator.magenta` | `frobulator.magenta "Highlighted" "[ value ]"` |
-| `frobulator.purple` | `frobulator.purple "Highlighted" "[ value ]"` |
-| `frobulator.fuschia` | `frobulator.fuschia "Highlighted" "[ value ]"` |
-| `frobulator.pink` | `frobulator.pink "Highlighted" "[ value ]"` |
-| `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
-| `frobulator.teal` | `frobulator.teal "Highlighted" "[ value ]"` |
-
-## prompt marker commands
+### prompt marker commands
 
 These commands print standard frobulator markers by calling `frobulator.pmt` directly and prefixing its own colored marker glyph (e.g. `[  i  ]`, `[  !  ]`). Most accept a message, an optional detail string, and an optional fill character.
 
@@ -298,7 +293,7 @@ Every marker line is followed by a blank line, printed by `frobulator.brk` - scr
 | `frobulator.nul` | continue line, retain color | `frobulator.nul "continued output"` |
 | `frobulator.ind` | continue line, clear color | `frobulator.ind "continued output"` |
 
-## argument handling
+### argument handling
 
 Most frobulator prompt commands accept either direct string arguments or array-expanded arguments.
 
@@ -367,11 +362,9 @@ frobulator.wrn "Current user" "[ ${current_user} ]"
 
 All argument types are normalized internally through `frobulator.pmt`, allowing prompt formatting, alignment, wrapping, and span generation to remain consistent regardless of how values are supplied.
 
-## structured prompt helpers
-
 ### frobulator.ltr
 
-prints a lettered step marker — first argument is the letter, remaining arguments are forwarded to `frobulator.pmt`.
+Prints a lettered step marker — first argument is the letter, remaining arguments are forwarded to `frobulator.pmt`.
 
 ```bash
 frobulator.ltr "a" "Select source directory"
@@ -379,7 +372,7 @@ frobulator.ltr "a" "Select source directory"
 
 ### frobulator.num
 
-prints a numbered step marker — first argument is the number, remaining arguments are forwarded to `frobulator.pmt`.
+Prints a numbered step marker — first argument is the number, remaining arguments are forwarded to `frobulator.pmt`.
 
 ```bash
 frobulator.num "1" "Install dependencies"
@@ -387,7 +380,7 @@ frobulator.num "1" "Install dependencies"
 
 ### frobulator.sep
 
-prints a full-width separator line built from `frobulator.pmt`.
+Prints a full-width separator line built from `frobulator.pmt`.
 
 ```bash
 frobulator.sep
@@ -395,7 +388,7 @@ frobulator.sep
 
 ### frobulator.ntf
 
-prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the frame using that marker's color. Remaining arguments are `title` then `message`.
+Prints a framed notice block. Optional leading arguments select a frame `style` (`square` [default], `round`, `heavy`, `double`, `dots`, `matrix`, `tech`, `skel`, `ascii`), the `split` keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (`inf`, `wrn`, `scs`, `err`, etc.) to color the frame using that marker's color. Remaining arguments are `title` then `message`.
 
 ```bash
 frobulator.ntf round inf "Notice" "The setup process is ready."
@@ -405,9 +398,58 @@ frobulator.ntf round inf "Notice" "The setup process is ready."
 frobulator.ntf heavy split err "Failure" "Could not reach the update server."
 ```
 
+## prompt formatting
+
+### frobulator.erase
+
+Thin wrapper around `frobulator.plo` — erases a defined number of lines above the current cursor position the same way.
+
+```bash
+frobulator.erase 3
+```
+
+### frobulator.columns
+
+Sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), never below `terminal_columns_minimum` (default `80`), which is also used when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
+
+```bash
+terminal_columns_minimum=100
+frobulator.columns
+```
+## color commands
+
+Each named color wrapper calls `frobulator.pmt` directly, stores its color into `prompt_string`, and echoes the result — so every color wrapper shares the same prompt-formatting rules as `frobulator.pmt` above.
+
+```bash
+frobulator.[color] "[string]" "[string]" "[span character]"
+```
+
+| command | example |
+|-----------------------|---------------------------------------------------|
+| `frobulator.black` | `frobulator.black "Highlighted" "[ value ]"` |
+| `frobulator.silver` | `frobulator.silver "Highlighted" "[ value ]"` |
+| `frobulator.grey` | `frobulator.grey "Highlighted" "[ value ]"` |
+| `frobulator.white` | `frobulator.white "Highlighted" "[ value ]"` |
+| `frobulator.red` | `frobulator.red "Highlighted" "[ value ]"` |
+| `frobulator.crimson` | `frobulator.crimson "Highlighted" "[ value ]"` |
+| `frobulator.green` | `frobulator.green "Highlighted" "[ value ]"` |
+| `frobulator.lime` | `frobulator.lime "Highlighted" "[ value ]"` |
+| `frobulator.yellow` | `frobulator.yellow "Highlighted" "[ value ]"` |
+| `frobulator.orange` | `frobulator.orange "Highlighted" "[ value ]"` |
+| `frobulator.blue` | `frobulator.blue "Highlighted" "[ value ]"` |
+| `frobulator.navy` | `frobulator.navy "Highlighted" "[ value ]"` |
+| `frobulator.magenta` | `frobulator.magenta "Highlighted" "[ value ]"` |
+| `frobulator.purple` | `frobulator.purple "Highlighted" "[ value ]"` |
+| `frobulator.fuschia` | `frobulator.fuschia "Highlighted" "[ value ]"` |
+| `frobulator.pink` | `frobulator.pink "Highlighted" "[ value ]"` |
+| `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
+| `frobulator.teal` | `frobulator.teal "Highlighted" "[ value ]"` |
+
+## structured prompt helpers
+
 ### frobulator.separate
 
-prints a predefined `frobulator.sep` line followed by a blank line — use to separate instructions or warnings from prompts.
+Prints a predefined `frobulator.sep` line followed by a blank line — use to separate instructions or warnings from prompts.
 
 ```bash
 frobulator.separate
@@ -415,7 +457,7 @@ frobulator.separate
 
 ### frobulator.read
 
-wraps the `read` builtin (forwarding all arguments to it) and prints a trailing blank line, so prompts stay evenly spaced after user input.
+Wraps the `read` builtin (forwarding all arguments to it) and prints a trailing blank line, so prompts stay evenly spaced after user input.
 
 ```bash
 frobulator.ask "Continue?" "[ y/n ]"
@@ -424,7 +466,7 @@ frobulator.read reply
 
 ### frobulator.script
 
-prints a script startup banner. Derives the displayed script name/version by splitting `${script}` on its first `-` character (i.e. the running script should be named like `setup-myproject`), falling back to the full script name when no `-` is present.
+Prints a script startup banner. Derives the displayed script name/version by splitting `${script}` on its first `-` character (i.e. the running script should be named like `setup-myproject`), falling back to the full script name when no `-` is present.
 
 ```bash
 frobulator.script
@@ -432,7 +474,7 @@ frobulator.script
 
 ### frobulator.type
 
-prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the string, second argument is the maximum random interval in tenths of a second (defaults to `2`, i.e. up to ~0.2s per character).
+Prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the string, second argument is the maximum random interval in tenths of a second (defaults to `2`, i.e. up to ~0.2s per character).
 
 ```bash
 frobulator.type "Preparing environment..." 3
@@ -440,7 +482,7 @@ frobulator.type "Preparing environment..." 3
 
 ### frobulator.timeout
 
-sleeps for a number of seconds (defaults to `1` when omitted) — a simple pause between commands.
+Sleeps for a number of seconds (defaults to `1` when omitted) — a simple pause between commands.
 
 ```bash
 frobulator.timeout 5
@@ -448,7 +490,7 @@ frobulator.timeout 5
 
 ### frobulator.clear
 
-pauses for `frobulator.timeout`'s default interval, then clears the terminal — used for script "paging" once a step's checkpoints are met.
+Pauses for `frobulator.timeout`'s default interval, then clears the terminal — used for script "paging" once a step's checkpoints are met.
 
 ```bash
 frobulator.clear
@@ -456,7 +498,7 @@ frobulator.clear
 
 ### frobulator.countdown
 
-shows a live countdown before continuing, validating that the first argument is a non-negative integer. Remaining arguments are forwarded to `frobulator.pmt` as the message shown beside the counter.
+Shows a live countdown before continuing, validating that the first argument is a non-negative integer. Remaining arguments are forwarded to `frobulator.pmt` as the message shown beside the counter.
 
 ```bash
 frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
@@ -466,7 +508,7 @@ frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
 
 ### frobulator.action
 
-generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, consonant doubling, `-c` → `-ck`) before appending `-ing`. Sets the `progress_prompt`/`progress_color` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
+Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, consonant doubling, `-c` → `-ck`) before appending `-ing`. Sets the `progress_prompt`/`progress_color` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
 
 ```bash
 frobulator.action "download" "[ ${file} ]"
@@ -474,7 +516,7 @@ frobulator.action "download" "[ ${file} ]"
 
 ### frobulator.process
 
-waits on the most recently backgrounded process (`${!}`), animating a simple `/\` ticker beside a message until it exits, then returns that process's exit status.
+Waits on the most recently backgrounded process (`${!}`), animating a simple `/\` ticker beside a message until it exits, then returns that process's exit status.
 
 ```bash
 apt-get update &
@@ -483,7 +525,7 @@ frobulator.process "Updating package index"
 
 ### frobulator.progress
 
-same as `frobulator.process`, but generates its message via `frobulator.action` (so the first argument is a bare verb, not a pre-built message) and animates a smoother `⎺⎻⎼⎽⎼⎻` ticker.
+Same as `frobulator.process`, but generates its message via `frobulator.action` (so the first argument is a bare verb, not a pre-built message) and animates a smoother `⎺⎻⎼⎽⎼⎻` ticker.
 
 ```bash
 curl -L "${url}" -o "${file}" &
@@ -492,7 +534,7 @@ frobulator.progress "download" "[ ${file} ]"
 
 ### frobulator.bar
 
-runs a command (via `"${SHELL}" -c`) with a simulated activity bar — progress accelerates early, slows near 90%, and only reaches 100% once the process actually exits. Not a true byte-accurate progress meter.
+Runs a command (via `"${SHELL}" -c`) with a simulated activity bar — progress accelerates early, slows near 90%, and only reaches 100% once the process actually exits. Not a true byte-accurate progress meter.
 
 ```bash
 frobulator.bar sleep 5
@@ -502,7 +544,7 @@ frobulator.bar rsync -av source/ destination/
 
 ### frobulator.temporary
 
-creates one or more temporary directories (template `frobulator.temporary.XXXXXX`, via `mktemp -d`) and, for each, `eval`-assigns the resulting path back into the *named variable you pass in* — so the argument is a variable name, not a path.
+Creates one or more temporary directories (template `frobulator.temporary.XXXXXX`, via `mktemp -d`) and, for each, `eval`-assigns the resulting path back into the *named variable you pass in* — so the argument is a variable name, not a path.
 
 ```bash
 frobulator.temporary directory_temporary
@@ -511,7 +553,7 @@ frobulator.temporary directory_temporary
 
 ### frobulator.trap
 
-registers `EXIT`/`HUP`/`INT`/`PIPE`/`QUIT`/`TERM` traps that recursively delete the named temporary directory on interruption or normal exit. Use immediately after `frobulator.temporary`.
+Registers `EXIT`/`HUP`/`INT`/`PIPE`/`QUIT`/`TERM` traps that recursively delete the named temporary directory on interruption or normal exit. Use immediately after `frobulator.temporary`.
 
 ```bash
 frobulator.temporary directory_temporary
@@ -520,7 +562,7 @@ frobulator.trap directory_temporary
 
 ### frobulator.complete
 
-one-line status check after a command, with `frobulator.result` once at the end of the script. The first argument picks what a failure means:
+One-line status check after a command, with `frobulator.result` once at the end of the script. The first argument picks what a failure means:
 
 - **`continue`** (default, also when omitted) - records the status, reports `Complete - <label>` or `Incomplete - <label>`, logs failures, and carries on.
 - **`halt`** - same on success; on failure prints the message (or `Incomplete - <label>`), logs it, prints the `frobulator.result` summary and exits the script - also when called inside a function.
@@ -550,7 +592,7 @@ frobulator.complete halt "${checkpoint_directory}" "image-checkpoint" download_i
 
 ### frobulator.halt
 
-stops the script when the command that ran immediately before it failed - the stop behind `frobulator.complete halt`, also callable directly - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
+Stops the script when the command that ran immediately before it failed - the stop behind `frobulator.complete halt`, also callable directly - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
 
 ```bash
 zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
@@ -564,7 +606,7 @@ frobulator.halt
 
 ### frobulator.fail
 
-same as `frobulator.halt`, for use inside functions: instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with `|| return` to leave the calling function - a function cannot make its caller return on its own.
+Same as `frobulator.halt`, for use inside functions: instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with `|| return` to leave the calling function - a function cannot make its caller return on its own.
 
 ```bash
 build () {
@@ -575,7 +617,7 @@ build () {
 
 ### frobulator.result
 
-evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at `${PREFIX}/var/log/` for details on failure), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
+Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at `${PREFIX}/var/log/` for details on failure), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
 
 ```bash
 frobulator.result "setup"
@@ -585,7 +627,7 @@ frobulator.result "setup"
 
 ### frobulator.directory
 
-creates a directory (and sets ownership via `frobulator.ownership`) from a path/name or array. With a single argument containing a `/`, the path is split automatically (parent directory vs. final segment) — so a single absolute path works correctly here, unlike some of the item-based helpers below.
+Creates a directory (and sets ownership via `frobulator.ownership`) from a path/name or array. With a single argument containing a `/`, the path is split automatically (parent directory vs. final segment) — so a single absolute path works correctly here, unlike some of the item-based helpers below.
 
 ```bash
 frobulator.directory "${HOME}/.config" "frobulator"
@@ -597,7 +639,7 @@ frobulator.directory "${HOME}/.config/frobulator"
 
 ### frobulator.write
 
-writes `content` to one or more files under `path` (`path` defaults to `${PWD}` when a 3-argument call is used), creating the directory first if needed, and sets ownership on each written file. `mode` controls how content is applied:
+Writes `content` to one or more files under `path` (`path` defaults to `${PWD}` when a 3-argument call is used), creating the directory first if needed, and sets ownership on each written file. `mode` controls how content is applied:
 
 - `append` — adds content to the end of the file
 - `write` — overwrites the file entirely
@@ -609,7 +651,7 @@ frobulator.write "append" "enabled=true" "${HOME}/.config/frobulator" "config"
 
 ### frobulator.file
 
-creates one or more empty files (via `touch`) under `path` (`path` defaults to `${PWD}` when a single-argument call is used) and sets ownership on each.
+Creates one or more empty files (via `touch`) under `path` (`path` defaults to `${PWD}` when a single-argument call is used) and sets ownership on each.
 
 ```bash
 frobulator.file "${HOME}/.config/frobulator" "config"
@@ -617,7 +659,7 @@ frobulator.file "${HOME}/.config/frobulator" "config"
 
 ### frobulator.keep
 
-reverse-selects: `cd`s into `path`, then deletes every item in that directory *except* the file(s)/array you list — the inverse of `frobulator.delete`.
+Reverse-selects: `cd`s into `path`, then deletes every item in that directory *except* the file(s)/array you list — the inverse of `frobulator.delete`.
 
 ```bash
 frobulator.keep "${HOME}/Downloads" "important.zip"
@@ -625,7 +667,7 @@ frobulator.keep "${HOME}/Downloads" "important.zip"
 
 ### frobulator.delete
 
-deletes selected item(s) from a directory. A single argument is treated as an item relative to `${PWD}` (unlike `frobulator.directory`, it does **not** auto-split a `/`-containing single argument into path + item — pass the base path and item separately, or use `dirname`/`basename`, when deleting an absolute path). Two arguments treat the first as the base path and the second as the item or array of items. Warns instead of silently succeeding when the resolved target doesn't exist.
+Deletes selected item(s) from a directory. A single argument is treated as an item relative to `${PWD}` (unlike `frobulator.directory`, it does **not** auto-split a `/`-containing single argument into path + item — pass the base path and item separately, or use `dirname`/`basename`, when deleting an absolute path). Two arguments treat the first as the base path and the second as the item or array of items. Warns instead of silently succeeding when the resolved target doesn't exist.
 
 ```bash
 frobulator.delete "${temporary_directory}" "old-file.tmp"
@@ -638,7 +680,7 @@ frobulator.delete "${path_android}" list
 
 ### frobulator.copy
 
-recursively copies file(s)/directories: `frobulator.copy "[source]" "[target]" "[file]" | "[array]"`. Creates `target` if missing.
+Recursively copies file(s)/directories: `frobulator.copy "[source]" "[target]" "[file]" | "[array]"`. Creates `target` if missing.
 
 ```bash
 frobulator.copy "${source_directory}" "${target_directory}" "config"
@@ -646,7 +688,7 @@ frobulator.copy "${source_directory}" "${target_directory}" "config"
 
 ### frobulator.move
 
-moves file(s)/directories, then sets `public execute` permissions (`755`) on the moved item(s) at the target via `frobulator.permissions`. `source` defaults to `${PWD}` per item if left empty.
+Moves file(s)/directories, then sets `public execute` permissions (`755`) on the moved item(s) at the target via `frobulator.permissions`. `source` defaults to `${PWD}` per item if left empty.
 
 ```bash
 frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"
@@ -654,7 +696,7 @@ frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"
 
 ### frobulator.link
 
-creates symbolic links, detecting and labeling whether each source item is a `file` or `directory` in its status output, then sets ownership on the created link. Three call forms:
+Creates symbolic links, detecting and labeling whether each source item is a `file` or `directory` in its status output, then sets ownership on the created link. Three call forms:
 
 - `frobulator.link "[source]" "[target]" "[item]"` — link a single item, same name at target
 - `frobulator.link "[source]" "[target]" "[item]" "[link name]"` — link a single item under a different name
@@ -666,7 +708,7 @@ frobulator.link "${path_android_platform_tools}" "${HOME}/.local/bin" "adb"
 
 ### frobulator.image
 
-displays a local or remote image directly in supported terminals (local file path, `http(s)://` URL, or stdin). Width defaults to terminal width and cells/percentages are accepted; specifying an explicit height disables automatic aspect-ratio preservation.
+Displays a local or remote image directly in supported terminals (local file path, `http(s)://` URL, or stdin). Width defaults to terminal width and cells/percentages are accepted; specifying an explicit height disables automatic aspect-ratio preservation.
 
 ```bash
 frobulator.image "${image_file}"
@@ -678,7 +720,7 @@ frobulator.image "${image_file}" "80" "40"
 
 ### frobulator.http
 
-fetches the HTTP status code for a URL into `${url_status}` — silently, via `curl --write-out`. Called with one argument it checks the URL as-is; called with two (`url`, `data`) it checks `"${url}/${data}"` following redirects. Use before `frobulator.status`.
+Fetches the HTTP status code for a URL into `${url_status}` — silently, via `curl --write-out`. Called with one argument it checks the URL as-is; called with two (`url`, `data`) it checks `"${url}/${data}"` following redirects. Use before `frobulator.status`.
 
 ```bash
 frobulator.http "https://example.com/file.tar.gz"
@@ -686,7 +728,7 @@ frobulator.http "https://example.com/file.tar.gz"
 
 ### frobulator.status
 
-interprets `${url_status}` (set by a prior `frobulator.http` call) into a 1xx/2xx/3xx/4xx/5xx category, prints a colored status line accordingly, and sets `${proceed}` to `1` (ok to continue) or `0` (abort) plus `${reason}` (`client`/`server`/`response`) on failure.
+Interprets `${url_status}` (set by a prior `frobulator.http` call) into a 1xx/2xx/3xx/4xx/5xx category, prints a colored status line accordingly, and sets `${proceed}` to `1` (ok to continue) or `0` (abort) plus `${reason}` (`client`/`server`/`response`) on failure.
 
 ```bash
 frobulator.http "https://example.com/file.tar.gz"
@@ -695,7 +737,7 @@ frobulator.status
 
 ### frobulator.download
 
-downloads file(s) with URL status verification first. Several call shapes are supported depending on argument count — `"[url]" "[directory]" "[item]"` (or array), a combined `"[url]"/"[item]"` two-argument shorthand, or a 4-argument form that downloads a differently-named source item under a new local name. Runs each download in the background with `frobulator.progress "download"` as the visual indicator, and sets `public execute` permissions (`755`) on success via `frobulator.permissions`.
+Downloads file(s) with URL status verification first. Several call shapes are supported depending on argument count — `"[url]" "[directory]" "[item]"` (or array), a combined `"[url]"/"[item]"` two-argument shorthand, or a 4-argument form that downloads a differently-named source item under a new local name. Runs each download in the background with `frobulator.progress "download"` as the visual indicator, and sets `public execute` permissions (`755`) on success via `frobulator.permissions`.
 
 ```bash
 frobulator.download "https://get.frbltr.app" "${HOME}/.local/bin" "frobulator"
@@ -703,7 +745,7 @@ frobulator.download "https://get.frbltr.app" "${HOME}/.local/bin" "frobulator"
 
 ### frobulator.upload
 
-uploads data or file(s) after validating the target URL the same way `frobulator.download` does. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data.
+Uploads data or file(s) after validating the target URL the same way `frobulator.download` does. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data.
 
 ```bash
 frobulator.upload POST "https://example.com/upload" "${archive_file}"
@@ -717,7 +759,7 @@ frobulator.upload POST "https://example.com/upload" '{"key":"value"}'
 
 ### frobulator.silence
 
-runs a command (via `"${SHELL}" -c`) with stdout/stderr redirected to the null sink, for fully silent execution.
+Runs a command (via `"${SHELL}" -c`) with stdout/stderr redirected to the null sink, for fully silent execution.
 
 ```bash
 frobulator.silence "apt-get update"
@@ -725,7 +767,7 @@ frobulator.silence "apt-get update"
 
 ### frobulator.log
 
-runs a command the same way, but redirects output to a timestamped log file instead of discarding it — `${log_directory}/${script}-${stamp}.log`, where `log_directory` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise.
+Runs a command the same way, but redirects output to a timestamped log file instead of discarding it — `${log_directory}/${script}-${stamp}.log`, where `log_directory` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise.
 
 ```bash
 frobulator.log "apt-get install curl"
@@ -735,7 +777,7 @@ frobulator.log "apt-get install curl"
 
 ### frobulator.password
 
-captures masked password input character-by-character, showing `•` per keystroke and handling backspace/delete, until Enter. Result is stored in `${password}` (and returned via `${input}` as well).
+Captures masked password input character-by-character, showing `•` per keystroke and handling backspace/delete, until Enter. Result is stored in `${password}` (and returned via `${input}` as well).
 
 ```bash
 frobulator.password
@@ -743,7 +785,7 @@ frobulator.password
 
 ### frobulator.input
 
-captures one or more prompted values by label. Labels containing `password` are captured with `frobulator.password`; everything else uses a plain `read`. Re-prompts on empty input. Results accumulate in the `frobulator_return` array as `label=value` pairs.
+Captures one or more prompted values by label. Labels containing `password` are captured with `frobulator.password`; everything else uses a plain `read`. Re-prompts on empty input. Results accumulate in the `frobulator_return` array as `label=value` pairs.
 
 ```bash
 options=( "username" "password" )
@@ -756,7 +798,7 @@ frobulator.input "${options[@]}"
 
 ### frobulator.clean
 
-runs `apt-get autoremove`, `autoclean`, and `clean` in sequence (each shown with its own progress indicator), then clears stale `dpkg` post-install scripts under `${PREFIX}/var/lib/dpkg/info` to avoid package configuration errors.
+Runs `apt-get autoremove`, `autoclean`, and `clean` in sequence (each shown with its own progress indicator), then clears stale `dpkg` post-install scripts under `${PREFIX}/var/lib/dpkg/info` to avoid package configuration errors.
 
 ```bash
 frobulator.clean
@@ -764,7 +806,7 @@ frobulator.clean
 
 ### frobulator.hold
 
-marks package(s) for version freeze via `apt-mark hold`.
+Marks package(s) for version freeze via `apt-mark hold`.
 
 ```bash
 frobulator.hold "firefox-esr"
@@ -772,7 +814,7 @@ frobulator.hold "firefox-esr"
 
 ### frobulator.release
 
-reverses `frobulator.hold` via `apt-mark unhold`.
+Reverses `frobulator.hold` via `apt-mark unhold`.
 
 ```bash
 frobulator.release "firefox-esr"
@@ -780,7 +822,7 @@ frobulator.release "firefox-esr"
 
 ### frobulator.failsafe
 
-runs a background `apt update && apt full-upgrade`, then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.
+Runs a background `apt update && apt full-upgrade`, then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.
 
 ```bash
 frobulator.failsafe "curl"
@@ -788,7 +830,7 @@ frobulator.failsafe "curl"
 
 ### frobulator.install
 
-installs package(s). A `.deb` path is installed directly; otherwise the package is looked up with `apt search` first, and installation is skipped (with a "present on system" message) if it's already installed.
+Installs package(s). A `.deb` path is installed directly; otherwise the package is looked up with `apt search` first, and installation is skipped (with a "present on system" message) if it's already installed.
 
 ```bash
 frobulator.install "curl"
@@ -796,7 +838,7 @@ frobulator.install "curl"
 
 ### frobulator.require
 
-checks whether each named *command* (not package name) is available, and if not, searches `apt-file` to find and install the package that provides it — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
+Checks whether each named *command* (not package name) is available, and if not, searches `apt-file` to find and install the package that provides it — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
 
 ```bash
 frobulator.require "curl"
@@ -808,7 +850,7 @@ frobulator.require "libssl*"
 
 ### frobulator.reinstall
 
-reinstalls package(s) via `apt-get install --reinstall`.
+Reinstalls package(s) via `apt-get install --reinstall`.
 
 ```bash
 frobulator.reinstall "curl"
@@ -816,7 +858,7 @@ frobulator.reinstall "curl"
 
 ### frobulator.update
 
-runs `apt-get update` with a progress indicator.
+Runs `apt-get update` with a progress indicator.
 
 ```bash
 frobulator.update
@@ -824,7 +866,7 @@ frobulator.update
 
 ### frobulator.upgrade
 
-runs `apt-get dist-upgrade` with a progress indicator.
+Runs `apt-get dist-upgrade` with a progress indicator.
 
 ```bash
 frobulator.upgrade
@@ -832,7 +874,7 @@ frobulator.upgrade
 
 ### frobulator.purge
 
-purges package(s) via `apt-get purge --autoremove`, but only if `apt search` shows the package as currently installed (skips with a message otherwise).
+Purges package(s) via `apt-get purge --autoremove`, but only if `apt search` shows the package as currently installed (skips with a message otherwise).
 
 ```bash
 frobulator.purge "unused-package"
@@ -840,7 +882,7 @@ frobulator.purge "unused-package"
 
 ### frobulator.dialog
 
-opens a native file-selection dialog via `zenity` (GNOME) or `kdialog` (KDE), whichever is available, with `${script}` in the window title. Fails with a warning if neither is installed.
+Opens a native file-selection dialog via `zenity` (GNOME) or `kdialog` (KDE), whichever is available, with `${script}` in the window title. Fails with a warning if neither is installed.
 
 ```bash
 frobulator.dialog "Select a directory" --directory
@@ -850,7 +892,7 @@ frobulator.dialog "Select a directory" --directory
 
 ### frobulator.terminate
 
-forcefully and repeatedly `pkill -f`'s a process name/pattern until `pgrep -f` no longer finds it. Requires both `pgrep` and `pkill`.
+Forcefully and repeatedly `pkill -f`'s a process name/pattern until `pgrep -f` no longer finds it. Requires both `pgrep` and `pkill`.
 
 ```bash
 frobulator.terminate "rogue-process"
@@ -858,7 +900,7 @@ frobulator.terminate "rogue-process"
 
 ### frobulator.exit
 
-cleanly exits the current script or process instance — runs a 3-second `frobulator.countdown` ("Exiting"), then calls the `exit` builtin with an explicit exit code (defaults to `0`, or `1` if the countdown itself was interrupted). Does not touch the shell — see `frobulator.close` for that behavior. Being terminal, it never `return`s to its caller like the rest of the library does.
+Cleanly exits the current script or process instance — runs a 3-second `frobulator.countdown` ("Exiting"), then calls the `exit` builtin with an explicit exit code (defaults to `0`, or `1` if the countdown itself was interrupted). Does not touch the shell — see `frobulator.close` for that behavior. Being terminal, it never `return`s to its caller like the rest of the library does.
 
 ```bash
 frobulator.exit "setup"
@@ -870,7 +912,7 @@ frobulator.exit "setup" "${status}"
 
 ### frobulator.close
 
-runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split; its internal doc comment still shows the old `frobulator.exit "[instance]"` usage line.)
+Runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split; its internal doc comment still shows the old `frobulator.exit "[instance]"` usage line.)
 
 ```bash
 frobulator.close "setup"
@@ -878,7 +920,7 @@ frobulator.close "setup"
 
 ### frobulator.user
 
-prints the active shell user (`${SUDO_USER}` if set, otherwise `${USER}`) and pauses 1 second — useful before privilege-sensitive steps.
+Prints the active shell user (`${SUDO_USER}` if set, otherwise `${USER}`) and pauses 1 second — useful before privilege-sensitive steps.
 
 ```bash
 frobulator.user
@@ -886,7 +928,7 @@ frobulator.user
 
 ### frobulator.assess
 
-checks whether the listed command(s) exist. If run as root, installs any missing ones via `frobulator.require` and asks the person to restart as their normal user. If not root, prompts to escalate (`frobulator.escalate`) for any missing command, or warns and fails if declined.
+Checks whether the listed command(s) exist. If run as root, installs any missing ones via `frobulator.require` and asks the person to restart as their normal user. If not root, prompts to escalate (`frobulator.escalate`) for any missing command, or warns and fails if declined.
 
 ```bash
 requirements=( curl git )
@@ -895,7 +937,7 @@ frobulator.assess "${requirements[@]}"
 
 ### frobulator.escalate
 
-relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching.
+Relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching.
 
 ```bash
 self_arguments=("${@}")
@@ -904,7 +946,7 @@ frobulator.escalate
 
 ### frobulator.service
 
-manages a systemd service, scoping automatically to `--user` or system context depending on whether the runtime is escalated (root). A single argument is treated as a daemon-level action with no target unit; two arguments target a specific service with the given action forwarded to `systemctl`. `activate` runs a full enable/start cycle with status verification. `reload` is the only action that doesn't require a service. Supported actions: `reload`, `status`, `activate`, `enable`, `disable`, `start`, `stop`, `restart`.
+Manages a systemd service, scoping automatically to `--user` or system context depending on whether the runtime is escalated (root). A single argument is treated as a daemon-level action with no target unit; two arguments target a specific service with the given action forwarded to `systemctl`. `activate` runs a full enable/start cycle with status verification. `reload` is the only action that doesn't require a service. Supported actions: `reload`, `status`, `activate`, `enable`, `disable`, `start`, `stop`, `restart`.
 
 ```bash
 frobulator.service reload
@@ -920,7 +962,7 @@ frobulator.service activate "${service}"
 
 ### frobulator.ownership
 
-restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.file`, and `frobulator.link`.
+Restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.file`, and `frobulator.link`.
 
 ```bash
 frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
@@ -928,7 +970,7 @@ frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
 
 ### frobulator.permissions
 
-sets file / directory permissions from a scope and optional modifiers, in place of raw `chmod` modes. Takes the scope first, then any modifiers (any order), then one or more targets (or an array). Sets the exact mode; directories always keep `execute` for whoever can read them, since a directory cannot be opened without it.
+Sets file / directory permissions from a scope and optional modifiers, in place of raw `chmod` modes. Takes the scope first, then any modifiers (any order), then one or more targets (or an array). Sets the exact mode; directories always keep `execute` for whoever can read them, since a directory cannot be opened without it.
 
 - **scope:** `public` (you edit, everyone reads), `group` (you edit, your group reads, no access for others), `private` (only you)
 - **modifiers:** `execute` (whoever can read can also run), `readonly` (nobody edits, including you)
@@ -964,7 +1006,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"
 
 ### frobulator.archive
 
-creates an archive from a directory (defaults to `${PWD}` when omitted). Supported `type` values: `tar`, `tar.gz`/`tgz`, `tar.bz2`/`tbz2`, `zip`, `7z`, `rar` — each checked and installed via `frobulator.require` before use.
+Creates an archive from a directory (defaults to `${PWD}` when omitted). Supported `type` values: `tar`, `tar.gz`/`tgz`, `tar.bz2`/`tbz2`, `zip`, `7z`, `rar` — each checked and installed via `frobulator.require` before use.
 
 ```bash
 frobulator.archive "backup" "tar.gz" "${HOME}/Documents"
@@ -972,7 +1014,7 @@ frobulator.archive "backup" "tar.gz" "${HOME}/Documents"
 
 ### frobulator.extract
 
-extracts a known archive type (detected from the file's extension — the source assumes the filename contains no other periods) into `directory` (defaults to `${PWD}` when omitted), installing the needed extractor (`tar`, `7z`, `unrar`, `unzip`) via `frobulator.require` first.
+Extracts a known archive type (detected from the file's extension — the source assumes the filename contains no other periods) into `directory` (defaults to `${PWD}` when omitted), installing the needed extractor (`tar`, `7z`, `unrar`, `unzip`) via `frobulator.require` first.
 
 ```bash
 frobulator.extract "backup.tar.gz" "${target_directory}"
@@ -983,25 +1025,6 @@ frobulator.extract "backup.tar.gz" "${target_directory}"
 ```text
 frobulator.plo
 frobulator.pmt
-frobulator.columns
-frobulator.black
-frobulator.silver
-frobulator.grey
-frobulator.white
-frobulator.red
-frobulator.crimson
-frobulator.green
-frobulator.lime
-frobulator.yellow
-frobulator.orange
-frobulator.blue
-frobulator.navy
-frobulator.magenta
-frobulator.purple
-frobulator.fuschia
-frobulator.pink
-frobulator.aqua
-frobulator.teal
 frobulator.nil
 frobulator.inf
 frobulator.wrn
@@ -1030,6 +1053,25 @@ frobulator.ltr
 frobulator.num
 frobulator.sep
 frobulator.ntf
+frobulator.columns
+frobulator.black
+frobulator.silver
+frobulator.grey
+frobulator.white
+frobulator.red
+frobulator.crimson
+frobulator.green
+frobulator.lime
+frobulator.yellow
+frobulator.orange
+frobulator.blue
+frobulator.navy
+frobulator.magenta
+frobulator.purple
+frobulator.fuschia
+frobulator.pink
+frobulator.aqua
+frobulator.teal
 frobulator.erase
 frobulator.separate
 frobulator.read

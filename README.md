@@ -232,8 +232,8 @@ Short names for the functions used most: prompt formatting and line markers. Eac
 | `frobulator.ask` | ask - question prompt |
 | `frobulator.ipt` | input prompt |
 | `frobulator.usr` | user prompt |
-| `frobulator.nul` | null line - carry-over, keeps the color of the line above |
-| `frobulator.ind` | index line - carry-over, without color |
+| `frobulator.nul` | null line - carry-over: keep color of the line above |
+| `frobulator.ind` | index line - carry-over: without color |
 | `frobulator.ltr` | letter |
 | `frobulator.num` | number |
 | `frobulator.sep` | separator |

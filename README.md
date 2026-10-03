@@ -754,15 +754,33 @@ frobulator.status
 
 ### frobulator.download
 
-Downloads file(s) with URL status verification first. Several call shapes are supported depending on argument count — `"[url]" "[directory]" "[item]"` (or array), a combined `"[url]"/"[item]"` two-argument shorthand, or a 4-argument form that downloads a differently-named source item under a new local name. Runs each download in the background with `frobulator.progress "download"` as the visual indicator, and sets `public execute` permissions (`755`) on success via `frobulator.permissions`.
+Downloads file(s), one request per item, reported by the HTTP status code of the download itself (`2xx` is success; any other code, or an unreachable server, is an error and makes the function return `1`). Each file is written to a partial file beside the target and only moved into place on success, then set to `public execute` (`755`) via `frobulator.permissions`. Missing directories are created. The caller's arrays are left untouched.
+
+Call forms:
+
+- `"[url]" "[directory]" "[item]" | "[array]"` - each item from `"[url]"/"[item]"` into the directory. A single item is fetched from the url itself when the url already ends with the item or with a file name (extension) - so the item becomes the saved name.
+- `"[url]"/"[item]" "[directory]"/"[item]"` - the url is the file, saved under the given path.
+- `"[url]"/"[item]" "[directory]"` - the url is the file, saved under its own name.
+- `"[url]" "[source item]" "[directory]" "[item]"` - `"[url]"/"[source item]"` saved under a different name.
+
+Every message ends its bracket with `// <status code>` - `000` when no response was received. A server that does not answer within 30 seconds is reported as unreachable.
 
 ```bash
-frobulator.download "https://get.frbltr.app" "${HOME}/.local/bin" "frobulator"
+frobulator.download get.frbltr.app "${HOME}/.local/bin/frobulator"
+```
+
+```bash
+list=( "dextop" "dextop-additions" )
+frobulator.download get.dxtp.app "${HOME}/.local/bin" "${list[@]}"
+```
+
+```bash
+frobulator.download "https://dl.winehq.org/wine/wine-mono/7.4.0/wine-mono-7.4.0-x86.msi" "${HOME}/Downloads" wine-mono.msi
 ```
 
 ### frobulator.upload
 
-Uploads data or file(s), one request per item. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` or `[...]` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data. Each upload runs with a `frobulator.progress "upload"` indicator and is reported by the HTTP status code of the upload itself (`2xx` is success; any other code, or an unreachable server, is an error and makes the function return `1`). Every message ends its bracket with `// <status code>` - `000` when no response was received (unreachable server, or the request was never sent). The caller's arrays are left untouched.
+Uploads data or file(s), one request per item. First argument is the HTTP request method (`POST`, `PUT`, etc.), second is the URL, remaining argument(s)/array are payloads — a `{...}` or `[...]` JSON string is sent with a JSON content type, an `@file` argument is sent as multipart form data, anything else is sent as URL-encoded form data. Each upload runs with a `frobulator.progress "upload"` indicator and is reported by the HTTP status code of the upload itself (`2xx` is success; any other code, or an unreachable server, is an error and makes the function return `1`). Every message ends its bracket with `// <status code>` - `000` when no response was received (unreachable server - no answer within 30 seconds - or the request was never sent). The caller's arrays are left untouched.
 
 ```bash
 frobulator.upload POST "https://example.com/upload" "${archive_file}"

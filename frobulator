@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0000"
+update="2026-10-03-0004"
 
 version="${update}"
 
@@ -1863,7 +1863,7 @@ frobulator.sep () {
 	then
 		gap="${marker_spc}"
 	else
-		gap="─"
+		gap="${marker_sep:0:1}"
 	fi
 
 	echo -e "${color}${marker_sep}${gap}${prompt}${reset}"

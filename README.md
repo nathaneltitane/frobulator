@@ -251,7 +251,7 @@ frobulator.plo 1
 
 ### frobulator.pmt
 
-**p**rompt **m**anagement **t**ool.
+[p]rompt **m**anagement **t**ool.
 
 The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`terminal_columns`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
 

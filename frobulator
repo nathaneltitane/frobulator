@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-0018"
+update="2026-10-03-0027"
 
 version="${update}"
 
@@ -2371,10 +2371,10 @@ frobulator.script () {
 # type ─────────────────────────────────────────────────────────────────────────
 
 # use to emulate typing on prompts:
-# timeout is randomized to create human-like typing effect
-# interval value must be an integer
+# delay per character is randomized to create human-like typing effect
+# interval: maximum delay in tenths of a second - default 2
 
-# usage:      frobulator.type "[interval]" "[string]"
+# usage:      frobulator.type "[string]" "[interval]"
 
 frobulator.type () {
 
@@ -2383,16 +2383,18 @@ frobulator.type () {
 
 	string_length=${#string}
 
-	if [ -z "${interval}" ]
+	if [[ ! "${interval}" =~ ^[1-9][0-9]*$ ]]
 	then
 		interval=2
 	fi
 
 	for (( characters=0 ; characters<=${string_length} ; characters++ ))
 	do
-		decimal=$(( (RANDOM % ${interval}) + 1 ))
+		# random delay of 1 to interval tenths of a second
 
-		seconds="0.${decimal}"
+		tenths=$(( (RANDOM % interval) + 1 ))
+
+		seconds="$(( tenths / 10 )).$(( tenths % 10 ))"
 
 		echo -n -e "${1:${characters}:1}"
 

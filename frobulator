@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-04-0112"
+update="2026-10-04-1252"
 
 version="${update}"
 
@@ -2974,10 +2974,10 @@ frobulator.bar () {
 frobulator.temporary () {
 
 	local status=0
+	local temporary_template="frobulator.temporary.XXXXXX"
 
 	local temporary_variable
 	local temporary_directory
-	local temporary_template="frobulator.temporary.XXXXXX"
 
 	# each argument names a variable that receives a new temporary directory
 
@@ -3027,9 +3027,9 @@ frobulator.temporary () {
 frobulator.trap () {
 
 	local status=0
+	local trap_command="rm --recursive --force --"
 
 	local trap_directory
-	local trap_command="rm --recursive --force --"
 
 	# every directory passed in any call is removed on exit:
 	# paths are fixed now, never read from variables at exit time
@@ -4974,13 +4974,11 @@ frobulator.status () {
 frobulator.download () {
 
 	local status=0
-
 	local url="${1}"
+
 	local url_path
 	local url_segment
 	local download_directory
-	local download_list=()
-	local download_sources=()
 	local download_item
 	local download_index
 	local download_source
@@ -4989,6 +4987,9 @@ frobulator.download () {
 	local download_partial_file
 	local download_status_code
 	local download_url_display
+
+	local -a download_list=()
+	local -a download_sources=()
 
 	# validation
 
@@ -5175,10 +5176,9 @@ frobulator.download () {
 frobulator.upload () {
 
 	local status=0
-
 	local request="${1}"
 	local url="${2}"
-	local upload_list=("${@:3}")
+
 	local upload_item
 	local upload_file
 	local upload_type
@@ -5186,7 +5186,9 @@ frobulator.upload () {
 	local upload_label
 	local upload_response_file
 	local upload_status_code
-	local command_upload=()
+
+	local -a upload_list=("${@:3}")
+	local -a command_upload=()
 
 	# validation
 
@@ -5205,7 +5207,6 @@ frobulator.upload () {
 	fi
 
 	upload_response_file="$(mktemp)"
-
 
 	# upload items
 
@@ -5839,6 +5840,7 @@ frobulator.install () {
 frobulator.require () {
 
 	local status=0
+	local requirements_missing=false
 
 	local command
 	local packages
@@ -5847,7 +5849,6 @@ frobulator.require () {
 	local query_line
 	local query_command
 	local system_binary_directory
-	local requirements_missing=false
 
 	local -a requirements_list=("${@}")
 	local -a query_filter=()

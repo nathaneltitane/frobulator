@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-04-1706"
+update="2026-10-04-1718"
 
 version="${update}"
 
@@ -1029,8 +1029,6 @@ frobulator.pmt () {
 			fi
 		done
 
-		unset bracket_index
-
 		# preserve span character at minimum of 2 characters
 
 		span_limter=$(( 6 + 2 ))
@@ -1165,6 +1163,7 @@ frobulator.pmt () {
 	unset end
 	unset span
 	unset character_count
+	unset bracket_index
 }
 
 # line break ───────────────────────────────────────────────────────────────────
@@ -1443,6 +1442,8 @@ frobulator.teal () {
 
 frobulator.nil () {
 
+	local status=0
+
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
@@ -1452,11 +1453,17 @@ frobulator.nil () {
 	color_entry=("${white}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # information line marker ──────────────────────────────────────────────────────
 
 frobulator.inf () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1467,11 +1474,17 @@ frobulator.inf () {
 	color_entry=("${blue}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # warning line marker ──────────────────────────────────────────────────────────
 
 frobulator.wrn () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1482,11 +1495,17 @@ frobulator.wrn () {
 	color_entry=("${orange}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # message line marker ──────────────────────────────────────────────────────────
 
 frobulator.msg () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1497,11 +1516,17 @@ frobulator.msg () {
 	color_entry=("${navy}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # add line marker ──────────────────────────────────────────────────────────────
 
 frobulator.add () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1512,11 +1537,17 @@ frobulator.add () {
 	color_entry=("${lime}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # remove line marker ───────────────────────────────────────────────────────────
 
 frobulator.rem () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1527,11 +1558,17 @@ frobulator.rem () {
 	color_entry=("${crimson}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # retain line marker ───────────────────────────────────────────────────────────
 
 frobulator.ret () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1542,11 +1579,17 @@ frobulator.ret () {
 	color_entry=("${aqua}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # release line marker ──────────────────────────────────────────────────────────
 
 frobulator.rel () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1557,11 +1600,17 @@ frobulator.rel () {
 	color_entry=("${teal}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # forward line marker ──────────────────────────────────────────────────────────
 
 frobulator.fwd () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1572,11 +1621,17 @@ frobulator.fwd () {
 	color_entry=("${silver}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # reverse line marker ──────────────────────────────────────────────────────────
 
 frobulator.rev () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1587,11 +1642,17 @@ frobulator.rev () {
 	color_entry=("${silver}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # stop line marker ─────────────────────────────────────────────────────────────
 
 frobulator.stp () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1602,11 +1663,17 @@ frobulator.stp () {
 	color_entry=("${grey}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # download line marker ─────────────────────────────────────────────────────────
 
 frobulator.dwl () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1617,11 +1684,17 @@ frobulator.dwl () {
 	color_entry=("${magenta}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # upload line marker ───────────────────────────────────────────────────────────
 
 frobulator.upl () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1632,11 +1705,17 @@ frobulator.upl () {
 	color_entry=("${purple}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # link line marker ─────────────────────────────────────────────────────────────
 
 frobulator.lnk () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1647,11 +1726,17 @@ frobulator.lnk () {
 	color_entry=("${yellow}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # success line marker ──────────────────────────────────────────────────────────
 
 frobulator.scs () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1662,11 +1747,17 @@ frobulator.scs () {
 	color_entry=("${green}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # error line marker ────────────────────────────────────────────────────────────
 
 frobulator.err () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1677,11 +1768,17 @@ frobulator.err () {
 	color_entry=("${red}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # insert line marker ───────────────────────────────────────────────────────────
 
 frobulator.ins () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1692,11 +1789,17 @@ frobulator.ins () {
 	color_entry=("${teal}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # complete line marker ─────────────────────────────────────────────────────────
 
 frobulator.cpt () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1707,11 +1810,17 @@ frobulator.cpt () {
 	color_entry=("${magenta}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # url line marker ──────────────────────────────────────────────────────────────
 
 frobulator.url () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1722,6 +1831,10 @@ frobulator.url () {
 	color_entry=("${grey}")
 
 	frobulator.brk
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # user input prompts ───────────────────────────────────────────────────────────
@@ -1737,6 +1850,8 @@ frobulator.url () {
 
 frobulator.qst () {
 
+	local status=0
+
 	frobulator.pmt "${@}"
 
 	prompt="${prompt_string[@]}"
@@ -1746,11 +1861,17 @@ frobulator.qst () {
 	color_entry=("${fuschia}")
 
 	unset marker_spaced
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # input line marker ────────────────────────────────────────────────────────────
 
 frobulator.ipt () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1761,11 +1882,17 @@ frobulator.ipt () {
 	color_entry=("${pink}")
 
 	unset marker_spaced
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # user line marker ─────────────────────────────────────────────────────────────
 
 frobulator.usr () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1776,6 +1903,10 @@ frobulator.usr () {
 	color_entry=("${grey}")
 
 	unset marker_spaced
+
+	# color_entry kept - frobulator.nul continues in this color
+
+	return "${status}"
 }
 
 # null line marker ─────────────────────────────────────────────────────────────
@@ -1783,6 +1914,8 @@ frobulator.usr () {
 # use to carry over prompts without adding a line marker while retaining color
 
 frobulator.nul () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1799,9 +1932,11 @@ frobulator.nul () {
 
 	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
 
+	frobulator.brk
+
 	unset color_entry
 
-	frobulator.brk
+	return "${status}"
 }
 
 # index line marker ────────────────────────────────────────────────────────────
@@ -1809,6 +1944,8 @@ frobulator.nul () {
 # use to carry over prompts without adding a line marker without retaining color
 
 frobulator.ind () {
+
+	local status=0
 
 	frobulator.pmt "${@}"
 
@@ -1826,6 +1963,8 @@ frobulator.ind () {
 	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	frobulator.brk
+
+	return "${status}"
 }
 
 # letter line marker ───────────────────────────────────────────────────────────
@@ -1910,6 +2049,8 @@ frobulator.num () {
 
 frobulator.sep () {
 
+	local status=0
+
 	local gap
 
 	frobulator.pmt "${@}"
@@ -1929,9 +2070,11 @@ frobulator.sep () {
 
 	echo -e "${color}${marker_sep}${gap}${prompt}${reset}"
 
+	frobulator.brk
+
 	unset color_entry
 
-	frobulator.brk
+	return "${status}"
 }
 
 # notify ───────────────────────────────────────────────────────────────────────
@@ -2771,12 +2914,12 @@ frobulator.progress () {
 
 	status="${?}"
 
+	echo
+	echo
+
 	unset color_entry
 	unset progress_prompt
 	unset progress_color
-
-	echo
-	echo
 
 	return "${status}"
 }
@@ -3545,8 +3688,6 @@ frobulator.result () {
 	frobulator_complete_statuses=()
 	frobulator_complete_checkpoints=()
 
-	unset frobulator_complete_operation
-
 	# report result
 
 	if [ "${status}" -ne 0 ]
@@ -3566,6 +3707,8 @@ frobulator.result () {
 	else
 		frobulator.scs "Execution success" "[ ${instance} ]"
 	fi
+
+	unset frobulator_complete_operation
 
 	return "${status}"
 

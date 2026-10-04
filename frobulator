@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-03-1524"
+update="2026-10-04-0112"
 
 version="${update}"
 
@@ -7112,11 +7112,13 @@ frobulator.extract () {
 
 	elif [ "${extension}" = "zip" ]
 	then
+		# unzip has short options only: overwrite, quiet, target directory
+
 		unzip								\
-			--overwrite						\
-			--quiet							\
+			-o								\
+			-q								\
 			"${file}"						\
-			--directory "${directory}"
+			-d "${directory}"
 	fi
 
 	frobulator.track

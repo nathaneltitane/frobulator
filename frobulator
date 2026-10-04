@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-04-1653"
+update="2026-10-04-1658"
 
 version="${update}"
 
@@ -5064,12 +5064,7 @@ frobulator.download () {
 	then
 		mkdir --parents "${download_directory}" 2> "${sink}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			frobulator.err "Download failure - directory" "[ '${download_directory}'${marker_spc}${marker_hnt}${marker_spc}000 ]"
-
-			return 1
-		fi
+		frobulator.fail "Download failure - directory" "[ '${download_directory}'${marker_spc}${marker_hnt}${marker_spc}000 ]" || return
 	fi
 
 	# download items
@@ -7071,12 +7066,7 @@ frobulator.extract () {
 			--parents		\
 							"${directory}"
 
-		if [ "${?}" -ne 0 ]
-		then
-			frobulator.err "Unable to create directory" "[ '${directory}' ]"
-
-			return 1
-		fi
+		frobulator.fail "Unable to create directory" "[ '${directory}' ]" || return
 	fi
 
 	if [ "${extension}" = "tar.bz2" ] ||

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-04-1658"
+update="2026-10-04-1706"
 
 version="${update}"
 
@@ -95,7 +95,7 @@ fi
 
 if [ -z "${SHELL}" ]
 then
-	# bash at its usual location, empty when absent
+	# bash at its usual location - empty if absent
 
 	shell_bash="$(command -v /bin/bash)"
 
@@ -155,7 +155,7 @@ fi
 
 # package manager ──────────────────────────────────────────────────────────────
 
-# detect package manager: path of each candidate, empty when absent
+# detect package manager: each candidate path - empty if absent
 
 package_manager_apt="$(command -v apt)"
 package_manager_dnf="$(command -v dnf)"
@@ -493,7 +493,7 @@ colors_selection=(
 	teal="30"
 )
 
-# terminal capability tool, empty when absent: colors fall back to ansi sequences
+# terminal capability tool - empty if absent: colors fall back to ansi sequences
 
 command_tput="$(command -v tput)"
 
@@ -1396,7 +1396,7 @@ frobulator.teal () {
 
 # prompt marking ───────────────────────────────────────────────────────────────
 
-# colored string with built-in prompt arguments, line padding and line markers
+# colored string with built-in prompt arguments / line padding / line markers
 
 # usage:      frobulator.[color] "[string]" "[string]" "[span character]"
 
@@ -1918,7 +1918,7 @@ frobulator.sep () {
 
 	color=${color[@]}
 
-	# gap after marker like other markers: space before text, line character otherwise
+	# gap after marker like other markers: space before text - line character otherwise
 
 	if [ -n "${1}" ]
 	then
@@ -1939,7 +1939,7 @@ frobulator.sep () {
 # framed message block with header:
 # use to separate notices and messages from execution blocks
 # supports message type designation for colorized output:
-# a type before the title colors the title, a type before the message colors the message
+# a type before the title colors the title - a type before the message colors the message
 #
 #
 # usage:	frobulator.ntf "title" "message"
@@ -3045,7 +3045,7 @@ frobulator.trap () {
 	local trap_directory
 
 	# every directory passed in any call is removed on exit:
-	# paths are fixed now, never read from variables at exit time
+	# paths are fixed now - never read from variables at exit time
 
 	for trap_directory in "${@}"
 	do
@@ -3134,9 +3134,9 @@ frobulator.trap () {
 #                     └── return overall status
 
 # capture previous command status when used without arguments
-# continue (default): record and report failures, then carry on
-# halt: on failure report, log, print frobulator.result and exit the script
-# label: calling function name, else operation number - message replaces it on failure
+# continue (default): record and report failures - then carry on
+# halt: on failure report / log / print frobulator.result / exit the script
+# label: calling function name - else operation number - message replaces it on failure
 # execute command and record checkpoint status when arguments are supplied
 # skip execution when checkpoint already completed successfully
 # use immediately after command when used without arguments
@@ -3702,24 +3702,24 @@ frobulator.ownership () {
 
 # use to set permissions from scope and modifiers
 
-# scope:      public     you edit, everyone reads
-#             group      you edit, your group reads, no access for others
+# scope:      public     you edit / everyone reads
+#             group      you edit / group reads / others no access
 #             private    only you
 # modifiers:  execute    whoever can read can also run
-#             readonly   nobody edits, including you
+#             readonly   nobody edits - you included
 
 #                           file          directory     typical use
-# public                    644 rw-r--r-- 755 rwxr-xr-x regular files, configs, shared data
-# public execute            755 rwxr-xr-x 755 rwxr-xr-x scripts, binaries, installed tools
+# public                    644 rw-r--r-- 755 rwxr-xr-x regular files / configs / shared data
+# public execute            755 rwxr-xr-x 755 rwxr-xr-x scripts / binaries / installed tools
 # public readonly           444 r--r--r-- 555 r-xr-xr-x reference files that should not change
 # public readonly execute   555 r-xr-xr-x 555 r-xr-xr-x locked-down tools
 # group                     640 rw-r───── 750 rwxr-x─── files for your group only
 # group execute             750 rwxr-x─── 750 rwxr-x─── group-only scripts
 # group readonly            440 r--r───── 550 r-xr-x─── group reference files
 # group readonly execute    550 r-xr-x─── 550 r-xr-x─── locked group tools
-# private                   600 rw─────── 700 rwx────── credentials, keys, tokens
+# private                   600 rw─────── 700 rwx────── credentials / keys / tokens
 # private execute           700 rwx────── 700 rwx────── personal scripts
-# private readonly          400 r──────── 500 r-x────── ssh keys, certificates
+# private readonly          400 r──────── 500 r-x────── ssh keys / certificates
 # private readonly execute  500 r-x────── 500 r-x────── locked personal tools
 
 # usage:      frobulator.permissions "[scope]" "[modifiers]" "[target]" | "[array]"
@@ -4966,7 +4966,7 @@ frobulator.status () {
 #             frobulator.download "[url]"    "[source item]" "[directory]"             "[item]"
 
 #             a single item is fetched from "[url]" itself when the url already ends with
-#             the item or with a file name (extension), otherwise from "[url]"/"[item]"
+#             the item or a file name (extension) - otherwise from "[url]"/"[item]"
 
 frobulator.download () {
 
@@ -4997,7 +4997,7 @@ frobulator.download () {
 		return 1
 	fi
 
-	# url segments: path after the host, last segment of the path
+	# url segments: path after the host - last path segment
 
 	url_path="${url#*://}"
 	url_path="${url_path#*/}"
@@ -5094,7 +5094,7 @@ frobulator.download () {
 			continue
 		fi
 
-		# download to a partial file beside the target, kept only on success
+		# download to a partial file beside the target - kept only on success
 
 		download_partial_file="$(mktemp "${download_directory}/.${download_item}.XXXXXX" 2> "${sink}")"
 
@@ -5162,7 +5162,7 @@ frobulator.download () {
 
 # usage:      frobulator.upload "[request]" "[url]" "[item]" | "[array]"
 
-#             item as json data {...} / [...], form data, or path to item prefixed with @
+#             item as json data {...} / [...] - form data - or path to item prefixed with @
 #             array as array of data or items
 
 frobulator.upload () {
@@ -5856,7 +5856,7 @@ frobulator.require () {
 
 	for command in "${requirements_list[@]}"
 	do
-		# path of the command, empty when not installed
+		# command path - empty if not installed
 
 		command_path="$(command -v "${command}")"
 
@@ -5883,7 +5883,7 @@ frobulator.require () {
 
 	for command in "${requirements_list[@]}"
 	do
-		# path of the command, empty when not installed
+		# command path - empty if not installed
 
 		command_path="$(command -v "${command}")"
 
@@ -6137,7 +6137,7 @@ frobulator.purge () {
 
 	for package in "${list[@]}"
 	do
-		# 'installed' when apt lists the package as installed, empty otherwise
+		# 'installed' if apt lists the package as installed - empty otherwise
 
 		package_installed="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
 
@@ -6183,7 +6183,7 @@ frobulator.dialog () {
 
 	local -a dialog_command=("${@:2}")
 
-	# file dialog tools, empty when absent: gnome zenity, kde kdialog
+	# file dialog tools - empty if absent: gnome zenity / kde kdialog
 
 	command_zenity="$(command -v zenity)"
 	command_kdialog="$(command -v kdialog)"
@@ -6267,7 +6267,7 @@ frobulator.terminate () {
 		return 1
 	fi
 
-	# process tools, empty when absent
+	# process tools - empty if absent
 
 	command_pgrep="$(command -v pgrep)"
 	command_pkill="$(command -v pkill)"
@@ -6286,7 +6286,7 @@ frobulator.terminate () {
 		return 1
 	fi
 
-	# process ids still matching the name, empty once all are gone
+	# process ids still matching the name - empty once all are gone
 
 	process_found="$(pgrep -f "${process_name}")"
 
@@ -6400,7 +6400,7 @@ frobulator.assess () {
 	else
 		for command in "${list[@]}"
 		do
-			# path of the command, empty when not installed
+			# command path - empty if not installed
 
 			command_path="$(command -v "${command}")"
 
@@ -6487,7 +6487,7 @@ frobulator.escalate () {
 
 	# restore script arguments
 
-	# how the bootstrap stored the arguments: 'declare -a ...' for an array, older headers use a string
+	# how the bootstrap stored the arguments: 'declare -a ...' for an array - older headers use a string
 
 	self_arguments_declaration="$(declare -p self_arguments 2> "${sink}")"
 
@@ -6654,7 +6654,7 @@ frobulator.escalate () {
 
 	frobulator.timeout
 
-	# privilege escalation tool, empty when absent
+	# privilege escalation tool - empty if absent
 
 	command_sudo="$(command -v sudo)"
 
@@ -6728,7 +6728,7 @@ frobulator.service () {
 		return 1
 	fi
 
-	# numeric id of the running user: 0 is root
+	# running user id - 0 is root
 
 	user_id="$(id -u)"
 
@@ -6762,7 +6762,7 @@ frobulator.service () {
 			return 1
 		fi
 
-		# status line when the service is running, empty otherwise
+		# status line if the service is running - empty otherwise
 
 		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
 
@@ -6787,7 +6787,7 @@ frobulator.service () {
 
 		systemctl "${system_control_scope[@]}" daemon-reload
 
-		# status line when the service is running, empty otherwise
+		# status line if the service is running - empty otherwise
 
 		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
 
@@ -6823,7 +6823,7 @@ frobulator.service () {
 
 		service_actions_list=()
 
-		# status lines when the service is running, or when it is inactive - empty otherwise
+		# status lines if the service is running or inactive - empty otherwise
 
 		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
 		service_inactive="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "inactive.*")"
@@ -7148,7 +7148,7 @@ frobulator.extract () {
 
 	elif [ "${extension}" = "zip" ]
 	then
-		# unzip has short options only: overwrite, quiet, target directory
+		# unzip has short options only: overwrite / quiet / target directory
 
 		unzip								\
 			-o								\

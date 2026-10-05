@@ -219,7 +219,7 @@ frobulator.pmt "Downloading" "[ package.tar.gz ]"
 
 ### frobulator.brk
 
-Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (`frobulator.nul`, `frobulator.ind`) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own `echo` output.
+Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (`frobulator.nul`, `frobulator.ind`) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own `echo` output. It also adds the marker line and its blank line to `terminal_lines_printed` (wrapped rows counted at the real terminal width), which `frobulator.escalate` uses to clear its output.
 
 ```bash
 frobulator.brk
@@ -950,7 +950,7 @@ frobulator.assess "${requirements[@]}"
 
 ### frobulator.escalate
 
-Relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching.
+Relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + `terminal_lines_printed`); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.
 
 ```bash
 self_arguments=("${@}")

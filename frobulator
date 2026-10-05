@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-05-1223"
+update="2026-10-05-1246"
 
 version="${update}"
 
@@ -125,6 +125,11 @@ fi
 terminal_columns_minimum=80
 
 terminal_columns="${terminal_columns_minimum}"
+terminal_columns_actual="${terminal_columns_minimum}"
+
+# rows printed by line markers since frobulator loaded - escalation clears them
+
+terminal_lines_printed=0
 
 frobulator.columns () {
 
@@ -137,6 +142,15 @@ frobulator.columns () {
 		terminal_columns="${columns}"
 	else
 		terminal_columns="${terminal_columns_minimum}"
+	fi
+
+	# real width for wrapped line counts - may be under the minimum
+
+	if [[ -t 1 ]] && [[ "${columns}" =~ ^[1-9][0-9]*$ ]]
+	then
+		terminal_columns_actual="${columns}"
+	else
+		terminal_columns_actual="${terminal_columns}"
 	fi
 }
 
@@ -1175,9 +1189,18 @@ frobulator.pmt () {
 
 frobulator.brk () {
 
+	local line_length
+	local line_rows
+
+	# rows of the marker line above - wrapped at real terminal width
+
+	line_length=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
+	line_rows=$(( ( line_length + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+
 	echo
 
 	marker_spaced="true"
+	terminal_lines_printed=$(( terminal_lines_printed + line_rows + 1 ))
 }
 
 # highlights ───────────────────────────────────────────────────────────────────
@@ -1928,6 +1951,8 @@ frobulator.nul () {
 	if [ "${marker_spaced}" = "true" ]
 	then
 		terminal_cursor_up 1
+
+		terminal_lines_printed=$(( terminal_lines_printed - 1 ))
 	fi
 
 	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
@@ -1958,6 +1983,8 @@ frobulator.ind () {
 	if [ "${marker_spaced}" = "true" ]
 	then
 		terminal_cursor_up 1
+
+		terminal_lines_printed=$(( terminal_lines_printed - 1 ))
 	fi
 
 	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
@@ -6600,11 +6627,13 @@ frobulator.escalate () {
 	local status=0
 	local self="${0}"
 	local root_required=false
-	local escalation_erase_count=4
+	local header_lines=3
+	local escalation_erase_count=$(( header_lines + 1 ))
 
 	local self_arguments_declaration
 	local command_sudo
 	local sudo_credentials_status
+	local escalation_erase_first
 	local user_current
 	local root_pattern
 
@@ -6802,9 +6831,10 @@ frobulator.escalate () {
 	frobulator.user
 
 	# clear bootstrap and escalation messages - restarted script prints its own header
-	# header 3 lines - granting / restarting / user 2 lines each
 
-	frobulator.erase 9
+	escalation_erase_first=$(( header_lines + terminal_lines_printed ))
+
+	frobulator.erase "${escalation_erase_first}"
 
 	frobulator.timeout
 
@@ -6819,14 +6849,14 @@ frobulator.escalate () {
 		frobulator.track || return 1
 	fi
 
-	# sudo credentials cached - no password prompt line to clear if so
+	# restarted header + sudo password prompt - no prompt line if credentials cached
 
 	sudo -n true 2> "${sink}"
 	sudo_credentials_status="${?}"
 
 	if [ "${sudo_credentials_status}" -eq 0 ]
 	then
-		escalation_erase_count=3
+		escalation_erase_count="${header_lines}"
 	fi
 
 	# set superuser password prompt

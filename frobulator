@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-04-1718"
+update="2026-10-05-1218"
 
 version="${update}"
 
@@ -6790,10 +6790,10 @@ frobulator.escalate () {
 
 	frobulator.user
 
-	# clear bootstrap initialization messages:
-	# avoid redundant printing - focuses on escalated runtime messages
+	# clear bootstrap and escalation messages - restarted script prints its own header
+	# header 3 lines - granting / restarting / user 2 lines each
 
-	frobulator.erase 13
+	frobulator.erase 9
 
 	frobulator.timeout
 

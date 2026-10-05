@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-05-1246"
+update="2026-10-05-1920"
 
 version="${update}"
 
@@ -1185,17 +1185,21 @@ frobulator.pmt () {
 # use to separate line markers with a blank line
 # carry-over markers (nul / ind) rejoin the line above instead
 
-# usage:      frobulator.brk
+# usage:      frobulator.brk [rows]
 
 frobulator.brk () {
 
+	local line_rows="${1}"
+
 	local line_length
-	local line_rows
 
-	# rows of the marker line above - wrapped at real terminal width
+	# rows of the marker line above - wrapped at real terminal width - given by multi-line callers
 
-	line_length=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
-	line_rows=$(( ( line_length + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+	if [ -z "${line_rows}" ]
+	then
+		line_length=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
+		line_rows=$(( ( line_length + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+	fi
 
 	echo
 
@@ -2137,6 +2141,11 @@ frobulator.sep () {
 
 frobulator.ntf () {
 
+	local notice_lines=0
+	local lines_printed_before="${terminal_lines_printed}"
+
+	local notice_line_rows
+	local notice_rows
 	local style
 	local title
 	local split
@@ -2434,6 +2443,8 @@ frobulator.ntf () {
 
 	echo "${frame_top}"
 
+	notice_lines=$(( notice_lines + 1 ))
+
 	title="${marker_spc}${title}${marker_spc}"
 
 	if [ ${#title} -gt "${content_span}" ]
@@ -2448,6 +2459,8 @@ frobulator.ntf () {
 
 	echo -e "${frame_vertical_left}${title_color}${title}${reset}${frame_vertical_right}"
 
+	notice_lines=$(( notice_lines + 1 ))
+
 	# message frame
 
 	if [ -n "${message}" ]
@@ -2456,8 +2469,12 @@ frobulator.ntf () {
 		then
 			echo "${frame_bottom}"
 			echo "${frame_top}"
+
+			notice_lines=$(( notice_lines + 2 ))
 		else
 			echo "${frame_middle}"
+
+			notice_lines=$(( notice_lines + 1 ))
 		fi
 
 		if [ ${#message} -gt "${message_width}" ]
@@ -2480,12 +2497,25 @@ frobulator.ntf () {
 
 			echo -e "${frame_vertical_left}${message_color}${message_line}${reset}${frame_vertical_right}"
 
+			notice_lines=$(( notice_lines + 1 ))
+
 		done <<< "${message}"
 	fi
 
 	echo "${frame_bottom}"
 
-	frobulator.brk
+	notice_lines=$(( notice_lines + 1 ))
+
+	# notice rows - each frame line wrapped at real terminal width
+
+	notice_line_rows=$(( ( ${#frame_top} + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+	notice_rows=$(( notice_lines * notice_line_rows ))
+
+	# silenced color lookups print no rows
+
+	terminal_lines_printed="${lines_printed_before}"
+
+	frobulator.brk "${notice_rows}"
 
 	# cleanup
 
@@ -6584,6 +6614,10 @@ frobulator.assess () {
 
 				read -r reply
 				echo
+
+				# question line with answer + blank line
+
+				terminal_lines_printed=$(( terminal_lines_printed + 2 ))
 
 				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
 				then

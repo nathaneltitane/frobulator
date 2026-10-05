@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-05-1218"
+update="2026-10-05-1223"
 
 version="${update}"
 
@@ -6600,9 +6600,11 @@ frobulator.escalate () {
 	local status=0
 	local self="${0}"
 	local root_required=false
+	local escalation_erase_count=4
 
 	local self_arguments_declaration
 	local command_sudo
+	local sudo_credentials_status
 	local user_current
 	local root_pattern
 
@@ -6647,6 +6649,15 @@ frobulator.escalate () {
 
 	if [ "${user_current}" = "root" ]
 	then
+		# clear restarted header and sudo password prompt - count passed by the user run
+
+		if [ -n "${escalation_erase_lines}" ]
+		then
+			frobulator.erase "${escalation_erase_lines}"
+
+			unset escalation_erase_lines
+		fi
+
 		frobulator.fwd "Validating privilege escalation" "[ '${USER}' ]"
 
 		if [ -n "${SUDO_USER}" ]
@@ -6808,13 +6819,23 @@ frobulator.escalate () {
 		frobulator.track || return 1
 	fi
 
+	# sudo credentials cached - no password prompt line to clear if so
+
+	sudo -n true 2> "${sink}"
+	sudo_credentials_status="${?}"
+
+	if [ "${sudo_credentials_status}" -eq 0 ]
+	then
+		escalation_erase_count=3
+	fi
+
 	# set superuser password prompt
 
 	export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
 
 	# restart as superuser with user home
 
-	exec sudo env HOME="${HOME}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
+	exec sudo env HOME="${HOME}" escalation_erase_lines="${escalation_erase_count}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
 
 	frobulator.track
 

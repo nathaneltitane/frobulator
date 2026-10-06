@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-06-1829"
+update="2026-10-06-1832"
 
 version="${update}"
 
@@ -6815,7 +6815,7 @@ frobulator.escalate () {
 			unset escalation_erase_lines
 		fi
 
-		frobulator.fwd "Validating privilege escalation" "[ '${USER}' ]"
+		frobulator.fwd "Privilege escalation validated" "[ user${marker_spc}${marker_hnt}${marker_spc}'${user_current}' ]"
 
 		if [ -n "${SUDO_USER}" ]
 		then
@@ -6837,7 +6837,7 @@ frobulator.escalate () {
 
 	if [[ $- == *i* ]]
 	then
-		frobulator.inf "Interactive shell - escalation prevented" "[ '${self}' ]"
+		frobulator.inf "Privilege escalation prevented - interactive shell" "[ file${marker_spc}${marker_hnt}${marker_spc}'${self}' ]"
 
 		return "${status}"
 	fi
@@ -6947,18 +6947,16 @@ frobulator.escalate () {
 
 	if [ "${required_root}" = false ]
 	then
-		frobulator.inf "Privilege escalation not required" "[ '${self}' ]"
+		frobulator.inf "Privilege escalation not required" "[ user${marker_spc}${marker_hnt}${marker_spc}'${user_current}' ]"
 
 		return "${status}"
 	fi
 
-	frobulator.inf "Privilege escalation required" "[ '${self}' ]"
+	frobulator.inf "Privilege escalation required" "[ user${marker_spc}${marker_hnt}${marker_spc}'${user_current}' ]"
 
-	frobulator.wrn "Granting privilege escalation" "[ '${SUDO_USER:-${USER}}' ]"
+	frobulator.wrn "Privilege escalation granted" "[ user${marker_spc}${marker_hnt}${marker_spc}'${SUDO_USER:-${USER}}' ]"
 
-	frobulator.fwd "Restarting" "[ '${self}' ]"
-
-	frobulator.user
+	frobulator.fwd "Privilege escalation restarting" "[ script${marker_spc}${marker_hnt}${marker_spc}'${self}' ]"
 
 	# clear bootstrap and escalation messages - restarted script prints its own header
 

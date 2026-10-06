@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-05-1920"
+update="2026-10-05-2023"
 
 version="${update}"
 
@@ -38,6 +38,16 @@ then
 		in
 			-i|--install)
 				option="install"
+			;;
+
+			--critter)
+				# easter egg - not listed in help or readme - remaining arguments go to the critter
+
+				option="critter"
+
+				critter_arguments=("${@:2}")
+
+				break
 			;;
 
 			-h|--help)
@@ -1189,22 +1199,22 @@ frobulator.pmt () {
 
 frobulator.brk () {
 
-	local line_rows="${1}"
+	local rows_line="${1}"
 
-	local line_length
+	local length_line
 
 	# rows of the marker line above - wrapped at real terminal width - given by multi-line callers
 
-	if [ -z "${line_rows}" ]
+	if [ -z "${rows_line}" ]
 	then
-		line_length=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
-		line_rows=$(( ( line_length + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+		length_line=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
+		rows_line=$(( ( length_line + terminal_columns_actual - 1 ) / terminal_columns_actual ))
 	fi
 
 	echo
 
 	marker_spaced="true"
-	terminal_lines_printed=$(( terminal_lines_printed + line_rows + 1 ))
+	terminal_lines_printed=$(( terminal_lines_printed + rows_line + 1 ))
 }
 
 # highlights ───────────────────────────────────────────────────────────────────
@@ -2141,23 +2151,23 @@ frobulator.sep () {
 
 frobulator.ntf () {
 
-	local notice_lines=0
-	local lines_printed_before="${terminal_lines_printed}"
+	local lines_notice=0
+	local count_lines_before="${terminal_lines_printed}"
 
-	local notice_line_rows
-	local notice_rows
+	local rows_notice_line
+	local rows_notice
 	local style
 	local title
 	local split
 	local message
-	local prompt_type
-	local prompt_types
-	local title_color
-	local message_color
-	local character_count
-	local content_span
-	local title_width
-	local message_width
+	local type_prompt
+	local types_prompt
+	local color_title
+	local color_message
+	local count_character
+	local span_content
+	local width_title
+	local width_message
 	local frame_horizontal_top
 	local frame_horizontal_middle
 	local frame_horizontal_bottom
@@ -2169,17 +2179,17 @@ frobulator.ntf () {
 	local frame_middle_right
 	local frame_bottom_left
 	local frame_bottom_right
-	local frame_vertical_left_count
-	local frame_vertical_right_count
-	local marker_elp_count
-	local marker_spc_count
+	local count_frame_vertical_left
+	local count_frame_vertical_right
+	local count_marker_elp
+	local count_marker_spc
 	local line_top
 	local line_middle
 	local line_bottom
 	local frame_top
 	local frame_middle
 	local frame_bottom
-	local message_line
+	local line_message
 
 	style="square"
 
@@ -2187,10 +2197,10 @@ frobulator.ntf () {
 
 	split=""
 
-	unset title_color
-	unset message_color
+	unset color_title
+	unset color_message
 
-	prompt_types=(nil inf wrn msg add rem ret rel fwd rev stp dwl upl lnk scs err ins cpt url)
+	types_prompt=(nil inf wrn msg add rem ret rel fwd rev stp dwl upl lnk scs err ins cpt url)
 
 	# arguments
 
@@ -2216,15 +2226,15 @@ frobulator.ntf () {
 
 			shift
 
-		elif [[ " ${prompt_types[*]} " = *" ${1} "* ]]
+		elif [[ " ${types_prompt[*]} " = *" ${1} "* ]]
 		then
-			prompt_type="${1}"
+			type_prompt="${1}"
 
 			shift
 
-			frobulator."${prompt_type}" > ${sink}
+			frobulator."${type_prompt}" > ${sink}
 
-			title_color=${color_entry[@]}
+			color_title=${color_entry[@]}
 
 		else
 			break
@@ -2256,15 +2266,15 @@ frobulator.ntf () {
 
 				shift
 
-			elif [[ " ${prompt_types[*]} " = *" ${1} "* ]]
+			elif [[ " ${types_prompt[*]} " = *" ${1} "* ]]
 			then
-				prompt_type="${1}"
+				type_prompt="${1}"
 
 				shift
 
-				frobulator."${prompt_type}" > ${sink}
+				frobulator."${type_prompt}" > ${sink}
 
-				message_color=${color_entry[@]}
+				color_message=${color_entry[@]}
 			else
 				break
 			fi
@@ -2277,9 +2287,9 @@ frobulator.ntf () {
 
 	if [ -z "${terminal_columns}" ]
 	then
-		character_count=80
+		count_character=80
 	else
-		character_count="${terminal_columns}"
+		count_character="${terminal_columns}"
 	fi
 
 	# default frame style
@@ -2407,30 +2417,30 @@ frobulator.ntf () {
 
 	# width setup
 
-	frame_vertical_left_count=${#frame_vertical_left}
-	frame_vertical_right_count=${#frame_vertical_right}
+	count_frame_vertical_left=${#frame_vertical_left}
+	count_frame_vertical_right=${#frame_vertical_right}
 
-	marker_elp_count=${#marker_elp}
-	marker_spc_count=${#marker_spc}
+	count_marker_elp=${#marker_elp}
+	count_marker_spc=${#marker_spc}
 
-	content_span=$(( character_count - frame_vertical_left_count - frame_vertical_right_count ))
+	span_content=$(( count_character - count_frame_vertical_left - count_frame_vertical_right ))
 
-	title_width=$(( content_span - marker_spc_count - marker_spc_count ))
-	message_width=$(( content_span - marker_spc_count - marker_spc_count ))
+	width_title=$(( span_content - count_marker_spc - count_marker_spc ))
+	width_message=$(( span_content - count_marker_spc - count_marker_spc ))
 
 	# horizontal frame setup
 
-	while [ ${#line_top} -lt "${content_span}" ]
+	while [ ${#line_top} -lt "${span_content}" ]
 	do
 		line_top="${line_top}${frame_horizontal_top}"
 	done
 
-	while [ ${#line_middle} -lt "${content_span}" ]
+	while [ ${#line_middle} -lt "${span_content}" ]
 	do
 		line_middle="${line_middle}${frame_horizontal_middle}"
 	done
 
-	while [ ${#line_bottom} -lt "${content_span}" ]
+	while [ ${#line_bottom} -lt "${span_content}" ]
 	do
 		line_bottom="${line_bottom}${frame_horizontal_bottom}"
 	done
@@ -2443,23 +2453,23 @@ frobulator.ntf () {
 
 	echo "${frame_top}"
 
-	notice_lines=$(( notice_lines + 1 ))
+	lines_notice=$(( lines_notice + 1 ))
 
 	title="${marker_spc}${title}${marker_spc}"
 
-	if [ ${#title} -gt "${content_span}" ]
+	if [ ${#title} -gt "${span_content}" ]
 	then
-		title="${title:0:$(( content_span - marker_elp_count - marker_spc_count ))}${marker_elp}${marker_spc}"
+		title="${title:0:$(( span_content - count_marker_elp - count_marker_spc ))}${marker_elp}${marker_spc}"
 	fi
 
-	while [ ${#title} -lt "${content_span}" ]
+	while [ ${#title} -lt "${span_content}" ]
 	do
 		title="${title}${marker_spc}"
 	done
 
-	echo -e "${frame_vertical_left}${title_color}${title}${reset}${frame_vertical_right}"
+	echo -e "${frame_vertical_left}${color_title}${title}${reset}${frame_vertical_right}"
 
-	notice_lines=$(( notice_lines + 1 ))
+	lines_notice=$(( lines_notice + 1 ))
 
 	# message frame
 
@@ -2470,52 +2480,52 @@ frobulator.ntf () {
 			echo "${frame_bottom}"
 			echo "${frame_top}"
 
-			notice_lines=$(( notice_lines + 2 ))
+			lines_notice=$(( lines_notice + 2 ))
 		else
 			echo "${frame_middle}"
 
-			notice_lines=$(( notice_lines + 1 ))
+			lines_notice=$(( lines_notice + 1 ))
 		fi
 
-		if [ ${#message} -gt "${message_width}" ]
+		if [ ${#message} -gt "${width_message}" ]
 		then
-			message=$(echo "${message}" | fold -s -w "${message_width}")
+			message=$(echo "${message}" | fold -s -w "${width_message}")
 		else
 			message="${message}"
 		fi
 
-		while IFS= read -r message_line
+		while IFS= read -r line_message
 		do
-			message_line="${marker_spc}${message_line}"
+			line_message="${marker_spc}${line_message}"
 
-			while [ ${#message_line} -lt "${content_span}" ]
+			while [ ${#line_message} -lt "${span_content}" ]
 			do
-				message_line="${message_line}${marker_spc}"
+				line_message="${line_message}${marker_spc}"
 			done
 
-			message_line="${message_line:0:${content_span}}"
+			line_message="${line_message:0:${span_content}}"
 
-			echo -e "${frame_vertical_left}${message_color}${message_line}${reset}${frame_vertical_right}"
+			echo -e "${frame_vertical_left}${color_message}${line_message}${reset}${frame_vertical_right}"
 
-			notice_lines=$(( notice_lines + 1 ))
+			lines_notice=$(( lines_notice + 1 ))
 
 		done <<< "${message}"
 	fi
 
 	echo "${frame_bottom}"
 
-	notice_lines=$(( notice_lines + 1 ))
+	lines_notice=$(( lines_notice + 1 ))
 
 	# notice rows - each frame line wrapped at real terminal width
 
-	notice_line_rows=$(( ( ${#frame_top} + terminal_columns_actual - 1 ) / terminal_columns_actual ))
-	notice_rows=$(( notice_lines * notice_line_rows ))
+	rows_notice_line=$(( ( ${#frame_top} + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+	rows_notice=$(( lines_notice * rows_notice_line ))
 
 	# silenced color lookups print no rows
 
-	terminal_lines_printed="${lines_printed_before}"
+	terminal_lines_printed="${count_lines_before}"
 
-	frobulator.brk "${notice_rows}"
+	frobulator.brk "${rows_notice}"
 
 	# cleanup
 
@@ -2523,15 +2533,15 @@ frobulator.ntf () {
 	unset title
 	unset split
 	unset message
-	unset prompt_type
-	unset prompt_types
-	unset title_color
-	unset message_color
+	unset type_prompt
+	unset types_prompt
+	unset color_title
+	unset color_message
 
-	unset character_count
-	unset content_span
-	unset title_width
-	unset message_width
+	unset count_character
+	unset span_content
+	unset width_title
+	unset width_message
 
 	unset frame_horizontal_top
 	unset frame_horizontal_middle
@@ -2547,10 +2557,10 @@ frobulator.ntf () {
 	unset frame_bottom_left
 	unset frame_bottom_right
 
-	unset frame_vertical_left_count
-	unset frame_vertical_right_count
-	unset marker_elp_count
-	unset marker_spc_count
+	unset count_frame_vertical_left
+	unset count_frame_vertical_right
+	unset count_marker_elp
+	unset count_marker_spc
 
 	unset line_top
 	unset line_middle
@@ -2560,7 +2570,7 @@ frobulator.ntf () {
 	unset frame_middle
 	unset frame_bottom
 
-	unset message_line
+	unset line_message
 
 	unset IFS
 }
@@ -2781,7 +2791,7 @@ frobulator.action () {
 	local action="${1}"
 
 	local color
-	local progress_detail
+	local detail_progress
 
 	local -a detail=()
 	local -a color_list=(
@@ -2857,9 +2867,9 @@ frobulator.action () {
 
 	if [ "${#detail[@]}" -gt 0 ]
 	then
-		progress_detail="${detail[*]}"
+		detail_progress="${detail[*]}"
 
-		frobulator.pmt "${action}" "${progress_detail}"
+		frobulator.pmt "${action}" "${detail_progress}"
 	else
 		frobulator.pmt "${action}"
 	fi
@@ -2894,7 +2904,7 @@ frobulator.process () {
 
 	local status
 	local prompt
-	local ticker_frame
+	local frame_ticker
 
 	if [ -z "${PID}" ]
 	then
@@ -2909,9 +2919,9 @@ frobulator.process () {
 
 	while [ -d "/proc/${PID}" ]
 	do
-		ticker_frame="${ticker:instance++%${#ticker}:1}"
+		frame_ticker="${ticker:instance++%${#ticker}:1}"
 
-		echo -n -e "\r${before}${color} \b${ticker_frame}${reset}${after}${marker_spc}${prompt}\c"
+		echo -n -e "\r${before}${color} \b${frame_ticker}${reset}${after}${marker_spc}${prompt}\c"
 
 		sleep "${seconds}"
 	done
@@ -2947,7 +2957,7 @@ frobulator.progress () {
 	local instance=1
 
 	local status
-	local ticker_frame
+	local frame_ticker
 
 	if [ -z "${PID}" ]
 	then
@@ -2960,9 +2970,9 @@ frobulator.progress () {
 
 	while [ -d "/proc/${PID}" ]
 	do
-		ticker_frame="${ticker:instance++%${#ticker}:1}"
+		frame_ticker="${ticker:instance++%${#ticker}:1}"
 
-		echo -n -e "\r${before}${progress_color} \b${ticker_frame}${reset}${after}${marker_spc}${progress_prompt}\c"
+		echo -n -e "\r${before}${progress_color} \b${frame_ticker}${reset}${after}${marker_spc}${progress_prompt}\c"
 
 		sleep "${seconds}"
 	done
@@ -2998,23 +3008,22 @@ frobulator.progress () {
 frobulator.bar () {
 
 	local command
-	local process_id
-	local process_exit
+	local id_process
+	local status_process
 	local seconds
-	local character_count
-	local before_count
-	local after_count
-	local buffer_count
-	local progress_current
-	local progress_limit
-	local progress_percent
-	local progress_done
-	local progress_left
-	local progress_done_line
-	local progress_left_line
-	local progress_line
-	local progress_label
-	local job_control
+	local count_character
+	local count_before
+	local count_after
+	local count_buffer
+	local current_progress
+	local limit_progress
+	local percent_progress
+	local done_progress
+	local left_progress
+	local line_progress_done
+	local line_progress_left
+	local line_progress
+	local label_progress
 
 	if [ $# -eq 0 ]
 	then
@@ -3027,24 +3036,24 @@ frobulator.bar () {
 
 	seconds="0.25"
 
-	progress_current=0
-	progress_limit=99
+	current_progress=0
+	limit_progress=99
 
 	# columns
 
 	if [ -z "${terminal_columns}" ]
 	then
-		character_count=80
+		count_character=80
 	else
-		character_count="${terminal_columns}"
+		count_character="${terminal_columns}"
 	fi
 
 	# reserved output width
 
-	before_count=0
-	after_count=8
+	count_before=0
+	count_after=8
 
-	buffer_count=$(( character_count - before_count - after_count ))
+	count_buffer=$(( count_character - count_before - count_after ))
 
 	# run command
 
@@ -3052,94 +3061,94 @@ frobulator.bar () {
 
 	"${SHELL}" -c "${command}" >> "${sink}" 2>&1 &
 
-	process_id=$!
+	id_process=$!
 
 	# monitor process
 
-	while [ -d /proc/"${process_id}" ]
+	while [ -d /proc/"${id_process}" ]
 	do
 		# simulated progress
 
-		if [ "${progress_current}" -lt 70 ]
+		if [ "${current_progress}" -lt 70 ]
 		then
-			progress_current=$(( progress_current + 2 ))
+			current_progress=$(( current_progress + 2 ))
 
-		elif [ "${progress_current}" -lt 90 ]
+		elif [ "${current_progress}" -lt 90 ]
 		then
-			progress_current=$(( progress_current + 1 ))
+			current_progress=$(( current_progress + 1 ))
 
-		elif [ "${progress_current}" -lt "${progress_limit}" ]
+		elif [ "${current_progress}" -lt "${limit_progress}" ]
 		then
-			progress_current=$(( progress_current + 0 ))
+			current_progress=$(( current_progress + 0 ))
 
 		fi
 
 		# progress calculation
 
-		progress_percent="${progress_current}"
+		percent_progress="${current_progress}"
 
-		progress_done=$(( progress_percent * buffer_count / 100 ))
-		progress_left=$(( buffer_count - progress_done ))
+		done_progress=$(( percent_progress * count_buffer / 100 ))
+		left_progress=$(( count_buffer - done_progress ))
 
 		# progress line
 
-		progress_done_line=$(printf "%${progress_done}s")
-		progress_left_line=$(printf "%${progress_left}s")
+		line_progress_done=$(printf "%${done_progress}s")
+		line_progress_left=$(printf "%${left_progress}s")
 
-		progress_done_line="${progress_done_line// /|}"
-		progress_left_line="${progress_left_line// /-}"
+		line_progress_done="${line_progress_done// /|}"
+		line_progress_left="${line_progress_left// /-}"
 
-		progress_line="${progress_done_line}${progress_left_line}"
+		line_progress="${line_progress_done}${line_progress_left}"
 
 		# percentage padding
 
-		if [ "${progress_percent}" -lt 10 ]
+		if [ "${percent_progress}" -lt 10 ]
 		then
-			progress_label="00${progress_percent}"
+			label_progress="00${percent_progress}"
 
-		elif [ "${progress_percent}" -lt 100 ]
+		elif [ "${percent_progress}" -lt 100 ]
 		then
-			progress_label="0${progress_percent}"
+			label_progress="0${percent_progress}"
 
 		else
-			progress_label="${progress_percent}"
+			label_progress="${percent_progress}"
 		fi
 
 		# output
 
-		echo -n -e "\r[${marker_spc}${progress_label}${marker_spc}${progress_line}${marker_spc}]"
+		echo -n -e "\r[${marker_spc}${label_progress}${marker_spc}${line_progress}${marker_spc}]"
 
 		sleep "${seconds}"
 	done
 
 	# collect exit code
 
-	wait ${process_id}
+	wait ${id_process}
 
-	process_exit=$?
+	status_process=$?
 
 	# force completion
 
-	progress_percent=100
+	percent_progress=100
 
-	progress_done=$(( progress_percent * buffer_count / 100 ))
-	progress_left=$(( buffer_count - progress_done ))
+	done_progress=$(( percent_progress * count_buffer / 100 ))
+	left_progress=$(( count_buffer - done_progress ))
 
-	progress_done_line=$(printf "%${progress_done}s")
-	progress_left_line=$(printf "%${progress_left}s")
+	line_progress_done=$(printf "%${done_progress}s")
+	line_progress_left=$(printf "%${left_progress}s")
 
-	progress_done_line="${progress_done_line// /|}"
-	progress_left_line="${progress_left_line// /-}"
+	line_progress_done="${line_progress_done// /|}"
+	line_progress_left="${line_progress_left// /-}"
 
-	progress_line="${progress_done_line}${progress_left_line}"
+	line_progress="${line_progress_done}${line_progress_left}"
 
-	progress_label="100"
+	label_progress="100"
 
 	# final output
 
-	if [ "${process_exit}" -eq 0 ]
+	if [ "${status_process}" -eq 0 ]
 	then
-		echo -n -e "\r[${marker_spc}${progress_label}${marker_spc}${progress_line}${marker_spc}]"
+		echo -n -e "\r[${marker_spc}${label_progress}${marker_spc}${line_progress}${marker_spc}]"
 	fi
 
 	echo
@@ -3149,30 +3158,30 @@ frobulator.bar () {
 
 	unset command
 
-	unset process_id
-	unset process_exit
+	unset id_process
+	unset status_process
 
 	unset seconds
 
-	unset character_count
-	unset before_count
-	unset after_count
-	unset buffer_count
+	unset count_character
+	unset count_before
+	unset count_after
+	unset count_buffer
 
-	unset progress_current
-	unset progress_limit
-	unset progress_percent
+	unset current_progress
+	unset limit_progress
+	unset percent_progress
 
-	unset progress_done
-	unset progress_left
+	unset done_progress
+	unset left_progress
 
-	unset progress_done_line
-	unset progress_left_line
-	unset progress_line
+	unset line_progress_done
+	unset line_progress_left
+	unset line_progress
 
-	unset progress_label
+	unset label_progress
 
-	return ${process_exit}
+	return ${status_process}
 
 }
 
@@ -3187,24 +3196,24 @@ frobulator.bar () {
 frobulator.temporary () {
 
 	local status=0
-	local temporary_template="frobulator.temporary.XXXXXX"
+	local template_temporary="frobulator.temporary.XXXXXX"
 
-	local temporary_variable
-	local temporary_directory
+	local variable_temporary
+	local directory_created
 
 	# each argument names a variable that receives a new temporary directory
 
-	for temporary_variable in "${@}"
+	for variable_temporary in "${@}"
 	do
-		temporary_directory="$(mktemp -d -t "${temporary_template}")"
+		directory_created="$(mktemp -d -t "${template_temporary}")"
 
 		frobulator.track || continue
 
-		eval "${temporary_variable}=\"${temporary_directory}\""
+		eval "${variable_temporary}=\"${directory_created}\""
 
-		frobulator.add "Generating temporary directory" "[ ${temporary_variable} ]"
+		frobulator.add "Generating temporary directory" "[ ${variable_temporary} ]"
 
-		frobulator_return+=("${temporary_directory}")
+		frobulator_return+=("${directory_created}")
 	done
 
 	return "${status}"
@@ -3240,24 +3249,24 @@ frobulator.temporary () {
 frobulator.trap () {
 
 	local status=0
-	local trap_command="rm --recursive --force --"
+	local command_trap="rm --recursive --force --"
 
-	local trap_directory
+	local directory_trap
 
 	# every directory passed in any call is removed on exit:
 	# paths are fixed now - never read from variables at exit time
 
-	for trap_directory in "${@}"
+	for directory_trap in "${@}"
 	do
-		if [ -n "${trap_directory}" ] && [ "${trap_directory}" != "/" ]
+		if [ -n "${directory_trap}" ] && [ "${directory_trap}" != "/" ]
 		then
-			frobulator_trap_directories+=("${trap_directory}")
+			frobulator_trap_directories+=("${directory_trap}")
 		fi
 	done
 
-	for trap_directory in "${frobulator_trap_directories[@]}"
+	for directory_trap in "${frobulator_trap_directories[@]}"
 	do
-		trap_command+=" $(printf '%q' "${trap_directory}")"
+		command_trap+=" $(printf '%q' "${directory_trap}")"
 	done
 
 	# clean on interruption or error
@@ -3268,7 +3277,7 @@ frobulator.trap () {
 
 	# clean on exit
 
-	trap "${trap_command}" EXIT
+	trap "${command_trap}" EXIT
 
 	frobulator.track
 
@@ -3358,7 +3367,7 @@ frobulator.trap () {
 
 frobulator.complete () {
 
-	local previous_status="${?}"
+	local status_previous="${?}"
 	local status=0
 	local mode="continue"
 	local keyword=false
@@ -3368,7 +3377,7 @@ frobulator.complete () {
 	local label
 	local path
 	local checkpoint
-	local checkpoint_number
+	local number_checkpoint
 	local line
 
 	# initialize collections
@@ -3396,7 +3405,7 @@ frobulator.complete () {
 	then
 		message="${1}"
 		detail="${2}"
-		status="${previous_status}"
+		status="${status_previous}"
 
 		# label: calling function name or operation number
 
@@ -3692,14 +3701,14 @@ frobulator.fail () {
 
 frobulator.track () {
 
-	local track_status="${?}"
+	local status_track="${?}"
 
-	if [ "${track_status}" -ne 0 ]
+	if [ "${status_track}" -ne 0 ]
 	then
 		status=1
 	fi
 
-	return "${track_status}"
+	return "${status_track}"
 }
 
 # result ───────────────────────────────────────────────────────────────────────
@@ -3726,13 +3735,13 @@ frobulator.result () {
 	local count_error=0
 	local instance="${1}"
 
-	local complete_status
+	local status_complete
 
 	# evaluate statuses
 
-	for complete_status in "${frobulator_complete_statuses[@]}"
+	for status_complete in "${frobulator_complete_statuses[@]}"
 	do
-		if [ "${complete_status}" -ne 0 ]
+		if [ "${status_complete}" -ne 0 ]
 		then
 			status=1
 
@@ -3782,16 +3791,16 @@ frobulator.ownership () {
 	local status=0
 
 	local target
-	local user_name
-	local user_home
-	local target_path
-	local system_path
+	local name_user
+	local home_user
+	local path_target
+	local path_system
 	local path
-	local owner_name
-	local user_id
-	local group_id
+	local name_owner
+	local id_user
+	local id_group
 
-	local -a system_paths_list=(
+	local -a list_system_paths=(
 
 		/root
 		/usr
@@ -3814,9 +3823,9 @@ frobulator.ownership () {
 
 	if [ -n "${SUDO_USER}" ]
 	then
-		user_name="${SUDO_USER}"
+		name_user="${SUDO_USER}"
 	else
-		user_name="$(id -u -n)"
+		name_user="$(id -u -n)"
 
 		if [ "${?}" -ne 0 ]
 		then
@@ -3828,29 +3837,29 @@ frobulator.ownership () {
 
 	# determine user home
 
-	user_home="/home/${user_name}"
+	home_user="/home/${name_user}"
 
-	if [ "${user_name}" = "root" ]
+	if [ "${name_user}" = "root" ]
 	then
-		user_home="/root"
+		home_user="/root"
 	fi
 
 	for target in "${list[@]}"
 	do
-		system_path="false"
+		path_system="false"
 
 		# resolve target path
 
-		target_path="$(realpath -m "${target}")"
+		path_target="$(realpath -m "${target}")"
 
 		frobulator.track || continue
 
-		for path in "${system_paths_list[@]}"
+		for path in "${list_system_paths[@]}"
 		do
-			if [[ "${target_path}" = "${path}"   ]] ||
-			   [[ "${target_path}" = "${path}/"* ]]
+			if [[ "${path_target}" = "${path}"   ]] ||
+			   [[ "${path_target}" = "${path}/"* ]]
 			then
-				system_path="true"
+				path_system="true"
 
 				break
 			fi
@@ -3858,33 +3867,33 @@ frobulator.ownership () {
 
 		# determine ownership context
 
-		if [[ "${target_path}" = "${user_home}"   ]] ||
-		   [[ "${target_path}" = "${user_home}/"* ]]
+		if [[ "${path_target}" = "${home_user}"   ]] ||
+		   [[ "${path_target}" = "${home_user}/"* ]]
 		then
-			owner_name="${user_name}"
+			name_owner="${name_user}"
 
-		elif [ "${system_path}" = "true" ]
+		elif [ "${path_system}" = "true" ]
 		then
-			owner_name="root"
+			name_owner="root"
 
 		else
-			owner_name="${user_name}"
+			name_owner="${name_user}"
 		fi
 
 		# resolve ownership identities
 
-		user_id="$(id -u "${owner_name}")"
+		id_user="$(id -u "${name_owner}")"
 
 		frobulator.track || continue
 
-		group_id="$(id -g "${owner_name}")"
+		id_group="$(id -g "${name_owner}")"
 
 		frobulator.track || continue
 
 		# apply ownership
 
 		chown							\
-			"${user_id}:${group_id}"	\
+			"${id_user}:${id_group}"	\
 			--recursive					\
 										"${target}"
 
@@ -4149,7 +4158,7 @@ frobulator.write () {
 
 	local path
 	local file
-	local prepend_file
+	local file_prepend
 
 	if [ "${#}" -eq 3 ]
 	then
@@ -4207,16 +4216,16 @@ frobulator.write () {
 
 		if [ "${mode}" = "prepend" ]
 		then
-			prepend_file="$(mktemp)"
+			file_prepend="$(mktemp)"
 
-			echo "${content}" > "${prepend_file}"
+			echo "${content}" > "${file_prepend}"
 
 			if [ -f "${path}/${file}" ]
 			then
-				cat "${path}/${file}" >> "${prepend_file}"
+				cat "${path}/${file}" >> "${file_prepend}"
 			fi
 
-			mv "${prepend_file}" "${path}/${file}"
+			mv "${file_prepend}" "${path}/${file}"
 
 		elif [ "${mode}" = "write" ]
 		then
@@ -5039,7 +5048,7 @@ frobulator.image () {
 frobulator.http () {
 
 	local status=0
-	local http_code="%{http_code}\n"
+	local code_http="%{http_code}\n"
 	local url="${1}"
 	local data="${2}"
 
@@ -5049,7 +5058,7 @@ frobulator.http () {
 			curl						\
 				--silent				\
 				--output "${sink}"		\
-				--write-out "${http_code}"	\
+				--write-out "${code_http}"	\
 				"${url}"
 		)"
 
@@ -5061,7 +5070,7 @@ frobulator.http () {
 			curl							\
 				--silent					\
 				--output "${sink}"			\
-				--write-out "${http_code}"		\
+				--write-out "${code_http}"		\
 				--location					\
 				"${url}/${data}"				\
 			| tail -n 1					\
@@ -5173,20 +5182,20 @@ frobulator.download () {
 	local status=0
 	local url="${1}"
 
-	local url_path
-	local url_segment
-	local download_directory
-	local download_item
-	local download_index
-	local download_source
-	local download_label
-	local download_target
-	local download_partial_file
-	local download_status_code
-	local download_url_display
+	local path_url
+	local segment_url
+	local directory_download
+	local item_download
+	local index_download
+	local source_download
+	local label_download
+	local target_download
+	local file_download_partial
+	local code_download
+	local url_download_display
 
-	local -a download_list=()
-	local -a download_sources=()
+	local -a list_download=()
+	local -a sources_download=()
 
 	# validation
 
@@ -5199,14 +5208,14 @@ frobulator.download () {
 
 	# url segments: path after the host - last path segment
 
-	url_path="${url#*://}"
-	url_path="${url_path#*/}"
-	url_segment="${url%/}"
-	url_segment="${url_segment##*/}"
+	path_url="${url#*://}"
+	path_url="${path_url#*/}"
+	segment_url="${url%/}"
+	segment_url="${segment_url##*/}"
 
-	if [ "${url_path}" = "${url#*://}" ]
+	if [ "${path_url}" = "${url#*://}" ]
 	then
-		unset url_path
+		unset path_url
 	fi
 
 	# call forms
@@ -5217,41 +5226,41 @@ frobulator.download () {
 
 		if [ -d "${2}" ] || [[ "${2}" = */ ]]
 		then
-			download_directory="${2%/}"
-			download_list=("${url_segment}")
+			directory_download="${2%/}"
+			list_download=("${segment_url}")
 		else
-			download_directory="$(dirname -- "${2}")"
-			download_list=("${2##*/}")
+			directory_download="$(dirname -- "${2}")"
+			list_download=("${2##*/}")
 		fi
 
-		download_sources=("${url}")
+		sources_download=("${url}")
 
 	elif [ "${#}" -eq 4 ] && [[ "${2}" != */* ]] && [[ "${3}" = */* || -d "${3}" ]]
 	then
 		# source item saved under a different name
 
-		download_directory="${3}"
-		download_list=("${4}")
-		download_sources=("${url%/}/${2}")
+		directory_download="${3}"
+		list_download=("${4}")
+		sources_download=("${url%/}/${2}")
 	else
 		# items from the url into the directory
 
-		download_directory="${2}"
-		download_list=("${@:3}")
+		directory_download="${2}"
+		list_download=("${@:3}")
 
-		for download_item in "${download_list[@]}"
+		for item_download in "${list_download[@]}"
 		do
-			if [ "${#download_list[@]}" -eq 1 ] && [ -n "${url_path}" ] &&
-			   [[ "${url_segment}" = "${download_item}" || "${url_segment}" = *.* ]]
+			if [ "${#list_download[@]}" -eq 1 ] && [ -n "${path_url}" ] &&
+			   [[ "${segment_url}" = "${item_download}" || "${segment_url}" = *.* ]]
 			then
-				download_sources+=("${url}")
+				sources_download+=("${url}")
 			else
-				download_sources+=("${url%/}/${download_item}")
+				sources_download+=("${url%/}/${item_download}")
 			fi
 		done
 	fi
 
-	if [ "${#download_list[@]}" -eq 0 ]
+	if [ "${#list_download[@]}" -eq 0 ]
 	then
 		frobulator.err "Download failure - no item" "[ download${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
@@ -5260,32 +5269,32 @@ frobulator.download () {
 
 	# directory
 
-	if [ ! -d "${download_directory}" ]
+	if [ ! -d "${directory_download}" ]
 	then
-		mkdir --parents "${download_directory}" 2> "${sink}"
+		mkdir --parents "${directory_download}" 2> "${sink}"
 
-		frobulator.fail "Download failure - directory" "[ '${download_directory}'${marker_spc}${marker_hnt}${marker_spc}000 ]" || return
+		frobulator.fail "Download failure - directory" "[ '${directory_download}'${marker_spc}${marker_hnt}${marker_spc}000 ]" || return
 	fi
 
 	# download items
 
-	for download_index in "${!download_list[@]}"
+	for index_download in "${!list_download[@]}"
 	do
-		download_item="${download_list[${download_index}]}"
-		download_source="${download_sources[${download_index}]}"
-		download_label="'${download_item}'"
-		download_target="${download_directory}/${download_item}"
+		item_download="${list_download[${index_download}]}"
+		source_download="${sources_download[${index_download}]}"
+		label_download="'${item_download}'"
+		target_download="${directory_download}/${item_download}"
 
 		# shown url always carries a protocol
 
-		if [[ "${download_source}" = *://* ]]
+		if [[ "${source_download}" = *://* ]]
 		then
-			download_url_display="${download_source}"
+			url_download_display="${source_download}"
 		else
-			download_url_display="${marker_hts}${download_source}"
+			url_download_display="${marker_hts}${source_download}"
 		fi
 
-		if [ -z "${download_item}" ]
+		if [ -z "${item_download}" ]
 		then
 			frobulator.err "Download failure - no item" "[ download${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
@@ -5296,12 +5305,12 @@ frobulator.download () {
 
 		# download to a partial file beside the target - kept only on success
 
-		download_partial_file="$(mktemp "${download_directory}/.${download_item}.XXXXXX" 2> "${sink}")"
+		file_download_partial="$(mktemp "${directory_download}/.${item_download}.XXXXXX" 2> "${sink}")"
 
-		if [ -z "${download_partial_file}" ]
+		if [ -z "${file_download_partial}" ]
 		then
-			frobulator.err "Download failure - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
-			frobulator.nul "Unable to write to '${download_directory}'."
+			frobulator.err "Download failure - file" "[ ${label_download}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.nul "Unable to write to '${directory_download}'."
 
 			status=1
 
@@ -5312,41 +5321,41 @@ frobulator.download () {
 			--silent						\
 			--location						\
 			--connect-timeout 30			\
-			--output "${download_partial_file}"	\
+			--output "${file_download_partial}"	\
 			--write-out "%{http_code}"		\
-			"${download_source}" > "${download_partial_file}.status" &
+			"${source_download}" > "${file_download_partial}.status" &
 
-		frobulator.progress "download" "[ ${download_label} ]"
+		frobulator.progress "download" "[ ${label_download} ]"
 
-		download_status_code="$(< "${download_partial_file}.status")"
+		code_download="$(< "${file_download_partial}.status")"
 
-		rm -f "${download_partial_file}.status"
+		rm -f "${file_download_partial}.status"
 
 		# report by http status code of the download itself
 
-		if [[ "${download_status_code}" =~ ^2[0-9][0-9]$ ]]
+		if [[ "${code_download}" =~ ^2[0-9][0-9]$ ]]
 		then
-			mv -f "${download_partial_file}" "${download_target}"
+			mv -f "${file_download_partial}" "${target_download}"
 
-			frobulator.permissions public execute "${download_target}" > "${sink}"
+			frobulator.permissions public execute "${target_download}" > "${sink}"
 
-			frobulator.scs "Download success - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}${download_status_code} ]"
+			frobulator.scs "Download success - file" "[ ${label_download}${marker_spc}${marker_hnt}${marker_spc}${code_download} ]"
 
-		elif [ -z "${download_status_code}" ] || [ "${download_status_code}" = "000" ]
+		elif [ -z "${code_download}" ] || [ "${code_download}" = "000" ]
 		then
 			# no response: curl reports 000
 
-			rm -f "${download_partial_file}"
+			rm -f "${file_download_partial}"
 
-			frobulator.err "Server unreachable - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
-			frobulator.nul "'${download_url_display}'"
+			frobulator.err "Server unreachable - file" "[ ${label_download}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.nul "'${url_download_display}'"
 
 			status=1
 		else
-			rm -f "${download_partial_file}"
+			rm -f "${file_download_partial}"
 
-			frobulator.err "Download failure - file" "[ ${download_label}${marker_spc}${marker_hnt}${marker_spc}${download_status_code} ]"
-			frobulator.nul "'${download_url_display}'"
+			frobulator.err "Download failure - file" "[ ${label_download}${marker_spc}${marker_hnt}${marker_spc}${code_download} ]"
+			frobulator.nul "'${url_download_display}'"
 
 			status=1
 		fi
@@ -5371,15 +5380,15 @@ frobulator.upload () {
 	local request="${1}"
 	local url="${2}"
 
-	local upload_item
-	local upload_file
-	local upload_type
-	local upload_name
-	local upload_label
-	local upload_response_file
-	local upload_status_code
+	local item_upload
+	local file_upload
+	local type_upload
+	local name_upload
+	local label_upload
+	local file_upload_response
+	local code_upload
 
-	local -a upload_list=("${@:3}")
+	local -a list_upload=("${@:3}")
 	local -a command_upload=()
 
 	# validation
@@ -5391,20 +5400,20 @@ frobulator.upload () {
 		return 1
 	fi
 
-	if [ "${#upload_list[@]}" -eq 0 ]
+	if [ "${#list_upload[@]}" -eq 0 ]
 	then
 		frobulator.err "Upload failure - no data" "[ ${request}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
 		return 1
 	fi
 
-	upload_response_file="$(mktemp)"
+	file_upload_response="$(mktemp)"
 
 	# upload items
 
-	for upload_item in "${upload_list[@]}"
+	for item_upload in "${list_upload[@]}"
 	do
-		if [ -z "${upload_item}" ]
+		if [ -z "${item_upload}" ]
 		then
 			frobulator.err "Upload failure - no data" "[ ${request}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 
@@ -5415,23 +5424,23 @@ frobulator.upload () {
 
 		# item type and name
 
-		if [[ "${upload_item}" =~ ^\{.*\}$ ]] || [[ "${upload_item}" =~ ^\[.*\]$ ]]
+		if [[ "${item_upload}" =~ ^\{.*\}$ ]] || [[ "${item_upload}" =~ ^\[.*\]$ ]]
 		then
-			upload_type="json data"
-			upload_name="${upload_item//${NLN}/${marker_spc}}"
+			type_upload="json data"
+			name_upload="${item_upload//${NLN}/${marker_spc}}"
 
-		elif [[ "${upload_item}" = @* ]]
+		elif [[ "${item_upload}" = @* ]]
 		then
-			upload_file="${upload_item#@}"
+			file_upload="${item_upload#@}"
 
-			upload_type="file"
-			upload_name="${upload_file##*/}"
+			type_upload="file"
+			name_upload="${file_upload##*/}"
 		else
-			upload_type="form data"
-			upload_name="${upload_item//${NLN}/${marker_spc}}"
+			type_upload="form data"
+			name_upload="${item_upload//${NLN}/${marker_spc}}"
 		fi
 
-		upload_label="'${upload_name}'"
+		label_upload="'${name_upload}'"
 
 		command_upload=(
 			curl
@@ -5443,18 +5452,18 @@ frobulator.upload () {
 			--request "${request}"
 		)
 
-		if [ "${upload_type}" = "json data" ]
+		if [ "${type_upload}" = "json data" ]
 		then
 			command_upload+=(
 				--header "Content-Type: application/json"
-				--data "${upload_item}"
+				--data "${item_upload}"
 			)
 
-		elif [ "${upload_type}" = "file" ]
+		elif [ "${type_upload}" = "file" ]
 		then
-			if [ ! -s "${upload_file}" ]
+			if [ ! -s "${file_upload}" ]
 			then
-				frobulator.err "Upload failure - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+				frobulator.err "Upload failure - ${type_upload}" "[ ${label_upload}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 				frobulator.nul "File is empty or does not exist."
 
 				status=1
@@ -5463,44 +5472,44 @@ frobulator.upload () {
 			fi
 
 			command_upload+=(
-				--form "file=@${upload_file}"
+				--form "file=@${file_upload}"
 			)
 		else
 			command_upload+=(
 				--header "Content-Type: application/x-www-form-urlencoded"
-				--data "${upload_item}"
+				--data "${item_upload}"
 			)
 		fi
 
 		command_upload+=("${url}")
 
-		"${command_upload[@]}" > "${upload_response_file}" &
+		"${command_upload[@]}" > "${file_upload_response}" &
 
-		frobulator.progress "upload" "[ ${upload_label} ]"
+		frobulator.progress "upload" "[ ${label_upload} ]"
 
-		upload_status_code="$(< "${upload_response_file}")"
+		code_upload="$(< "${file_upload_response}")"
 
 		# report by http status code of the upload itself
 
-		if [[ "${upload_status_code}" =~ ^2[0-9][0-9]$ ]]
+		if [[ "${code_upload}" =~ ^2[0-9][0-9]$ ]]
 		then
-			frobulator.scs "Upload success - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}${upload_status_code} ]"
+			frobulator.scs "Upload success - ${type_upload}" "[ ${label_upload}${marker_spc}${marker_hnt}${marker_spc}${code_upload} ]"
 
-		elif [ -z "${upload_status_code}" ] || [ "${upload_status_code}" = "000" ]
+		elif [ -z "${code_upload}" ] || [ "${code_upload}" = "000" ]
 		then
 			# no response: curl reports 000
-			frobulator.err "Server unreachable - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}000 ]"
+			frobulator.err "Server unreachable - ${type_upload}" "[ ${label_upload}${marker_spc}${marker_hnt}${marker_spc}000 ]"
 			frobulator.nul "'${url}'"
 
 			status=1
 		else
-			frobulator.err "Upload failure - ${upload_type}" "[ ${upload_label}${marker_spc}${marker_hnt}${marker_spc}${upload_status_code} ]"
+			frobulator.err "Upload failure - ${type_upload}" "[ ${label_upload}${marker_spc}${marker_hnt}${marker_spc}${code_upload} ]"
 
 			status=1
 		fi
 	done
 
-	rm -f "${upload_response_file}"
+	rm -f "${file_upload_response}"
 
 	return "${status}"
 }
@@ -5537,12 +5546,12 @@ frobulator.log () {
 	local status=0
 	local command="${*}"
 
-	local log_directory
+	local directory_log
 	local log
 
 	if [ -z "${SUDO:-${HOME}}" ]
 	then
-		log_directory="${PREFIX}/var/log"
+		directory_log="${PREFIX}/var/log"
 	else
 		if [ ! -d "${HOME}/.local/var/log" ]
 		then
@@ -5551,7 +5560,7 @@ frobulator.log () {
 			frobulator.track || return 1
 		fi
 
-		log_directory="${HOME}/.local/var/log"
+		directory_log="${HOME}/.local/var/log"
 	fi
 
 	if [ -z "${script}" ]
@@ -5563,7 +5572,7 @@ frobulator.log () {
 
 	script="${script##*/}"
 
-	log="${log_directory}/${script}-${stamp}.log"
+	log="${directory_log}/${script}-${stamp}.log"
 
 	"${SHELL}" -c "${command}" >> "${log}" 2>&1
 
@@ -5957,7 +5966,7 @@ frobulator.install () {
 	local command_install="apt-get --assume-yes install"
 
 	local package
-	local query_filter
+	local filter_query
 
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -5988,9 +5997,9 @@ frobulator.install () {
 
 			frobulator.track
 		else
-			query_filter="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			filter_query="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
 
-			if [[ -z "${query_filter}" ]]
+			if [[ -z "${filter_query}" ]]
 			then
 				frobulator.wrn "Absent on system" "[ '${package}' ]"
 
@@ -6024,26 +6033,26 @@ frobulator.install () {
 frobulator.require () {
 
 	local status=0
-	local requirements_missing=false
+	local list_requirements_missing=false
 
 	local command
 	local command_path
 	local packages
-	local query_package
-	local query_content
-	local query_line
-	local query_command
-	local system_binary_directory
+	local package_query
+	local content_query
+	local line_query
+	local command_query
+	local directory_system_binary
 
-	local -a requirements_list=("${@}")
-	local -a query_filter=()
-	local -a install_list=()
+	local -a list_requirements=("${@}")
+	local -a filter_query=()
+	local -a list_install=()
 
 	export DEBIAN_FRONTEND=noninteractive
 
 	# empty list: nothing to require
 
-	if [ "${#requirements_list[@]}" -eq 0 ]
+	if [ "${#list_requirements[@]}" -eq 0 ]
 	then
 		frobulator.stp "No requirement(s) specified"
 
@@ -6054,7 +6063,7 @@ frobulator.require () {
 
 	# apt-file is only needed to find the package providing a missing command
 
-	for command in "${requirements_list[@]}"
+	for command in "${list_requirements[@]}"
 	do
 		# command path - empty if not installed
 
@@ -6062,13 +6071,13 @@ frobulator.require () {
 
 		if [[ "${command}" != *'*'* ]] && [ -z "${command_path}" ]
 		then
-			requirements_missing=true
+			list_requirements_missing=true
 
 			break
 		fi
 	done
 
-	if [ "${requirements_missing}" = true ]
+	if [ "${list_requirements_missing}" = true ]
 	then
 		frobulator.failsafe apt-file
 
@@ -6081,7 +6090,7 @@ frobulator.require () {
 
 	frobulator.fwd "Validating requirement(s)${marker_elp}"
 
-	for command in "${requirements_list[@]}"
+	for command in "${list_requirements[@]}"
 	do
 		# command path - empty if not installed
 
@@ -6095,25 +6104,25 @@ frobulator.require () {
 
 			frobulator.track || continue
 
-			while IFS= read -r query_package
+			while IFS= read -r package_query
 			do
-				if [[ "${query_package}" == ${command} ]]
+				if [[ "${package_query}" == ${command} ]]
 				then
-					frobulator.add "Package selection found" "[ '${query_package}' ]"
+					frobulator.add "Package selection found" "[ '${package_query}' ]"
 
-					install_list+=("${query_package}")
+					list_install+=("${package_query}")
 				fi
 			done <<< "${packages}"
 
 			echo
 
-			if [[ "${#install_list[@]}" -ge 1 ]]
+			if [[ "${#list_install[@]}" -ge 1 ]]
 			then
-				frobulator.install "${install_list[@]}"
+				frobulator.install "${list_install[@]}"
 
 				frobulator.track
 
-				install_list=()
+				list_install=()
 			else
 				frobulator.err "Package selection not found" "[ '${command}' ]"
 
@@ -6126,75 +6135,75 @@ frobulator.require () {
 
 			IFS="${marker_spc}"
 
-			query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
+			filter_query=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}": | grep /"${command}"$) )
 
 			unset IFS
 
-			while IFS= read -r query_line
+			while IFS= read -r line_query
 			do
 				IFS=':'
 
-				read -r query_package query_content <<< "${query_line}"
+				read -r package_query content_query <<< "${line_query}"
 
 				unset IFS
 
-				system_binary_directory=/usr/bin
+				directory_system_binary=/usr/bin
 
-				query_command="${system_binary_directory}/${command}"
+				command_query="${directory_system_binary}/${command}"
 
-				if [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" == "${query_command}" ]]
+				if [[ "${package_query}" == "${command}" ]] && [[ "${content_query}" == "${command_query}" ]]
 				then
-					frobulator.scs "Command provision found as package" "[ '${query_package}' ]"
+					frobulator.scs "Command provision found as package" "[ '${package_query}' ]"
 
-					install_list+=("${query_package}")
+					list_install+=("${package_query}")
 
 					break
 
-				elif [[ "${query_package}" == "${command}" ]] && [[ "${query_content}" =~ "${command}"$ ]]
+				elif [[ "${package_query}" == "${command}" ]] && [[ "${content_query}" =~ "${command}"$ ]]
 				then
-					frobulator.scs "Command provision found as reverse match" "[ '${query_package}' ]"
+					frobulator.scs "Command provision found as reverse match" "[ '${package_query}' ]"
 
-					install_list+=("${query_package}")
+					list_install+=("${package_query}")
 
 					break
 
-				elif [[ "${query_line}" = "" ]]
+				elif [[ "${line_query}" = "" ]]
 				then
 					IFS="${marker_spc}"
 
-					query_filter=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
+					filter_query=( $(apt-file search "${command}" | sed -e "s/${marker_spc}//" | grep ^"${command}":) )
 
 					unset IFS
 
-					while IFS= read -r query_line
+					while IFS= read -r line_query
 					do
 						IFS=':'
 
-						read -r query_package query_content <<< "${query_line}"
+						read -r package_query content_query <<< "${line_query}"
 
 						unset IFS
 
-						if [[ "${query_package}" == "${command}" ]] && [[ ! "${query_content}" =~ "${command}"$ ]]
+						if [[ "${package_query}" == "${command}" ]] && [[ ! "${content_query}" =~ "${command}"$ ]]
 						then
-							frobulator.scs "Command provision found as meta package" "[ '${query_package}' ]"
+							frobulator.scs "Command provision found as meta package" "[ '${package_query}' ]"
 
-							install_list+=("${query_package}")
+							list_install+=("${package_query}")
 
 							break
 						else
 							frobulator.err "Command provision not found" "[ '${command}' ]"
 						fi
-					done <<< "${query_filter[@]}"
+					done <<< "${filter_query[@]}"
 				fi
-			done <<< "${query_filter[@]}"
+			done <<< "${filter_query[@]}"
 
-			if [[ "${#install_list[@]}" -ge 1 ]]
+			if [[ "${#list_install[@]}" -ge 1 ]]
 			then
-				frobulator.install "${install_list[@]}"
+				frobulator.install "${list_install[@]}"
 
 				frobulator.track
 
-				install_list=()
+				list_install=()
 			else
 				status=1
 			fi
@@ -6315,7 +6324,7 @@ frobulator.purge () {
 	local status=0
 	local command_purge="apt-get --assume-yes purge --autoremove"
 
-	local package_installed
+	local installed_package
 	local package
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -6339,9 +6348,9 @@ frobulator.purge () {
 	do
 		# 'installed' if apt lists the package as installed - empty otherwise
 
-		package_installed="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
+		installed_package="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
 
-		if [ -n "${package_installed}" ]
+		if [ -n "${installed_package}" ]
 		then
 			frobulator.wrn "Selecting" "[ '${package}' ]"
 
@@ -6381,7 +6390,7 @@ frobulator.dialog () {
 	local command_zenity
 	local command_kdialog
 
-	local -a dialog_command=("${@:2}")
+	local -a command_dialog=("${@:2}")
 
 	# file dialog tools - empty if absent: gnome zenity / kde kdialog
 
@@ -6397,7 +6406,7 @@ frobulator.dialog () {
 				--directory				\
 				--separator=$'\n'		\
 				--title="${title}"		\
-				"${dialog_command[@]}"
+				"${command_dialog[@]}"
 		)"
 
 		status="${?}"
@@ -6410,7 +6419,7 @@ frobulator.dialog () {
 				--multiple				\
 				--separate-output		\
 				--title "${title}"		\
-				"${dialog_command[@]}"
+				"${command_dialog[@]}"
 		)"
 
 		status="${?}"
@@ -6454,13 +6463,13 @@ frobulator.exit () {
 frobulator.terminate () {
 
 	local status=0
-	local process_name="${1}"
+	local name_process="${1}"
 
 	local command_pgrep
 	local command_pkill
-	local process_found
+	local ids_process
 
-	if [ -z "${process_name}" ]
+	if [ -z "${name_process}" ]
 	then
 		frobulator.err "No process specified"
 
@@ -6488,15 +6497,15 @@ frobulator.terminate () {
 
 	# process ids still matching the name - empty once all are gone
 
-	process_found="$(pgrep -f "${process_name}")"
+	ids_process="$(pgrep -f "${name_process}")"
 
-	while [ -n "${process_found}" ]
+	while [ -n "${ids_process}" ]
 	do
-		pkill -f "${process_name}"
+		pkill -f "${name_process}"
 
 		frobulator.track || break
 
-		process_found="$(pgrep -f "${process_name}")"
+		ids_process="$(pgrep -f "${name_process}")"
 	done
 
 	return "${status}"
@@ -6660,19 +6669,19 @@ frobulator.escalate () {
 
 	local status=0
 	local self="${0}"
-	local root_required=false
-	local header_lines=3
-	local escalation_erase_count=$(( header_lines + 1 ))
+	local required_root=false
+	local count_lines_header=3
+	local count_erase=$(( count_lines_header + 1 ))
 
-	local self_arguments_declaration
+	local declaration_self_arguments
 	local command_sudo
-	local sudo_credentials_status
-	local escalation_erase_first
+	local status_sudo_credentials
+	local count_erase_first
 	local user_current
-	local root_pattern
+	local pattern_root
 
-	local -a self_arguments_list=()
-	local -a root_patterns_list=(
+	local -a list_self_arguments=()
+	local -a list_patterns_root=(
 
 		'frobulator\.(require|install|reinstall|purge|hold|release|failsafe|clean|update|upgrade)'
 		'apt-get[[:space:]]+(install|remove|purge)'
@@ -6690,20 +6699,20 @@ frobulator.escalate () {
 	# join patterns
 
 	local IFS='|'
-	root_pattern="${root_patterns_list[*]}"
+	pattern_root="${list_patterns_root[*]}"
 	IFS=$' \t\n'
 
 	# restore script arguments
 
 	# how the bootstrap stored the arguments: 'declare -a ...' for an array - older headers use a string
 
-	self_arguments_declaration="$(declare -p self_arguments 2> "${sink}")"
+	declaration_self_arguments="$(declare -p self_arguments 2> "${sink}")"
 
-	if [[ "${self_arguments_declaration}" == "declare -a"* ]]
+	if [[ "${declaration_self_arguments}" == "declare -a"* ]]
 	then
-		self_arguments_list=("${self_arguments[@]}")
+		list_self_arguments=("${self_arguments[@]}")
 	else
-		read -r -a self_arguments_list <<< "${self_arguments}"
+		read -r -a list_self_arguments <<< "${self_arguments}"
 	fi
 
 	user_current="$(id -u -n)"
@@ -6753,8 +6762,8 @@ frobulator.escalate () {
 	escalate_scan () {
 
 		local file="${1}"
-		local list_open=false
-		local list_entries=0
+		local open_list=false
+		local count_entries=0
 		local pattern_marker='^# version [/─]+$'
 		local pattern_comment='^[[:space:]]*#'
 		local pattern_list_open='^[[:space:]]*list=\('
@@ -6796,43 +6805,43 @@ frobulator.escalate () {
 
 			# count requirement entries
 
-			if [ "${list_open}" = true ]
+			if [ "${open_list}" = true ]
 			then
 				if [[ "${line}" =~ ${pattern_list_close} ]]
 				then
-					list_open=false
+					open_list=false
 
 				elif [[ "${line}" =~ ${pattern_content} ]]
 				then
-					list_entries=$(( list_entries + 1 ))
+					count_entries=$(( count_entries + 1 ))
 				fi
 
 			elif [[ "${line}" =~ ${pattern_list_open} ]]
 			then
 				rest="${line#*list=(}"
 
-				list_entries=0
+				count_entries=0
 
 				if [[ "${rest}" == *')'* ]]
 				then
 					rest="${rest%%)*}"
 				else
-					list_open=true
+					open_list=true
 				fi
 
 				if [[ "${rest}" =~ ${pattern_content} ]]
 				then
-					list_entries=$(( list_entries + 1 ))
+					count_entries=$(( count_entries + 1 ))
 				fi
 
 			# skip empty requirements
 
-			elif [[ "${line}" =~ ${pattern_require} ]] && [ "${list_entries}" -eq 0 ]
+			elif [[ "${line}" =~ ${pattern_require} ]] && [ "${count_entries}" -eq 0 ]
 			then
 				continue
 			fi
 
-			if [[ "${line}" =~ ${root_pattern} ]]
+			if [[ "${line}" =~ ${pattern_root} ]]
 			then
 				return 0
 			fi
@@ -6847,11 +6856,11 @@ frobulator.escalate () {
 	then
 		if escalate_scan "${self}"
 		then
-			root_required=true
+			required_root=true
 		fi
 	fi
 
-	if [ "${root_required}" = false ]
+	if [ "${required_root}" = false ]
 	then
 		frobulator.inf "Privilege escalation not required" "[ '${self}' ]"
 
@@ -6866,9 +6875,9 @@ frobulator.escalate () {
 
 	# clear bootstrap and escalation messages - restarted script prints its own header
 
-	escalation_erase_first=$(( header_lines + terminal_lines_printed ))
+	count_erase_first=$(( count_lines_header + terminal_lines_printed ))
 
-	frobulator.erase "${escalation_erase_first}"
+	frobulator.erase "${count_erase_first}"
 
 	frobulator.timeout
 
@@ -6886,11 +6895,11 @@ frobulator.escalate () {
 	# restarted header + sudo password prompt - no prompt line if credentials cached
 
 	sudo -n true 2> "${sink}"
-	sudo_credentials_status="${?}"
+	status_sudo_credentials="${?}"
 
-	if [ "${sudo_credentials_status}" -eq 0 ]
+	if [ "${status_sudo_credentials}" -eq 0 ]
 	then
-		escalation_erase_count="${header_lines}"
+		count_erase="${count_lines_header}"
 	fi
 
 	# set superuser password prompt
@@ -6899,7 +6908,7 @@ frobulator.escalate () {
 
 	# restart as superuser with user home
 
-	exec sudo env HOME="${HOME}" escalation_erase_lines="${escalation_erase_count}" "${SHELL}" "${self}" "${self_arguments_list[@]}"
+	exec sudo env HOME="${HOME}" escalation_erase_lines="${count_erase}" "${SHELL}" "${self}" "${list_self_arguments[@]}"
 
 	frobulator.track
 
@@ -6929,13 +6938,13 @@ frobulator.service () {
 
 	local status=0
 
-	local user_id
-	local service_running
-	local service_inactive
+	local id_user
+	local line_service_running
+	local line_service_inactive
 	local service
 	local action
 
-	local -a system_control_scope=()
+	local -a scope_system_control=()
 
 	if [ "${#}" -eq 1 ]
 	then
@@ -6958,22 +6967,22 @@ frobulator.service () {
 
 	# running user id - 0 is root
 
-	user_id="$(id -u)"
+	id_user="$(id -u)"
 
-	if [ "${user_id}" -ne 0 ]
+	if [ "${id_user}" -ne 0 ]
 	then
-		system_control_scope=(--user)
+		scope_system_control=(--user)
 	fi
 
 	if [ "${action}" = "reload" ]
 	then
 		if [ -z "${service}" ]
 		then
-			systemctl "${system_control_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+			systemctl "${scope_system_control[@]}" daemon-reload > "${sink}" 2>&1 &
 
 			frobulator.process "Reloading"
 		else
-			systemctl "${system_control_scope[@]}" reload "${service}" > "${sink}" 2>&1 &
+			systemctl "${scope_system_control[@]}" reload "${service}" > "${sink}" 2>&1 &
 
 			frobulator.process "Service reload" "[ ${service} ]"
 		fi
@@ -6992,9 +7001,9 @@ frobulator.service () {
 
 		# status line if the service is running - empty otherwise
 
-		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
+		line_service_running="$(systemctl "${scope_system_control[@]}" status "${service}" | grep -e "active.*running")"
 
-		if [ -n "${service_running}" ]
+		if [ -n "${line_service_running}" ]
 		then
 			frobulator.scs "Service active" "[ ${service} ]"
 		else
@@ -7013,13 +7022,13 @@ frobulator.service () {
 			return 1
 		fi
 
-		systemctl "${system_control_scope[@]}" daemon-reload
+		systemctl "${scope_system_control[@]}" daemon-reload
 
 		# status line if the service is running - empty otherwise
 
-		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
+		line_service_running="$(systemctl "${scope_system_control[@]}" status "${service}" | grep -e "active.*running")"
 
-		if [ -n "${service_running}" ]
+		if [ -n "${line_service_running}" ]
 		then
 			frobulator.wrn "Service running" " [ ${service} ]"
 
@@ -7036,13 +7045,13 @@ frobulator.service () {
 
 		for service_action in "${service_actions_list[@]}"
 		do
-			systemctl "${system_control_scope[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
+			systemctl "${scope_system_control[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
 
 			frobulator.process "Service ${service_action}" "[ ${service} ]"
 
 			sleep 1
 
-			systemctl "${system_control_scope[@]}" daemon-reload > "${sink}" 2>&1 &
+			systemctl "${scope_system_control[@]}" daemon-reload > "${sink}" 2>&1 &
 
 			frobulator.process "Reloading"
 
@@ -7053,13 +7062,13 @@ frobulator.service () {
 
 		# status lines if the service is running or inactive - empty otherwise
 
-		service_running="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "active.*running")"
-		service_inactive="$(systemctl "${system_control_scope[@]}" status "${service}" | grep -e "inactive.*")"
+		line_service_running="$(systemctl "${scope_system_control[@]}" status "${service}" | grep -e "active.*running")"
+		line_service_inactive="$(systemctl "${scope_system_control[@]}" status "${service}" | grep -e "inactive.*")"
 
-		if [ -n "${service_running}" ]
+		if [ -n "${line_service_running}" ]
 		then
 			frobulator.scs "Service activation success" "[ ${service} ]"
-		elif [ -n "${service_inactive}" ]
+		elif [ -n "${line_service_inactive}" ]
 		then
 			frobulator.err "Service activation failed" "[ ${service} ]"
 
@@ -7076,7 +7085,7 @@ frobulator.service () {
 			return 1
 		fi
 
-		systemctl "${system_control_scope[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
+		systemctl "${scope_system_control[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
 
 		frobulator.process "Service ${action}" "[ ${service} ]"
 
@@ -7397,6 +7406,272 @@ frobulator.extract () {
 	return "${status}"
 }
 
+# critter ──────────────────────────────────────────────────────────────────────
+
+# use to play a little critter animation - one cycle or looped until ctrl+c
+# arguments in any order - animation / mouth / palette color / loop
+# mouth adds talking to any animation - talk is the mouth on its own
+
+# usage:      frobulator.critter [ walk | blink | antennae | expression | talk ] [mouth] [color] [loop]
+
+frobulator.critter () {
+
+	local status=0
+	local animation="walk"
+	local motion_mouth=false
+	local loop_critter=false
+	local color_name="orange"
+	local delay_frame=15
+	local height_frame=7
+	local distance_walk=30
+	local frame_mouth=0
+
+	local argument
+	local color_body
+	local color_reset
+	local entry
+	local offset
+	local state_antenna
+	local state_eyes
+	local state_legs
+	local state_step
+	local duration
+	local seconds
+	local count_chunk
+	local index_chunk
+	local shape_mouth
+	local padding
+	local line
+	local step
+
+	local -a timeline=()
+	local -a lines_frame=()
+	local -a pattern_mouth=(1 2 1 0 1 2 2 1 0 1 2 1 0 0 0 0 0)
+
+	local -a shapes_mouth=(
+		' ██████████████'
+		' ██████▀▀██████'
+		' ██████  ██████'
+	)
+
+	local -A shapes_antenna=(
+		[up]='  ▀█▄      ▄█▀'
+		[wiggle]='  ▄█▀      ▀█▄'
+	)
+
+	local -A shapes_eyes=(
+		[open]=' ███ ██████ ███'
+		[shut]=' ███▄██████▄███'
+	)
+
+	local -A shapes_legs=(
+		[stand]='   █ █    █ █'
+		[left]='  █ █    █ █'
+		[right]='    █ █    █ █'
+	)
+
+	for argument in "${@}"
+	do
+		case "${argument}"
+		in
+			walk|blink|antennae|expression|talk)
+				animation="${argument}"
+			;;
+
+			mouth)
+				motion_mouth=true
+			;;
+
+			loop)
+				loop_critter=true
+			;;
+
+			white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
+				color_name="${argument}"
+			;;
+
+			*)
+				frobulator.err "Unknown critter argument" "[ ${argument} ]"
+
+				status=1
+
+				return "${status}"
+			;;
+		esac
+	done
+
+	# palette color - terminal output only
+
+	if [ -t 1 ]
+	then
+		color_body="${!color_name}"
+		color_reset="${reset}"
+	fi
+
+	# timeline - offset / antenna / eyes / legs / centiseconds
+
+	case "${animation}"
+	in
+		walk)
+			# right then back - legs alternate - blink and wiggle halfway each way
+
+			for (( step = 0; step <= distance_walk * 2; step++ ))
+			do
+				offset=$(( step <= distance_walk ? step : distance_walk * 2 - step ))
+
+				if [ $(( step % 2 )) -eq 0 ]
+				then
+					state_step="left"
+				else
+					state_step="right"
+				fi
+
+				timeline+=("${offset} up open ${state_step} 15")
+
+				if [ "${step}" -eq $(( distance_walk / 2 )) ] || [ "${step}" -eq $(( distance_walk * 3 / 2 )) ]
+				then
+					timeline+=(
+						"${offset} up shut stand 15"
+						"${offset} up open stand 15"
+						"${offset} wiggle open stand 15"
+						"${offset} up open stand 15"
+						"${offset} wiggle open stand 15"
+						"${offset} up open stand 15"
+					)
+				fi
+			done
+		;;
+
+		blink)
+			timeline=(
+				"0 up open stand 200"
+				"0 up shut stand 15"
+				"0 up open stand 150"
+				"0 up shut stand 15"
+				"0 up open stand 20"
+				"0 up shut stand 15"
+				"0 up open stand 15"
+			)
+		;;
+
+		antennae)
+			timeline=(
+				"0 up open stand 150"
+				"0 wiggle open stand 20"
+				"0 up open stand 20"
+				"0 wiggle open stand 20"
+				"0 up open stand 20"
+			)
+		;;
+
+		expression)
+			timeline=(
+				"0 up open stand 150"
+				"0 up shut stand 15"
+				"0 up open stand 100"
+				"0 wiggle open stand 20"
+				"0 up open stand 20"
+				"0 wiggle open stand 20"
+				"0 up open stand 100"
+				"0 wiggle shut stand 20"
+				"0 up shut stand 20"
+				"0 up open stand 15"
+			)
+		;;
+
+		talk)
+			motion_mouth=true
+
+			timeline=(
+				"0 up open stand $(( ${#pattern_mouth[@]} * delay_frame ))"
+			)
+		;;
+	esac
+
+	# hidden cursor - restored below the critter on ctrl+c when looping
+
+	printf '\e[?25l'
+
+	if [ "${loop_critter}" = true ]
+	then
+		trap "printf '\e[${height_frame}B\e[?25h\n'; exit 0" INT TERM
+	fi
+
+	while true
+	do
+		for entry in "${timeline[@]}"
+		do
+			read -r offset state_antenna state_eyes state_legs duration <<< "${entry}"
+
+			printf -v padding '%*s' "${offset}" ''
+
+			# mouth motion - frame held one frame delay at a time to keep talking
+
+			if [ "${motion_mouth}" = true ]
+			then
+				count_chunk=$(( duration / delay_frame ))
+
+				if [ "${count_chunk}" -lt 1 ]
+				then
+					count_chunk=1
+				fi
+
+				printf -v seconds '0.%02d' "${delay_frame}"
+			else
+				count_chunk=1
+
+				printf -v seconds '%d.%02d' "$(( duration / 100 ))" "$(( duration % 100 ))"
+			fi
+
+			for (( index_chunk = 0; index_chunk < count_chunk; index_chunk++ ))
+			do
+				shape_mouth="${shapes_mouth[0]}"
+
+				if [ "${motion_mouth}" = true ]
+				then
+					shape_mouth="${shapes_mouth[pattern_mouth[frame_mouth % ${#pattern_mouth[@]}]]}"
+
+					frame_mouth=$(( frame_mouth + 1 ))
+				fi
+
+				lines_frame=(
+					"${shapes_antenna[${state_antenna}]}"
+					'   ▄▄▄▄▄▄▄▄▄▄'
+					' ▄████████████▄'
+					"${shapes_eyes[${state_eyes}]}"
+					"${shape_mouth}"
+					' ██████████████'
+					"${shapes_legs[${state_legs}]}"
+				)
+
+				for line in "${lines_frame[@]}"
+				do
+					printf '\e[K%s%s%s%s\n' "${padding}" "${color_body}" "${line}" "${color_reset}"
+				done
+
+				# back to the top of the frame
+
+				printf '\e[%sA' "${height_frame}"
+
+				sleep "${seconds}"
+			done
+		done
+
+		if [ "${loop_critter}" != true ]
+		then
+			break
+		fi
+	done
+
+	# cursor below the critter
+
+	printf '\e[%sB\e[?25h' "${height_frame}"
+
+	frobulator.brk "${height_frame}"
+
+	return "${status}"
+}
+
 # self ─────────────────────────────────────────────────────────────────────────
 
 # declares frobulator's existence and loaded status for the current shell
@@ -7438,6 +7713,16 @@ then
 	# release option
 
 	unset option
+fi
+
+# critter: easter egg - not listed in help or readme
+
+if [ "${option}" = "critter" ]
+then
+	frobulator.critter loop "${critter_arguments[@]}"
+
+	unset option
+	unset critter_arguments
 fi
 
 # TO DO ────────────────────────────────────────────────────────────────────────

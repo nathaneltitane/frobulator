@@ -542,7 +542,7 @@ One-line status check after a command, with `frobulator.result` once at the end 
 - **`continue`** (default, also when omitted) - records the status, reports `Complete - <label>` or `Incomplete - <label>`, logs failures, and carries on.
 - **`halt`** - same on success; on failure prints the message (or `Incomplete - <label>`), logs it, prints the `frobulator.result` summary and exits the script - also when called inside a function.
 
-An optional message and detail follow the keyword; the message replaces the label on failure. Without a message the label is the calling function's name (`image_download` → `image download`), or `Operation N` at script level. Failures are written to the script's log (`~/.local/var/log/<script>-<stamp>.log`) through `frobulator.log`.
+An optional message and detail follow the keyword; the message replaces the label on failure. Without a message the label is the calling function's name (`image_download` → `image download`). At script level it is the previous command in the script (`frobulator.write` → `write`, `cd` → `cd`), or the action of `frobulator.progress` after a background command (`clone`); assignments and lines it cannot read fall back to `Operation N`. Failures are written to the script's log (`~/.local/var/log/<script>-<stamp>.log`) through `frobulator.log`.
 
 ```bash
 apk_tool_update

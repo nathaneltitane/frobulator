@@ -851,7 +851,7 @@ frobulator.install "curl"
 
 ### frobulator.require
 
-Checks whether each named *command* (not package name) is available, and if not, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when a command is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
+Checks whether each name is available as a command or as an installed package (`dpkg-query`), and if neither, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when something is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
 
 ```bash
 frobulator.require "curl"

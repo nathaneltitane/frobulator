@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-05-2023"
+update="2026-10-06-1801"
 
 version="${update}"
 
@@ -3345,7 +3345,7 @@ frobulator.trap () {
 # capture previous command status when used without arguments
 # continue (default): record and report failures - then carry on
 # halt: on failure report / log / print frobulator.result / exit the script
-# label: calling function name - else operation number - message replaces it on failure
+# label: calling function name - else previous command in the script - else operation number - message replaces it on failure
 # execute command and record checkpoint status when arguments are supplied
 # skip execution when checkpoint already completed successfully
 # use immediately after command when used without arguments
@@ -3379,6 +3379,12 @@ frobulator.complete () {
 	local checkpoint
 	local number_checkpoint
 	local line
+	local file_caller
+	local index_line
+	local name_command
+	local argument_command
+
+	local -a lines_caller=()
 
 	# initialize collections
 
@@ -3407,16 +3413,63 @@ frobulator.complete () {
 		detail="${2}"
 		status="${status_previous}"
 
-		# label: calling function name or operation number
+		# label: calling function name - else previous command in the calling script - else operation number
 
 		if [ "${FUNCNAME[1]}" != "main" ] && [ "${FUNCNAME[1]}" != "source" ]
 		then
 			label="${FUNCNAME[1]#frobulator.}"
 			label="${label//_/ }"
 		else
-			frobulator_complete_operation=$(( ${frobulator_complete_operation:-0} + 1 ))
+			# calling script - path kept at load if the script changed directory
 
-			label="Operation ${frobulator_complete_operation}"
+			file_caller="${BASH_SOURCE[1]}"
+
+			if [ ! -r "${file_caller}" ]
+			then
+				file_caller="${frobulator_file_caller}"
+			fi
+
+			if [ -r "${file_caller}" ]
+			then
+				mapfile -t lines_caller < "${file_caller}"
+
+				# line above the call - blank lines and comments skipped
+
+				index_line=$(( BASH_LINENO[0] - 2 ))
+
+				while [ "${index_line}" -ge 0 ] && [[ "${lines_caller[index_line]}" =~ ^[[:space:]]*(#.*)?$ ]]
+				do
+					index_line=$(( index_line - 1 ))
+				done
+
+				# continued command - back to its first line
+
+				while [ "${index_line}" -gt 0 ] && [[ "${lines_caller[index_line - 1]}" = *\\ ]]
+				do
+					index_line=$(( index_line - 1 ))
+				done
+
+				if [ "${index_line}" -ge 0 ]
+				then
+					read -r name_command argument_command _ <<< "${lines_caller[index_line]}"
+				fi
+			fi
+
+			# background command followed by progress - progress action names it
+
+			if [ "${name_command}" = "frobulator.progress" ]
+			then
+				name_command="${argument_command//\"/}"
+			fi
+
+			if [[ "${name_command}" =~ ^[A-Za-z_][A-Za-z0-9_.-]*$ ]]
+			then
+				label="${name_command#frobulator.}"
+			else
+				frobulator_complete_operation=$(( ${frobulator_complete_operation:-0} + 1 ))
+
+				label="Operation ${frobulator_complete_operation}"
+			fi
 		fi
 
 		frobulator_complete_statuses+=("${status}")
@@ -7688,6 +7741,13 @@ frobulator.self () {
 }
 
 frobulator.self
+
+# calling script - absolute path for frobulator.complete labels
+
+if [ -n "${BASH_SOURCE[1]}" ]
+then
+	frobulator_file_caller="$(realpath -- "${BASH_SOURCE[1]}" 2> "${sink}")"
+fi
 
 # install: default when executed
 

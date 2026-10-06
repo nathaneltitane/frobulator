@@ -780,7 +780,7 @@ frobulator.silence "apt-get update"
 
 ### frobulator.log
 
-Runs a command the same way, but redirects output to a timestamped log file instead of discarding it — `${log_directory}/${script}-${stamp}.log`, where `log_directory` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise.
+Runs a command the same way, but redirects output to a timestamped log file instead of discarding it — `${directory_log}/${script}-${stamp}.log`, where `directory_log` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise.
 
 ```bash
 frobulator.log "apt-get install curl"

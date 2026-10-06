@@ -40,14 +40,17 @@ then
 				option="install"
 			;;
 
-			--critter)
-				# easter egg - not listed in help or readme - remaining arguments go to the critter
-
+			-c|--critter)
 				option="critter"
 
 				critter_arguments=("${@:2}")
 
 				break
+
+				# note:
+				# easter egg - not listed in help or readme
+				# remaining arguments go to the critter
+
 			;;
 
 			-h|--help)

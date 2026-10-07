@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-06-1832"
+update="2026-10-06-2211"
 
 version="${update}"
 
@@ -43,7 +43,7 @@ then
 			-c|--critter)
 				option="critter"
 
-				critter_arguments=("${@:2}")
+				arguments_critter=("${@:2}")
 
 				break
 
@@ -110,11 +110,11 @@ if [ -z "${SHELL}" ]
 then
 	# bash at its usual location - empty if absent
 
-	shell_bash="$(command -v /bin/bash)"
+	command_bash="$(command -v /bin/bash)"
 
-	if [ -n "${shell_bash}" ]
+	if [ -n "${command_bash}" ]
 	then
-		SHELL="${shell_bash}"
+		SHELL="${command_bash}"
 	else
 		SHELL=$(command -v /usr/bin/bash)
 	fi
@@ -124,7 +124,7 @@ fi
 
 # detection variables are not kept in the shell
 
-unset shell_bash
+unset command_bash
 
 # provide null sink for argument / error / output silencing
 
@@ -135,14 +135,14 @@ fi
 
 # follow terminal width
 
-terminal_columns_minimum=80
+columns_terminal_minimum=80
 
-terminal_columns="${terminal_columns_minimum}"
-terminal_columns_actual="${terminal_columns_minimum}"
+columns_terminal="${columns_terminal_minimum}"
+columns_terminal_actual="${columns_terminal_minimum}"
 
 # rows printed by line markers since frobulator loaded - escalation clears them
 
-terminal_lines_printed=0
+lines_printed_terminal=0
 
 frobulator.columns () {
 
@@ -150,20 +150,20 @@ frobulator.columns () {
 
 	columns=$(tput cols 2> "${sink}")
 
-	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -gt "${terminal_columns_minimum}" ]
+	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -gt "${columns_terminal_minimum}" ]
 	then
-		terminal_columns="${columns}"
+		columns_terminal="${columns}"
 	else
-		terminal_columns="${terminal_columns_minimum}"
+		columns_terminal="${columns_terminal_minimum}"
 	fi
 
 	# real width for wrapped line counts - may be under the minimum
 
 	if [[ -t 1 ]] && [[ "${columns}" =~ ^[1-9][0-9]*$ ]]
 	then
-		terminal_columns_actual="${columns}"
+		columns_terminal_actual="${columns}"
 	else
-		terminal_columns_actual="${terminal_columns}"
+		columns_terminal_actual="${columns_terminal}"
 	fi
 }
 
@@ -184,36 +184,36 @@ fi
 
 # detect package manager: each candidate path - empty if absent
 
-package_manager_apt="$(command -v apt)"
-package_manager_dnf="$(command -v dnf)"
-package_manager_yum="$(command -v yum)"
-package_manager_pip="$(command -v pip)"
-package_manager_pipx="$(command -v pipx)"
+manager_package_apt="$(command -v apt)"
+manager_package_dnf="$(command -v dnf)"
+manager_package_yum="$(command -v yum)"
+manager_package_pip="$(command -v pip)"
+manager_package_pipx="$(command -v pipx)"
 
-if [ -n "${package_manager_apt}" ]
+if [ -n "${manager_package_apt}" ]
 then
-	package_manager="apt"
+	manager_package="apt"
 
-elif [ -n "${package_manager_dnf}" ]
+elif [ -n "${manager_package_dnf}" ]
 then
-	package_manager="dnf"
+	manager_package="dnf"
 
-elif [ -n "${package_manager_yum}" ]
+elif [ -n "${manager_package_yum}" ]
 then
-	package_manager="yum"
+	manager_package="yum"
 
-elif [ -n "${package_manager_pip}" ]
+elif [ -n "${manager_package_pip}" ]
 then
-	package_manager="pip"
+	manager_package="pip"
 
-elif [ -n "${package_manager_pipx}" ]
+elif [ -n "${manager_package_pipx}" ]
 then
-	package_manager="pipx"
+	manager_package="pipx"
 fi
 
 # detection variables are not kept in the shell
 
-unset package_manager_apt package_manager_dnf package_manager_yum package_manager_pip package_manager_pipx
+unset manager_package_apt manager_package_dnf manager_package_yum manager_package_pip manager_package_pipx
 
 # character encoding / expansion capabilities for embedded document writes
 
@@ -528,28 +528,28 @@ if [ -z "${command_tput}" ]
 then
 	# handle color digit length for ansi fallback method
 
-	for color_entry in ${colors_selection[@]}
+	for entry_color in ${colors_selection[@]}
 	do
-		IFS='=' read -r color_name color_value <<< "${color_entry}"
+		IFS='=' read -r name_color value_color <<< "${entry_color}"
 
-		if [ ${#color_value} = 3 ]
+		if [ ${#value_color} = 3 ]
 		then
-			color_value="${color_value}"
+			value_color="${value_color}"
 		fi
 
-		if [ ${#color_value} = 2 ]
+		if [ ${#value_color} = 2 ]
 		then
-			color_value="0${color_value}"
+			value_color="0${value_color}"
 		fi
 
-		if [ ${#color_value} = 1 ]
+		if [ ${#value_color} = 1 ]
 		then
-			color_value="00${color_value}"
+			value_color="00${value_color}"
 		fi
 
-		eval "${color_name}=${color_value}"
+		eval "${name_color}=${value_color}"
 
-		unset color_entry
+		unset entry_color
 	done
 
 	# ansi color attributes
@@ -593,13 +593,13 @@ then
 else
 	# handle color selections
 
-	for color_entry in ${colors_selection[@]}
+	for entry_color in ${colors_selection[@]}
 	do
-		IFS='=' read -r color_name color_value <<< "${color_entry}"
+		IFS='=' read -r name_color value_color <<< "${entry_color}"
 
-		eval "${color_name}=${color_value}"
+		eval "${name_color}=${value_color}"
 
-		unset color_entry
+		unset entry_color
 	done
 
 	# 'tput' colors and attributes
@@ -644,19 +644,19 @@ else
 
 		# full description of terminal capacity
 
-		terminal_info=$(tput longname)
+		info_terminal=$(tput longname)
 
 		# number of lines in terminal
 
-		terminal_height=$(tput lines)
+		height_terminal=$(tput lines)
 
 		# number of columns in terminal
 
-		terminal_width=$(tput cols)
+		width_terminal=$(tput cols)
 
 		# number of colors available
 
-		terminal_colors=$(tput colors)
+		colors_terminal=$(tput colors)
 
 		# save cursor position of terminal
 
@@ -795,13 +795,13 @@ unset command_tput
 
 if [[ ! -t 1 ]]
 then
-	for color_entry in ${colors_selection[@]}
+	for entry_color in ${colors_selection[@]}
 	do
-		IFS='=' read -r color_name color_value <<< "${color_entry}"
+		IFS='=' read -r name_color value_color <<< "${entry_color}"
 
-		eval "${color_name}=''"
+		eval "${name_color}=''"
 
-		unset color_entry
+		unset entry_color
 	done
 
 	reset=''
@@ -809,7 +809,7 @@ fi
 
 # no terminal: helpers as no-ops
 
-terminal_functions_list=(
+list_functions_terminal=(
 	terminal_cursor_save
 	terminal_cursor_restore
 	terminal_cursor_hide
@@ -826,16 +826,16 @@ terminal_functions_list=(
 	terminal_clear_all
 )
 
-for terminal_function in "${terminal_functions_list[@]}"
+for function_terminal in "${list_functions_terminal[@]}"
 do
-	if ! declare -F "${terminal_function}" > "${sink}"
+	if ! declare -F "${function_terminal}" > "${sink}"
 	then
-		eval "${terminal_function} () { :; }"
+		eval "${function_terminal} () { :; }"
 	fi
 done
 
-unset terminal_function
-unset terminal_functions_list
+unset function_terminal
+unset list_functions_terminal
 
 # special case markers ─────────────────────────────────────────────────────────
 
@@ -923,16 +923,16 @@ frobulator.pmt () {
 
 	# provide fallback for line character count
 
-	if [ -z "${character_count}" ]
+	if [ -z "${width_prompt}" ]
 	then
-		character_count="${terminal_columns}"
+		width_prompt="${columns_terminal}"
 	fi
 
 	# set span width
 
-	if [ ${#begin} -le "${character_count}" ]
+	if [ ${#begin} -le "${width_prompt}" ]
 	then
-		while [ ${#span} -lt "${character_count}" ]
+		while [ ${#span} -lt "${width_prompt}" ]
 		do
 			span="${span}-"
 		done
@@ -944,41 +944,41 @@ frobulator.pmt () {
 	# [     ] ────────────────────────────────────────────────────────────...───
 
 	margin_left="${marker_nul}${marker_spc}"
-	margin_left_length=${#margin_left}
+	length_margin_left=${#margin_left}
 
-	span_length=${#span}
+	length_span=${#span}
 
-	if [ ${span_length} -le 0 ]
+	if [ ${length_span} -le 0 ]
 	then
 		span=${span}
 	else
-		span=${span::-${margin_left_length}}
+		span=${span::-${length_margin_left}}
 	fi
 
 	# set span character default:
 	# do not use '\' - reserved for BASH esacpe sequences
 
-	span_character="─"
+	character_span="─"
 
 	# 3 arguments - replace span character with argument 3
 
 	if [ $# -eq 3 ]
 	then
-		span_character="${3}"
-		span_character_length=${#span_character}
+		character_span="${3}"
+		length_character_span=${#character_span}
 
 		# if span character length greater than 2:
 		# compensate by dividing to achieve 80 characters total span
 
-		if [ ${span_character_length} -ge 2 ]
+		if [ ${length_character_span} -ge 2 ]
 		then
-			character_count=$(( ${character_count} / ${span_character_length} ))
+			width_prompt=$(( ${width_prompt} / ${length_character_span} ))
 
-			span_length=${character_count}
+			length_span=${width_prompt}
 		fi
 	fi
 
-	span_length=${#span}
+	length_span=${#span}
 
 	# 2+ arguments:
 	# append space to 'begin' value
@@ -989,13 +989,13 @@ frobulator.pmt () {
 		begin="${begin}${marker_spc}"
 		end="${marker_spc}${end}"
 
-		begin_length=${#begin}
-		end_length=${#end}
+		length_begin=${#begin}
+		length_end=${#end}
 
-		end_open=${end:0:1}
-		end_close=${end: -1:1}
+		character_end_open=${end:0:1}
+		character_end_close=${end: -1:1}
 
-		marker_elp_length=${#marker_elp}
+		length_marker_elp=${#marker_elp}
 
 		# adjust for longer than usual arguments:
 		# truncate end with ellipsis
@@ -1003,7 +1003,7 @@ frobulator.pmt () {
 		# formatting -  utf bracket styling
 		# preserve second argument brackets and padding when present
 
-		brackets_open=(
+		list_brackets_open=(
 			'['
 			'('
 			'{'
@@ -1023,7 +1023,7 @@ frobulator.pmt () {
 			'⦃'
 		)
 
-		brackets_close=(
+		list_brackets_close=(
 			']'
 			')'
 			'}'
@@ -1043,14 +1043,14 @@ frobulator.pmt () {
 			'⦄'
 		)
 
-		for bracket_index in "${!brackets_open[@]}"
+		for index_bracket in "${!list_brackets_open[@]}"
 		do
-			if [ "${end_open}" = "${brackets_open[${bracket_index}]}"   ] ||
-			   [ "${end_close}" = "${brackets_close[${bracket_index}]}" ]
+			if [ "${character_end_open}" = "${list_brackets_open[${index_bracket}]}"   ] ||
+			   [ "${character_end_close}" = "${list_brackets_close[${index_bracket}]}" ]
 			then
 				# include last string digit for recognition
 
-				end_end=${end: -$marker_elp_length}
+				segment_end_last=${end: -$length_marker_elp}
 
 				break
 			fi
@@ -1058,43 +1058,43 @@ frobulator.pmt () {
 
 		# preserve span character at minimum of 2 characters
 
-		span_limter=$(( 6 + 2 ))
+		limit_span=$(( 6 + 2 ))
 
-		end_limit=$(( span_length - begin_length - span_limter ))
+		limit_end=$(( length_span - length_begin - limit_span ))
 
-		if [ "${end_limit}" -gt 0 ] && [ "${end_length}" -gt "${end_limit}" ]
+		if [ "${limit_end}" -gt 0 ] && [ "${length_end}" -gt "${limit_end}" ]
 		then
 			# keep hint tail intact: [ 'name' // value ] truncates the name only
 			# closing quote of the name stays with the tail
 
-			unset end_tail
+			unset segment_end_tail
 
 			if [[ "${end}" == *"${marker_spc}${marker_hnt}${marker_spc}"* ]]
 			then
-				end_tail="${marker_spc}${marker_hnt}${marker_spc}${end##*${marker_spc}${marker_hnt}${marker_spc}}"
-				end_head="${end%${end_tail}}"
+				segment_end_tail="${marker_spc}${marker_hnt}${marker_spc}${end##*${marker_spc}${marker_hnt}${marker_spc}}"
+				segment_end_head="${end%${segment_end_tail}}"
 
-				if [[ "${end_head: -1:1}" = [\'\"] ]]
+				if [[ "${segment_end_head: -1:1}" = [\'\"] ]]
 				then
-					end_tail="${end_head: -1:1}${end_tail}"
-					end_head="${end_head:0:-1}"
+					segment_end_tail="${segment_end_head: -1:1}${segment_end_tail}"
+					segment_end_head="${segment_end_head:0:-1}"
 				fi
 
-				end_head_limit=$(( end_limit + ${#end_end} - ${#end_tail} ))
+				limit_segment_end_head=$(( limit_end + ${#segment_end_last} - ${#segment_end_tail} ))
 			fi
 
-			if [ -n "${end_tail}" ] && [ "${end_head_limit}" -gt 4 ]
+			if [ -n "${segment_end_tail}" ] && [ "${limit_segment_end_head}" -gt 4 ]
 			then
-				if [ "${#end_head}" -gt "${end_head_limit}" ]
+				if [ "${#segment_end_head}" -gt "${limit_segment_end_head}" ]
 				then
-					end="${end_head:0:${end_head_limit}}${marker_elp}${end_tail}"
+					end="${segment_end_head:0:${limit_segment_end_head}}${marker_elp}${segment_end_tail}"
 				fi
 			else
-				end_start=${end:0:${end_limit}}
+				segment_end_first=${end:0:${limit_end}}
 
 				# append ellipsis marker to end of truncation
 
-				end="${end_start}${marker_elp}${end_end}"
+				end="${segment_end_first}${marker_elp}${segment_end_last}"
 			fi
 		fi
 
@@ -1102,8 +1102,8 @@ frobulator.pmt () {
 
 	# define parsing calculation lengths
 
-	begin_length=${#begin}
-	end_length=${#end}
+	length_begin=${#begin}
+	length_end=${#end}
 
 	# 74+ characters per string:
 	# fold string using word detection at limit
@@ -1111,13 +1111,13 @@ frobulator.pmt () {
 	# indent second line onward (6 spaces) to match line marker (margin_left)
 	# detect newline character and indent onward to match line marker spacing
 
-	fold_count=$(( "${character_count}" - "${margin_left_length}" ))
+	count_fold=$(( "${width_prompt}" - "${length_margin_left}" ))
 
-	if [ "${begin_length}" -ge "${fold_count}" ]
+	if [ "${length_begin}" -ge "${count_fold}" ]
 	then
 		begin=$(
 				echo "${begin}"										|
-					fold -s -w "${fold_count}"						|
+					fold -s -w "${count_fold}"						|
 					sed 											\
 						-e '2,$'"s/^/${marker_idt}${marker_spc}/g"	|
 					sed 											\
@@ -1127,7 +1127,7 @@ frobulator.pmt () {
 
 	# substitute span character
 
-	span="${span//-/$span_character}"
+	span="${span//-/$character_span}"
 
 	# print first argument:
 	# remove newline for continuous string arguments
@@ -1137,18 +1137,18 @@ frobulator.pmt () {
 	# print other arguments as fixed width prompt if present:
 	# calculate span width - remove 6 characters for prompt header
 
-	span_count=$(( span_length - begin_length - end_length ))
+	count_span=$(( length_span - length_begin - length_end ))
 
-	if [ "${span_count}" -lt 0 ]
+	if [ "${count_span}" -lt 0 ]
 	then
-		span_count=0
+		count_span=0
 	fi
 
 	# set new padding width
 
- 	if [ ${begin_length} -lt "${character_count}" ]
+ 	if [ ${length_begin} -lt "${width_prompt}" ]
  	then
- 		span=${span:0:$span_count}
+ 		span=${span:0:$count_span}
  	else
  		span=""
  	fi
@@ -1189,8 +1189,8 @@ frobulator.pmt () {
 	unset begin
 	unset end
 	unset span
-	unset character_count
-	unset bracket_index
+	unset width_prompt
+	unset index_bracket
 }
 
 # line break ───────────────────────────────────────────────────────────────────
@@ -1211,13 +1211,13 @@ frobulator.brk () {
 	if [ -z "${rows_line}" ]
 	then
 		length_line=$(( ${#marker_nul} + ${#marker_spc} + ${#prompt} ))
-		rows_line=$(( ( length_line + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+		rows_line=$(( ( length_line + columns_terminal_actual - 1 ) / columns_terminal_actual ))
 	fi
 
 	echo
 
-	marker_spaced="true"
-	terminal_lines_printed=$(( terminal_lines_printed + rows_line + 1 ))
+	spaced_marker="true"
+	lines_printed_terminal=$(( lines_printed_terminal + rows_line + 1 ))
 }
 
 # highlights ───────────────────────────────────────────────────────────────────
@@ -1490,11 +1490,11 @@ frobulator.nil () {
 
 	echo -e "${white}${marker_inf}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${white}")
+	entry_color=("${white}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1511,11 +1511,11 @@ frobulator.inf () {
 
 	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${blue}")
+	entry_color=("${blue}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1532,11 +1532,11 @@ frobulator.wrn () {
 
 	echo -e "${orange}${marker_wrn}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${orange}")
+	entry_color=("${orange}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1553,11 +1553,11 @@ frobulator.msg () {
 
 	echo -e "${navy}${marker_msg}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${navy}")
+	entry_color=("${navy}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1574,11 +1574,11 @@ frobulator.add () {
 
 	echo -e "${lime}${marker_add}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${lime}")
+	entry_color=("${lime}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1595,11 +1595,11 @@ frobulator.rem () {
 
 	echo -e "${crimson}${marker_rem}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${crimson}")
+	entry_color=("${crimson}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1616,11 +1616,11 @@ frobulator.ret () {
 
 	echo -e "${aqua}${marker_ret}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${aqua}")
+	entry_color=("${aqua}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1637,11 +1637,11 @@ frobulator.rel () {
 
 	echo -e "${teal}${marker_rel}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${teal}")
+	entry_color=("${teal}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1658,11 +1658,11 @@ frobulator.fwd () {
 
 	echo -e "${silver}${marker_fwd}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${silver}")
+	entry_color=("${silver}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1679,11 +1679,11 @@ frobulator.rev () {
 
 	echo -e "${silver}${marker_rev}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${silver}")
+	entry_color=("${silver}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1700,11 +1700,11 @@ frobulator.stp () {
 
 	echo -e "${grey}${marker_stp}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${grey}")
+	entry_color=("${grey}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1721,11 +1721,11 @@ frobulator.dwl () {
 
 	echo -e "${magenta}${marker_bot}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${magenta}")
+	entry_color=("${magenta}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1742,11 +1742,11 @@ frobulator.upl () {
 
 	echo -e "${purple}${marker_top}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${purple}")
+	entry_color=("${purple}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1763,11 +1763,11 @@ frobulator.lnk () {
 
 	echo -e "${yellow}${marker_stp}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${yellow}")
+	entry_color=("${yellow}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1784,11 +1784,11 @@ frobulator.scs () {
 
 	echo -e "${green}${marker_yes}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${green}")
+	entry_color=("${green}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1805,11 +1805,11 @@ frobulator.err () {
 
 	echo -e "${red}${marker_not}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${red}")
+	entry_color=("${red}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1826,11 +1826,11 @@ frobulator.ins () {
 
 	echo -e "${teal}${marker_ipt}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${teal}")
+	entry_color=("${teal}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1847,11 +1847,11 @@ frobulator.cpt () {
 
 	echo -e "${magenta}${marker_cpt}${marker_spc}${prompt}${reset}"
 
-	color_entry=("${magenta}")
+	entry_color=("${magenta}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1868,11 +1868,11 @@ frobulator.url () {
 
 	echo -e "${silver}${marker_url}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color_entry=("${grey}")
+	entry_color=("${grey}")
 
 	frobulator.brk
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1898,11 +1898,11 @@ frobulator.qst () {
 
 	echo -n -e "${fuschia}${marker_qst}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color_entry=("${fuschia}")
+	entry_color=("${fuschia}")
 
-	unset marker_spaced
+	unset spaced_marker
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1919,11 +1919,11 @@ frobulator.ipt () {
 
 	echo -n -e "${pink}${marker_add}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color_entry=("${pink}")
+	entry_color=("${pink}")
 
-	unset marker_spaced
+	unset spaced_marker
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1940,11 +1940,11 @@ frobulator.usr () {
 
 	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
 
-	color_entry=("${grey}")
+	entry_color=("${grey}")
 
-	unset marker_spaced
+	unset spaced_marker
 
-	# color_entry kept - frobulator.nul continues in this color
+	# entry_color kept - frobulator.nul continues in this color
 
 	return "${status}"
 }
@@ -1961,22 +1961,22 @@ frobulator.nul () {
 
 	prompt="${prompt_string[@]}"
 
-	color_entry=${color_entry[@]}
+	entry_color=${entry_color[@]}
 
 	# rejoin the line above
 
-	if [ "${marker_spaced}" = "true" ]
+	if [ "${spaced_marker}" = "true" ]
 	then
 		terminal_cursor_up 1
 
-		terminal_lines_printed=$(( terminal_lines_printed - 1 ))
+		lines_printed_terminal=$(( lines_printed_terminal - 1 ))
 	fi
 
-	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+	echo -e "${entry_color}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	frobulator.brk
 
-	unset color_entry
+	unset entry_color
 
 	return "${status}"
 }
@@ -1993,18 +1993,18 @@ frobulator.ind () {
 
 	prompt="${prompt_string[@]}"
 
-	unset color_entry
+	unset entry_color
 
 	# rejoin the line above
 
-	if [ "${marker_spaced}" = "true" ]
+	if [ "${spaced_marker}" = "true" ]
 	then
 		terminal_cursor_up 1
 
-		terminal_lines_printed=$(( terminal_lines_printed - 1 ))
+		lines_printed_terminal=$(( lines_printed_terminal - 1 ))
 	fi
 
-	echo -e "${color_entry}${marker_nul}${marker_spc}${prompt}${reset}"
+	echo -e "${entry_color}${marker_nul}${marker_spc}${prompt}${reset}"
 
 	frobulator.brk
 
@@ -2116,7 +2116,7 @@ frobulator.sep () {
 
 	frobulator.brk
 
-	unset color_entry
+	unset entry_color
 
 	return "${status}"
 }
@@ -2155,7 +2155,7 @@ frobulator.sep () {
 frobulator.ntf () {
 
 	local lines_notice=0
-	local count_lines_before="${terminal_lines_printed}"
+	local count_lines_before="${lines_printed_terminal}"
 
 	local rows_notice_line
 	local rows_notice
@@ -2237,7 +2237,7 @@ frobulator.ntf () {
 
 			frobulator."${type_prompt}" > ${sink}
 
-			color_title=${color_entry[@]}
+			color_title=${entry_color[@]}
 
 		else
 			break
@@ -2277,7 +2277,7 @@ frobulator.ntf () {
 
 				frobulator."${type_prompt}" > ${sink}
 
-				color_message=${color_entry[@]}
+				color_message=${entry_color[@]}
 			else
 				break
 			fi
@@ -2288,11 +2288,11 @@ frobulator.ntf () {
 
 	# columns
 
-	if [ -z "${terminal_columns}" ]
+	if [ -z "${columns_terminal}" ]
 	then
 		count_character=80
 	else
-		count_character="${terminal_columns}"
+		count_character="${columns_terminal}"
 	fi
 
 	# default frame style
@@ -2521,12 +2521,12 @@ frobulator.ntf () {
 
 	# notice rows - each frame line wrapped at real terminal width
 
-	rows_notice_line=$(( ( ${#frame_top} + terminal_columns_actual - 1 ) / terminal_columns_actual ))
+	rows_notice_line=$(( ( ${#frame_top} + columns_terminal_actual - 1 ) / columns_terminal_actual ))
 	rows_notice=$(( lines_notice * rows_notice_line ))
 
 	# silenced color lookups print no rows
 
-	terminal_lines_printed="${count_lines_before}"
+	lines_printed_terminal="${count_lines_before}"
 
 	frobulator.brk "${rows_notice}"
 
@@ -2659,14 +2659,14 @@ frobulator.type () {
 	interval="${1}"
 	string="${2}"
 
-	string_length=${#string}
+	length_string=${#string}
 
 	if [[ ! "${interval}" =~ ^[1-9][0-9]*$ ]]
 	then
 		interval=2
 	fi
 
-	for (( characters=0 ; characters<=${string_length} ; characters++ ))
+	for (( characters=0 ; characters<=${length_string} ; characters++ ))
 	do
 		# random delay of 1 to interval tenths of a second
 
@@ -2797,7 +2797,7 @@ frobulator.action () {
 	local detail_progress
 
 	local -a detail=()
-	local -a color_list=(
+	local -a list_colors=(
 
 		"${magenta}"
 		"${purple}"
@@ -2834,7 +2834,7 @@ frobulator.action () {
 
 	# select random action color
 
-	color="${color_list[RANDOM % ${#color_list[@]}]}"
+	color="${list_colors[RANDOM % ${#list_colors[@]}]}"
 
 	# conjugate action
 
@@ -2879,8 +2879,8 @@ frobulator.action () {
 
 	frobulator.track
 
-	progress_prompt="${prompt_string[*]}"
-	progress_color="${color}"
+	prompt_progress="${prompt_string[*]}"
+	color_progress="${color}"
 
 	return "${status}"
 
@@ -2975,7 +2975,7 @@ frobulator.progress () {
 	do
 		frame_ticker="${ticker:instance++%${#ticker}:1}"
 
-		echo -n -e "\r${before}${progress_color} \b${frame_ticker}${reset}${after}${marker_spc}${progress_prompt}\c"
+		echo -n -e "\r${before}${color_progress} \b${frame_ticker}${reset}${after}${marker_spc}${prompt_progress}\c"
 
 		sleep "${seconds}"
 	done
@@ -2987,9 +2987,9 @@ frobulator.progress () {
 	echo
 	echo
 
-	unset color_entry
-	unset progress_prompt
-	unset progress_color
+	unset entry_color
+	unset prompt_progress
+	unset color_progress
 
 	return "${status}"
 }
@@ -3044,11 +3044,11 @@ frobulator.bar () {
 
 	# columns
 
-	if [ -z "${terminal_columns}" ]
+	if [ -z "${columns_terminal}" ]
 	then
 		count_character=80
 	else
-		count_character="${terminal_columns}"
+		count_character="${columns_terminal}"
 	fi
 
 	# reserved output width
@@ -3263,11 +3263,11 @@ frobulator.trap () {
 	do
 		if [ -n "${directory_trap}" ] && [ "${directory_trap}" != "/" ]
 		then
-			frobulator_trap_directories+=("${directory_trap}")
+			frobulator_directories_trap+=("${directory_trap}")
 		fi
 	done
 
-	for directory_trap in "${frobulator_trap_directories[@]}"
+	for directory_trap in "${frobulator_directories_trap[@]}"
 	do
 		command_trap+=" $(printf '%q' "${directory_trap}")"
 	done
@@ -3391,11 +3391,11 @@ frobulator.complete () {
 
 	# initialize collections
 
-	if [ -z "${frobulator_complete_initialized}" ]
+	if [ -z "${frobulator_initialized_complete}" ]
 	then
-		frobulator_complete_statuses=()
-		frobulator_complete_checkpoints=()
-		frobulator_complete_initialized=true
+		frobulator_statuses_complete=()
+		frobulator_checkpoints_complete=()
+		frobulator_initialized_complete=true
 	fi
 
 	# mode: continue (default) or halt
@@ -3481,14 +3481,14 @@ frobulator.complete () {
 			then
 				label="${name_command#frobulator.}"
 			else
-				frobulator_complete_operation=$(( ${frobulator_complete_operation:-0} + 1 ))
+				frobulator_operation_complete=$(( ${frobulator_operation_complete:-0} + 1 ))
 
-				label="Operation ${frobulator_complete_operation}"
+				label="Operation ${frobulator_operation_complete}"
 			fi
 		fi
 
-		frobulator_complete_statuses+=("${status}")
-		frobulator_complete_checkpoints+=("${message:-${label}}")
+		frobulator_statuses_complete+=("${status}")
+		frobulator_checkpoints_complete+=("${message:-${label}}")
 
 		if [ "${status}" -eq 0 ]
 		then
@@ -3531,8 +3531,8 @@ frobulator.complete () {
 
 	if [ -z "${path}" ]
 	then
-		frobulator_complete_statuses+=("1")
-		frobulator_complete_checkpoints+=("undefined checkpoint path")
+		frobulator_statuses_complete+=("1")
+		frobulator_checkpoints_complete+=("undefined checkpoint path")
 
 		frobulator.err "Checkpoint path not defined"
 
@@ -3543,8 +3543,8 @@ frobulator.complete () {
 
 	if [ -z "${checkpoint}" ]
 	then
-		frobulator_complete_statuses+=("1")
-		frobulator_complete_checkpoints+=("undefined checkpoint")
+		frobulator_statuses_complete+=("1")
+		frobulator_checkpoints_complete+=("undefined checkpoint")
 
 		frobulator.err "Checkpoint not defined"
 
@@ -3555,8 +3555,8 @@ frobulator.complete () {
 
 	if [ "${#}" -eq 0 ]
 	then
-		frobulator_complete_statuses+=("1")
-		frobulator_complete_checkpoints+=("${checkpoint}")
+		frobulator_statuses_complete+=("1")
+		frobulator_checkpoints_complete+=("${checkpoint}")
 
 		frobulator.err "Command not defined" "[ ${status} ] [ ${checkpoint} ]"
 
@@ -3567,8 +3567,8 @@ frobulator.complete () {
 
 	if [ -f "${path}/${checkpoint}" ]
 	then
-		frobulator_complete_statuses+=("0")
-		frobulator_complete_checkpoints+=("${checkpoint}")
+		frobulator_statuses_complete+=("0")
+		frobulator_checkpoints_complete+=("${checkpoint}")
 
 		frobulator.cpt "Complete" "[ ${status} ] [ ${checkpoint} ]"
 
@@ -3583,8 +3583,8 @@ frobulator.complete () {
 
 	# collect status
 
-	frobulator_complete_statuses+=("${status}")
-	frobulator_complete_checkpoints+=("${checkpoint}")
+	frobulator_statuses_complete+=("${status}")
+	frobulator_checkpoints_complete+=("${checkpoint}")
 
 	# manage checkpoint
 
@@ -3596,7 +3596,7 @@ frobulator.complete () {
 		then
 			status=1
 
-			frobulator_complete_statuses[-1]="${status}"
+			frobulator_statuses_complete[-1]="${status}"
 
 			frobulator.err "Checkpoint creation failed" "[ ${status} ] [ ${checkpoint} ]"
 		else
@@ -3611,7 +3611,7 @@ frobulator.complete () {
 			then
 				status=1
 
-				frobulator_complete_statuses[-1]="${status}"
+				frobulator_statuses_complete[-1]="${status}"
 			fi
 		fi
 
@@ -3654,11 +3654,11 @@ frobulator.halt () {
 
 	# record status like frobulator.complete
 
-	if [ -z "${frobulator_complete_initialized}" ]
+	if [ -z "${frobulator_initialized_complete}" ]
 	then
-		frobulator_complete_statuses=()
-		frobulator_complete_checkpoints=()
-		frobulator_complete_initialized=true
+		frobulator_statuses_complete=()
+		frobulator_checkpoints_complete=()
+		frobulator_initialized_complete=true
 	fi
 
 	if [ "${status}" -eq 0 ]
@@ -3679,8 +3679,8 @@ frobulator.halt () {
 		checkpoint="Operation"
 	fi
 
-	frobulator_complete_statuses+=("${status}")
-	frobulator_complete_checkpoints+=("${checkpoint}")
+	frobulator_statuses_complete+=("${status}")
+	frobulator_checkpoints_complete+=("${checkpoint}")
 
 	if [ -n "${1}" ]
 	then
@@ -3717,11 +3717,11 @@ frobulator.fail () {
 
 	# record status like frobulator.complete
 
-	if [ -z "${frobulator_complete_initialized}" ]
+	if [ -z "${frobulator_initialized_complete}" ]
 	then
-		frobulator_complete_statuses=()
-		frobulator_complete_checkpoints=()
-		frobulator_complete_initialized=true
+		frobulator_statuses_complete=()
+		frobulator_checkpoints_complete=()
+		frobulator_initialized_complete=true
 	fi
 
 	if [ "${status}" -eq 0 ]
@@ -3742,8 +3742,8 @@ frobulator.fail () {
 		checkpoint="Operation"
 	fi
 
-	frobulator_complete_statuses+=("${status}")
-	frobulator_complete_checkpoints+=("${checkpoint}")
+	frobulator_statuses_complete+=("${status}")
+	frobulator_checkpoints_complete+=("${checkpoint}")
 
 	if [ -n "${1}" ]
 	then
@@ -3807,7 +3807,7 @@ frobulator.result () {
 
 	# evaluate statuses
 
-	for status_complete in "${frobulator_complete_statuses[@]}"
+	for status_complete in "${frobulator_statuses_complete[@]}"
 	do
 		if [ "${status_complete}" -ne 0 ]
 		then
@@ -3819,8 +3819,8 @@ frobulator.result () {
 
 	# clear collections
 
-	frobulator_complete_statuses=()
-	frobulator_complete_checkpoints=()
+	frobulator_statuses_complete=()
+	frobulator_checkpoints_complete=()
 
 	# report result
 
@@ -3842,7 +3842,7 @@ frobulator.result () {
 		frobulator.scs "Execution success" "[ ${instance} ]"
 	fi
 
-	unset frobulator_complete_operation
+	unset frobulator_operation_complete
 
 	return "${status}"
 
@@ -4889,7 +4889,7 @@ frobulator.image () {
 	then
 		image="${1}"
 
-		width=${terminal_columns}
+		width=${columns_terminal}
 
 	elif [ "${#}" -eq 2 ]
 	then
@@ -4909,7 +4909,7 @@ frobulator.image () {
 
 	if [ -z "${width}" ]
 	then
-		width=${terminal_columns}
+		width=${columns_terminal}
 	fi
 
 	if [ -t 0 ]
@@ -5122,7 +5122,7 @@ frobulator.http () {
 
 	if [ "${#}" -eq 1 ]
 	then
-		url_status="$(
+		status_url="$(
 			curl						\
 				--silent				\
 				--output "${sink}"		\
@@ -5134,7 +5134,7 @@ frobulator.http () {
 
 	elif [ "${#}" -eq 2 ]
 	then
-		url_status="$(
+		status_url="$(
 			curl							\
 				--silent					\
 				--output "${sink}"			\
@@ -5168,35 +5168,35 @@ frobulator.status () {
 
 	frobulator.fwd "Validating URL${marker_elp}"
 
-	if [[ "${url_status}" = [1][0-9][0-9] ]]
+	if [[ "${status_url}" = [1][0-9][0-9] ]]
 	then
-		url_status_label="information"
+		label_status_url="information"
 
-		frobulator.inf "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.inf "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		proceed=1
 
-	elif [[ "${url_status}" = [2][0-9][0-9] ]]
+	elif [[ "${status_url}" = [2][0-9][0-9] ]]
 	then
-		url_status_label="success"
+		label_status_url="success"
 
-		frobulator.scs "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.scs "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		proceed=1
 
-	elif [[ "${url_status}" = [3][0-9][0-9] ]]
+	elif [[ "${status_url}" = [3][0-9][0-9] ]]
 	then
-		url_status_label="redirect"
+		label_status_url="redirect"
 
-		frobulator.wrn "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.wrn "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		proceed=1
 
-	elif [[ "${url_status}" = [4][0-9][0-9] ]]
+	elif [[ "${status_url}" = [4][0-9][0-9] ]]
 	then
-		url_status_label="error"
+		label_status_url="error"
 
-		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.err "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		reason="client"
 
@@ -5204,11 +5204,11 @@ frobulator.status () {
 
 		status=1
 
-	elif [[ "${url_status}" = [5][0-9][0-9] ]]
+	elif [[ "${status_url}" = [5][0-9][0-9] ]]
 	then
-		url_status_label="error"
+		label_status_url="error"
 
-		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.err "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		reason="server"
 
@@ -5216,9 +5216,9 @@ frobulator.status () {
 
 		status=1
 	else
-		url_status_label="unknown"
+		label_status_url="unknown"
 
-		frobulator.err "Download status" "[ ${url_status_label}${marker_spc}${marker_hnt}${marker_spc}${url_status} ]"
+		frobulator.err "Download status" "[ ${label_status_url}${marker_spc}${marker_hnt}${marker_spc}${status_url} ]"
 
 		reason="response"
 
@@ -5662,15 +5662,15 @@ frobulator.password () {
 	local mask_character="•"
 	local mask=""
 
-	local input_character
+	local character_input
 
 	password=""
 
-	while read -p "${mask}" -r -s -n 1 input_character
+	while read -p "${mask}" -r -s -n 1 character_input
 	do
 		# enter / accept password
 
-		if [[ "${input_character}" == $'\0' ]]
+		if [[ "${character_input}" == $'\0' ]]
 		then
 			# break on 'NUL'
 
@@ -5679,7 +5679,7 @@ frobulator.password () {
 
 		# handle backspace / delete character input
 
-		if [[ "${input_character}" == $'\177' ]]
+		if [[ "${character_input}" == $'\177' ]]
 		then
 			# remove input on 'BACKSPACE'/'DEL'
 
@@ -5698,7 +5698,7 @@ frobulator.password () {
 
 			# append user input and form password
 
-			password+="${input_character}"
+			password+="${character_input}"
 		fi
 	done
 
@@ -6707,7 +6707,7 @@ frobulator.assess () {
 
 				# question line with answer + blank line
 
-				terminal_lines_printed=$(( terminal_lines_printed + 2 ))
+				lines_printed_terminal=$(( lines_printed_terminal + 2 ))
 
 				if [[ "${reply}" = [yY] ]] || [[ "${reply}" = [yY][eE][sS] ]]
 				then
@@ -6804,15 +6804,15 @@ frobulator.escalate () {
 	then
 		# clear restarted header and sudo password prompt - count passed by the user run
 
-		if [ -n "${escalation_erase_lines}" ]
+		if [ -n "${lines_erase_escalation}" ]
 		then
-			frobulator.erase "${escalation_erase_lines}"
+			frobulator.erase "${lines_erase_escalation}"
 
 			# header blank line - erased with the header
 
 			echo
 
-			unset escalation_erase_lines
+			unset lines_erase_escalation
 		fi
 
 		frobulator.fwd "Privilege escalation validated" "[ user${marker_spc}${marker_hnt}${marker_spc}'${user_current}' ]"
@@ -6960,7 +6960,7 @@ frobulator.escalate () {
 
 	# clear bootstrap and escalation messages - restarted script prints its own header
 
-	count_erase_first=$(( count_lines_header + terminal_lines_printed ))
+	count_erase_first=$(( count_lines_header + lines_printed_terminal ))
 
 	frobulator.erase "${count_erase_first}"
 
@@ -6993,7 +6993,7 @@ frobulator.escalate () {
 
 	# restart as superuser with user home
 
-	exec sudo env HOME="${HOME}" escalation_erase_lines="${count_erase}" "${SHELL}" "${self}" "${list_self_arguments[@]}"
+	exec sudo env HOME="${HOME}" lines_erase_escalation="${count_erase}" "${SHELL}" "${self}" "${list_self_arguments[@]}"
 
 	frobulator.track
 
@@ -7117,22 +7117,22 @@ frobulator.service () {
 		then
 			frobulator.wrn "Service running" " [ ${service} ]"
 
-			service_actions_list=(
+			list_actions_service=(
 				disable
 				stop
 			)
 		fi
 
-		service_actions_list+=(
+		list_actions_service+=(
 			enable
 			start
 		)
 
-		for service_action in "${service_actions_list[@]}"
+		for action_service in "${list_actions_service[@]}"
 		do
-			systemctl "${scope_system_control[@]}" "${service_action}" "${service}" > "${sink}" 2>&1 &
+			systemctl "${scope_system_control[@]}" "${action_service}" "${service}" > "${sink}" 2>&1 &
 
-			frobulator.process "Service ${service_action}" "[ ${service} ]"
+			frobulator.process "Service ${action_service}" "[ ${service} ]"
 
 			sleep 1
 
@@ -7143,7 +7143,7 @@ frobulator.service () {
 			sleep 1
 		done
 
-		service_actions_list=()
+		list_actions_service=()
 
 		# status lines if the service is running or inactive - empty otherwise
 
@@ -7505,7 +7505,7 @@ frobulator.critter () {
 	local animation="walk"
 	local motion_mouth=false
 	local loop_critter=false
-	local color_name="orange"
+	local name_color="orange"
 	local delay_frame=15
 	local height_frame=7
 	local distance_walk=30
@@ -7572,7 +7572,7 @@ frobulator.critter () {
 			;;
 
 			white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
-				color_name="${argument}"
+				name_color="${argument}"
 			;;
 
 			*)
@@ -7589,7 +7589,7 @@ frobulator.critter () {
 
 	if [ -t 1 ]
 	then
-		color_body="${!color_name}"
+		color_body="${!name_color}"
 		color_reset="${reset}"
 	fi
 
@@ -7811,10 +7811,10 @@ fi
 
 if [ "${option}" = "critter" ]
 then
-	frobulator.critter loop "${critter_arguments[@]}"
+	frobulator.critter loop "${arguments_critter[@]}"
 
 	unset option
-	unset critter_arguments
+	unset arguments_critter
 fi
 
 # TO DO ────────────────────────────────────────────────────────────────────────

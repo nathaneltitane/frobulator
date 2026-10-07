@@ -211,7 +211,7 @@ frobulator.plo 1
 
 [ p ] rompt [ m ] anagement [ t ] ool:
 
-The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`terminal_columns`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style - a `[ 'name' // value ]` bracket keeps its whole ` // value ]` tail (and the closing quote), so only the name is shortened. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
+The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (`begin`, `end`, `span character`) into a line as wide as the terminal (`columns_terminal`, never below 80): pads/fills the middle span, folds `begin` with word-detection when it would overflow the line, and truncates an overlong `end` with an ellipsis while preserving its surrounding bracket style - a `[ 'name' // value ]` bracket keeps its whole ` // value ]` tail (and the closing quote), so only the name is shortened. Populates the `prompt_string` array consumed by every wrapper below rather than printing directly.
 
 ```bash
 frobulator.pmt "Downloading" "[ package.tar.gz ]"
@@ -219,7 +219,7 @@ frobulator.pmt "Downloading" "[ package.tar.gz ]"
 
 ### frobulator.brk
 
-Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (`frobulator.nul`, `frobulator.ind`) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own `echo` output. It also adds the marker line and its blank line to `terminal_lines_printed` (wrapped rows counted at the real terminal width), which `frobulator.escalate` uses to clear its output.
+Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (`frobulator.nul`, `frobulator.ind`) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own `echo` output. It also adds the marker line and its blank line to `lines_printed_terminal` (wrapped rows counted at the real terminal width), which `frobulator.escalate` uses to clear its output.
 
 ```bash
 frobulator.brk
@@ -380,10 +380,10 @@ frobulator.erase 3
 
 ### frobulator.columns
 
-Sets `terminal_columns` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), never below `terminal_columns_minimum` (default `80`), which is also used when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
+Sets `columns_terminal` - the width used by prompts, notifications, bars and images - from the terminal width (`tput cols`), never below `columns_terminal_minimum` (default `80`), which is also used when output is not a terminal. Runs on load and again on every window resize (`WINCH` trap), so new output follows the window width.
 
 ```bash
-terminal_columns_minimum=100
+columns_terminal_minimum=100
 frobulator.columns
 ```
 
@@ -483,7 +483,7 @@ frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
 
 ### frobulator.action
 
-Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, consonant doubling, `-c` → `-ck`) before appending `-ing`. Sets the `progress_prompt`/`progress_color` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
+Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, consonant doubling, `-c` → `-ck`) before appending `-ing`. Sets the `prompt_progress`/`color_progress` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
 
 ```bash
 frobulator.action "download" "[ ${file} ]"
@@ -710,7 +710,7 @@ frobulator.image "${image_file}" "80" "40"
 
 ### frobulator.http
 
-Fetches the HTTP status code for a URL into `${url_status}` — silently, via `curl --write-out`. Called with one argument it checks the URL as-is; called with two (`url`, `data`) it checks `"${url}/${data}"` following redirects. Use before `frobulator.status`.
+Fetches the HTTP status code for a URL into `${status_url}` — silently, via `curl --write-out`. Called with one argument it checks the URL as-is; called with two (`url`, `data`) it checks `"${url}/${data}"` following redirects. Use before `frobulator.status`.
 
 ```bash
 frobulator.http "https://example.com/file.tar.gz"
@@ -718,7 +718,7 @@ frobulator.http "https://example.com/file.tar.gz"
 
 ### frobulator.status
 
-Interprets `${url_status}` (set by a prior `frobulator.http` call) into a 1xx/2xx/3xx/4xx/5xx category, prints a colored status line accordingly, and sets `${proceed}` to `1` (ok to continue) or `0` (abort) plus `${reason}` (`client`/`server`/`response`) on failure.
+Interprets `${status_url}` (set by a prior `frobulator.http` call) into a 1xx/2xx/3xx/4xx/5xx category, prints a colored status line accordingly, and sets `${proceed}` to `1` (ok to continue) or `0` (abort) plus `${reason}` (`client`/`server`/`response`) on failure.
 
 ```bash
 frobulator.http "https://example.com/file.tar.gz"
@@ -950,7 +950,7 @@ frobulator.assess "${requirements[@]}"
 
 ### frobulator.escalate
 
-Relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + `terminal_lines_printed`); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.
+Relaunches the current script as root via `sudo`, preserving the original arguments (read back from the `self_arguments` array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root `USER`/`HOME` from `SUDO_USER` instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + `lines_printed_terminal`); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.
 
 ```bash
 self_arguments=("${@}")

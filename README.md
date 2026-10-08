@@ -338,10 +338,12 @@ frobulator.ltr "a" "Select source directory"
 
 ### frobulator.num
 
-Prints a numbered step marker — first argument is the number, remaining arguments are forwarded to `frobulator.pmt`.
+Prints a numbered step marker — first argument is the number, remaining arguments are forwarded to `frobulator.pmt`. An optional palette color before the number prints the number and the line in that color - e.g. green for files to add and red for files to remove, matching their `frobulator.add` / `frobulator.rem` headers.
 
 ```bash
 frobulator.num "1" "Install dependencies"
+frobulator.num lime "1" "new-track.mp3"
+frobulator.num crimson "2" "old-track.mp3"
 ```
 
 ### frobulator.sep

@@ -667,7 +667,7 @@ frobulator.delete "${temporary_directory}" "old-file.tmp"
 
 ```bash
 list=( adb fastboot )
-frobulator.delete "${path_android}" list
+frobulator.delete "${directory_android}" list
 ```
 
 ### frobulator.copy
@@ -695,7 +695,7 @@ Creates symbolic links, detecting and labeling whether each source item is a `fi
 - `frobulator.link "[source]" "[target]" "[array]"` (more than 4 total arguments) — link every item in the array, same names
 
 ```bash
-frobulator.link "${path_android_platform_tools}" "${HOME}/.local/bin" "adb"
+frobulator.link "${directory_platform_tools}" "${HOME}/.local/bin" "adb"
 ```
 
 ### frobulator.image
@@ -988,7 +988,7 @@ frobulator.service activate "${service}"
 Restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (`/root`, `/usr`, `/etc`, `/var`, `/opt`, `/boot`) are attributed to root; anything else falls back to the invoking user. Applied recursively via `chown`. Called internally by `frobulator.directory`, `frobulator.write`, `frobulator.file`, and `frobulator.link`.
 
 ```bash
-frobulator.ownership "${path_android}" "${HOME}/.local/bin/adb"
+frobulator.ownership "${directory_android}" "${HOME}/.local/bin/adb"
 ```
 
 ### frobulator.permissions

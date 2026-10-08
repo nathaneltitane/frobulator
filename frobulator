@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-06-2211"
+update="2026-10-07-2021"
 
 version="${update}"
 
@@ -2050,7 +2050,7 @@ frobulator.ltr () {
 # use to indicate numbered steps, directives or instructions
 # number prompt is inserted as line marker
 
-# usage:      frobulator.num "[number]" "[string]" "[string]" "[span character]"
+# usage:      frobulator.num ["[color]"] "[number]" "[string]" "[string]" "[span character]"
 
 # command:    frobulator.num "[number]" "[string]"
 # result:     [ n ] string
@@ -2060,11 +2060,30 @@ frobulator.ltr () {
 
 # command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
 # result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
+#
+# command:    frobulator.num lime "[number]" "[string]"
+# result:     [ n ] string - number and string in the palette color
 
 frobulator.num () {
 
+	local color_number="${teal}"
+
+	local color_prompt
+
 	before="[${marker_spc}${marker_spc}"
 	after="${marker_spc}${marker_spc}]"
+
+	# optional palette color first - number and string in that color
+
+	case "${1}"
+	in
+		white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
+			color_number="${!1}"
+			color_prompt="${!1}"
+
+			shift
+		;;
+	esac
 
 	number="${1}"
 
@@ -2074,7 +2093,7 @@ frobulator.num () {
 
 	prompt="${prompt_string[@]}"
 
-	echo -e "${before}${teal}${number}${reset}${after}${marker_spc}${prompt}"
+	echo -e "${before}${color_number}${number}${reset}${after}${marker_spc}${color_prompt}${prompt}${color_prompt:+${reset}}"
 
 	frobulator.brk
 }

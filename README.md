@@ -486,7 +486,7 @@ frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"
 
 ### frobulator.action
 
-Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, consonant doubling, `-c` → `-ck`) before appending `-ing`. Sets the `prompt_progress`/`color_progress` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
+Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. `download` → `Downloading...`, `panic` → `Panicking...`), falling back to `frobulate` when no verb is given. Handles common English suffix rules (`-ie` → `-y`, silent `-e` drop, `-ic` → `-ick`, and final consonant doubling for one-syllable verbs ending consonant-vowel-consonant plus a short list of verbs stressed on the last syllable, e.g. `strip` → `Stripping`, `submit` → `Submitting`, but `open` → `Opening`) before appending `-ing`. Sets the `prompt_progress`/`color_progress` globals consumed by `frobulator.progress`. Callable directly, but normally invoked internally.
 
 ```bash
 frobulator.action "download" "[ ${file} ]"

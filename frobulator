@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-07-2021"
+update="2026-10-08-2017"
 
 version="${update}"
 
@@ -32,7 +32,7 @@ if [[ "${self}" = "${0}" ]]
 then
 	script="$(basename -- "${self}")"
 
-	while (($#))
+	while (( $# ))
 	do
 		case "${1}"
 		in
@@ -2685,11 +2685,11 @@ frobulator.type () {
 		interval=2
 	fi
 
-	for (( characters=0 ; characters<=${length_string} ; characters++ ))
+	for (( characters = 0 ; characters <= length_string ; characters ++ ))
 	do
 		# random delay of 1 to interval tenths of a second
 
-		tenths=$(( (RANDOM % interval) + 1 ))
+		tenths=$(( ( RANDOM % interval ) + 1 ))
 
 		seconds="$(( tenths / 10 )).$(( tenths % 10 ))"
 
@@ -6885,7 +6885,7 @@ frobulator.escalate () {
 
 		# skip bootstrap header
 
-		for (( index = 0; index < ${#lines[@]}; index++ ))
+		for (( index = 0 ; index < ${#lines[@]} ; index ++ ))
 		do
 			if [[ "${lines[index]}" =~ ${pattern_marker} ]]
 			then
@@ -7619,7 +7619,7 @@ frobulator.critter () {
 		walk)
 			# right then back - legs alternate - blink and wiggle halfway each way
 
-			for (( step = 0; step <= distance_walk * 2; step++ ))
+			for (( step = 0 ; step <= distance_walk * 2 ; step ++ ))
 			do
 				offset=$(( step <= distance_walk ? step : distance_walk * 2 - step ))
 
@@ -7727,7 +7727,7 @@ frobulator.critter () {
 				printf -v seconds '%d.%02d' "$(( duration / 100 ))" "$(( duration % 100 ))"
 			fi
 
-			for (( index_chunk = 0; index_chunk < count_chunk; index_chunk++ ))
+			for (( index_chunk = 0 ; index_chunk < count_chunk ; index_chunk ++ ))
 			do
 				shape_mouth="${shapes_mouth[0]}"
 

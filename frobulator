@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-08-2017"
+update="2026-10-08-2113"
 
 version="${update}"
 
@@ -528,9 +528,9 @@ if [ -z "${command_tput}" ]
 then
 	# handle color digit length for ansi fallback method
 
-	for entry_color in ${colors_selection[@]}
+	for entry_selection in ${colors_selection[@]}
 	do
-		IFS='=' read -r name_color value_color <<< "${entry_color}"
+		IFS='=' read -r name_color value_color <<< "${entry_selection}"
 
 		if [ ${#value_color} = 3 ]
 		then
@@ -549,7 +549,7 @@ then
 
 		eval "${name_color}=${value_color}"
 
-		unset entry_color
+		unset entry_selection
 	done
 
 	# ansi color attributes
@@ -593,13 +593,13 @@ then
 else
 	# handle color selections
 
-	for entry_color in ${colors_selection[@]}
+	for entry_selection in ${colors_selection[@]}
 	do
-		IFS='=' read -r name_color value_color <<< "${entry_color}"
+		IFS='=' read -r name_color value_color <<< "${entry_selection}"
 
 		eval "${name_color}=${value_color}"
 
-		unset entry_color
+		unset entry_selection
 	done
 
 	# 'tput' colors and attributes
@@ -795,13 +795,13 @@ unset command_tput
 
 if [[ ! -t 1 ]]
 then
-	for entry_color in ${colors_selection[@]}
+	for entry_selection in ${colors_selection[@]}
 	do
-		IFS='=' read -r name_color value_color <<< "${entry_color}"
+		IFS='=' read -r name_color value_color <<< "${entry_selection}"
 
 		eval "${name_color}=''"
 
-		unset entry_color
+		unset entry_selection
 	done
 
 	reset=''
@@ -911,6 +911,37 @@ frobulator.plo () {
 # adds line folding with word detection for strings wider than terminal
 
 frobulator.pmt () {
+
+	local begin
+	local end
+	local span
+	local width_prompt
+	local margin_left
+	local length_margin_left
+	local length_span
+	local character_span
+	local length_character_span
+	local length_begin
+	local length_end
+	local character_end_open
+	local character_end_close
+	local length_marker_elp
+	local index_bracket
+	local segment_end_first
+	local segment_end_last
+	local segment_end_head
+	local segment_end_tail
+	local limit_span
+	local limit_end
+	local limit_segment_end_head
+	local count_fold
+	local count_span
+	local span_begin
+	local span_middle
+	local span_end
+
+	local -a list_brackets_open
+	local -a list_brackets_close
 
 	# initialize string return array
 
@@ -1184,13 +1215,6 @@ frobulator.pmt () {
 		prompt_string=("${span_begin}""${span_middle}""${span_end}")
 	fi
 
-	# reset line elements
-
-	unset begin
-	unset end
-	unset span
-	unset width_prompt
-	unset index_bracket
 }
 
 # line break ───────────────────────────────────────────────────────────────────
@@ -2029,8 +2053,10 @@ frobulator.ind () {
 
 frobulator.ltr () {
 
-	before="[${marker_spc}${marker_spc}"
-	after="${marker_spc}${marker_spc}]"
+	local before="[${marker_spc}${marker_spc}"
+	local after="${marker_spc}${marker_spc}]"
+
+	local letter
 
 	letter="${1}"
 
@@ -2069,9 +2095,10 @@ frobulator.num () {
 	local color_number="${teal}"
 
 	local color_prompt
+	local number
 
-	before="[${marker_spc}${marker_spc}"
-	after="${marker_spc}${marker_spc}]"
+	local before="[${marker_spc}${marker_spc}"
+	local after="${marker_spc}${marker_spc}]"
 
 	# optional palette color first - number and string in that color
 
@@ -2120,8 +2147,6 @@ frobulator.sep () {
 
 	prompt="${prompt_string[@]}"
 
-	color=${color[@]}
-
 	# gap after marker like other markers: space before text - line character otherwise
 
 	if [ -n "${1}" ]
@@ -2131,7 +2156,7 @@ frobulator.sep () {
 		gap="${marker_sep:0:1}"
 	fi
 
-	echo -e "${color}${marker_sep}${gap}${prompt}${reset}"
+	echo -e "${marker_sep}${gap}${prompt}${reset}"
 
 	frobulator.brk
 
@@ -2604,9 +2629,9 @@ frobulator.ntf () {
 
 frobulator.erase () {
 
-	lines="${1}"
+	local count_lines="${1}"
 
-	frobulator.plo "${lines}"
+	frobulator.plo "${count_lines}"
 }
 
 # separate ─────────────────────────────────────────────────────────────────────
@@ -2675,27 +2700,32 @@ frobulator.script () {
 
 frobulator.type () {
 
-	interval="${1}"
-	string="${2}"
+	local interval_maximum="${1}"
+	local text_type="${2}"
 
-	length_string=${#string}
+	local length_text
+	local index_character
+	local delay_tenths
+	local delay_seconds
 
-	if [[ ! "${interval}" =~ ^[1-9][0-9]*$ ]]
+	length_text=${#text_type}
+
+	if [[ ! "${interval_maximum}" =~ ^[1-9][0-9]*$ ]]
 	then
-		interval=2
+		interval_maximum=2
 	fi
 
-	for (( characters = 0 ; characters <= length_string ; characters ++ ))
+	for (( index_character = 0 ; index_character <= length_text ; index_character ++ ))
 	do
 		# random delay of 1 to interval tenths of a second
 
-		tenths=$(( ( RANDOM % interval ) + 1 ))
+		delay_tenths=$(( ( RANDOM % interval_maximum ) + 1 ))
 
-		seconds="$(( tenths / 10 )).$(( tenths % 10 ))"
+		delay_seconds="$(( delay_tenths / 10 )).$(( delay_tenths % 10 ))"
 
-		echo -n -e "${string:${characters}:1}"
+		echo -n -e "${text_type:${index_character}:1}"
 
-		sleep "${seconds}"
+		sleep "${delay_seconds}"
 	done
 
 	echo
@@ -2709,7 +2739,7 @@ frobulator.type () {
 
 frobulator.timeout () {
 
-	seconds="${1}"
+	local seconds="${1}"
 
 	# set defaults
 
@@ -2980,6 +3010,8 @@ frobulator.progress () {
 
 	local status
 	local frame_ticker
+	local prompt_progress
+	local color_progress
 
 	if [ -z "${PID}" ]
 	then
@@ -5185,6 +5217,8 @@ frobulator.status () {
 
 	local status=0
 
+	local label_status_url
+
 	frobulator.fwd "Validating URL${marker_elp}"
 
 	if [[ "${status_url}" = [1][0-9][0-9] ]]
@@ -6489,6 +6523,7 @@ frobulator.dialog () {
 
 	local command_zenity
 	local command_kdialog
+	local selection_dialog
 
 	local -a command_dialog=("${@:2}")
 
@@ -6499,7 +6534,7 @@ frobulator.dialog () {
 
 	if [ -n "${command_zenity}" ]
 	then
-		dialog="$(
+		selection_dialog="$(
 			zenity						\
 				--file-selection		\
 				--multiple				\
@@ -6513,12 +6548,10 @@ frobulator.dialog () {
 
 	elif [ -n "${command_kdialog}" ]
 	then
-		dialog="$(
-			kdialog						\
-				--getopenfilename		\
-				--multiple				\
-				--separate-output		\
-				--title "${title}"		\
+		selection_dialog="$(
+			kdialog								\
+				--getexistingdirectory			\
+				--title "${title}"				\
 				"${command_dialog[@]}"
 		)"
 
@@ -6529,6 +6562,13 @@ frobulator.dialog () {
 		frobulator.fwd "Exiting${marker_elp}"
 
 		return 1
+	fi
+
+	# selection printed - one path per line
+
+	if [ -n "${selection_dialog}" ]
+	then
+		echo "${selection_dialog}"
 	fi
 
 	return "${status}"
@@ -7047,8 +7087,10 @@ frobulator.service () {
 	local line_service_inactive
 	local service
 	local action
+	local action_service
 
 	local -a scope_system_control=()
+	local -a list_actions_service=()
 
 	if [ "${#}" -eq 1 ]
 	then

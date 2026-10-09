@@ -897,10 +897,10 @@ frobulator.purge "unused-package"
 
 ### frobulator.dialog
 
-Opens a native file-selection dialog via `zenity` (GNOME) or `kdialog` (KDE), whichever is available, with `${script}` in the window title. Fails with a warning if neither is installed.
+Opens a native directory-selection dialog via `zenity` (GNOME) or `kdialog` (KDE), whichever is available, with `${script}` in the window title, and prints the selection (one path per line) for capture. Extra arguments are passed on to the dialog tool. Fails with a warning if neither is installed.
 
 ```bash
-frobulator.dialog "Select a directory" --directory
+directory="$(frobulator.dialog "Directory")"
 ```
 
 ## process, privilege, and result helpers

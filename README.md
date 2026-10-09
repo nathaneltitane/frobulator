@@ -348,10 +348,11 @@ frobulator.num crimson "2" "old-track.mp3"
 
 ### frobulator.sep
 
-Prints a full-width separator line built from `frobulator.pmt`.
+Prints a full-width separator line built from `frobulator.pmt`. The line is uncolored unless an optional palette color is given first, which prints the line and its text in that color.
 
 ```bash
 frobulator.sep
+frobulator.sep lime "Section"
 ```
 
 ### frobulator.ntf

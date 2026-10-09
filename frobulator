@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-08-2113"
+update="2026-10-08-2136"
 
 version="${update}"
 
@@ -2132,16 +2132,31 @@ frobulator.num () {
 # note:
 # no line marker
 
-# usage:      frobulator.sep
+# usage:      frobulator.sep ["[color]"] "[string]"
 
 # command:    frobulator.sep
 # result:     ────────────────────────────────────────────────────────────...───
+#
+# command:    frobulator.sep lime "[string]"
+# result:     ─────── string - line and string in the palette color - uncolored otherwise
 
 frobulator.sep () {
 
 	local status=0
 
 	local gap
+	local color_separator
+
+	# optional palette color first - line and string in that color
+
+	case "${1}"
+	in
+		white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
+			color_separator="${!1}"
+
+			shift
+		;;
+	esac
 
 	frobulator.pmt "${@}"
 
@@ -2156,7 +2171,7 @@ frobulator.sep () {
 		gap="${marker_sep:0:1}"
 	fi
 
-	echo -e "${marker_sep}${gap}${prompt}${reset}"
+	echo -e "${color_separator}${marker_sep}${gap}${prompt}${color_separator:+${reset}}"
 
 	frobulator.brk
 

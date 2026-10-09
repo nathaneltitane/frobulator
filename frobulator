@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-08-2136"
+update="2026-10-08-2159"
 
 version="${update}"
 
@@ -2859,6 +2859,32 @@ frobulator.action () {
 
 	local color
 	local detail_progress
+	local text_vowels
+
+	local -a list_vowel_groups=()
+
+	# two syllable verbs that still double their final consonant - stress on the last syllable
+
+	local -a list_doubling=(
+		admit
+		begin
+		commit
+		compel
+		control
+		emit
+		equip
+		forget
+		format
+		occur
+		omit
+		permit
+		prefer
+		quit
+		refer
+		regret
+		submit
+		transfer
+	)
 
 	local -a detail=()
 	local -a list_colors=(
@@ -2904,6 +2930,13 @@ frobulator.action () {
 
 	action="${action^}"
 
+	# syllable count - one per group of vowels
+
+	text_vowels="${action,,}"
+	text_vowels="${text_vowels//[^aeiou]/ }"
+
+	read -r -a list_vowel_groups <<< "${text_vowels}"
+
 	if [ "${action: -2}" = "ie" ]
 	then
 		action="${action/%ie/y}"
@@ -2912,13 +2945,14 @@ frobulator.action () {
 	then
 		action="${action/%e/}"
 
-	elif [ "${action: -1}" = "c" ]
+	elif [[ "${action,,}" =~ [^aeiou]ic$ ]]
 	then
 		action="${action}k"
 
-	elif [ "${#action}" -le 4 ] &&
-	     [[ "${action}" =~ [^aeiou][aeiou][bcdfghjklmnpqrstvwxyz]$ ]] &&
-	     [[ ! "${action}" =~ [wxy]$ ]]
+	# final consonant doubled - one syllable ending consonant vowel consonant - or a listed verb
+
+	elif [[ "${action,,}" =~ [^aeiou][aeiou][bcdfghjklmnpqrstvz]$ ]] &&
+	     { [ "${#list_vowel_groups[@]}" -eq 1 ] || [[ " ${list_doubling[*]} " == *" ${action,,} "* ]]; }
 	then
 		action="${action}${action: -1}"
 	fi
@@ -6726,6 +6760,7 @@ frobulator.assess () {
 	local command
 	local reply
 	local user_current
+	local status_package
 
 	if [[ "${#list[@]}" -gt 0 ]]
 	then
@@ -6768,7 +6803,11 @@ frobulator.assess () {
 
 			command_path="$(command -v "${command}")"
 
-			if [ -z "${command_path}" ]
+			# package install state - empty if unknown to dpkg - covers packages without a command
+
+			status_package="$(dpkg-query --show --showformat='${Status}' "${command}" 2> "${sink}")"
+
+			if [ -z "${command_path}" ] && [[ "${status_package}" != *"ok installed"* ]]
 			then
 				frobulator.err "Missing" "[ '${command}' ]"
 

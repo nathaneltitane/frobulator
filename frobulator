@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-09-2140"
+update="2026-10-09-2319"
 
 version="${update}"
 
@@ -828,7 +828,7 @@ list_functions_terminal=(
 
 for function_terminal in "${list_functions_terminal[@]}"
 do
-	if ! declare -F "${function_terminal}" > "${sink}"
+	if [ -z "$(declare -F "${function_terminal}")" ]
 	then
 		eval "${function_terminal} () { :; }"
 	fi
@@ -6973,6 +6973,7 @@ frobulator.escalate () {
 	# join patterns
 
 	local IFS='|'
+	local status_scan
 	pattern_root="${list_patterns_root[*]}"
 	IFS=$' \t\n'
 
@@ -7132,7 +7133,11 @@ frobulator.escalate () {
 
 	if [ -r "${self}" ]
 	then
-		if escalate_scan "${self}"
+		escalate_scan "${self}"
+
+		status_scan="${?}"
+
+		if [ "${status_scan}" -eq 0 ]
 		then
 			required_root=true
 		fi

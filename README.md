@@ -622,7 +622,7 @@ build () {
 Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at the log directory on failure: `${HOME}/.local/var/log/`, or `${PREFIX}/var/log/` for a system-context run - the same directory `frobulator.log` writes to), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
 
 ```bash
-frobulator.result "setup"
+frobulator.result setup
 ```
 
 ## filesystem helpers
@@ -938,11 +938,11 @@ frobulator.terminate rogue-process
 Cleanly exits the current script or process instance — runs a 3-second `frobulator.countdown` ("Exiting"), then calls the `exit` builtin with an explicit exit code (defaults to `0`, or `1` if the countdown itself was interrupted). Does not touch the shell — see `frobulator.close` for that behavior. Being terminal, it never `return`s to its caller like the rest of the library does.
 
 ```bash
-frobulator.exit "setup"
+frobulator.exit setup
 ```
 
 ```bash
-frobulator.exit "setup" "${status}"
+frobulator.exit setup "${status}"
 ```
 
 ### frobulator.close
@@ -950,7 +950,7 @@ frobulator.exit "setup" "${status}"
 Runs the same 3-second `frobulator.countdown`, then forcefully terminates the current `${SHELL}` via `frobulator.terminate` — this ends the shell session, not just the calling script. (This is what `frobulator.exit` used to do before the two were split.)
 
 ```bash
-frobulator.close "setup"
+frobulator.close setup
 ```
 
 ### frobulator.user

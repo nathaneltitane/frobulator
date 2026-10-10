@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1338"
+update="2026-10-10-1617"
 
 version="${update}"
 
@@ -3959,7 +3959,7 @@ frobulator.track () {
 # clear checkpoint and status collections after evaluation
 # use in tandem with frobulator.complete
 
-# usage:      frobulator.result "[instance]"
+# usage:      frobulator.result [instance]
 
 frobulator.result () {
 
@@ -6775,7 +6775,7 @@ frobulator.dialog () {
 # use to cleanly exit the current script or process instance
 # does not terminate the shell - see frobulator.close for that behavior
 
-# usage:      frobulator.exit "[instance]" "[exit code]"
+# usage:      frobulator.exit [instance] [exit code]
 
 frobulator.exit () {
 
@@ -6851,7 +6851,7 @@ frobulator.terminate () {
 
 # use to close the current shell session
 
-# usage:      frobulator.close "[instance]"
+# usage:      frobulator.close [instance]
 
 frobulator.close () {
 

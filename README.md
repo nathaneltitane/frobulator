@@ -333,7 +333,7 @@ All argument types are normalized internally through `frobulator.pmt`, allowing 
 Prints a lettered step marker — first argument is the letter, remaining arguments are forwarded to `frobulator.pmt`.
 
 ```bash
-frobulator.ltr "a" "Select source directory"
+frobulator.ltr a "Select source directory"
 ```
 
 ### frobulator.num
@@ -341,9 +341,9 @@ frobulator.ltr "a" "Select source directory"
 Prints a numbered step marker — first argument is the number, remaining arguments are forwarded to `frobulator.pmt`. An optional palette color before the number prints the number and the line in that color - e.g. green for files to add and red for files to remove, matching their `frobulator.add` / `frobulator.rem` headers.
 
 ```bash
-frobulator.num "1" "Install dependencies"
-frobulator.num lime "1" "new-track.mp3"
-frobulator.num crimson "2" "old-track.mp3"
+frobulator.num 1 "Install dependencies"
+frobulator.num lime 1 "new-track.mp3"
+frobulator.num crimson 2 "old-track.mp3"
 ```
 
 ### frobulator.sep
@@ -425,7 +425,7 @@ Adds a named color to the palette at run time from a 256-color code (`0` to `255
 
 ```bash
 frobulator.palette cornflower 68
-frobulator.num cornflower "1" "Soft blue line" "[ value ]"
+frobulator.num cornflower 1 "Soft blue line" "[ value ]"
 ```
 
 ## structured prompt helpers
@@ -714,8 +714,8 @@ Displays a local or remote image directly in supported terminals (local file pat
 
 ```bash
 frobulator.image "${image_file}"
-frobulator.image "${image_file}" "50%"
-frobulator.image "${image_file}" "80" "40"
+frobulator.image "${image_file}" 50%
+frobulator.image "${image_file}" 80 40
 ```
 
 ## network helpers
@@ -844,7 +844,7 @@ frobulator.clean
 Marks package(s) for version freeze via `apt-mark hold`.
 
 ```bash
-frobulator.hold "firefox-esr"
+frobulator.hold firefox-esr
 ```
 
 ### frobulator.release
@@ -852,7 +852,7 @@ frobulator.hold "firefox-esr"
 Reverses `frobulator.hold` via `apt-mark unhold`.
 
 ```bash
-frobulator.release "firefox-esr"
+frobulator.release firefox-esr
 ```
 
 ### frobulator.failsafe
@@ -860,7 +860,7 @@ frobulator.release "firefox-esr"
 Runs a background `apt update && apt full-upgrade`, then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.
 
 ```bash
-frobulator.failsafe "curl"
+frobulator.failsafe curl
 ```
 
 ### frobulator.install
@@ -868,7 +868,7 @@ frobulator.failsafe "curl"
 Installs package(s). A `.deb` path is installed directly; otherwise the package is looked up with `apt search` first, and installation is skipped (with a "present on system" message) if it's already installed.
 
 ```bash
-frobulator.install "curl"
+frobulator.install curl
 ```
 
 ### frobulator.require
@@ -876,7 +876,7 @@ frobulator.install "curl"
 Checks whether each name is available as a command or as an installed package (`dpkg-query`), and if neither, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when something is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
 
 ```bash
-frobulator.require "curl"
+frobulator.require curl
 ```
 
 ```bash
@@ -888,7 +888,7 @@ frobulator.require "libssl*"
 Reinstalls package(s) via `apt-get install --reinstall`.
 
 ```bash
-frobulator.reinstall "curl"
+frobulator.reinstall curl
 ```
 
 ### frobulator.update
@@ -912,7 +912,7 @@ frobulator.upgrade
 Purges package(s) via `apt-get purge --autoremove`, but only if `apt search` shows the package as currently installed (skips with a message otherwise).
 
 ```bash
-frobulator.purge "unused-package"
+frobulator.purge unused-package
 ```
 
 ### frobulator.dialog
@@ -930,7 +930,7 @@ directory="$(frobulator.dialog "Directory")"
 Forcefully and repeatedly `pkill -f`'s a process name/pattern until `pgrep -f` no longer finds it. Requires both `pgrep` and `pkill`.
 
 ```bash
-frobulator.terminate "rogue-process"
+frobulator.terminate rogue-process
 ```
 
 ### frobulator.exit

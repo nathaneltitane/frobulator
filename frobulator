@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-08-2159"
+update="2026-10-09-2122"
 
 version="${update}"
 
@@ -3018,11 +3018,18 @@ frobulator.process () {
 
 	prompt="${prompt_string[@]}"
 
-	while [ -d "/proc/${PID}" ]
+	# at least one frame - a process done before the first frame still gets its line
+
+	while true
 	do
 		frame_ticker="${ticker:instance++%${#ticker}:1}"
 
 		echo -n -e "\r${before}${color} \b${frame_ticker}${reset}${after}${marker_spc}${prompt}\c"
+
+		if [ ! -d "/proc/${PID}" ]
+		then
+			break
+		fi
 
 		sleep "${seconds}"
 	done
@@ -3071,11 +3078,18 @@ frobulator.progress () {
 
 	frobulator.action "${@}"
 
-	while [ -d "/proc/${PID}" ]
+	# at least one frame - a process done before the first frame still gets its line
+
+	while true
 	do
 		frame_ticker="${ticker:instance++%${#ticker}:1}"
 
 		echo -n -e "\r${before}${color_progress} \b${frame_ticker}${reset}${after}${marker_spc}${prompt_progress}\c"
+
+		if [ ! -d "/proc/${PID}" ]
+		then
+			break
+		fi
 
 		sleep "${seconds}"
 	done

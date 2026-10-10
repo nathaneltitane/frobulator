@@ -5389,7 +5389,7 @@ frobulator.repository () {
 
 	frobulator.track
 
-	# names starting with the prefix
+	# names starting with prefix
 
 	while IFS= read -r item_repository
 	do

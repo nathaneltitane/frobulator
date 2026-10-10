@@ -419,6 +419,15 @@ frobulator.[color] "[string]" "[string]" "[span character]"
 | `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
 | `frobulator.teal` | `frobulator.teal "Highlighted" "[ value ]"` |
 
+### frobulator.palette
+
+Adds a named color to the palette at run time from a 256-color code (`0` to `255`). The name is then accepted wherever a palette color name is - the optional color of `frobulator.num` and `frobulator.sep`, and the critter. Like the built-in colors, the sequence is set only when output is a terminal (via `tput`, or ANSI without it) and is empty otherwise. Adding an existing name updates its color.
+
+```bash
+frobulator.palette cornflower 68
+frobulator.num cornflower "1" "Soft blue line" "[ value ]"
+```
+
 ## structured prompt helpers
 
 ### frobulator.separate

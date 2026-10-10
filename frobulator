@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-09-2319"
+update="2026-10-10-0021"
 
 version="${update}"
 
@@ -1244,6 +1244,50 @@ frobulator.brk () {
 	lines_printed_terminal=$(( lines_printed_terminal + rows_line + 1 ))
 }
 
+# palette ──────────────────────────────────────────────────────────────────────
+
+# use to add a named color to the palette at run time:
+# accepted wherever a palette color name is - num - sep - critter
+# terminal output only - empty otherwise - as the built in colors
+
+# usage:      frobulator.palette "[name]" "[color code 0 to 255]"
+
+frobulator.palette () {
+
+	local status=0
+	local name_color="${1}"
+	local value_color="${2}"
+
+	if [[ ! "${name_color}" =~ ^[a-z][a-z_]*$ ]] || [[ ! "${value_color}" =~ ^[0-9]{1,3}$ ]] || [ "${value_color}" -gt 255 ]
+	then
+		frobulator.err "Invalid palette color" "[ ${name_color} // ${value_color} ]"
+
+		return 1
+	fi
+
+	# palette entry - name recognised by the color options
+
+	if [[ ! " ${colors_selection[*]%%=*} " == *" ${name_color} "* ]]
+	then
+		colors_selection+=("${name_color}=${value_color}")
+	fi
+
+	# color sequence - tput or ansi - empty without a terminal
+
+	if [[ -t 1 ]] && [ -n "$(command -v tput)" ]
+	then
+		printf -v "${name_color}" '%s' "$(tput setaf "${value_color}")"
+
+	elif [[ -t 1 ]]
+	then
+		printf -v "${name_color}" '\e[38;5;%sm' "${value_color}"
+	else
+		printf -v "${name_color}" '%s' ""
+	fi
+
+	return "${status}"
+}
+
 # highlights ───────────────────────────────────────────────────────────────────
 
 # colored string highlights with built-in prompt arguments and line padding
@@ -2100,17 +2144,15 @@ frobulator.num () {
 	local before="[${marker_spc}${marker_spc}"
 	local after="${marker_spc}${marker_spc}]"
 
-	# optional palette color first - number and string in that color
+	# optional palette color first - number and string in that color - added colors included
 
-	case "${1}"
-	in
-		white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
-			color_number="${!1}"
-			color_prompt="${!1}"
+	if [[ " ${colors_selection[*]%%=*} " == *" ${1} "* ]]
+	then
+		color_number="${!1}"
+		color_prompt="${!1}"
 
-			shift
-		;;
-	esac
+		shift
+	fi
 
 	number="${1}"
 
@@ -2147,16 +2189,14 @@ frobulator.sep () {
 	local gap
 	local color_separator
 
-	# optional palette color first - line and string in that color
+	# optional palette color first - line and string in that color - added colors included
 
-	case "${1}"
-	in
-		white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
-			color_separator="${!1}"
+	if [[ " ${colors_selection[*]%%=*} " == *" ${1} "* ]]
+	then
+		color_separator="${!1}"
 
-			shift
-		;;
-	esac
+		shift
+	fi
 
 	frobulator.pmt "${@}"
 
@@ -7771,11 +7811,16 @@ frobulator.critter () {
 				loop_critter=true
 			;;
 
-			white|silver|grey|black|red|crimson|green|lime|yellow|orange|blue|navy|magenta|purple|fuschia|pink|aqua|teal)
-				name_color="${argument}"
-			;;
-
 			*)
+				# palette color - added colors included
+
+				if [[ " ${colors_selection[*]%%=*} " == *" ${argument} "* ]]
+				then
+					name_color="${argument}"
+
+					continue
+				fi
+
 				frobulator.err "Unknown critter argument" "[ ${argument} ]"
 
 				status=1

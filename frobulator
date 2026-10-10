@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-09-2122"
+update="2026-10-09-2134"
 
 version="${update}"
 
@@ -5341,6 +5341,70 @@ frobulator.status () {
 		proceed=0
 
 		status=1
+	fi
+
+	return "${status}"
+
+}
+
+# repository ───────────────────────────────────────────────────────────────────
+
+# use to list file names at the top level of a github repository:
+# names starting with the optional prefix - stored in frobulator_return
+
+# usage:      frobulator.repository "[owner/repository]" "[prefix]"
+
+frobulator.repository () {
+
+	local status=0
+	local url_api="https://api.github.com/repos"
+	local name_repository="${1}"
+	local prefix_name="${2}"
+
+	local text_listing
+	local name_entry
+
+	frobulator_return=()
+
+	# validation
+
+	if [ -z "${name_repository}" ]
+	then
+		frobulator.err "Repository listing failure - missing repository" "[ owner/repository ]"
+
+		return 1
+	fi
+
+	# github contents listing - one name field per entry
+
+	text_listing="$(
+		curl									\
+			--silent							\
+			--location							\
+			--connect-timeout 30				\
+												"${url_api}/${name_repository}/contents" 2> "${sink}"
+	)"
+
+	frobulator.track
+
+	# names starting with the prefix
+
+	while IFS= read -r name_entry
+	do
+		if [[ "${name_entry}" == "${prefix_name}"* ]]
+		then
+			frobulator_return+=("${name_entry}")
+		fi
+	done < <(
+		grep -o '"name": *"[^"]*"' <<< "${text_listing}"	|
+			cut -d '"' -f 4
+	)
+
+	if [ "${#frobulator_return[@]}" -eq 0 ]
+	then
+		frobulator.err "Repository listing empty" "[ ${name_repository} // ${prefix_name:-all} ]"
+
+		return 1
 	fi
 
 	return "${status}"

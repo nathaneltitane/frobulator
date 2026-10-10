@@ -648,7 +648,7 @@ Writes `content` to one or more files under `path` (`path` defaults to `${PWD}` 
 - `prepend` — adds content before the file's existing contents
 
 ```bash
-frobulator.write "append" "enabled=true" "${HOME}/.config/frobulator" "config"
+frobulator.write append "enabled=true" "${HOME}/.config/frobulator" "config"
 ```
 
 ### frobulator.file
@@ -1052,7 +1052,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"
 Creates an archive from a directory (defaults to `${PWD}` when omitted). Supported `type` values: `tar`, `tar.gz`/`tgz`, `tar.bz2`/`tbz2`, `zip`, `7z`, `rar` — each checked and installed via `frobulator.require` before use.
 
 ```bash
-frobulator.archive "backup" "tar.gz" "${HOME}/Documents"
+frobulator.archive "backup" tar.gz "${HOME}/Documents"
 ```
 
 ### frobulator.extract

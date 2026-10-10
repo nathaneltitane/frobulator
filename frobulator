@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1231"
+update="2026-10-10-1334"
 
 version="${update}"
 
@@ -4163,7 +4163,7 @@ frobulator.ownership () {
 # private readonly          400 r──────── 500 r-x────── ssh keys / certificates
 # private readonly execute  500 r-x────── 500 r-x────── locked personal tools
 
-# usage:      frobulator.permissions "[scope]" "[modifiers]" "[target]" | "[array]"
+# usage:      frobulator.permissions [scope] [modifiers] "[target]" | "[array]"
 
 # command:    frobulator.permissions public execute "${path}/${file}"
 # command:    frobulator.permissions private "${HOME}/.git-credentials"
@@ -4380,7 +4380,7 @@ frobulator.directory () {
 
 # "${path}" defaults to "${PWD}" when omitted
 
-# usage:      frobulator.write "[mode]" "[content]" "[path]" "[file]"
+# usage:      frobulator.write [mode] "[content]" "[path]" "[file]"
 
 frobulator.write () {
 
@@ -7280,8 +7280,8 @@ frobulator.escalate () {
 
 # actions:    reload, status, activate, enable, disable, start, stop, restart
 
-# usage:      frobulator.service "[action]"
-#             frobulator.service "[action]" "[service]"
+# usage:      frobulator.service [action]
+#             frobulator.service [action] "[service]"
 
 frobulator.service () {
 
@@ -7467,7 +7467,7 @@ frobulator.service () {
 
 # "${directory}" defaults to "${PWD}" when omitted
 
-# usage:      frobulator.archive "[archive]" "[type]" "[directory]"
+# usage:      frobulator.archive "[archive]" [type] "[directory]"
 
 frobulator.archive () {
 

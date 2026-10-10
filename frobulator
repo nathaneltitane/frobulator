@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-09-2139"
+update="2026-10-09-2140"
 
 version="${update}"
 
@@ -5361,7 +5361,7 @@ frobulator.repository () {
 	local prefix_repository="${2}"
 
 	local url_repository
-	local text_repository
+	local items_repository
 	local item_repository
 
 	frobulator_return=()
@@ -5375,11 +5375,11 @@ frobulator.repository () {
 		return 1
 	fi
 
-	# github contents listing - one name field per entry
+	# github contents listing - all items as one json text - one name field per item
 
 	url_repository="https://api.github.com/repos/${name_repository}/contents"
 
-	text_repository="$(
+	items_repository="$(
 		curl									\
 			--silent							\
 			--location							\
@@ -5398,7 +5398,7 @@ frobulator.repository () {
 			frobulator_return+=("${item_repository}")
 		fi
 	done < <(
-		grep -o '"name": *"[^"]*"' <<< "${text_repository}"	|
+		grep -o '"name": *"[^"]*"' <<< "${items_repository}"	|
 			cut -d '"' -f 4
 	)
 

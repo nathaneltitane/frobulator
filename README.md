@@ -461,7 +461,7 @@ frobulator.script "Welcome to the Gutendex terminal library!"
 
 ### frobulator.type
 
-Prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the maximum random interval in tenths of a second (defaults to `2`, i.e. up to 0.2 s per character), every argument after it is printed, joined with spaces, so the string needs no quotes.
+Prints a string one character at a time with a randomized delay between each, to emulate human typing. First argument is the maximum random interval in tenths of a second (optional, defaults to `2`, i.e. up to 0.2 s per character); every argument after it is printed, joined with spaces, so the string needs no quotes. When the first argument is not a number, it is part of the string.
 
 ```bash
 frobulator.type 3 "Preparing environment..."

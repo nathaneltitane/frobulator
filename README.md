@@ -728,6 +728,16 @@ frobulator.http "https://example.com/file.tar.gz"
 frobulator.status
 ```
 
+### frobulator.repository
+
+Lists the file names at the top level of a GitHub repository through its contents listing (`curl` only - names extracted with `grep` and `cut`). An optional prefix keeps only names starting with it. Names are stored in the `frobulator_return` array (reset on each call); an unreachable listing or no matching name is an error and makes the function return `1`. Pair with `frobulator.download` to fetch the listed files.
+
+```bash
+frobulator.repository "nathaneltitane/terminal" "bash-function-"
+
+frobulator.download get.trmnl.me "${HOME}"/.local/bin "${frobulator_return[@]}"
+```
+
 ### frobulator.download
 
 Downloads file(s), one request per item, reported by the HTTP status code of the download itself (`2xx` is success; any other code, or an unreachable server, is an error and makes the function return `1`). Each file is written to a partial file beside the target and only moved into place on success, then set to `public execute` (`755`) via `frobulator.permissions`. Missing directories are created. The caller's arrays are left untouched.

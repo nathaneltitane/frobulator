@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-0021"
+update="2026-10-10-0040"
 
 version="${update}"
 
@@ -1267,7 +1267,7 @@ frobulator.palette () {
 
 	# palette entry - name recognised by the color options
 
-	if [[ ! " ${colors_selection[*]%%=*} " == *" ${name_color} "* ]]
+	if [[ ! "$(printf ' %s ' "${colors_selection[@]%%=*}")" == *" ${name_color} "* ]]
 	then
 		colors_selection+=("${name_color}=${value_color}")
 	fi
@@ -2146,7 +2146,7 @@ frobulator.num () {
 
 	# optional palette color first - number and string in that color - added colors included
 
-	if [[ " ${colors_selection[*]%%=*} " == *" ${1} "* ]]
+	if [[ "$(printf ' %s ' "${colors_selection[@]%%=*}")" == *" ${1} "* ]]
 	then
 		color_number="${!1}"
 		color_prompt="${!1}"
@@ -2191,7 +2191,7 @@ frobulator.sep () {
 
 	# optional palette color first - line and string in that color - added colors included
 
-	if [[ " ${colors_selection[*]%%=*} " == *" ${1} "* ]]
+	if [[ "$(printf ' %s ' "${colors_selection[@]%%=*}")" == *" ${1} "* ]]
 	then
 		color_separator="${!1}"
 
@@ -7814,7 +7814,7 @@ frobulator.critter () {
 			*)
 				# palette color - added colors included
 
-				if [[ " ${colors_selection[*]%%=*} " == *" ${argument} "* ]]
+				if [[ "$(printf ' %s ' "${colors_selection[@]%%=*}")" == *" ${argument} "* ]]
 				then
 					name_color="${argument}"
 

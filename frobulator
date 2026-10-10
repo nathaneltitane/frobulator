@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1153"
+update="2026-10-10-1231"
 
 version="${update}"
 
@@ -2749,43 +2749,44 @@ frobulator.script () {
 
 # use to emulate typing on prompts:
 # delay per character is randomized to create human-like typing effect
-# interval: maximum delay in tenths of a second - optional - default 2
-# string: every argument after the interval - joined with spaces
-# first argument not a number - no interval given - part of the string
+# speed: one digit - 0 to 9 - optional - default 9
+# each step adds 0.02 seconds to the maximum delay - 0 is 0.02 - 9 is 0.20
+# delay drawn between 0.02 seconds and the maximum - 0 is a steady 0.02 - about one screen refresh
+# string: every argument after the speed - joined with spaces
+# first argument not a single digit - no speed given - part of the string
 
-# usage:      frobulator.type "[interval]" "[string]" ...
+# usage:      frobulator.type "[speed]" "[string]" ...
 
 frobulator.type () {
 
-	local interval_maximum="2"
+	local level_speed="9"
 	local text_type="${*}"
 
 	local length_text
 	local index_character
-	local delay_tenths
+	local delay_maximum
+	local delay_hundredths
 	local delay_seconds
 
-	if [[ "${1}" =~ ^[0-9]+$ ]]
+	if [[ "${1}" =~ ^[0-9]$ ]]
 	then
+		level_speed="${1}"
 		text_type="${*:2}"
-
-		# zero - no delay range - default kept
-
-		if [ "${1}" -gt 0 ]
-		then
-			interval_maximum="${1}"
-		fi
 	fi
+
+	# maximum delay in hundredths of a second - 2 to 20
+
+	delay_maximum=$(( ( level_speed + 1 ) * 2 ))
 
 	length_text=${#text_type}
 
 	for (( index_character = 0 ; index_character < length_text ; index_character ++ ))
 	do
-		# random delay of 1 to interval tenths of a second
+		# random delay of 2 to maximum hundredths of a second
 
-		delay_tenths=$(( ( RANDOM % interval_maximum ) + 1 ))
+		delay_hundredths=$(( ( RANDOM % ( delay_maximum - 1 ) ) + 2 ))
 
-		delay_seconds="$(( delay_tenths / 10 )).$(( delay_tenths % 10 ))"
+		printf -v delay_seconds '0.%02d' "${delay_hundredths}"
 
 		echo -n -e "${text_type:${index_character}:1}"
 

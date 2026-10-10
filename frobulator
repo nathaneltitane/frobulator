@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1105"
+update="2026-10-10-1144"
 
 version="${update}"
 
@@ -2750,13 +2750,14 @@ frobulator.script () {
 # use to emulate typing on prompts:
 # delay per character is randomized to create human-like typing effect
 # interval: maximum delay in tenths of a second - default 2
+# string: every argument after the interval - joined with spaces
 
-# usage:      frobulator.type "[interval]" "[string]"
+# usage:      frobulator.type "[interval]" "[string]" ...
 
 frobulator.type () {
 
 	local interval_maximum="${1}"
-	local text_type="${2}"
+	local text_type="${*:2}"
 
 	local length_text
 	local index_character
@@ -2770,7 +2771,7 @@ frobulator.type () {
 		interval_maximum=2
 	fi
 
-	for (( index_character = 0 ; index_character <= length_text ; index_character ++ ))
+	for (( index_character = 0 ; index_character < length_text ; index_character ++ ))
 	do
 		# random delay of 1 to interval tenths of a second
 

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1334"
+update="2026-10-10-1338"
 
 version="${update}"
 
@@ -1250,7 +1250,7 @@ frobulator.brk () {
 # accepted wherever a palette color name is - num - sep - critter
 # terminal output only - empty otherwise - as the built in colors
 
-# usage:      frobulator.palette "[name]" "[color code 0 to 255]"
+# usage:      frobulator.palette [name] [color code 0 to 255]
 
 frobulator.palette () {
 
@@ -2084,15 +2084,15 @@ frobulator.ind () {
 # use to indicate lettered steps, directives or instructions
 # letter prompt is inserted as line marker
 
-# usage:      frobulator.ltr "[letter]" "[string]" "[string]" "[span character]"
+# usage:      frobulator.ltr [letter] "[string]" "[string]" "[span character]"
 
-# command:    frobulator.num "[letter]" "[string]"
+# command:    frobulator.ltr [letter] "[string]"
 # result:     [ l ] string
 
-# command:    frobulator.num "[letter]" "[string]" "[string]"
+# command:    frobulator.ltr [letter] "[string]" "[string]"
 # result:     [ l ] string ────────────────────────────────────────...─── string
 
-# command:    frobulator.num "[letter]" "[string]" "[string]" "[\]"
+# command:    frobulator.ltr [letter] "[string]" "[string]" "[\]"
 # result:     [ l ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
 frobulator.ltr () {
@@ -2120,18 +2120,18 @@ frobulator.ltr () {
 # use to indicate numbered steps, directives or instructions
 # number prompt is inserted as line marker
 
-# usage:      frobulator.num ["[color]"] "[number]" "[string]" "[string]" "[span character]"
+# usage:      frobulator.num [color] [number] "[string]" "[string]" "[span character]"
 
-# command:    frobulator.num "[number]" "[string]"
+# command:    frobulator.num [number] "[string]"
 # result:     [ n ] string
 
-# command:    frobulator.num "[number]" "[string]" "[string]"
+# command:    frobulator.num [number] "[string]" "[string]"
 # result:     [ n ] string ────────────────────────────────────────...─── string
 
-# command:    frobulator.num "[number]" "[string]" "[string]" "[\]"
+# command:    frobulator.num [number] "[string]" "[string]" "[\]"
 # result:     [ n ] string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 #
-# command:    frobulator.num lime "[number]" "[string]"
+# command:    frobulator.num lime [number] "[string]"
 # result:     [ n ] string - number and string in the palette color
 
 frobulator.num () {
@@ -2174,7 +2174,7 @@ frobulator.num () {
 # note:
 # no line marker
 
-# usage:      frobulator.sep ["[color]"] "[string]"
+# usage:      frobulator.sep [color] "[string]"
 
 # command:    frobulator.sep
 # result:     ────────────────────────────────────────────────────────────...───
@@ -2755,7 +2755,7 @@ frobulator.script () {
 # string: every argument after the speed - joined with spaces
 # first argument not a single digit - no speed given - part of the string
 
-# usage:      frobulator.type "[speed]" "[string]" ...
+# usage:      frobulator.type [speed] "[string]" ...
 
 frobulator.type () {
 
@@ -2800,7 +2800,7 @@ frobulator.type () {
 
 # use to mark timeout in between commands in seconds
 
-# usage:      frobulator.timeout "[seconds]"
+# usage:      frobulator.timeout [seconds]
 
 frobulator.timeout () {
 
@@ -2833,7 +2833,7 @@ frobulator.clear () {
 # use as countdown marker before next command runs:
 # leaves preset time for long interaction with prompts and other long strings
 
-# usage:      frobulator.countdown "[seconds]" "[string]" "[string]"
+# usage:      frobulator.countdown [seconds] "[string]" "[string]"
 
 frobulator.countdown () {
 
@@ -5028,8 +5028,8 @@ frobulator.link () {
 #              disables automatic aspect ratio preservation
 
 # usage:      frobulator.image "[image]"
-#             frobulator.image "[image]" "[width]"
-#             frobulator.image "[image]" "[width]" "[height]"
+#             frobulator.image "[image]" [width]
+#             frobulator.image "[image]" [width] [height]
 
 frobulator.image () {
 
@@ -6086,7 +6086,7 @@ frobulator.clean () {
 # use to hold package(s) from argument or array list
 # marks package(s) for version freeze
 
-# usage:      frobulator.hold "[package]" | "[array]"
+# usage:      frobulator.hold [package] | "[array]"
 
 frobulator.hold () {
 
@@ -6135,7 +6135,7 @@ frobulator.hold () {
 # use to release package(s) from argument or array list
 # unmarks package(s) for version freeze
 
-# usage:      frobulator.release "[package]" | "[array]"
+# usage:      frobulator.release [package] | "[array]"
 
 frobulator.release () {
 
@@ -6186,7 +6186,7 @@ frobulator.release () {
 # helps avoid 'ignore' or 'not found' errors returned by package manager
 # useful as failsafe to fetch all up-to-date content before batch installs
 
-# usage:      frobulator.failsafe "[package]" | "[array]"
+# usage:      frobulator.failsafe [package] | "[array]"
 
 frobulator.failsafe () {
 
@@ -6258,7 +6258,7 @@ frobulator.failsafe () {
 
 # use to install package(s) from argument or array list
 
-# usage:      frobulator.install "[package]" | "[array]"
+# usage:      frobulator.install [package] | "[array]"
 
 frobulator.install () {
 
@@ -6338,7 +6338,7 @@ frobulator.install () {
 # use to install required package(s) from argument or array list
 # use to search and validate required package dependencies for operations
 
-# usage:      frobulator.require "[package]" | "[array]"
+# usage:      frobulator.require [package] | "[array]"
 
 frobulator.require () {
 
@@ -6549,7 +6549,7 @@ frobulator.require () {
 
 # use to reinstall package(s) from argument or array list
 
-# usage:      frobulator.reinstall "[package]" | "[array]"
+# usage:      frobulator.reinstall [package] | "[array]"
 
 frobulator.reinstall () {
 
@@ -6646,7 +6646,7 @@ frobulator.upgrade () {
 
 # use to purge package(s) from argument or array list
 
-# usage:      frobulator.purge "[package]" | "[array]"
+# usage:      frobulator.purge [package] | "[array]"
 
 frobulator.purge () {
 
@@ -6793,7 +6793,7 @@ frobulator.exit () {
 
 # use to forcefully terminate rogue processes
 
-# usage:      frobulator.terminate "[process]"
+# usage:      frobulator.terminate [process]
 
 frobulator.terminate () {
 
@@ -6896,7 +6896,7 @@ frobulator.user () {
 # use to assess 'superuser' status and prompt for priviledged execution
 # useful for in-script dependency assessment and installation
 
-# usage:      frobulator.assess "[package]" | "[array]"
+# usage:      frobulator.assess [package] | "[array]"
 
 frobulator.assess () {
 

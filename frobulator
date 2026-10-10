@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-0040"
+update="2026-10-10-1105"
 
 version="${update}"
 
@@ -6257,6 +6257,7 @@ frobulator.install () {
 
 	local package
 	local filter_query
+	local text_packages
 
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -6273,7 +6274,11 @@ frobulator.install () {
 		list+=("${package}")
 	fi
 
-	frobulator.inf "Installing package(s)"
+	# package names quoted - one header line
+
+	text_packages="$(printf "'%s' " "${list[@]}")"
+
+	frobulator.inf "Installing package(s)" "[ ${text_packages% } ]"
 
 	for package in "${list[@]}"
 	do
@@ -6291,7 +6296,12 @@ frobulator.install () {
 
 			if [[ -z "${filter_query}" ]]
 			then
-				frobulator.wrn "Absent on system" "[ '${package}' ]"
+				# absence already reported by frobulator.require
+
+				if [ "${frobulator_absence_reported}" != "true" ]
+				then
+					frobulator.wrn "Absent on system" "[ '${package}' ]"
+				fi
 
 				frobulator.log "${command_install} ${package}" &
 
@@ -6324,6 +6334,10 @@ frobulator.require () {
 
 	local status=0
 	local list_requirements_missing=false
+
+	# absence reported here - frobulator.install does not repeat it
+
+	local frobulator_absence_reported="true"
 
 	local command
 	local command_path
@@ -6434,6 +6448,8 @@ frobulator.require () {
 
 		elif [ -z "${command_path}" ]
 		then
+			frobulator.wrn "Absent on system" "[ '${command}' ]"
+
 			frobulator.fwd "Probing${marker_elp}"
 
 			IFS="${marker_spc}"

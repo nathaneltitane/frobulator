@@ -506,18 +506,20 @@ frobulator.action "download" "[ ${file} ]"
 Waits on the most recently backgrounded process (`${!}`), animating a simple `/\` ticker beside a message until it exits, then returns that process's exit status.
 
 ```bash
-apt-get update &
-frobulator.process "Updating package index"
+frobulator.background process "Updating package index" -- apt-get update
 ```
+
+Called directly, it follows the job started just before it: `apt-get update &` then `frobulator.process "Updating package index"` — `frobulator.background` does both without the shell's job notices.
 
 ### frobulator.progress
 
 Same as `frobulator.process`, but generates its message via `frobulator.action` (so the first argument is a bare verb, not a pre-built message) and animates a smoother `⎺⎻⎼⎽⎼⎻` ticker.
 
 ```bash
-curl -L "${url}" -o "${file}" &
-frobulator.progress "download" "[ ${file} ]"
+frobulator.background download "[ ${file} ]" -- curl -L "${url}" -o "${file}"
 ```
+
+Called directly, it follows the job started just before it: `curl … &` then `frobulator.progress "download" "[ ${file} ]"` — `frobulator.background` does both without the shell's job notices.
 
 ### frobulator.bar
 
@@ -554,7 +556,7 @@ One-line status check after a command, with `frobulator.result` once at the end 
 - **`continue`** (default, also when omitted) - records the status, reports `Complete - <label>` or `Incomplete - <label>`, logs failures, and carries on.
 - **`halt`** - same on success; on failure prints the message (or `Incomplete - <label>`), logs it, prints the `frobulator.result` summary and exits the script - also when called inside a function.
 
-An optional message and detail follow the keyword; the message replaces the label on failure. Without a message the label is the calling function's name (`image_download` → `image download`). At script level it is the previous command in the script (`frobulator.write` → `write`, `cd` → `cd`), or the action of `frobulator.progress` after a background command (`clone`); assignments and lines it cannot read fall back to `Operation N`. Failures are written to the script's log (`~/.local/var/log/<script>-<stamp>.log`) through `frobulator.log`.
+An optional message and detail follow the keyword; the message replaces the label on failure. Without a message the label is the calling function's name (`image_download` → `image download`). At script level it is the previous command in the script (`frobulator.write` → `write`, `cd` → `cd`), or the action of `frobulator.progress` or `frobulator.background` (`clone`); assignments and lines it cannot read fall back to `Operation N`. Failures are written to the script's log (`~/.local/var/log/<script>-<stamp>.log`) through `frobulator.silence log`.
 
 ```bash
 apk_tool_update
@@ -579,7 +581,7 @@ frobulator.complete halt "${checkpoint_directory}" "image-checkpoint" download_i
 
 ### frobulator.halt
 
-Stops the script when the command that ran immediately before it failed - the stop behind `frobulator.complete halt`, also callable directly - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
+Stops the script when the command that ran immediately before it failed - the stop behind `frobulator.complete halt`, also callable directly - a one-line replacement for an `if [ "${?}" -ne 0 ]` block ending in `exit`. On success it records the status for `frobulator.result` and continues silently. On failure it prints the optional message with `frobulator.err`, writes a dated line to the script's log through `frobulator.silence log` (`~/.local/var/log/<script>-<stamp>.log`), and exits with the failed command's own status.
 
 ```bash
 zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
@@ -619,7 +621,7 @@ build () {
 
 ### frobulator.result
 
-Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at the log directory on failure: `${HOME}/.local/var/log/`, or `${PREFIX}/var/log/` for a system-context run - the same directory `frobulator.log` writes to), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
+Evaluates every status recorded by `frobulator.complete` since the last call, reports overall success or a failure count (pointing at the log directory on failure: `${HOME}/.local/var/log/`, or `${PREFIX}/var/log/` for a system-context run - the same directory `frobulator.silence log` writes to), then clears the recorded checkpoint/status collections. Use in tandem with `frobulator.complete`.
 
 ```bash
 frobulator.result setup
@@ -794,18 +796,33 @@ frobulator.upload PUT "https://example.com/items" "${list[@]}"
 
 ### frobulator.silence
 
-Runs a command (via `"${SHELL}" -c`) with stdout/stderr redirected to the null sink, for fully silent execution.
+Runs a command (given as one string, via `"${SHELL}" -c`) with all its output out of sight. By default stdout and stderr go to the null sink. With `log` first, they are appended to the script's timestamped log file instead — `${directory_log}/${script}-${stamp}.log`, where `directory_log` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise. It runs in the foreground; to show a ticker while it runs, start it through `frobulator.background`.
 
 ```bash
 frobulator.silence "apt-get update"
+frobulator.silence log "apt-get install --assume-yes curl"
 ```
 
-### frobulator.log
+### frobulator.background
 
-Runs a command the same way, but redirects output to a timestamped log file instead of discarding it — `${directory_log}/${script}-${stamp}.log`, where `directory_log` is `${PREFIX}/var/log` for a system-context run or `${HOME}/.local/var/log` otherwise.
+Runs a command in the background without the shell's job notices — no `[1] 12345` when it starts and no `[1]+ Done` when it ends, even in an interactive shell where a bash function calls it. Job control is switched off while the command runs and restored afterwards; only the job start notice goes to the null sink, so the command's own errors still reach the terminal. The command is given as separate arguments after `--`, so paths and patterns pass through untouched.
+
+- With an action (and optional detail) before `--`, it shows a `frobulator.progress` ticker until the command ends and returns the command's exit status. The command's stdout goes to the null sink, since the ticker owns the line.
+- With nothing before `--`, the command is left running detached and its process identifier is stored in `frobulator_return`. Its output is left as is; redirect the whole call to silence it.
+
+Options, in this order, before the action:
+
+- `quiet` — the command's errors go to the null sink as well.
+- `process` — use the `frobulator.process` ticker with free text instead of the `frobulator.progress` action verb.
+- `output "[file]"` — write the command's stdout to that file instead of the null sink, to read once the ticker ends.
 
 ```bash
-frobulator.log "apt-get install curl"
+frobulator.background download "[ ${file} ]" -- curl -s -L -o "${file}" "${url}"
+frobulator.background quiet generate -- blender --background "${file_model}"
+frobulator.background process "Stopping display server" -- x11vnc -R stop
+frobulator.background output "${file_status}" download -- curl -s -o "${file}" -w "%{http_code}" "${url}"
+frobulator.background install -- frobulator.silence log "apt-get install --assume-yes curl"
+frobulator.background -- mpv --no-terminal "${file_audio}"
 ```
 
 ## user input helpers
@@ -1151,7 +1168,7 @@ frobulator.status
 frobulator.download
 frobulator.upload
 frobulator.silence
-frobulator.log
+frobulator.background
 frobulator.password
 frobulator.input
 frobulator.clean

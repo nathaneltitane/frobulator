@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-10-1617"
+update="2026-10-15-0927"
 
 version="${update}"
 
@@ -3550,6 +3550,7 @@ frobulator.complete () {
 	local index_line
 	local name_command
 	local argument_command
+	local argument_next
 
 	local -a lines_caller=()
 
@@ -3618,21 +3619,26 @@ frobulator.complete () {
 
 				if [ "${index_line}" -ge 0 ]
 				then
-					read -r name_command argument_command _ <<< "${lines_caller[index_line]}"
+					read -r name_command argument_command argument_next _ <<< "${lines_caller[index_line]}"
 				fi
 			fi
 
 			# background command followed by progress - progress action names it
 
-			if [ "${name_command}" = "frobulator.progress" ]
+			if [ "${name_command}" = "frobulator.progress" ] || [ "${name_command}" = "frobulator.background" ]
 			then
 				name_command="${argument_command//\"/}"
 			fi
 
 			# silenced or logged command - wrapped command names it if written out
 
-			if [ "${name_command}" = "frobulator.silence" ] || [ "${name_command}" = "frobulator.log" ]
+			if [ "${name_command}" = "frobulator.silence" ]
 			then
+				if [ "${argument_command}" = "log" ]
+				then
+					argument_command="${argument_next}"
+				fi
+
 				argument_command="${argument_command//\"/}"
 
 				if [[ "${argument_command}" =~ ^[A-Za-z_][A-Za-z0-9_.-]*$ ]]
@@ -3672,7 +3678,7 @@ frobulator.complete () {
 
 		line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${message:-${label}}${detail:+ ${detail}} [ status ${status} ]"
 
-		frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+		frobulator.silence log "printf '%s\\n' $(printf '%q' "${line}")"
 
 		if [ "${mode}" = "halt" ]
 		then
@@ -3785,7 +3791,7 @@ frobulator.complete () {
 
 		line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint} [ status ${status} ]"
 
-		frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+		frobulator.silence log "printf '%s\\n' $(printf '%q' "${line}")"
 
 		if [ "${mode}" = "halt" ]
 		then
@@ -3855,7 +3861,7 @@ frobulator.halt () {
 
 	line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint}${2:+ ${2}} [ status ${status} ]"
 
-	frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+	frobulator.silence log "printf '%s\\n' $(printf '%q' "${line}")"
 
 	frobulator.result "${script##*/}"
 
@@ -3918,7 +3924,7 @@ frobulator.fail () {
 
 	line="$(date +"%Y-%m-%d %H:%M:%S") ${script##*/}: ${checkpoint}${2:+ ${2}} [ status ${status} ]"
 
-	frobulator.log "printf '%s\\n' $(printf '%q' "${line}")"
+	frobulator.silence log "printf '%s\\n' $(printf '%q' "${line}")"
 
 	return "${status}"
 }
@@ -3994,7 +4000,7 @@ frobulator.result () {
 
 		frobulator.wrn "Errors encountered" "[ ${count_error} ] [ ${instance} ]"
 
-		# same directory as frobulator.log
+		# same directory as frobulator.silence log
 
 		if [ -z "${SUDO:-${HOME}}" ]
 		then
@@ -5617,15 +5623,14 @@ frobulator.download () {
 			continue
 		fi
 
-		curl								\
-			--silent						\
-			--location						\
-			--connect-timeout 30			\
-			--output "${file_download_partial}"	\
-			--write-out "%{http_code}"		\
-			"${source_download}" > "${file_download_partial}.status" &
-
-		frobulator.progress "download" "[ ${label_download} ]"
+		frobulator.background output "${file_download_partial}.status" download "[ ${label_download} ]" --	\
+			curl								\
+				--silent						\
+				--location						\
+				--connect-timeout 30			\
+				--output "${file_download_partial}"	\
+				--write-out "%{http_code}"		\
+				"${source_download}"
 
 		code_download="$(< "${file_download_partial}.status")"
 
@@ -5783,9 +5788,7 @@ frobulator.upload () {
 
 		command_upload+=("${url}")
 
-		"${command_upload[@]}" > "${file_upload_response}" &
-
-		frobulator.progress "upload" "[ ${label_upload} ]"
+		frobulator.background output "${file_upload_response}" upload "[ ${label_upload} ]" -- "${command_upload[@]}"
 
 		code_upload="$(< "${file_upload_response}")"
 
@@ -5816,17 +5819,57 @@ frobulator.upload () {
 
 # silence ──────────────────────────────────────────────────────────────────────
 
-# use to wrap command execution and redirect all output to null sink
-# provides fully silent execution
+# use to run a command with its output out of sight
+# all output - normal and errors - discarded to the null sink
+# log: all output appended to the script log instead - ~/.local/var/log/<script>-<stamp>.log
+# command given as one string - run through the shell - quoting inside it must survive a second parse
 
 # usage:      frobulator.silence "[command]"
+#             frobulator.silence log "[command]"
 
 frobulator.silence () {
 
 	local status=0
-	local command="${*}"
 
-	"${SHELL}" -c "${command}" >> "${sink}" 2>&1
+	local directory_log
+	local file_output="${sink}"
+	local command
+
+	# log mode - output kept in the script log
+
+	if [ "${1}" = "log" ]
+	then
+		shift
+
+		if [ -z "${SUDO:-${HOME}}" ]
+		then
+			directory_log="${PREFIX}/var/log"
+		else
+			if [ ! -d "${HOME}/.local/var/log" ]
+			then
+				mkdir --parents "${HOME}/.local/var/log"
+
+				frobulator.track || return 1
+			fi
+
+			directory_log="${HOME}/.local/var/log"
+		fi
+
+		if [ -z "${script}" ]
+		then
+			script="$(basename -- "${BASH_SOURCE[0]}")"
+
+			frobulator.track || return 1
+		fi
+
+		script="${script##*/}"
+
+		file_output="${directory_log}/${script}-${stamp}.log"
+	fi
+
+	command="${*}"
+
+	"${SHELL}" -c "${command}" >> "${file_output}" 2>&1
 
 	frobulator.track
 
@@ -5834,49 +5877,134 @@ frobulator.silence () {
 
 }
 
-# log ──────────────────────────────────────────────────────────────────────────
+# background ───────────────────────────────────────────────────────────────────
 
-# use to wrap command and redirect all output to "${script}"-"${stamp}".log file
-# provides fully silent execution
+# use to run a command in the background without the shell's job notices
+# job control off while it runs - '[1] pid' and '[1]+ Done' never printed
+# command given as separate arguments - paths and patterns passed untouched
+# action and detail given: ticker until the command ends - its exit status returned
+#   command output sent to the null sink - the ticker owns the line - command errors still shown
+# no action: command left running detached - its process identifier in frobulator_return
+#   command output left as it is - redirect the whole call to silence it
+# quiet: command errors sent to the null sink as well
+# process: frobulator.process ticker - free text - instead of the frobulator.progress action verb
+# output: command output written to the given file instead of the null sink - read it once the ticker ends
+# job control restored afterwards when the shell had it on
 
-# usage:      frobulator.log "[command]"
+# usage:      frobulator.background [quiet] [process] [output "[file]"] [action] "[detail]" -- [command] [arguments]
+#             frobulator.background [quiet] -- [command] [arguments]
 
-frobulator.log () {
+# command:    frobulator.background download "[ file ]" -- curl -s -o file https://example.com/file
+# command:    frobulator.background quiet generate -- blender --background model.blend
+# command:    frobulator.background process "Stopping display server" -- x11vnc -R stop
+# command:    frobulator.background output "status" download -- curl -s -o file -w "%{http_code}" https://example.com/file
+# command:    frobulator.background -- mpv --no-terminal file.mp3
+
+frobulator.background () {
 
 	local status=0
-	local command="${*}"
 
-	local directory_log
-	local log
+	local state_monitor="off"
+	local state_quiet="false"
+	local type_ticker="progress"
+	local file_output="${sink}"
+	local id_process
 
-	if [ -z "${SUDO:-${HOME}}" ]
+	local -a list_action=()
+
+	# options - quiet then process - process alone before the separator is an action
+
+	if [ "${1}" = "quiet" ]
 	then
-		directory_log="${PREFIX}/var/log"
+		state_quiet="true"
+
+		shift
+	fi
+
+	if [ "${1}" = "process" ] && [ "${2}" != "--" ]
+	then
+		type_ticker="process"
+
+		shift
+	fi
+
+	if [ "${1}" = "output" ]
+	then
+		file_output="${2}"
+
+		shift 2
+	fi
+
+	# action and detail - everything before the separator
+
+	while [ "${#}" -gt 0 ] && [ "${1}" != "--" ]
+	do
+		list_action+=("${1}")
+
+		shift
+	done
+
+	if [ "${1}" != "--" ]
+	then
+		frobulator.err "Missing separator before the command" "[ -- ]"
+
+		return 1
+	fi
+
+	shift
+
+	if [ "${#}" -eq 0 ]
+	then
+		frobulator.err "No command specified"
+
+		return 1
+	fi
+
+	# job control - off while the command starts and runs
+
+	if [[ "${-}" == *m* ]]
+	then
+		state_monitor="on"
+	fi
+
+	set +m
+
+	# start notice to the sink - command errors through descriptor 3 to the terminal unless quiet
+
+	if [ "${#list_action[@]}" -gt 0 ] && [ "${state_quiet}" = "true" ]
+	then
+		{ "${@}" > "${file_output}" 2> "${sink}" & } 2> "${sink}"
+
+	elif [ "${#list_action[@]}" -gt 0 ]
+	then
+		{ "${@}" > "${file_output}" 2>&3 & } 3>&2 2> "${sink}"
+
+	elif [ "${state_quiet}" = "true" ]
+	then
+		{ "${@}" 2> "${sink}" & } 2> "${sink}"
 	else
-		if [ ! -d "${HOME}/.local/var/log" ]
-		then
-			mkdir --parents "${HOME}/.local/var/log"
-
-			frobulator.track || return 1
-		fi
-
-		directory_log="${HOME}/.local/var/log"
+		{ "${@}" 2>&3 & } 3>&2 2> "${sink}"
 	fi
 
-	if [ -z "${script}" ]
+	id_process="${!}"
+
+	frobulator_return=("${id_process}")
+
+	if [ "${#list_action[@]}" -gt 0 ]
 	then
-		script="$(basename -- "${BASH_SOURCE[0]}")"
+		"frobulator.${type_ticker}" "${list_action[@]}"
 
-		frobulator.track || return 1
+		status="${?}"
+	else
+		# detached - no done notice later - not waited for
+
+		disown "${id_process}" 2> "${sink}"
 	fi
 
-	script="${script##*/}"
-
-	log="${directory_log}/${script}-${stamp}.log"
-
-	"${SHELL}" -c "${command}" >> "${log}" 2>&1
-
-	frobulator.track
+	if [ "${state_monitor}" = "on" ]
+	then
+		set -m
+	fi
 
 	return "${status}"
 
@@ -6046,21 +6174,15 @@ frobulator.clean () {
 	local command_autoclean="apt-get autoclean"
 	local command_clean="apt-get clean"
 
-	frobulator.log "${command_autoremove}" &
-
-	frobulator.process "Flushing package(s)"
+	frobulator.background process "Flushing package(s)" -- frobulator.silence log "${command_autoremove}"
 
 	frobulator.track
 
-	frobulator.log "${command_autoclean}" &
-
-	frobulator.progress "Autoclean"
+	frobulator.background "Autoclean" -- frobulator.silence log "${command_autoclean}"
 
 	frobulator.track
 
-	frobulator.log "${command_clean}" &
-
-	frobulator.progress "Clean"
+	frobulator.background "Clean" -- frobulator.silence log "${command_clean}"
 
 	frobulator.track
 
@@ -6116,9 +6238,7 @@ frobulator.hold () {
 	do
 		frobulator.wrn "Holding" "[ '${package}' ]"
 
-		frobulator.log "${command_hold} ${package}" &
-
-		frobulator.progress "hold"
+		frobulator.background "hold" -- frobulator.silence log "${command_hold} ${package}"
 
 		frobulator.track
 	done
@@ -6165,9 +6285,7 @@ frobulator.release () {
 	do
 		frobulator.wrn "Releasing" "[ '${package}' ]"
 
-		frobulator.log "${command_unhold} ${package}" &
-
-		frobulator.progress "release"
+		frobulator.background "release" -- frobulator.silence log "${command_unhold} ${package}"
 
 		frobulator.track
 	done
@@ -6223,9 +6341,7 @@ frobulator.failsafe () {
 		list+=("${package}")
 	fi
 
-	failsafe_intent &
-
-	frobulator.process "Please wait"
+	frobulator.background process "Please wait" -- failsafe_intent
 
 	frobulator.track
 
@@ -6233,15 +6349,15 @@ frobulator.failsafe () {
 
 	for package in "${list[@]}"
 	do
-		frobulator.log "${command_update}"
+		frobulator.silence log "${command_update}"
 
 		frobulator.track
 
-		frobulator.log "${command_upgrade}"
+		frobulator.silence log "${command_upgrade}"
 
 		frobulator.track
 
-		frobulator.log "${command_install} ${package}"
+		frobulator.silence log "${command_install} ${package}"
 
 		frobulator.track
 	done
@@ -6296,9 +6412,7 @@ frobulator.install () {
 		then
 			frobulator.msg "Local package(s) selected"
 
-			frobulator.log "${command_install} ${package}" &
-
-			frobulator.progress "install"
+			frobulator.background "install" -- frobulator.silence log "${command_install} ${package}"
 
 			frobulator.track
 		else
@@ -6313,9 +6427,7 @@ frobulator.install () {
 					frobulator.wrn "Absent on system" "[ '${package}' ]"
 				fi
 
-				frobulator.log "${command_install} ${package}" &
-
-				frobulator.progress "install"
+				frobulator.background "install" -- frobulator.silence log "${command_install} ${package}"
 
 				frobulator.track
 			else
@@ -6402,7 +6514,7 @@ frobulator.require () {
 
 		frobulator.track
 
-		frobulator.log "apt-file update"
+		frobulator.silence log "apt-file update"
 
 		frobulator.track
 	fi
@@ -6577,9 +6689,7 @@ frobulator.reinstall () {
 
 	for package in "${list[@]}"
 	do
-		frobulator.log "${command_reinstall} ${package}" &
-
-		frobulator.progress "reinstall"
+		frobulator.background "reinstall" -- frobulator.silence log "${command_reinstall} ${package}"
 
 		frobulator.track
 	done
@@ -6607,9 +6717,7 @@ frobulator.update () {
 
 	frobulator.inf "Processing package and repository information"
 
-	frobulator.log "${command_update}" &
-
-	frobulator.progress "update"
+	frobulator.background "update" -- frobulator.silence log "${command_update}"
 
 	frobulator.track
 
@@ -6632,9 +6740,7 @@ frobulator.upgrade () {
 
 	frobulator.inf "Processing installed package(s)"
 
-	frobulator.log "${command_upgrade}" &
-
-	frobulator.progress "upgrade"
+	frobulator.background "upgrade" -- frobulator.silence log "${command_upgrade}"
 
 	frobulator.track
 
@@ -6683,9 +6789,7 @@ frobulator.purge () {
 		then
 			frobulator.wrn "Selecting" "[ '${package}' ]"
 
-			frobulator.log "${command_purge} ${package}" &
-
-			frobulator.progress "purge"
+			frobulator.background "purge" -- frobulator.silence log "${command_purge} ${package}"
 
 			frobulator.track
 		else
@@ -7329,13 +7433,9 @@ frobulator.service () {
 	then
 		if [ -z "${service}" ]
 		then
-			systemctl "${scope_system_control[@]}" daemon-reload > "${sink}" 2>&1 &
-
-			frobulator.process "Reloading"
+			frobulator.background quiet process "Reloading" -- systemctl "${scope_system_control[@]}" daemon-reload
 		else
-			systemctl "${scope_system_control[@]}" reload "${service}" > "${sink}" 2>&1 &
-
-			frobulator.process "Service reload" "[ ${service} ]"
+			frobulator.background quiet process "Service reload" "[ ${service} ]" -- systemctl "${scope_system_control[@]}" reload "${service}"
 		fi
 
 		frobulator.track
@@ -7396,15 +7496,11 @@ frobulator.service () {
 
 		for action_service in "${list_actions_service[@]}"
 		do
-			systemctl "${scope_system_control[@]}" "${action_service}" "${service}" > "${sink}" 2>&1 &
-
-			frobulator.process "Service ${action_service}" "[ ${service} ]"
+			frobulator.background quiet process "Service ${action_service}" "[ ${service} ]" -- systemctl "${scope_system_control[@]}" "${action_service}" "${service}"
 
 			sleep 1
 
-			systemctl "${scope_system_control[@]}" daemon-reload > "${sink}" 2>&1 &
-
-			frobulator.process "Reloading"
+			frobulator.background quiet process "Reloading" -- systemctl "${scope_system_control[@]}" daemon-reload
 
 			sleep 1
 		done
@@ -7436,9 +7532,7 @@ frobulator.service () {
 			return 1
 		fi
 
-		systemctl "${scope_system_control[@]}" "${action}" "${service}" > "${sink}" 2>&1 &
-
-		frobulator.process "Service ${action}" "[ ${service} ]"
+		frobulator.background quiet process "Service ${action}" "[ ${service} ]" -- systemctl "${scope_system_control[@]}" "${action}" "${service}"
 
 		frobulator.track
 	fi

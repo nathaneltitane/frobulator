@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-15-0927"
+update="2026-10-17-1218"
 
 version="${update}"
 
@@ -7106,6 +7106,9 @@ frobulator.assess () {
 # never escalates an interactive shell (tty startup: bashrc, bash_profile,
 # bash_login, etc.), regardless of pattern matching
 
+# never escalates in termux itself - rooted or not - its packages install without root
+# sudo and escalation are for the linux containers run under termux - those keep the normal checks
+
 # usage:      self_arguments=("${@}")
 #             frobulator.escalate
 
@@ -7202,6 +7205,16 @@ frobulator.escalate () {
 	if [[ $- == *i* ]]
 	then
 		frobulator.inf "Privilege escalation prevented - interactive shell" "[ file${marker_spc}${marker_hnt}${marker_spc}'${self}' ]"
+
+		return "${status}"
+	fi
+
+	# termux itself - rooted or not - packages install without root - escalation belongs to the containers
+	# told apart by the running bash - termux's own build - containers inherit PREFIX and TERMUX_VERSION
+
+	if [[ "${BASH}" == */com.termux/* ]]
+	then
+		frobulator.inf "Privilege escalation not required - termux" "[ user${marker_spc}${marker_hnt}${marker_spc}'${user_current}' ]"
 
 		return "${status}"
 	fi
@@ -7357,7 +7370,7 @@ frobulator.escalate () {
 
 	# set superuser password prompt
 
-	export SUDO_PROMPT="[${marker_spc}$(tput setaf 3)${USER}$(tput sgr 0)${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
+	export SUDO_PROMPT="[${marker_spc}${yellow}${USER}${reset}${marker_spc}]${marker_spc}>_${marker_spc}?${marker_spc}"
 
 	# restart as superuser with user home
 

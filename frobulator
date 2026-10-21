@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-17-1218"
+update="2026-10-19-2312"
 
 version="${update}"
 
@@ -40,6 +40,10 @@ then
 				option="install"
 			;;
 
+			-u|--uninstall)
+				option="uninstall"
+			;;
+
 			-c|--critter)
 				option="critter"
 
@@ -55,15 +59,17 @@ then
 
 			-h|--help)
 				echo
-				echo -e "Usage: ./${script} -i | -h"
+				echo -e "Usage: ./${script} -i | -u | -h"
 				echo
 				echo -e "Options:"
 				echo
-				echo -e "-i, --install    Run [i]nstallation of ${script} to ${directory_install}."
+				echo -e "-i, --install      Run [i]nstallation of ${script} to ${directory_install}."
 				echo
-				echo -e "-h, --help       Show [h]elp and usage information."
+				echo -e "-u, --uninstall    Run [u]ninstallation of ${script} from ${directory_install}."
 				echo
-				echo -e "'${script}'      [ Version // ${version} ]"
+				echo -e "-h, --help         Show [h]elp and usage information."
+				echo
+				echo -e "'${script}'        [ Version // ${version} ]"
 				echo
 
 				exit
@@ -78,7 +84,7 @@ then
 
 			*)
 				echo
-				echo -e "Usage: ./${script} -i | -h"
+				echo -e "Usage: ./${script} -i | -u | -h"
 				echo
 				echo -e "Unknown option: '${script} ${1}':"
 				echo -e "Type './${script} -h' for help and usage information."
@@ -4726,7 +4732,9 @@ frobulator.delete () {
 
 	for item in "${list[@]}"
 	do
-		if [ ! -e "${path}/${item}" ]
+		# broken links count as present - their target is gone but the link itself remains
+
+		if [ ! -e "${path}/${item}" ] && [ ! -L "${path}/${item}" ]
 		then
 			frobulator.wrn "Nothing to delete" "[ ${path}/${item} ]"
 
@@ -8178,6 +8186,26 @@ then
 		frobulator.permissions public execute "${directory_install}/${file_name}"
 
 		frobulator.scs "Installed" "[ ${directory_install}/${file_name} ]"
+	fi
+
+	# release option
+
+	unset option
+fi
+
+# uninstall: installed copy removed - scripts using frobulator fetch it again on their next run
+
+if [ "${option}" = "uninstall" ]
+then
+	file_name="$(basename "${BASH_SOURCE[0]}")"
+
+	if [ -e "${directory_install}/${file_name}" ]
+	then
+		frobulator.delete "${directory_install}" "${file_name}"
+
+		frobulator.scs "Uninstalled" "[ ${directory_install}/${file_name} ]"
+	else
+		frobulator.inf "No installed copy found" "[ ${directory_install}/${file_name} ]"
 	fi
 
 	# release option

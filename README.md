@@ -56,6 +56,7 @@ Running the script directly installs it to `${HOME}/.local/bin` - no arguments d
 ```bash
 ./frobulator              # install (default)
 ./frobulator --install    # install
+./frobulator --uninstall  # uninstall - scripts using frobulator fetch it again on their next run
 ./frobulator --help       # usage
 ```
 

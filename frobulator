@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-19-2312"
+update="2026-10-21-2125"
 
 version="${update}"
 
@@ -4732,7 +4732,7 @@ frobulator.delete () {
 
 	for item in "${list[@]}"
 	do
-		# broken links count as present - their target is gone but the link itself remains
+		# count broken links as present
 
 		if [ ! -e "${path}/${item}" ] && [ ! -L "${path}/${item}" ]
 		then
@@ -8193,7 +8193,7 @@ then
 	unset option
 fi
 
-# uninstall: installed copy removed - scripts using frobulator fetch it again on their next run
+# uninstall installed copy
 
 if [ "${option}" = "uninstall" ]
 then

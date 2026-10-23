@@ -4,7 +4,7 @@
 
 ⭐ Useful? Star the repository - it helps others find it.
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-02 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-22 ]
 
 ---
 
@@ -195,6 +195,7 @@ Short names for the functions used most: prompt formatting and line markers. Eac
 | `frobulator.qst` | question prompt |
 | `frobulator.ipt` | input prompt |
 | `frobulator.usr` | user prompt |
+| `frobulator.rtn` | return prompt |
 | `frobulator.ltr` | letter |
 | `frobulator.num` | number |
 | `frobulator.sep` | separator |
@@ -233,7 +234,7 @@ frobulator.brk
 
 These commands print standard frobulator markers by calling `frobulator.pmt` directly and prefixing its own colored marker glyph (e.g. `[  i  ]`, `[  !  ]`). Most accept a message, an optional detail string, and an optional fill character.
 
-Every marker line is followed by a blank line, printed by `frobulator.brk` - scripts do not add `echo` after messages. Carry-over lines (`frobulator.nul`, `frobulator.ind`) rejoin the line above on screen, so a message and its details stay together. Prompts (`qst`, `ipt`, `usr`) stay on the same line for the answer.
+Every marker line is followed by a blank line, printed by `frobulator.brk` - scripts do not add `echo` after messages. Carry-over lines (`frobulator.nul`, `frobulator.ind`) rejoin the line above on screen, so a message and its details stay together. Prompts (`qst`, `ipt`, `usr`, `rtn`) stay on the same line for the answer.
 
 | command | purpose | example |
 |--------------------|-----------------------------|---------------------------------------------|
@@ -259,6 +260,7 @@ Every marker line is followed by a blank line, printed by `frobulator.brk` - scr
 | `frobulator.qst` | question prompt (no newline) | `frobulator.qst "Enter value"` |
 | `frobulator.ipt` | input prompt (no newline) | `frobulator.ipt "Enter value"` |
 | `frobulator.usr` | user prompt (no newline) | `frobulator.usr "Enter value"` |
+| `frobulator.rtn` | return prompt (no newline) | `frobulator.rtn "Press to close" "[ konsole // 'weather' ]"` |
 | `frobulator.nul` | continue line, retain color | `frobulator.nul "continued output"` |
 | `frobulator.ind` | continue line, clear color | `frobulator.ind "continued output"` |
 
@@ -1111,6 +1113,7 @@ frobulator.url
 frobulator.qst
 frobulator.ipt
 frobulator.usr
+frobulator.rtn
 frobulator.nul
 frobulator.ind
 frobulator.ltr
@@ -1241,7 +1244,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-02 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-22 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

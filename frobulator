@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-21-2125"
+update="2026-10-22-2230"
 
 version="${update}"
 
@@ -865,35 +865,50 @@ marker_ssh='ssh://'
 
 # line markers ─────────────────────────────────────────────────────────────────
 
-marker_top='[  △  ]'
-marker_bot='[  ▽  ]'
+# name=symbol built as [  symbol  ]
 
-marker_fwd='[  ▷  ]'
-marker_rev='[  ◁  ]'
-marker_stp='[  □  ]'
+list_markers_line=(
+	top=△
+	bot=▽
 
-marker_cpt='[  ¤  ]'
+	fwd=▷
+	rev=◁
+	stp=□
 
-marker_add='[  +  ]'
-marker_rem='[  -  ]'
+	cpt=¤
 
-marker_ret='[  ●  ]'
-marker_rel='[  ○  ]'
+	add=+
+	rem=-
 
-marker_qst='[  ?  ]'
-marker_inf='[  i  ]'
-marker_wrn='[  !  ]'
+	ret=●
+	rel=○
 
-marker_ipt='[  >  ]'
-marker_msg='[  #  ]'
-marker_usr='[  ~  ]'
+	qst=?
+	inf=i
+	wrn=!
 
-marker_yes='[  ✓  ]'
-marker_not='[  𐄂  ]'
+	'ipt=>'
+	'msg=#'
+	'usr=~'
+	rtn=↵
 
-marker_url='[  /  ]'
+	yes=✓
+	not=𐄂
 
-marker_nul='       '
+	url=/
+)
+
+for entry_marker in "${list_markers_line[@]}"
+do
+	printf -v "marker_${entry_marker%%=*}" '[  %s  ]' "${entry_marker#*=}"
+done
+
+unset entry_marker
+unset list_markers_line
+
+# blank marker of line marker width
+
+marker_nul="${marker_inf//?/ }"
 
 # prompt line overwrite (plo) ──────────────────────────────────────────────────
 
@@ -1522,36 +1537,6 @@ frobulator.teal () {
 # command:    frobulator.[color] "[string]" "[string]" "[\]"
 # result:     string \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\...\\\ string
 
-# line markers:
-
-# top [  △  ]
-# bot [  ▽  ]
-
-# cpt [  ¤  ]
-
-# fwd [  ▷  ]
-# rev [  ◁  ]
-# stp [  □  ]
-
-# add [  +  ]
-# rem [  -  ]
-
-# ret [  ●  ]
-# rel [  ○  ]
-
-# qst [  ?  ]
-# inf [  i  ]
-# wrn [  !  ]
-
-# ipt [  >  ]
-# msg [  #  ]
-# usr [  ~  ]
-
-# yes [  ✓  ]
-# not [  𐄂  ]
-
-# url [  /  ]
-
 # empty line marker ────────────────────────────────────────────────────────────
 
 frobulator.nil () {
@@ -2015,6 +2000,29 @@ frobulator.usr () {
 	echo -n -e "${grey}${marker_usr}${marker_spc}${prompt}${marker_spc}${reset}"
 
 	entry_color=("${grey}")
+
+	unset spaced_marker
+
+	# entry_color kept - frobulator.nul continues in this color
+
+	return "${status}"
+}
+
+# return line marker ───────────────────────────────────────────────────────────
+
+# use before frobulator.read to wait for the return key
+
+frobulator.rtn () {
+
+	local status=0
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -n -e "${aqua}${marker_rtn}${marker_spc}${prompt}${marker_spc}${reset}"
+
+	entry_color=("${aqua}")
 
 	unset spaced_marker
 

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-22-2230"
+update="2026-10-22-2240"
 
 version="${update}"
 
@@ -853,6 +853,8 @@ marker_idt='       '
 marker_prc='%'
 marker_spc=' '
 marker_tab='    '
+marker_brl='['
+marker_brr=']'
 
 # protocol markers ─────────────────────────────────────────────────────────────
 
@@ -867,43 +869,46 @@ marker_ssh='ssh://'
 
 # name=symbol built as [  symbol  ]
 
+format_marker="${marker_brl}${marker_spc}${marker_spc}${marker_prc}s${marker_spc}${marker_spc}${marker_brr}"
+
 list_markers_line=(
-	top=△
-	bot=▽
+	'top=△'
+	'bot=▽'
 
-	fwd=▷
-	rev=◁
-	stp=□
+	'fwd=▷'
+	'rev=◁'
+	'stp=□'
 
-	cpt=¤
+	'cpt=¤'
 
-	add=+
-	rem=-
+	'add=+'
+	'rem=-'
 
-	ret=●
-	rel=○
+	'ret=●'
+	'rel=○'
 
-	qst=?
-	inf=i
-	wrn=!
+	'qst=?'
+	'inf=i'
+	'wrn=!'
 
 	'ipt=>'
 	'msg=#'
 	'usr=~'
-	rtn=↵
+	'rtn=↵'
 
-	yes=✓
-	not=𐄂
+	'yes=✓'
+	'not=𐄂'
 
-	url=/
+	'url=/'
 )
 
 for entry_marker in "${list_markers_line[@]}"
 do
-	printf -v "marker_${entry_marker%%=*}" '[  %s  ]' "${entry_marker#*=}"
+	printf -v "marker_${entry_marker%%=*}" "${format_marker}" "${entry_marker#*=}"
 done
 
 unset entry_marker
+unset format_marker
 unset list_markers_line
 
 # blank marker of line marker width

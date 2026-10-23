@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-22-2250"
+update="2026-10-23-1100"
 
 version="${update}"
 
@@ -188,7 +188,29 @@ fi
 
 # package manager ──────────────────────────────────────────────────────────────
 
-# detect package manager: each candidate path - empty if absent
+# detect package manager: distribution family from os-release first
+# family named in ID or ID_LIKE - ubuntu and others like debian - rhel and others like fedora
+# no os-release (termux) or unknown family: each candidate path - empty if absent
+# inside a container the host apt may sit on the path - the family decides
+
+file_release_os="/etc/os-release"
+family_distribution=""
+
+if [ -f "${file_release_os}" ]
+then
+	while IFS='=' read -r key_release value_release || [ -n "${key_release}" ]
+	do
+		value_release="${value_release#\"}"
+		value_release="${value_release%\"}"
+		value_release="${value_release#\'}"
+		value_release="${value_release%\'}"
+
+		if [ "${key_release}" = "ID" ] || [ "${key_release}" = "ID_LIKE" ]
+		then
+			family_distribution+=" ${value_release} "
+		fi
+	done < "${file_release_os}"
+fi
 
 manager_package_apt="$(command -v apt)"
 manager_package_dnf="$(command -v dnf)"
@@ -196,7 +218,19 @@ manager_package_yum="$(command -v yum)"
 manager_package_pip="$(command -v pip)"
 manager_package_pipx="$(command -v pipx)"
 
-if [ -n "${manager_package_apt}" ]
+if [[ "${family_distribution}" == *" debian "* ]] && [ -n "${manager_package_apt}" ]
+then
+	manager_package="apt"
+
+elif [[ "${family_distribution}" == *" fedora "* ]] && [ -n "${manager_package_dnf}" ]
+then
+	manager_package="dnf"
+
+elif [[ "${family_distribution}" == *" fedora "* ]] && [ -n "${manager_package_yum}" ]
+then
+	manager_package="yum"
+
+elif [ -n "${manager_package_apt}" ]
 then
 	manager_package="apt"
 
@@ -220,6 +254,7 @@ fi
 # detection variables are not kept in the shell
 
 unset manager_package_apt manager_package_dnf manager_package_yum manager_package_pip manager_package_pipx
+unset file_release_os family_distribution key_release value_release
 
 # character encoding / expansion capabilities for embedded document writes
 
@@ -6202,6 +6237,131 @@ frobulator.input () {
 
 }
 
+# manager ──────────────────────────────────────────────────────────────────────
+
+# use to give the package manager command for an action
+# apt by default - dnf and yum in their own syntax - empty when the action has no equivalent
+
+# usage:      frobulator.manager [ update | upgrade | install | reinstall | purge | autoremove | autoclean | clean | hold | release ]
+
+# command:    command_install="$(frobulator.manager install)"
+
+frobulator.manager () {
+
+	local action="${1}"
+	local command_manager
+
+	if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+	then
+		if [ "${action}" = "update" ]
+		then
+			command_manager="${manager_package} makecache"
+
+		elif [ "${action}" = "upgrade" ]
+		then
+			command_manager="${manager_package} --assumeyes upgrade"
+
+		elif [ "${action}" = "install" ]
+		then
+			command_manager="${manager_package} --assumeyes install"
+
+		elif [ "${action}" = "reinstall" ]
+		then
+			command_manager="${manager_package} --assumeyes reinstall"
+
+		elif [ "${action}" = "purge" ]
+		then
+			command_manager="${manager_package} --assumeyes remove"
+
+		elif [ "${action}" = "autoremove" ]
+		then
+			command_manager="${manager_package} --assumeyes autoremove"
+
+		elif [ "${action}" = "clean" ]
+		then
+			command_manager="${manager_package} clean all"
+
+		elif [ "${action}" = "hold" ]
+		then
+			command_manager="${manager_package} versionlock add"
+
+		elif [ "${action}" = "release" ]
+		then
+			command_manager="${manager_package} versionlock delete"
+		fi
+	else
+		if [ "${action}" = "update" ]
+		then
+			command_manager="apt-get update"
+
+		elif [ "${action}" = "upgrade" ]
+		then
+			command_manager="apt-get --assume-yes dist-upgrade"
+
+		elif [ "${action}" = "install" ]
+		then
+			command_manager="apt-get --assume-yes install"
+
+		elif [ "${action}" = "reinstall" ]
+		then
+			command_manager="apt-get --assume-yes install --reinstall"
+
+		elif [ "${action}" = "purge" ]
+		then
+			command_manager="apt-get --assume-yes purge --autoremove"
+
+		elif [ "${action}" = "autoremove" ]
+		then
+			command_manager="apt-get autoremove"
+
+		elif [ "${action}" = "autoclean" ]
+		then
+			command_manager="apt-get autoclean"
+
+		elif [ "${action}" = "clean" ]
+		then
+			command_manager="apt-get clean"
+
+		elif [ "${action}" = "hold" ]
+		then
+			command_manager="apt-mark hold"
+
+		elif [ "${action}" = "release" ]
+		then
+			command_manager="apt-mark unhold"
+		fi
+	fi
+
+	echo "${command_manager}"
+}
+
+# installed ────────────────────────────────────────────────────────────────────
+
+# use to print a package install state - 'install ok installed' when present
+# dpkg state as is - rpm presence given the same wording - empty if unknown
+
+# usage:      frobulator.installed [package]
+
+# command:    status_package="$(frobulator.installed rsync)"
+
+frobulator.installed () {
+
+	local package="${1}"
+	local name_installed
+
+	if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+	then
+		name_installed="$(rpm --query --queryformat '%{NAME}' "${package}" 2> "${sink}")"
+
+		if [ "${name_installed}" = "${package}" ]
+		then
+			echo "install ok installed"
+		fi
+	else
+		dpkg-query --show --showformat='${Status}' "${package}" 2> "${sink}"
+	fi
+}
+
 # clean ────────────────────────────────────────────────────────────────────────
 
 # use to run package and installer post-install cleanup
@@ -6213,17 +6373,22 @@ frobulator.input () {
 frobulator.clean () {
 
 	local status=0
-	local command_autoremove="apt-get autoremove"
-	local command_autoclean="apt-get autoclean"
-	local command_clean="apt-get clean"
+	local command_autoremove="$(frobulator.manager autoremove)"
+	local command_autoclean="$(frobulator.manager autoclean)"
+	local command_clean="$(frobulator.manager clean)"
 
 	frobulator.background process "Flushing package(s)" -- frobulator.silence log "${command_autoremove}"
 
 	frobulator.track
 
-	frobulator.background "Autoclean" -- frobulator.silence log "${command_autoclean}"
+	# no autoclean equivalent outside apt
 
-	frobulator.track
+	if [ -n "${command_autoclean}" ]
+	then
+		frobulator.background "Autoclean" -- frobulator.silence log "${command_autoclean}"
+
+		frobulator.track
+	fi
 
 	frobulator.background "Clean" -- frobulator.silence log "${command_clean}"
 
@@ -6256,7 +6421,7 @@ frobulator.clean () {
 frobulator.hold () {
 
 	local status=0
-	local command_hold="apt-mark hold"
+	local command_hold="$(frobulator.manager hold)"
 
 	local package
 
@@ -6303,7 +6468,7 @@ frobulator.hold () {
 frobulator.release () {
 
 	local status=0
-	local command_unhold="apt-mark unhold"
+	local command_unhold="$(frobulator.manager release)"
 
 	local package
 
@@ -6352,9 +6517,9 @@ frobulator.release () {
 frobulator.failsafe () {
 
 	local status=0
-	local command_update="apt-get --assume-yes update"
-	local command_upgrade="apt-get --assume-yes dist-upgrade"
-	local command_install="apt-get --assume-yes install"
+	local command_update="$(frobulator.manager update)"
+	local command_upgrade="$(frobulator.manager upgrade)"
+	local command_install="$(frobulator.manager install)"
 
 	local package
 
@@ -6364,9 +6529,16 @@ frobulator.failsafe () {
 		# mitigate general deployment setup issues
 		# mitigate skipped packages on install
 
-		yes | apt update > "${sink}" 2>&1
+		if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+		then
+			${command_update} > "${sink}" 2>&1
 
-		yes | apt full-upgrade > "${sink}" 2>&1
+			${command_upgrade} > "${sink}" 2>&1
+		else
+			yes | apt update > "${sink}" 2>&1
+
+			yes | apt full-upgrade > "${sink}" 2>&1
+		fi
 	}
 
 	export DEBIAN_FRONTEND=noninteractive
@@ -6422,7 +6594,7 @@ frobulator.failsafe () {
 frobulator.install () {
 
 	local status=0
-	local command_install="apt-get --assume-yes install"
+	local command_install="$(frobulator.manager install)"
 
 	local package
 	local filter_query
@@ -6451,7 +6623,7 @@ frobulator.install () {
 
 	for package in "${list[@]}"
 	do
-		if [[ "${package}" = *.deb ]]
+		if [[ "${package}" = *.deb ]] || [[ "${package}" = *.rpm ]]
 		then
 			frobulator.msg "Local package(s) selected"
 
@@ -6459,7 +6631,12 @@ frobulator.install () {
 
 			frobulator.track
 		else
-			filter_query="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+			then
+				filter_query="$(frobulator.installed "${package}")"
+			else
+				filter_query="$(apt search "${package}" 2> "${sink}" | grep installed | cut -d '/' -f 1 | grep ^"${package}"$)"
+			fi
 
 			if [[ -z "${filter_query}" ]]
 			then
@@ -6532,6 +6709,7 @@ frobulator.require () {
 	fi
 
 	# apt-file is only needed to find the package providing a missing command
+	# dnf and yum answer that query themselves
 
 	for command in "${list_requirements[@]}"
 	do
@@ -6541,7 +6719,7 @@ frobulator.require () {
 
 		# package install state - empty if unknown to dpkg
 
-		status_package="$(dpkg-query --show --showformat='${Status}' "${command}" 2> "${sink}")"
+		status_package="$(frobulator.installed "${command}")"
 
 		if [[ "${command}" != *'*'* ]] && [ -z "${command_path}" ] && [[ "${status_package}" != *"ok installed"* ]]
 		then
@@ -6551,7 +6729,7 @@ frobulator.require () {
 		fi
 	done
 
-	if [ "${list_requirements_missing}" = true ]
+	if [ "${list_requirements_missing}" = true ] && [ "${manager_package}" != "dnf" ] && [ "${manager_package}" != "yum" ]
 	then
 		frobulator.failsafe apt-file
 
@@ -6572,13 +6750,18 @@ frobulator.require () {
 
 		# package install state - empty if unknown to dpkg
 
-		status_package="$(dpkg-query --show --showformat='${Status}' "${command}" 2> "${sink}")"
+		status_package="$(frobulator.installed "${command}")"
 
 		if [[ "${command}" == *'*'* ]]
 		then
 			frobulator.fwd "Expanding package selection query" "[ '${command}' ]"
 
-			packages="$(apt-cache pkgnames)"
+			if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+			then
+				packages="$(${manager_package} --quiet repoquery --queryformat '%{name}\n' 2> "${sink}")"
+			else
+				packages="$(apt-cache pkgnames)"
+			fi
 
 			frobulator.track || continue
 
@@ -6616,6 +6799,39 @@ frobulator.require () {
 			frobulator.wrn "Absent on system" "[ '${command}' ]"
 
 			frobulator.fwd "Probing${marker_elp}"
+
+			# dnf and yum - first package providing the command in a system binary directory
+
+			if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+			then
+				for directory_system_binary in /usr/bin /usr/sbin
+				do
+					while IFS= read -r package_query
+					do
+						if [ -n "${package_query}" ] && [ "${#list_install[@]}" -eq 0 ]
+						then
+							frobulator.scs "Command provision found as package" "[ '${package_query}' ]"
+
+							list_install+=("${package_query}")
+						fi
+					done < <(${manager_package} --quiet repoquery --whatprovides "${directory_system_binary}/${command}" --queryformat '%{name}\n' 2> "${sink}")
+				done
+
+				if [[ "${#list_install[@]}" -ge 1 ]]
+				then
+					frobulator.install "${list_install[@]}"
+
+					frobulator.track
+
+					list_install=()
+				else
+					frobulator.err "Command provision not found" "[ '${command}' ]"
+
+					status=1
+				fi
+
+				continue
+			fi
 
 			IFS="${marker_spc}"
 
@@ -6709,7 +6925,7 @@ frobulator.require () {
 frobulator.reinstall () {
 
 	local status=0
-	local command_reinstall="apt-get --assume-yes install --reinstall"
+	local command_reinstall="$(frobulator.manager reinstall)"
 
 	local package
 
@@ -6754,7 +6970,7 @@ frobulator.reinstall () {
 frobulator.update () {
 
 	local status=0
-	local command_update="apt-get update"
+	local command_update="$(frobulator.manager update)"
 
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -6777,7 +6993,7 @@ frobulator.update () {
 frobulator.upgrade () {
 
 	local status=0
-	local command_upgrade="apt-get --assume-yes dist-upgrade"
+	local command_upgrade="$(frobulator.manager upgrade)"
 
 	export DEBIAN_FRONTEND=noninteractive
 
@@ -6800,7 +7016,7 @@ frobulator.upgrade () {
 frobulator.purge () {
 
 	local status=0
-	local command_purge="apt-get --assume-yes purge --autoremove"
+	local command_purge="$(frobulator.manager purge)"
 
 	local installed_package
 	local package
@@ -6824,9 +7040,14 @@ frobulator.purge () {
 
 	for package in "${list[@]}"
 	do
-		# 'installed' if apt lists the package as installed - empty otherwise
+		# 'installed' if the package manager lists the package as installed - empty otherwise
 
-		installed_package="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
+		if [ "${manager_package}" = "dnf" ] || [ "${manager_package}" = "yum" ]
+		then
+			installed_package="$(frobulator.installed "${package}")"
+		else
+			installed_package="$(apt search "${package}" 2> "${sink}" | grep -i -o installed)"
+		fi
 
 		if [ -n "${installed_package}" ]
 		then
@@ -7098,7 +7319,7 @@ frobulator.assess () {
 
 			# package install state - empty if unknown to dpkg - covers packages without a command
 
-			status_package="$(dpkg-query --show --showformat='${Status}' "${command}" 2> "${sink}")"
+			status_package="$(frobulator.installed "${command}")"
 
 			if [ -z "${command_path}" ] && [[ "${status_package}" != *"ok installed"* ]]
 			then

@@ -4,7 +4,7 @@
 
 ⭐ Useful? Star the repository - it helps others find it.
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-22 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-23 ]
 
 ---
 
@@ -26,8 +26,8 @@ Frobulator is easy to use and understand and is meant to help streamline your sh
 - Streamlined file and directory commands
 - POSIX-compliant/compatible
 - BASH-centric scripting commands and functions:
-   - Customized Debian-based system commands (i.e.: apt/apt-get package commands)
-   - Streamlined package management functions that declutter your scripted setups for the most commonly used apt/aptitude commands
+   - Customized package manager commands for Debian-based (apt/apt-get) and Fedora-based (dnf) systems
+   - Streamlined package management functions that declutter your scripted setups for the most commonly used apt and dnf commands
    - Dependency functions that simplify package requirements being fetched for all your scripting and project needs
    - Countdown and progress items to add to your scripts
    - Customizable password obfuscation prompts
@@ -851,11 +851,29 @@ frobulator.input "${options[@]}"
 
 ## package helpers
 
-*(Debian/`apt`-based; several call `sudo`-equivalent commands directly and expect root or passwordless sudo)*
+*(apt or dnf; several call `sudo`-equivalent commands directly and expect root or passwordless sudo)*
+
+The package manager is picked from the distribution family in `/etc/os-release` (`ID` or `ID_LIKE`): `debian` (Ubuntu and others like it) uses `apt`, `fedora` (RHEL and others like it) uses `dnf`, or `yum` when `dnf` is missing. Other systems fall back to the first manager found. The family decides, not the commands on the `PATH`, so a Fedora container under Termux uses `dnf` even with Termux's `apt` in reach. Each helper below names its apt command first and its dnf equivalent after.
+
+### frobulator.manager
+
+Prints the package manager command for an action: `update`, `upgrade`, `install`, `reinstall`, `purge`, `autoremove`, `autoclean`, `clean`, `hold` or `release`. Prints nothing when the manager has no equivalent (dnf has no `autoclean`).
+
+```bash
+command_install="$(frobulator.manager install)"
+```
+
+### frobulator.installed
+
+Prints `install ok installed` when the package is installed - read from `rpm` under dnf/yum and from `dpkg-query` under apt.
+
+```bash
+frobulator.installed curl
+```
 
 ### frobulator.clean
 
-Runs `apt-get autoremove`, `autoclean`, and `clean` in sequence (each shown with its own progress indicator), then clears stale `dpkg` post-install scripts under `${PREFIX}/var/lib/dpkg/info` to avoid package configuration errors.
+Runs `apt-get autoremove`, `autoclean`, and `clean` in sequence (each shown with its own progress indicator), then clears stale `dpkg` post-install scripts under `${PREFIX}/var/lib/dpkg/info` to avoid package configuration errors. Under dnf: `dnf autoremove` and `dnf clean all`.
 
 ```bash
 frobulator.clean
@@ -863,7 +881,7 @@ frobulator.clean
 
 ### frobulator.hold
 
-Marks package(s) for version freeze via `apt-mark hold`.
+Marks package(s) for version freeze via `apt-mark hold`. Under dnf: `dnf versionlock add` - built into dnf5 (Fedora 41 and later), a plugin on dnf4 (`python3-dnf-plugin-versionlock`).
 
 ```bash
 frobulator.hold firefox-esr
@@ -871,7 +889,7 @@ frobulator.hold firefox-esr
 
 ### frobulator.release
 
-Reverses `frobulator.hold` via `apt-mark unhold`.
+Reverses `frobulator.hold` via `apt-mark unhold`. Under dnf: `dnf versionlock delete`.
 
 ```bash
 frobulator.release firefox-esr
@@ -879,7 +897,7 @@ frobulator.release firefox-esr
 
 ### frobulator.failsafe
 
-Runs a background `apt update && apt full-upgrade`, then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.
+Runs a background `apt update && apt full-upgrade` (`dnf makecache` and `dnf upgrade` under dnf), then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.
 
 ```bash
 frobulator.failsafe curl
@@ -887,7 +905,7 @@ frobulator.failsafe curl
 
 ### frobulator.install
 
-Installs package(s). A `.deb` path is installed directly; otherwise the package is looked up with `apt search` first, and installation is skipped (with a "present on system" message) if it's already installed.
+Installs package(s). A `.deb` or `.rpm` path is installed directly; otherwise the package is looked up with `apt search` first, and installation is skipped (with a "present on system" message) if it's already installed.
 
 ```bash
 frobulator.install curl
@@ -895,7 +913,7 @@ frobulator.install curl
 
 ### frobulator.require
 
-Checks whether each name is available as a command or as an installed package (`dpkg-query`), and if neither, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when something is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match.
+Checks whether each name is available as a command or as an installed package (`dpkg-query`), and if neither, searches `apt-file` to find and install the package that provides it. `apt-file` is only installed and refreshed when something is actually missing, so requirements that are already met need no root access — supports `*` glob package-name queries too, expanding them against `apt-cache pkgnames` before installing every match. Under dnf the installed check reads `rpm`, the providing package comes from `dnf repoquery --whatprovides` on `/usr/bin` and `/usr/sbin` and globs expand through `dnf repoquery` - no `apt-file` needed.
 
 ```bash
 frobulator.require curl
@@ -907,7 +925,7 @@ frobulator.require "libssl*"
 
 ### frobulator.reinstall
 
-Reinstalls package(s) via `apt-get install --reinstall`.
+Reinstalls package(s) via `apt-get install --reinstall` (`dnf reinstall` under dnf).
 
 ```bash
 frobulator.reinstall curl
@@ -915,7 +933,7 @@ frobulator.reinstall curl
 
 ### frobulator.update
 
-Runs `apt-get update` with a progress indicator.
+Runs `apt-get update` (`dnf makecache` under dnf) with a progress indicator.
 
 ```bash
 frobulator.update
@@ -923,7 +941,7 @@ frobulator.update
 
 ### frobulator.upgrade
 
-Runs `apt-get dist-upgrade` with a progress indicator.
+Runs `apt-get dist-upgrade` (`dnf upgrade` under dnf) with a progress indicator.
 
 ```bash
 frobulator.upgrade
@@ -931,7 +949,7 @@ frobulator.upgrade
 
 ### frobulator.purge
 
-Purges package(s) via `apt-get purge --autoremove`, but only if `apt search` shows the package as currently installed (skips with a message otherwise).
+Purges package(s) via `apt-get purge --autoremove` (`dnf remove` under dnf), but only if `apt search` shows the package as currently installed (skips with a message otherwise).
 
 ```bash
 frobulator.purge unused-package
@@ -1244,7 +1262,7 @@ The following projects incorporate Frobulator in their usage:
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-22 ]
+[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-23 ]
 
 ### Enjoying Frobulator? Buy me a coffee to show your appreciation!
 

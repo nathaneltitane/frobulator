@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-22-2240"
+update="2026-10-22-2250"
 
 version="${update}"
 
@@ -849,21 +849,21 @@ marker_nil=''
 marker_hnt='//'
 marker_sep='───────'
 marker_elp='...'
-marker_idt='       '
 marker_prc='%'
 marker_spc=' '
 marker_tab='    '
 marker_brl='['
 marker_brr=']'
+marker_cln=':'
 
 # protocol markers ─────────────────────────────────────────────────────────────
 
-marker_htp='http://'
-marker_hts='https://'
-marker_ftp='ftp://'
-marker_fts='ftps://'
-marker_fil='file://'
-marker_ssh='ssh://'
+marker_htp="http${marker_cln}${marker_hnt}"
+marker_hts="https${marker_cln}${marker_hnt}"
+marker_ftp="ftp${marker_cln}${marker_hnt}"
+marker_fts="ftps${marker_cln}${marker_hnt}"
+marker_fil="file${marker_cln}${marker_hnt}"
+marker_ssh="ssh${marker_cln}${marker_hnt}"
 
 # line markers ─────────────────────────────────────────────────────────────────
 
@@ -914,6 +914,10 @@ unset list_markers_line
 # blank marker of line marker width
 
 marker_nul="${marker_inf//?/ }"
+
+# indent of line marker width
+
+marker_idt="${marker_nul}"
 
 # prompt line overwrite (plo) ──────────────────────────────────────────────────
 
@@ -2751,7 +2755,25 @@ frobulator.script () {
 
 	local description="${1}"
 
+	local file_script="${BASH_SOURCE[-1]}"
+	local line_script
 	local message
+	local version_script="${version}"
+
+	# script version line read ahead of its assignment
+
+	if [ -f "${file_script}" ]
+	then
+		while IFS= read -r line_script
+		do
+			if [[ "${line_script}" =~ ^version=\"([^\"$]+)\"$ ]]
+			then
+				version_script="${BASH_REMATCH[1]}"
+
+				break
+			fi
+		done < "${file_script}"
+	fi
 
 	if [ -n "${description}" ]
 	then
@@ -2759,7 +2781,7 @@ frobulator.script () {
 	fi
 
 	message+="Executing:${marker_spc}'${script}'"
-	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version}"
+	message+="${NLN}Version:${marker_spc}${marker_spc}${marker_spc}${version_script}"
 
 	frobulator.ntf msg "Script" msg "${message}"
 }

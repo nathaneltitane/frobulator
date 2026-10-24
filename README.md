@@ -1264,4 +1264,4 @@ The following projects incorporate Frobulator in their usage:
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-23 ]
 
-### Enjoying Frobulator? Show your appreciation with a PayPal donation! [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)
+### [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ) Enjoying Frobulator? Show your appreciation with a PayPal donation!

@@ -3,8 +3,12 @@
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)<br>
 Show your appreciation with a PayPal donation!
 
+---
+
 [![Star](https://img.shields.io/github/stars/nathaneltitane/frobulator.svg?style=for-the-badge&logo=github&label=Star&color=2f343f)](https://github.com/nathaneltitane/frobulator)<br>
 Useful? Star the repository - it helps others find it.
+
+---
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-23 ]
 
@@ -1265,6 +1269,8 @@ The following projects incorporate Frobulator in their usage:
 ---
 
 [[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator) [ Version // 2026-10-23 ]
+
+---
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)<br>
 **Enjoying Frobulator? Show your appreciation with a PayPal donation!**

@@ -1,4 +1,6 @@
-![frobulator](https://raw.githubusercontent.com/nathaneltitane/frobulator/main/frobulator.svg)
+<p align="center"><img src="https://raw.githubusercontent.com/nathaneltitane/frobulator/main/frobulator.svg" alt="frobulator"><br><b>Shell parser and scripting function library</b><br>Frobulate all the things!</p>
+
+---
 
 [![Donate](https://img.shields.io/badge/Paypal-2f343f.svg?style=for-the-badge&logo=paypal&label=Donate)](https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ)<br>
 Show your appreciation with a PayPal donation!

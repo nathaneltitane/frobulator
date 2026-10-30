@@ -1232,7 +1232,7 @@ The following projects incorporate Frobulator in their usage:
 
 [[ Terminal // Project Page ]](https://github.com/nathaneltitane/terminal)
 
-[[ Mecha // Blocks // Project Page ]](https://github.com/nathaneltitane/mechablocks)
+[[ MechaBlocks // Project Page ]](https://github.com/nathaneltitane/mechablocks)
 
 [[ Nathanel + Titane // Project Page ]](https://github.com/nathaneltitane/nathaneltitane)
 

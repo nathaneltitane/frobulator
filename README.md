@@ -10,10 +10,6 @@ Useful? Star the repository - it helps others find it.
 
 ---
 
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;[ Version // 2026-10-23 ]
-
----
-
 ### Welcome to [Frobulator](https://frobulator.app)
 
 Frobulator is a custom shell parser and scripting function library: Frobulate all the things!
@@ -1267,10 +1263,6 @@ The following projects incorporate Frobulator in their usage:
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/nathaneltitane?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=NATHANEL%20%2b%20TITANE)](https://github.com/nathaneltitane/nathaneltitane)
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/pewpewprints?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=PEW%21%20PEW%21%20PRINTS)](https://github.com/nathaneltitane/pewpewprints)
-
----
-
-[[ Frobulator // Project Page ]](https://github.com/nathaneltitane/frobulator)&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;[ Version // 2026-10-23 ]
 
 ---
 

@@ -898,7 +898,7 @@ ________________________________________________________________________________
 
 <section id="overview" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#8fd18f" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS</h2>
 	</header>
 	<p class="lead">Frobulator is a shell parser and scripting function library. Source it at the top of a Bash script and every message, prompt, download, package <a href="#install">install</a> and checkpoint gets the same clean, colorized, 80 column output - all while making redundant and complex code bits a thing of the past.</p>
@@ -940,7 +940,7 @@ ________________________________________________________________________________
 
 <section id="install" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#f2d479" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>INSTALL // ONE FILE IN ~/.LOCAL/BIN</h2>
 	</header>
 	<p class="lead">Frobulator is a single Bash file. Run it to install it to <code>${HOME}/.local/bin</code>, then source it from your scripts - or let the <a href="#bootstrap">bootstrap</a> header do both.</p>
@@ -960,7 +960,7 @@ ________________________________________________________________________________
 
 <section id="bootstrap" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#a072b8" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#7fb2f0" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>BOOTSTRAP // THE STANDARD SCRIPT HEADER</h2>
 	</header>
 	<p class="lead">Start every script with this header. It fetches the latest Frobulator with curl or wget, sources it once, escalates when needed and prints the script banner. The sections below it are the standard layout of a Frobulator script.</p>
@@ -1070,7 +1070,7 @@ list=()
 
 <section id="markers" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#d29be0" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>MARKERS // 23 LINE TYPES</h2>
 	</header>
 	<p class="lead">Every marker prints a message, an optional detail and an optional fill character on one line as wide as the terminal, followed by a blank line from <code>frobulator.brk</code> - scripts do not add <code>echo</code> after messages. Prompts stay on the same line for the answer.</p>
@@ -1127,7 +1127,7 @@ frobulator.inf "${prompt_arguments[@]}"</code></pre>
 
 <section id="colors" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#f6d32d" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#6fd0e0" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>COLORS // 18 NAMED 256 COLOR CODES</h2>
 	</header>
 	<p class="lead">Every palette color has its own line command, and its name is accepted wherever a color is: numbered steps, separators and the critter. Colors are set only when output is a terminal - through <code>tput</code>, or ANSI sequences without it - and stay empty otherwise.</p>
@@ -1140,7 +1140,7 @@ frobulator.num cornflower 1 "Soft blue line" "[ value ]"</code></pre>
 
 <section id="checkpoints" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#ff8080" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#e6e9ef" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>CHECKPOINTS // STATUS, LOGS AND RESUMES</h2>
 	</header>
 	<p class="lead">Frobulator replaces the <code>if [ &quot;${?}&quot; -ne 0 ]</code> blocks of a script with one line checks. Failures are recorded, logged to <code>~/.local/var/log/&lt;script&gt;-&lt;stamp&gt;.log</code> and summed up at the end.</p>
@@ -1173,7 +1173,7 @@ frobulator.result "${script}"</code></pre>
 
 <section id="packages" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#ffe680" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#9aa3ad" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>PACKAGES // APT AND DNF</h2>
 	</header>
 	<p class="lead">The package manager is picked from the distribution family in <code>/etc/os-release</code>: <code>debian</code> and its derivatives use apt, <code>fedora</code> and its derivatives use dnf, or yum when dnf is missing. The family decides, not the commands on the <code>PATH</code>, so a Fedora container under Termux uses dnf even with Termux's apt in reach.</p>
@@ -1200,7 +1200,7 @@ frobulator.result "${script}"</code></pre>
 
 <section id="permissions" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#6acfec" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#ffa8a8" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>PERMISSIONS // SCOPES INSTEAD OF MODES</h2>
 	</header>
 	<p class="lead"><code>frobulator.permissions</code> sets the exact mode from a scope and optional modifiers, in place of raw <code>chmod</code> numbers. Directories always keep execute for whoever can read them.</p>
@@ -1217,7 +1217,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
 
 <section id="functions" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#f5f6f7" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#b8f0a0" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>FUNCTIONS // EVERY COMMAND AND EXAMPLE</h2>
 	</header>
 	<p class="lead">All 110 Frobulator functions with their arguments and examples. Search them, or pick a group.</p>
@@ -2001,7 +2001,7 @@ frobulator.escalate</code></pre>
 
 <section id="uses" class="section reveal">
 	<header class="section-head">
-		<svg class="icon big" style="color:#d4ade2" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<svg class="icon big" style="color:#fff2a0" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>USES // PROJECTS BUILT ON FROBULATOR</h2>
 	</header>
 	<p class="lead">These projects build their scripts on Frobulator.</p>
@@ -2025,20 +2025,20 @@ frobulator.escalate</code></pre>
 	<div class="footer">
 		<div class="footer-inner">
 			<span class="footer-start" aria-hidden="true"></span>
-			<a class="nav-button" href="#top"><svg class="icon" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Home</span></a>
-			<a class="nav-button" href="#overview"><svg class="icon" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Overview</span></a>
-			<a class="nav-button" href="#install"><svg class="icon" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Install</span></a>
-			<a class="nav-button" href="#bootstrap"><svg class="icon" style="color:#a072b8" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Bootstrap</span></a>
-			<a class="nav-button" href="#markers"><svg class="icon" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Markers</span></a>
-			<a class="nav-button" href="#colors"><svg class="icon" style="color:#f6d32d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Colors</span></a>
-			<a class="nav-button" href="#checkpoints"><svg class="icon" style="color:#ff8080" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Checkpoints</span></a>
-			<a class="nav-button" href="#packages"><svg class="icon" style="color:#ffe680" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Packages</span></a>
-			<a class="nav-button" href="#permissions"><svg class="icon" style="color:#6acfec" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Permissions</span></a>
-			<a class="nav-button" href="#functions"><svg class="icon" style="color:#f5f6f7" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Functions</span></a>
-			<a class="nav-button" href="#uses"><svg class="icon" style="color:#d4ade2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Uses</span></a>
-			<a class="nav-button" href="https://github.com/nathaneltitane/frobulator"><svg class="icon" style="color:#a7b0b7" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">GitHub</span></a>
-			<a class="nav-button" href="https://dextop.app"><svg class="icon" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Dextop</span></a>
-			<a class="nav-button" href="https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ"><svg class="icon" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Donate</span></a>
+			<a class="nav-button" href="#top"><svg class="icon" style="color:#f28b82" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Home</span></a>
+			<a class="nav-button" href="#overview"><svg class="icon" style="color:#8fd18f" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Overview</span></a>
+			<a class="nav-button" href="#install"><svg class="icon" style="color:#f2d479" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Install</span></a>
+			<a class="nav-button" href="#bootstrap"><svg class="icon" style="color:#7fb2f0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Bootstrap</span></a>
+			<a class="nav-button" href="#markers"><svg class="icon" style="color:#d29be0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Markers</span></a>
+			<a class="nav-button" href="#colors"><svg class="icon" style="color:#6fd0e0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Colors</span></a>
+			<a class="nav-button" href="#checkpoints"><svg class="icon" style="color:#e6e9ef" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Checkpoints</span></a>
+			<a class="nav-button" href="#packages"><svg class="icon" style="color:#9aa3ad" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Packages</span></a>
+			<a class="nav-button" href="#permissions"><svg class="icon" style="color:#ffa8a8" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Permissions</span></a>
+			<a class="nav-button" href="#functions"><svg class="icon" style="color:#b8f0a0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Functions</span></a>
+			<a class="nav-button" href="#uses"><svg class="icon" style="color:#fff2a0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Uses</span></a>
+			<a class="nav-button" href="https://github.com/nathaneltitane/frobulator"><svg class="icon" style="color:#a8c8ff" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">GitHub</span></a>
+			<a class="nav-button" href="https://dextop.app"><svg class="icon" style="color:#f0b0ff" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Dextop</span></a>
+			<a class="nav-button" href="https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ"><svg class="icon" style="color:#a0f0f0" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Donate</span></a>
 			<span class="footer-end" aria-hidden="true"></span>
 		</div>
 	</div>

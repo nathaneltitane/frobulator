@@ -901,7 +901,7 @@ ________________________________________________________________________________
 		<svg class="icon big" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS</h2>
 	</header>
-	<p class="lead">Frobulator is a shell parser and scripting function library. Source it at the top of a Bash script and every message, prompt, download, package install and checkpoint gets the same clean, colorized, 80 column output - all while making redundant and complex code bits a thing of the past.</p>
+	<p class="lead">Frobulator is a shell parser and scripting function library. Source it at the top of a Bash script and every message, prompt, download, package <a href="#install">install</a> and checkpoint gets the same clean, colorized, 80 column output - all while making redundant and complex code bits a thing of the past.</p>
 	<figure class="wide">
 		<div class="terminal" role="img" aria-label="Frobulator marker lines in a terminal"><div class="terminal-bar"><i></i><i></i><i></i></div><span style="color:#5294e2">[  i  ] Checking dependencies ───────────────────────────────────────── [ curl ]</span>
 
@@ -909,7 +909,7 @@ ________________________________________________________________________________
 
 <span style="color:#008700">[  +  ] Creating directory ──────────────────────────── [ ~/.config/frobulator ]</span>
 
-<span style="color:#a8a8a8">[  ▷  ] Installing packages ────────────────────────────────────────── [ 3 / 5 ]</span>
+<span style="color:#a8a8a8">[  ▷  ] Installing <a href="#packages">packages</a> ────────────────────────────────────────── [ 3 / 5 ]</span>
 
 <span style="color:#ff5f00">[  !  ] Package held ─────────────────────────────────────────── [ firefox-esr ]</span>
 
@@ -923,16 +923,16 @@ ________________________________________________________________________________
 		<figcaption>Frobulator marker lines in a terminal</figcaption>
 	</figure>
 	<ul class="points">
-		<li><b>Line markers.</b> Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.</li>
+		<li><b>Line <a href="#markers">markers</a>.</b> Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.</li>
 		<li><b>Standard lines.</b> Every line is parsed to the terminal width, never below 80 columns: long text folds into paragraphs, long details shorten with an ellipsis.</li>
 		<li><b>Prompts and input.</b> Question, input, user and return prompts, lettered and numbered steps, masked password input and labelled value capture.</li>
 		<li><b>Progress feedback.</b> Tickers, activity bars, countdowns and typed text, with background jobs that never print shell job notices.</li>
-		<li><b>Checkpoints.</b> Status tracking that halts, fails or carries on, logs failures and skips completed steps on the next run.</li>
+		<li><b><a href="#checkpoints">Checkpoints</a>.</b> Status tracking that halts, fails or carries on, logs failures and skips completed steps on the next run.</li>
 		<li><b>Files and network.</b> Directory, write, copy, move, link and delete helpers with ownership kept, plus downloads and uploads reported by HTTP status.</li>
 		<li><b>Packages.</b> One set of install, require, hold, purge and update commands for apt on Debian and Ubuntu, and dnf on Fedora.</li>
 		<li><b>Privileges.</b> Escalation through sudo that keeps the original arguments, systemd service control and readable permission scopes.</li>
 		<li><b>Archives.</b> Create and extract tar, gzip, bzip2, zip, 7z and rar archives, with the needed tool installed on demand.</li>
-		<li><b>Self updating.</b> The bootstrap header fetches the latest release and only replaces the local copy with a newer one.</li>
+		<li><b>Self updating.</b> The <a href="#bootstrap">bootstrap</a> header fetches the latest release and only replaces the local copy with a newer one.</li>
 	</ul>
 	<h3>Scripts only</h3>
 	<p>The current set of assertions upon which Frobulator is built restricts its functionality to scripts exclusively, at least for the time being.</p>
@@ -943,7 +943,7 @@ ________________________________________________________________________________
 		<svg class="icon big" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg>
 		<h2>INSTALL // ONE FILE IN ~/.LOCAL/BIN</h2>
 	</header>
-	<p class="lead">Frobulator is a single Bash file. Run it to install it to <code>${HOME}/.local/bin</code>, then source it from your scripts - or let the bootstrap header do both.</p>
+	<p class="lead">Frobulator is a single Bash file. Run it to install it to <code>${HOME}/.local/bin</code>, then source it from your scripts - or let the <a href="#bootstrap">bootstrap</a> header do both.</p>
 	<h3>Install</h3>
 	<pre><code>curl -s -L get.frbltr.app &gt; frobulator &amp;&amp; bash frobulator</code></pre>
 	<p>Running the script directly installs it - no arguments default to <code>--install</code>. Sourcing is unaffected: the options only apply when the file is executed.</p>
@@ -1185,7 +1185,7 @@ frobulator.result "${script}"</code></pre>
 			<tbody>
 				<tr><td><code>frobulator.update</code></td><td>apt-get update</td><td>dnf makecache</td></tr>
 				<tr><td><code>frobulator.upgrade</code></td><td>apt-get dist-upgrade</td><td>dnf upgrade</td></tr>
-				<tr><td><code>frobulator.install</code></td><td>apt search, then install</td><td>dnf install</td></tr>
+				<tr><td><code>frobulator.install</code></td><td>apt search, then <a href="#install">install</a></td><td>dnf install</td></tr>
 				<tr><td><code>frobulator.require</code></td><td>apt-file search</td><td>dnf repoquery --whatprovides</td></tr>
 				<tr><td><code>frobulator.reinstall</code></td><td>apt-get install --reinstall</td><td>dnf reinstall</td></tr>
 				<tr><td><code>frobulator.purge</code></td><td>apt-get purge --autoremove</td><td>dnf remove</td></tr>
@@ -1228,7 +1228,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
 	<div id="command-list" class="command-list">
 		<article class="command" id="function-plo" data-group="Markers">
 			<div class="command-body">
-				<div class="command-head"><h3>frobulator.plo</h3><span class="command-meta">Markers</span></div>
+				<div class="command-head"><h3>frobulator.plo</h3><span class="command-meta"><a href="#markers">Markers</a></span></div>
 				<p>[ p ] rompt [ l ] ine [ o ] verwrite:</p>
 				<p>Clears a defined number of lines above the current cursor position, wiping from that point down to the end of the screen — built on <code>terminal_cursor_up</code> and <code>terminal_clear_down</code>.</p>
 				<pre><code>frobulator.plo 1</code></pre>
@@ -1280,7 +1280,7 @@ frobulator.sep lime "Section"</code></pre>
 			<div class="command-body">
 				<div class="command-head"><h3>frobulator.ntf</h3><span class="command-meta">Markers</span></div>
 				<p><b>Notify.</b></p>
-				<p>Prints a framed notice block. Optional leading arguments select a frame <code>style</code> (<code>square</code> [default], <code>round</code>, <code>heavy</code>, <code>double</code>, <code>dots</code>, <code>matrix</code>, <code>tech</code>, <code>skel</code>, <code>ascii</code>), the <code>split</code> keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (<code>inf</code>, <code>wrn</code>, <code>scs</code>, <code>err</code>, etc.) to color the title using that marker's color. Remaining arguments are <code>title</code> then <code>message</code>; a second marker-type keyword placed between them colors the message. Like the line markers, the block is followed by a blank line.</p>
+				<p>Prints a framed notice block. Optional leading arguments select a frame <code>style</code> (<code>square</code> [default], <code>round</code>, <code>heavy</code>, <code>double</code>, <code>dots</code>, <code>matrix</code>, <code>tech</code>, <code>skel</code>, <code>ascii</code>), the <code>split</code> keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (<code>inf</code>, <code>wrn</code>, <code>scs</code>, <code>err</code>, etc.) to color the title using that marker's color. Remaining arguments are <code>title</code> then <code>message</code>; a second marker-type keyword placed between them <a href="#colors">colors</a> the message. Like the line markers, the block is followed by a blank line.</p>
 				<pre><code>frobulator.ntf round inf "Notice" "The setup process is ready."</code></pre>
 				<pre><code>frobulator.ntf heavy split err "Failure" "Could not reach the update server."</code></pre>
 				<pre><code>frobulator.ntf wrn "Disclaimer" inf "This action is permanent."</code></pre>
@@ -1533,7 +1533,7 @@ frobulator.read reply</code></pre>
 		<article class="command" id="function-clear" data-group="Prompts">
 			<div class="command-body">
 				<div class="command-head"><h3>frobulator.clear</h3><span class="command-meta">Prompts</span></div>
-				<p>Pauses for <code>frobulator.timeout</code>'s default interval, then clears the terminal — used for script "paging" once a step's checkpoints are met.</p>
+				<p>Pauses for <code>frobulator.timeout</code>'s default interval, then clears the terminal — used for script "paging" once a step's <a href="#checkpoints">checkpoints</a> are met.</p>
 				<pre><code>frobulator.clear</code></pre>
 			</div>
 		</article>
@@ -1704,7 +1704,7 @@ frobulator.delete "${directory_android}" list</code></pre>
 		<article class="command" id="function-move" data-group="Files">
 			<div class="command-body">
 				<div class="command-head"><h3>frobulator.move</h3><span class="command-meta">Files</span></div>
-				<p>Moves file(s)/directories, then sets <code>public execute</code> permissions (<code>755</code>) on the moved item(s) at the target via <code>frobulator.permissions</code>. <code>source</code> defaults to <code>${PWD}</code> per item if left empty.</p>
+				<p>Moves file(s)/directories, then sets <code>public execute</code> <a href="#permissions">permissions</a> (<code>755</code>) on the moved item(s) at the target via <code>frobulator.permissions</code>. <code>source</code> defaults to <code>${PWD}</code> per item if left empty.</p>
 				<pre><code>frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"</code></pre>
 			</div>
 		</article>
@@ -1812,7 +1812,7 @@ frobulator.input "${options[@]}"</code></pre>
 		</article>
 		<article class="command" id="function-manager" data-group="Packages">
 			<div class="command-body">
-				<div class="command-head"><h3>frobulator.manager</h3><span class="command-meta">Packages</span></div>
+				<div class="command-head"><h3>frobulator.manager</h3><span class="command-meta"><a href="#packages">Packages</a></span></div>
 				<p>Prints the package manager command for an action: <code>update</code>, <code>upgrade</code>, <code>install</code>, <code>reinstall</code>, <code>purge</code>, <code>autoremove</code>, <code>autoclean</code>, <code>clean</code>, <code>hold</code> or <code>release</code>. Prints nothing when the manager has no equivalent (dnf has no <code>autoclean</code>).</p>
 				<pre><code>command_install="$(frobulator.manager install)"</code></pre>
 			</div>
@@ -1848,7 +1848,7 @@ frobulator.input "${options[@]}"</code></pre>
 		<article class="command" id="function-failsafe" data-group="Packages">
 			<div class="command-body">
 				<div class="command-head"><h3>frobulator.failsafe</h3><span class="command-meta">Packages</span></div>
-				<p>Runs a background <code>apt update &amp;&amp; apt full-upgrade</code> (<code>dnf makecache</code> and <code>dnf upgrade</code> under dnf), then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.</p>
+				<p>Runs a background <code>apt update &amp;&amp; apt full-upgrade</code> (<code>dnf makecache</code> and <code>dnf upgrade</code> under dnf), then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the <a href="#install">install</a>(s) that follow.</p>
 				<pre><code>frobulator.failsafe curl</code></pre>
 			</div>
 		</article>
@@ -1942,7 +1942,7 @@ frobulator.assess "${requirements[@]}"</code></pre>
 		<article class="command" id="function-escalate" data-group="System">
 			<div class="command-body">
 				<div class="command-head"><h3>frobulator.escalate</h3><span class="command-meta">System</span></div>
-				<p>Relaunches the current script as root via <code>sudo</code>, preserving the original arguments (read back from the <code>self_arguments</code> array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root <code>USER</code>/<code>HOME</code> from <code>SUDO_USER</code> instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + <code>lines_printed_terminal</code>); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.</p>
+				<p>Relaunches the current script as root via <code>sudo</code>, preserving the original arguments (read back from the <code>self_arguments</code> array set by the <a href="#bootstrap">bootstrap</a> header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root <code>USER</code>/<code>HOME</code> from <code>SUDO_USER</code> instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + <code>lines_printed_terminal</code>); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.</p>
 				<pre><code>self_arguments=("${@}")
 frobulator.escalate</code></pre>
 			</div>

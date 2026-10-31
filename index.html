@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frobulator - Shell scripting function library</title>
+<meta name="description" content="Frobulator is a shell parser and scripting function library for Bash: colorized line markers, prompts, progress, checkpoints, file, network and apt or dnf package helpers in one sourced file.">
+<meta name="theme-color" content="#2f343f">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Frobulator">
+<meta property="og:url" content="https://frobulator.app/">
+<meta property="og:title" content="Frobulator - Shell scripting function library">
+<meta property="og:description" content="Frobulator is a shell parser and scripting function library for Bash: colorized line markers, prompts, progress, checkpoints, file, network and apt or dnf package helpers in one sourced file.">
+<meta property="og:image" content="https://frobulator.app/resources/web/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="Frobulator logo over its ASCII banner">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="resources/web/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="resources/web/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="resources/web/favicon-16x16.png">
+<link rel="apple-touch-icon" href="resources/web/apple-touch-icon.png">
+<link rel="manifest" href="resources/web/site.webmanifest">
+<style>
+* {
+	font-family: monospace;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 20px;
+}
+
+body {
+	background: #2f343f;
+	color: #a7b0b7;
+	margin: 0;
+	padding: 0 0 100px 0;
+	font-size: 14px;
+	line-height: 1.6;
+	overflow-x: hidden;
+}
+
+h1, h2, h3, b, strong {
+	color: #f5f6f7;
+}
+
+h1, h2, h3 {
+	margin: 0;
+	line-height: 1.2;
+}
+
+a {
+	color: #5294e2;
+}
+
+a:hover {
+	font-weight: bold;
+}
+
+code {
+	color: #f5f6f7;
+}
+
+/* landing */
+
+.landing {
+	position: relative;
+	min-height: 100vh;
+	min-height: 100dvh;
+	overflow: hidden;
+}
+
+.backdrop {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	opacity: 0;
+	filter: blur(1px);
+	animation: backdrop-reveal 2s ease forwards;
+}
+
+.backdrop pre {
+	margin: 0;
+	padding: 0;
+	background: none;
+	border-radius: 0;
+	overflow: visible;
+	color: #5294e2;
+	font-size: clamp(5px, 0.9vw, 11px);
+	line-height: 1.1;
+}
+
+@keyframes backdrop-reveal {
+	from { opacity: 0; transform: scale(1.75); }
+	to { opacity: 0.2; transform: scale(1); }
+}
+
+.landing-head {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 10px;
+	opacity: 0;
+	animation: fade-reveal 0.75s ease forwards;
+}
+
+.landing-head h1 {
+	font-size: clamp(22px, 4vw, 40px);
+}
+
+.landing-head p {
+	margin: 5px 0 0 0;
+}
+
+.landing-logo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: min(36vw, 44vh, 380px);
+	height: min(36vw, 44vh, 380px);
+	color: #5294e2;
+	transform: translate(-50%, -55%);
+	opacity: 0;
+	animation: logo-reveal 1.25s ease 0.25s forwards;
+}
+
+.logo {
+	width: 100%;
+	height: 100%;
+}
+
+@keyframes logo-reveal {
+	from { opacity: 0; transform: translate(-50%, -45%) scale(0.85); }
+	to { opacity: 1; transform: translate(-50%, -55%) scale(1); }
+}
+
+.landing-foot {
+	position: absolute;
+	right: 0;
+	bottom: 80px;
+	padding: 10px;
+	text-align: right;
+	opacity: 0;
+	animation: fade-reveal 0.75s ease 0.5s forwards;
+}
+
+.landing-foot p {
+	max-width: 520px;
+	margin: 0 0 15px auto;
+}
+
+.landing-foot h2 {
+	font-size: clamp(12px, 3.3vw, 30px);
+	white-space: nowrap;
+}
+
+.tagline {
+	letter-spacing: 0.3em;
+}
+
+.buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 10px;
+	margin: 0 0 20px 0;
+}
+
+.button {
+	background: #5294e2;
+	color: #f5f6f7;
+	border-radius: 20px;
+	padding: 10px 20px;
+	text-decoration: none;
+}
+
+.button:hover {
+	background: #4b84c9;
+}
+
+@keyframes fade-reveal {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* version */
+
+.version {
+	margin: 0;
+	padding: 25px 20px 0 20px;
+	text-align: center;
+}
+
+/* sections */
+
+.section {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 60px 20px 20px 20px;
+}
+
+.section-head {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	border-bottom: 2px solid #404552;
+	padding: 0 0 10px 0;
+	margin: 0 0 20px 0;
+}
+
+.section-head h2 {
+	font-size: clamp(18px, 2.6vw, 26px);
+}
+
+.section h3 {
+	margin: 30px 0 10px 0;
+	font-size: 16px;
+}
+
+.lead {
+	font-size: 15px;
+	max-width: 900px;
+}
+
+.points {
+	list-style: none;
+	padding: 0;
+	margin: 25px 0;
+	display: grid;
+	align-items: start;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	gap: 10px 30px;
+}
+
+.points li {
+	border-left: 4px solid #5294e2;
+	padding: 2.5px 0 2.5px 10px;
+}
+
+.points code {
+	white-space: nowrap;
+}
+
+.steps {
+	margin: 25px 0;
+	padding: 0 0 0 30px;
+}
+
+.steps li {
+	margin: 0 0 10px 0;
+	padding: 0 0 0 5px;
+}
+
+.steps li::marker {
+	color: #5294e2;
+	font-weight: bold;
+}
+
+.more a {
+	font-weight: bold;
+}
+
+.reveal {
+	opacity: 0;
+	transform: translateY(40px);
+	transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.reveal.shown {
+	opacity: 1;
+	transform: none;
+}
+
+/* icons */
+
+.icon {
+	width: 40px;
+	height: 40px;
+	display: block;
+	margin: 0 auto;
+}
+
+.icon.big {
+	width: 56px;
+	height: 56px;
+	margin: 0;
+	flex: none;
+}
+
+/* figures */
+
+figure {
+	margin: 0;
+}
+
+figure.wide {
+	margin: 25px 0;
+}
+
+.shot {
+	display: block;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	border-radius: 20px;
+	background: #383c4a;
+	overflow: hidden;
+	cursor: zoom-in;
+}
+
+.shot img {
+	display: block;
+	width: 100%;
+	height: auto;
+	transition: transform 0.4s ease;
+}
+
+.shot:hover img {
+	transform: scale(1.02);
+}
+
+figcaption {
+	padding: 5px 5px 0 5px;
+	font-size: 12px;
+	text-align: center;
+}
+
+.gallery {
+	display: grid;
+	gap: 20px;
+	margin: 25px 0;
+}
+
+.gallery.two { grid-template-columns: repeat(2, 1fr); }
+
+/* tables and code */
+
+.table {
+	overflow-x: auto;
+	margin: 20px 0;
+}
+
+table {
+	border-collapse: collapse;
+	min-width: 100%;
+}
+
+th, td {
+	text-align: left;
+	vertical-align: top;
+	padding: 10px 15px;
+	border-bottom: 1px solid #404552;
+	white-space: nowrap;
+}
+
+th {
+	color: #f5f6f7;
+	background: #404552;
+}
+
+th:first-child { border-radius: 20px 0 0 0; }
+th:last-child { border-radius: 0 20px 0 0; }
+
+.table.wrap td {
+	white-space: normal;
+	min-width: 160px;
+}
+
+.package {
+	display: inline-block;
+	background: #383c4a;
+	color: #f5f6f7;
+	border-radius: 20px;
+	padding: 5px 10px;
+	margin: 3px 0;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+pre {
+	background: #383c4a;
+	color: #f5f6f7;
+	border-radius: 20px;
+	padding: 15px 20px;
+	overflow-x: auto;
+}
+
+pre.diagram {
+	font-size: 12px;
+	line-height: 1.25;
+}
+
+/* scrollbars kept clear of the corner radii */
+
+html::-webkit-scrollbar, .table::-webkit-scrollbar, pre::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+html::-webkit-scrollbar-track, .table::-webkit-scrollbar-track, pre::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.table::-webkit-scrollbar-track:horizontal, pre::-webkit-scrollbar-track:horizontal {
+	margin: 0 20px;
+}
+
+.table::-webkit-scrollbar-track:vertical, pre::-webkit-scrollbar-track:vertical {
+	margin: 20px 0;
+}
+
+html::-webkit-scrollbar-thumb, .table::-webkit-scrollbar-thumb, pre::-webkit-scrollbar-thumb {
+	background: #4b5162;
+	border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb:hover, .table::-webkit-scrollbar-thumb:hover, pre::-webkit-scrollbar-thumb:hover {
+	background: #7c818c;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+	html, .table, pre {
+		scrollbar-width: thin;
+		scrollbar-color: #4b5162 transparent;
+	}
+}
+
+/* commands */
+
+.command-tools {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	background: #2f343f;
+	padding: 10px 0;
+}
+
+#command-search {
+	width: 100%;
+	padding: 10px 20px;
+	background: #383c4a;
+	border: 0;
+	border-radius: 20px;
+	color: #f5f6f7;
+	font-size: 14px;
+	outline: none;
+}
+
+#command-search:focus {
+	background: #404552;
+}
+
+.chips {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+	gap: 10px;
+	margin: 10px 0 0 0;
+}
+
+.chip {
+	text-align: center;
+	background: #383c4a;
+	color: #a7b0b7;
+	border: 0;
+	border-radius: 20px;
+	padding: 5px 10px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.chip:hover {
+	font-weight: bold;
+}
+
+.chip.active {
+	background: #5294e2;
+	color: #f5f6f7;
+	font-weight: bold;
+}
+
+.command-list {
+	columns: 2 480px;
+	column-gap: 25px;
+}
+
+.command {
+	break-inside: avoid;
+	background: #383c4a;
+	border-radius: 14px;
+	padding: 15px;
+	margin: 0 0 20px 0;
+}
+
+.command-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0 10px;
+}
+
+.command-head h3 {
+	margin: 0;
+	font-size: 16px;
+}
+
+.command-meta {
+	font-size: 12px;
+	color: #7c818c;
+}
+
+.command p {
+	margin: 5px 0 0 0;
+}
+
+.command pre {
+	margin: 10px 0;
+	padding: 10px 15px;
+	border-radius: 10px;
+	background: #2f343f;
+	font-size: 12px;
+	white-space: pre-wrap;
+}
+
+.option {
+	border-top: 1px solid #404552;
+	padding: 8px 0 0 0;
+	margin: 8px 0 0 0;
+}
+
+.option code {
+	color: #f5f6f7;
+	font-weight: bold;
+}
+
+.option .argument {
+	color: #7c818c;
+	font-weight: normal;
+}
+
+.option p {
+	margin: 2px 0 0 0;
+}
+
+.marker {
+	color: #5294e2;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.values {
+	display: grid;
+	align-items: start;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 10px;
+	margin: 10px 0 0 0;
+}
+
+.value {
+	text-align: center;
+	background: #2f343f;
+	border-radius: 20px;
+	padding: 5px 10px;
+	font-size: 12px;
+	color: #f5f6f7;
+}
+
+.value i {
+	color: #7c818c;
+	font-style: normal;
+}
+
+.command-empty {
+	padding: 20px 0;
+}
+
+.command.hidden, .option.hidden {
+	display: none;
+}
+
+/* notices */
+
+details {
+	background: #383c4a;
+	border-radius: 14px;
+	padding: 10px 15px;
+	margin: 0 0 10px 0;
+}
+
+summary {
+	color: #f5f6f7;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+details ul {
+	margin: 10px 0 5px 0;
+	padding: 0 0 0 20px;
+}
+
+/* footer */
+
+#footer {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 80px;
+	background: #383c4a;
+	border-radius: 20px 20px 0 0;
+	overflow: hidden;
+	z-index: 20;
+	transform: translateY(80px);
+	animation: footer-reveal 0.75s ease 0.75s forwards;
+}
+
+@keyframes footer-reveal {
+	to { transform: none; }
+}
+
+.footer {
+	display: flex;
+	height: 80px;
+	padding: 0 10px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+}
+
+.footer::-webkit-scrollbar {
+	display: none;
+}
+
+/* footer ends point to the buttons out of view */
+
+.footer-start,
+.footer-end {
+	flex: none;
+	align-self: center;
+	width: 40px;
+	border: 10px solid transparent;
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.footer-start {
+	border-left-color: #f5f6f7;
+	transform: translateX(50%);
+}
+
+.footer-end {
+	border-right-color: #f5f6f7;
+	transform: translateX(-50%);
+}
+
+.footer-scroll .footer-start,
+.footer-scroll .footer-end {
+	opacity: 1;
+}
+
+/* footer edges fade the buttons scrolling under them */
+
+.footer-border {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	border: 10px solid #383c4a;
+	border-top: 0;
+	border-bottom: 0;
+	border-radius: 20px 20px 0 0;
+	box-shadow: inset 5px 0 10px #383c4a, inset -5px 0 10px #383c4a;
+	pointer-events: none;
+}
+
+.footer-inner {
+	display: flex;
+	margin: 0 auto;
+}
+
+.nav-button {
+	flex: none;
+	width: 80px;
+	padding: 10px 0 0 0;
+	color: #a7b0b7;
+	text-align: center;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+.nav-button .icon {
+	transition: transform 0.2s ease;
+}
+
+.nav-button:hover .icon,
+.nav-button.current .icon {
+	transform: translateY(-3px);
+}
+
+.nav-button:hover,
+.nav-button.current {
+	color: #f5f6f7;
+	font-weight: bold;
+}
+
+.label {
+	display: block;
+}
+
+/* copyright */
+
+.copyright {
+	max-width: 1200px;
+	margin: 40px auto 0 auto;
+	padding: 20px;
+	border-top: 2px solid #404552;
+	font-size: 12px;
+}
+
+.copyright p {
+	margin: 0 0 10px 0;
+}
+
+/* viewer */
+
+#viewer {
+	position: fixed;
+	inset: 0;
+	z-index: 30;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	background: rgba(47, 52, 63, 0.95);
+	padding: 20px;
+	cursor: zoom-out;
+}
+
+#viewer.open {
+	display: flex;
+	animation: fade-reveal 0.25s ease;
+}
+
+#viewer img {
+	max-width: 100%;
+	max-height: 100%;
+	border-radius: 10px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* terminal */
+
+.terminal {
+	background: #1e2129;
+	color: #f5f6f7;
+	border-radius: 20px;
+	padding: 15px 20px;
+	font-size: 12px;
+	line-height: 1.4;
+	overflow-x: auto;
+	white-space: pre;
+}
+
+.terminal-bar {
+	display: flex;
+	gap: 6px;
+	margin: 0 0 12px 0;
+}
+
+.terminal-bar i {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #4b5162;
+}
+
+/* palette */
+
+.swatches {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	gap: 10px;
+	margin: 25px 0;
+}
+
+.swatch {
+	background: #383c4a;
+	border-radius: 14px;
+	padding: 10px;
+	font-size: 12px;
+}
+
+.swatch span {
+	display: block;
+	height: 36px;
+	border-radius: 8px;
+	margin: 0 0 8px 0;
+}
+
+.swatch b {
+	display: block;
+}
+
+.glyph {
+	font-weight: bold;
+	white-space: pre;
+}
+
+.command ul {
+	margin: 5px 0 0 0;
+	padding: 0 0 0 20px;
+}
+
+.command .table {
+	margin: 10px 0;
+}
+
+.command th, .command td {
+	padding: 5px 10px;
+	font-size: 12px;
+}
+
+@media (max-width: 800px) {
+	.landing-foot { left: 0; }
+	.section .gallery:has(> figure + figure) { display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 15px; margin: 25px -20px; padding: 0 20px 10px 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 20px; scrollbar-width: none; }
+	.section .gallery:has(> figure + figure)::-webkit-scrollbar { display: none; }
+	.section .gallery:has(> figure + figure) > figure { flex: none; width: 82%; scroll-snap-align: center; }
+}
+
+@media (max-width: 520px), (max-height: 560px) {
+	.landing { display: flex; flex-direction: column; gap: 25px; padding: 0 0 80px 0; }
+	.landing-head, .landing-logo, .landing-foot { position: static; }
+	.landing-logo { width: min(56vw, 40vh, 260px); height: min(56vw, 40vh, 260px); margin: auto; transform: none; animation-name: fade-reveal; }
+	.landing-foot { max-width: none; }
+}
+
+@media (max-width: 520px) {
+	.gallery.two { grid-template-columns: 1fr; }
+	.points { grid-template-columns: 1fr; }
+	.command-list { columns: 1; }
+	.section { padding: 50px 15px 15px 15px; }
+	.section .gallery:has(> figure + figure) { margin: 25px -15px; padding: 0 15px 10px 15px; scroll-padding: 0 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation-duration: 0.01s !important; transition: none !important; }
+	html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+	<symbol id="i-frobulator" viewBox="0 0 270.93333 270.93335">
+		<g fill="none" stroke="currentColor" stroke-width="12.7" stroke-linecap="round">
+			<path d="M 31.83143,195.3005 V 75.63284 l 103.63524,-59.833829 103.63524,59.833835 -1e-5,119.667664 -103.63523,59.83383 -51.38528,-29.66731"/>
+			<path d="m 186.26666,199.27062 33.86667,-19.55293"/>
+			<path d="m 152.4,151.09021 8.46667,-4.88824"/>
+			<path d="m 152.4,184.95688 8.46667,-4.88824"/>
+		</g>
+	</symbol>
+</svg>
+
+<div class="landing" id="top">
+	<div class="backdrop" aria-hidden="true"><pre>____________________________________________________________________________________________________________________________________________________________
+______/\\\\\\\\\\\\\\\______________________________/\\\_______________________/\\\\\\______________________________________________________________________
+______\/\\\///////////______________________________\/\\\______________________\////\\\_____________________________________________________________________
+_______\/\\\_________________________________________\/\\\_________________________\/\\\_______________________/\\\_________________________________________
+________\/\\\\\\\\\\\______/\\/\\\\\\\______/\\\\\____\/\\\_________/\\\____/\\\____\/\\\_____/\\\\\\\\\_____/\\\\\\\\\\\_____/\\\\\_____/\\/\\\\\\\________
+_________\/\\\///////______\/\\\/////\\\___/\\\///\\\__\/\\\\\\\\\__\/\\\___\/\\\____\/\\\____\////////\\\___\////\\\////____/\\\///\\\__\/\\\/////\\\______
+__________\/\\\_____________\/\\\___\///___/\\\__\//\\\_\/\\\////\\\_\/\\\___\/\\\____\/\\\______/\\\\\\\\\\_____\/\\\_______/\\\__\//\\\_\/\\\___\///______
+___________\/\\\_____________\/\\\_________\//\\\__/\\\__\/\\\__\/\\\_\/\\\___\/\\\____\/\\\_____/\\\/////\\\_____\/\\\_/\\__\//\\\__/\\\__\/\\\____________
+____________\/\\\_____________\/\\\__________\///\\\\\/___\/\\\\\\\\\__\//\\\\\\\\\___/\\\\\\\\\_\//\\\\\\\\/\\____\//\\\\\____\///\\\\\/___\/\\\___________
+_____________\///______________\///_____________\/////_____\/////////____\/////////___\/////////___\////////\//______\/////_______\/////_____\///___________
+____________________________________________________________________________________________________________________________________________________________</pre></div>
+	<div class="landing-head">
+		<h1>Frobulator</h1>
+		<p>SHELL PARSER AND SCRIPTING FUNCTION LIBRARY</p>
+	</div>
+	<div class="landing-logo">
+		<svg class="logo" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg>
+	</div>
+	<div class="landing-foot">
+		<p>Frobulator is a custom shell parser and scripting function library, easy to use and understand, that streamlines your shell scripting projects.</p>
+		<p>Source one file and get colorized line markers, prompts, progress feedback, checkpoints, and file, network and package helpers for apt and dnf.</p>
+		<div class="buttons">
+			<a class="button" href="#install">Install</a>
+			<a class="button" href="#overview">Features</a>
+			<a class="button" href="#functions">Functions</a>
+		</div>
+		<h2 class="tagline">FROBULATE ALL THE THINGS!</h2>
+	</div>
+</div>
+
+<p class="version">Version // 2026-10-23-1100</p>
+
+<section id="overview" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS</h2>
+	</header>
+	<p class="lead">Frobulator is a shell parser and scripting function library. Source it at the top of a Bash script and every message, prompt, download, package install and checkpoint gets the same clean, colorized, 80 column output - all while making redundant and complex code bits a thing of the past.</p>
+	<figure class="wide">
+		<div class="terminal" role="img" aria-label="Frobulator marker lines in a terminal"><div class="terminal-bar"><i></i><i></i><i></i></div><span style="color:#5294e2">[  i  ] Checking dependencies ───────────────────────────────────────── [ curl ]</span>
+
+<span style="color:#c061cb">[  ▽  ] Downloading ────────────────────────────────────── [ frobulator // 200 ]</span>
+
+<span style="color:#008700">[  +  ] Creating directory ──────────────────────────── [ ~/.config/frobulator ]</span>
+
+<span style="color:#a8a8a8">[  ▷  ] Installing packages ────────────────────────────────────────── [ 3 / 5 ]</span>
+
+<span style="color:#ff5f00">[  !  ] Package held ─────────────────────────────────────────── [ firefox-esr ]</span>
+
+<span style="color:#c0393f">[  -  ] Removing file ───────────────────────────────────────── [ old-file.tmp ]</span>
+
+<span style="color:#cc575d">[  𐄂  ] Align failed ─────────────────────────────────────── [ app-aligned.apk ]</span>
+
+<span style="color:#5ac25a">[  ✓  ] Complete - setup ──────────────────────────────────────── [ 0 failures ]</span>
+
+<span style="color:#d33fa8">[  ?  ] Continue? ────────────────────────────────────────────────────── [ y/n ]</span></div>
+		<figcaption>Frobulator marker lines in a terminal</figcaption>
+	</figure>
+	<ul class="points">
+		<li><b>Line markers.</b> Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.</li>
+		<li><b>Standard lines.</b> Every line is parsed to the terminal width, never below 80 columns: long text folds into paragraphs, long details shorten with an ellipsis.</li>
+		<li><b>Prompts and input.</b> Question, input, user and return prompts, lettered and numbered steps, masked password input and labelled value capture.</li>
+		<li><b>Progress feedback.</b> Tickers, activity bars, countdowns and typed text, with background jobs that never print shell job notices.</li>
+		<li><b>Checkpoints.</b> Status tracking that halts, fails or carries on, logs failures and skips completed steps on the next run.</li>
+		<li><b>Files and network.</b> Directory, write, copy, move, link and delete helpers with ownership kept, plus downloads and uploads reported by HTTP status.</li>
+		<li><b>Packages.</b> One set of install, require, hold, purge and update commands for apt on Debian and Ubuntu, and dnf on Fedora.</li>
+		<li><b>Privileges.</b> Escalation through sudo that keeps the original arguments, systemd service control and readable permission scopes.</li>
+		<li><b>Archives.</b> Create and extract tar, gzip, bzip2, zip, 7z and rar archives, with the needed tool installed on demand.</li>
+		<li><b>Self updating.</b> The bootstrap header fetches the latest release and only replaces the local copy with a newer one.</li>
+	</ul>
+	<h3>Scripts only</h3>
+	<p>The current set of assertions upon which Frobulator is built restricts its functionality to scripts exclusively, at least for the time being.</p>
+</section>
+
+<section id="install" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>INSTALL // ONE FILE IN ~/.LOCAL/BIN</h2>
+	</header>
+	<p class="lead">Frobulator is a single Bash file. Run it to install it to <code>${HOME}/.local/bin</code>, then source it from your scripts - or let the bootstrap header do both.</p>
+	<h3>Install</h3>
+	<pre><code>curl -s -L get.frbltr.app &gt; frobulator &amp;&amp; bash frobulator</code></pre>
+	<p>Running the script directly installs it - no arguments default to <code>--install</code>. Sourcing is unaffected: the options only apply when the file is executed.</p>
+	<pre><code>./frobulator              # install (default)
+./frobulator --install    # install
+./frobulator --uninstall  # uninstall - scripts using frobulator fetch it again on their next run
+./frobulator --help       # usage</code></pre>
+	<h3>Source</h3>
+	<pre><code>. "${HOME}"/.local/bin/frobulator</code></pre>
+	<h3>Version</h3>
+	<p>The release is identified by the literal <code>update="YYYY-MM-DD-HHMM"</code> line at the top of the file. The bootstrap reads it as text (<code>grep '^update='</code>) and downloads a new copy when the online value sorts after the installed one - bump it, with a four digit time, for every release, including same day releases. <code>version</code> is derived from it.</p>
+	<p class="more"><a href="https://github.com/nathaneltitane/frobulator/blob/main/frobulator">View the library source ›</a></p>
+</section>
+
+<section id="bootstrap" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#a072b8" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>BOOTSTRAP // THE STANDARD SCRIPT HEADER</h2>
+	</header>
+	<p class="lead">Start every script with this header. It fetches the latest Frobulator with curl or wget, sources it once, escalates when needed and prints the script banner. The sections below it are the standard layout of a Frobulator script.</p>
+	<ol class="steps">
+		<li><b>Arguments.</b> <code>self_arguments</code> keeps the original arguments for <code>frobulator.escalate</code> - spaces, quotes and empty arguments intact.</li>
+		<li><b>Sudo aware.</b> Run as root through sudo, the header keeps using the invoking user's copy in their home directory.</li>
+		<li><b>Newer only.</b> The download from <code>get.frbltr.app</code> replaces the local copy only when its <code>update=</code> line sorts after it.</li>
+		<li><b>Loaded once.</b> <code>frobulator_loaded</code> skips the download and sourcing when Frobulator is already loaded.</li>
+		<li><b>Requirements.</b> The <code>list</code> array feeds <code>frobulator.require</code>, which installs whatever command or package is missing.</li>
+	</ol>
+	<pre><code>#!/bin/bash
+
+# dependencies ─────────────────────────────────────────────────────────────────
+
+script="$(basename -- "${BASH_SOURCE[0]}")"
+
+# script arguments for escalation
+
+self_arguments=("${@}")
+
+if [ "${frobulator_loaded}" != "true" ]
+then
+	echo
+	echo "[  &gt;  ] Checking..."
+	echo
+
+	# root through sudo keeps using the user's frobulator
+
+	if [ -n "${SUDO_USER}" ]
+	then
+		USER="${SUDO_USER}"
+		HOME="$(getent passwd "${SUDO_USER}" | cut -d ':' -f 6)"
+	fi
+
+	frobulator="${HOME}/.local/bin/frobulator"
+	frobulator_download="$(mktemp)"
+
+	mkdir -p "${HOME}/.local/bin"
+
+	# latest release - curl or wget - local copy replaced only by a newer one
+
+	curl -s -L -o "${frobulator_download}" get.frbltr.app 2&gt; /dev/null ||
+	wget -q -O "${frobulator_download}" get.frbltr.app 2&gt; /dev/null
+
+	version_online="$(grep -m 1 '^update=' "${frobulator_download}")"
+	version_local="$(grep -m 1 '^update=' "${frobulator}" 2&gt; /dev/null)"
+
+	if [[ "${version_online}" &gt; "${version_local}" ]]
+	then
+		mv -f "${frobulator_download}" "${frobulator}"
+
+		chmod +x "${frobulator}"
+	fi
+
+	rm -f "${frobulator_download}"
+
+	if [ ! -f "${frobulator}" ]
+	then
+		echo "[  !  ] Unable to fetch frobulator ── [ get.frbltr.app ]"
+		echo
+
+		exit 1
+	fi
+
+	source "${frobulator}"
+fi
+
+# superuser ────────────────────────────────────────────────────────────────────
+
+frobulator.escalate
+
+# script ───────────────────────────────────────────────────────────────────────
+
+frobulator.script
+
+# version ──────────────────────────────────────────────────────────────────────
+
+version="YYYY-MM-DD"
+
+# usage ────────────────────────────────────────────────────────────────────────
+
+# variables ────────────────────────────────────────────────────────────────────
+
+# defaults ─────────────────────────────────────────────────────────────────────
+
+# functions ────────────────────────────────────────────────────────────────────
+
+# update ───────────────────────────────────────────────────────────────────────
+
+# frobulator.update
+
+# frobulator.upgrade
+
+# requirements ─────────────────────────────────────────────────────────────────
+
+list=(
+
+)
+
+frobulator.require ${list[@]}
+
+list=()
+
+# configuration ────────────────────────────────────────────────────────────────</code></pre>
+	<p class="more"><a href="https://github.com/nathaneltitane/frobulator/blob/main/bootstrap">Get the bootstrap header ›</a></p>
+</section>
+
+<section id="markers" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>MARKERS // 23 LINE TYPES</h2>
+	</header>
+	<p class="lead">Every marker prints a message, an optional detail and an optional fill character on one line as wide as the terminal, followed by a blank line from <code>frobulator.brk</code> - scripts do not add <code>echo</code> after messages. Prompts stay on the same line for the answer.</p>
+	<div class="table">
+		<table>
+			<thead>
+				<tr><th>Marker</th><th>Command</th><th>Purpose</th><th>Color</th></tr>
+			</thead>
+			<tbody>
+				<tr><td class="glyph" style="color:#eeeeee">[  i  ]</td><td><code>frobulator.nil</code></td><td>empty marker line</td><td>white</td></tr>
+				<tr><td class="glyph" style="color:#5294e2">[  i  ]</td><td><code>frobulator.inf</code></td><td>information line</td><td>blue</td></tr>
+				<tr><td class="glyph" style="color:#ff5f00">[  !  ]</td><td><code>frobulator.wrn</code></td><td>warning line</td><td>orange</td></tr>
+				<tr><td class="glyph" style="color:#005fd7">[  #  ]</td><td><code>frobulator.msg</code></td><td>message line</td><td>navy</td></tr>
+				<tr><td class="glyph" style="color:#008700">[  +  ]</td><td><code>frobulator.add</code></td><td>add/create line</td><td>lime</td></tr>
+				<tr><td class="glyph" style="color:#c0393f">[  -  ]</td><td><code>frobulator.rem</code></td><td>remove/delete line</td><td>crimson</td></tr>
+				<tr><td class="glyph" style="color:#00aade">[  ●  ]</td><td><code>frobulator.ret</code></td><td>retain/keep line</td><td>aqua</td></tr>
+				<tr><td class="glyph" style="color:#008787">[  ○  ]</td><td><code>frobulator.rel</code></td><td>release line</td><td>teal</td></tr>
+				<tr><td class="glyph" style="color:#a8a8a8">[  ▷  ]</td><td><code>frobulator.fwd</code></td><td>forward/progress line</td><td>silver</td></tr>
+				<tr><td class="glyph" style="color:#a8a8a8">[  ◁  ]</td><td><code>frobulator.rev</code></td><td>reverse/back line</td><td>silver</td></tr>
+				<tr><td class="glyph" style="color:#767676">[  □  ]</td><td><code>frobulator.stp</code></td><td>stop line</td><td>grey</td></tr>
+				<tr><td class="glyph" style="color:#c061cb">[  ▽  ]</td><td><code>frobulator.dwl</code></td><td>download line</td><td>magenta</td></tr>
+				<tr><td class="glyph" style="color:#9a5fb5">[  △  ]</td><td><code>frobulator.upl</code></td><td>upload line</td><td>purple</td></tr>
+				<tr><td class="glyph" style="color:#f6d32d">[  □  ]</td><td><code>frobulator.lnk</code></td><td>link line</td><td>yellow</td></tr>
+				<tr><td class="glyph" style="color:#5ac25a">[  ✓  ]</td><td><code>frobulator.scs</code></td><td>success line</td><td>green</td></tr>
+				<tr><td class="glyph" style="color:#cc575d">[  𐄂  ]</td><td><code>frobulator.err</code></td><td>error line</td><td>red</td></tr>
+				<tr><td class="glyph" style="color:#008787">[  &gt;  ]</td><td><code>frobulator.ins</code></td><td>insert/input line</td><td>teal</td></tr>
+				<tr><td class="glyph" style="color:#c061cb">[  ¤  ]</td><td><code>frobulator.cpt</code></td><td>complete line</td><td>magenta</td></tr>
+				<tr><td class="glyph" style="color:#a8a8a8">[  /  ]</td><td><code>frobulator.url</code></td><td>url line</td><td>silver</td></tr>
+				<tr><td class="glyph" style="color:#d33fa8">[  ?  ]</td><td><code>frobulator.qst</code></td><td>question prompt (no newline)</td><td>fuschia</td></tr>
+				<tr><td class="glyph" style="color:#ff00d7">[  +  ]</td><td><code>frobulator.ipt</code></td><td>input prompt (no newline)</td><td>pink</td></tr>
+				<tr><td class="glyph" style="color:#767676">[  ~  ]</td><td><code>frobulator.usr</code></td><td>user prompt (no newline)</td><td>grey</td></tr>
+				<tr><td class="glyph" style="color:#00aade">[  ↵  ]</td><td><code>frobulator.rtn</code></td><td>return prompt (no newline)</td><td>aqua</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<ul class="points">
+		<li><b>Carry-over lines.</b> <code>frobulator.nul</code> keeps the color of the line above, <code>frobulator.ind</code> clears it - both rejoin the line above so details stay together.</li>
+		<li><b>Steps.</b> <code>frobulator.ltr</code> and <code>frobulator.num</code> print lettered and numbered steps, optionally in a palette color.</li>
+		<li><b>Separators.</b> <code>frobulator.sep</code> prints a full width line, uncolored unless a palette color is given.</li>
+		<li><b>Notices.</b> <code>frobulator.ntf</code> frames a title and message in square, round, heavy, double, dots, matrix, tech, skel or ascii style.</li>
+	</ul>
+	<h3>Arguments</h3>
+	<p>Markers accept direct strings, variables, arrays, command substitutions or values generated elsewhere in the script. All of them are normalized through <code>frobulator.pmt</code>, so alignment, wrapping and span generation stay consistent.</p>
+	<pre><code>frobulator.inf "Checking dependencies" "[ curl ]"
+
+prompt_arguments=(
+	"Checking dependencies"
+	"[ curl ]"
+)
+
+frobulator.inf "${prompt_arguments[@]}"</code></pre>
+	<div class="terminal"><span style="color:#5294e2">[  i  ] Checking dependencies ───────────────────────────────────────── [ curl ]</span></div>
+</section>
+
+<section id="colors" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#f6d32d" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>COLORS // 18 NAMED 256 COLOR CODES</h2>
+	</header>
+	<p class="lead">Every palette color has its own line command, and its name is accepted wherever a color is: numbered steps, separators and the critter. Colors are set only when output is a terminal - through <code>tput</code>, or ANSI sequences without it - and stay empty otherwise.</p>
+	<div class="swatches"><div class="swatch"><span style="background:#eeeeee"></span><b>white</b>255 // #eeeeee</div><div class="swatch"><span style="background:#a8a8a8"></span><b>silver</b>248 // #a8a8a8</div><div class="swatch"><span style="background:#767676"></span><b>grey</b>243 // #767676</div><div class="swatch"><span style="background:#6b7080"></span><b>black</b>238 // #6b7080</div><div class="swatch"><span style="background:#cc575d"></span><b>red</b>1 // #cc575d</div><div class="swatch"><span style="background:#c0393f"></span><b>crimson</b>88 // #c0393f</div><div class="swatch"><span style="background:#5ac25a"></span><b>green</b>2 // #5ac25a</div><div class="swatch"><span style="background:#008700"></span><b>lime</b>28 // #008700</div><div class="swatch"><span style="background:#f6d32d"></span><b>yellow</b>11 // #f6d32d</div><div class="swatch"><span style="background:#ff5f00"></span><b>orange</b>202 // #ff5f00</div><div class="swatch"><span style="background:#5294e2"></span><b>blue</b>4 // #5294e2</div><div class="swatch"><span style="background:#005fd7"></span><b>navy</b>26 // #005fd7</div><div class="swatch"><span style="background:#c061cb"></span><b>magenta</b>5 // #c061cb</div><div class="swatch"><span style="background:#9a5fb5"></span><b>purple</b>53 // #9a5fb5</div><div class="swatch"><span style="background:#d33fa8"></span><b>fuschia</b>126 // #d33fa8</div><div class="swatch"><span style="background:#ff00d7"></span><b>pink</b>200 // #ff00d7</div><div class="swatch"><span style="background:#00aade"></span><b>aqua</b>6 // #00aade</div><div class="swatch"><span style="background:#008787"></span><b>teal</b>30 // #008787</div></div>
+	<h3>Add your own</h3>
+	<p><code>frobulator.palette</code> adds a named color at run time from a 256 color code. Adding an existing name updates its color. The colors shown here follow a dark terminal theme, with the darkest codes lifted for reading: your terminal decides how they look.</p>
+	<pre><code>frobulator.palette cornflower 68
+frobulator.num cornflower 1 "Soft blue line" "[ value ]"</code></pre>
+</section>
+
+<section id="checkpoints" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#ff8080" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>CHECKPOINTS // STATUS, LOGS AND RESUMES</h2>
+	</header>
+	<p class="lead">Frobulator replaces the <code>if [ &quot;${?}&quot; -ne 0 ]</code> blocks of a script with one line checks. Failures are recorded, logged to <code>~/.local/var/log/&lt;script&gt;-&lt;stamp&gt;.log</code> and summed up at the end.</p>
+	<div class="table wrap">
+		<table>
+			<thead>
+				<tr><th>Command</th><th>On failure</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><code>frobulator.complete</code></td><td>Reports <code>Incomplete - &lt;label&gt;</code>, logs the failure and carries on</td></tr>
+				<tr><td><code>frobulator.complete halt</code></td><td>Logs, prints the summary and exits the script - also inside a function</td></tr>
+				<tr><td><code>frobulator.halt</code></td><td>Prints the message and exits with the failed command's own status</td></tr>
+				<tr><td><code>frobulator.fail</code></td><td>Returns the failed status inside a function - follow it with <code>&#124;&#124; return</code></td></tr>
+				<tr><td><code>frobulator.track</code></td><td>Records the failure in the calling function's <code>status</code></td></tr>
+				<tr><td><code>frobulator.result</code></td><td>Reports overall success or the failure count, then clears the records</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<pre><code>zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
+frobulator.complete halt "Align failed" "[ ${file_aligned} ]"
+
+rm -f "${cache}"
+frobulator.complete
+
+frobulator.complete "${checkpoint_directory}" "make-all" make all
+
+frobulator.result "${script}"</code></pre>
+	<p>The checkpoint form runs a command once: it is skipped while <code>&quot;${path}/${checkpoint}&quot;</code> exists, and the checkpoint file is only created on success. Run the script again after a failure and it resumes where it stopped.</p>
+</section>
+
+<section id="packages" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#ffe680" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>PACKAGES // APT AND DNF</h2>
+	</header>
+	<p class="lead">The package manager is picked from the distribution family in <code>/etc/os-release</code>: <code>debian</code> and its derivatives use apt, <code>fedora</code> and its derivatives use dnf, or yum when dnf is missing. The family decides, not the commands on the <code>PATH</code>, so a Fedora container under Termux uses dnf even with Termux's apt in reach.</p>
+	<div class="table">
+		<table>
+			<thead>
+				<tr><th>Command</th><th>apt</th><th>dnf</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><code>frobulator.update</code></td><td>apt-get update</td><td>dnf makecache</td></tr>
+				<tr><td><code>frobulator.upgrade</code></td><td>apt-get dist-upgrade</td><td>dnf upgrade</td></tr>
+				<tr><td><code>frobulator.install</code></td><td>apt search, then install</td><td>dnf install</td></tr>
+				<tr><td><code>frobulator.require</code></td><td>apt-file search</td><td>dnf repoquery --whatprovides</td></tr>
+				<tr><td><code>frobulator.reinstall</code></td><td>apt-get install --reinstall</td><td>dnf reinstall</td></tr>
+				<tr><td><code>frobulator.purge</code></td><td>apt-get purge --autoremove</td><td>dnf remove</td></tr>
+				<tr><td><code>frobulator.hold</code></td><td>apt-mark hold</td><td>dnf versionlock add</td></tr>
+				<tr><td><code>frobulator.release</code></td><td>apt-mark unhold</td><td>dnf versionlock delete</td></tr>
+				<tr><td><code>frobulator.clean</code></td><td>autoremove, autoclean, clean</td><td>dnf autoremove, dnf clean all</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<p><code>frobulator.require</code> checks commands and installed packages first and only touches the package manager when something is missing, so requirements that are already met need no root access. Package name globs such as <code>&quot;libssl*&quot;</code> install every match.</p>
+</section>
+
+<section id="permissions" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#6acfec" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>PERMISSIONS // SCOPES INSTEAD OF MODES</h2>
+	</header>
+	<p class="lead"><code>frobulator.permissions</code> sets the exact mode from a scope and optional modifiers, in place of raw <code>chmod</code> numbers. Directories always keep execute for whoever can read them.</p>
+	<ul class="points">
+		<li><b>public.</b> You edit, everyone reads.</li>
+		<li><b>group.</b> You edit, your group reads, no access for others.</li>
+		<li><b>private.</b> Only you.</li>
+		<li><b>execute / readonly.</b> Whoever can read can also run / nobody edits, including you.</li>
+	</ul>
+	<div class="table"><table><thead><tr><th>call</th><th>file</th><th>directory</th><th>typical use</th></tr></thead><tbody><tr><td><code>public</code></td><td><code>644</code> <code>rw-r--r--</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>regular files, configs, shared data</td></tr><tr><td><code>public execute</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>scripts, binaries, installed tools</td></tr><tr><td><code>public readonly</code></td><td><code>444</code> <code>r--r--r--</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>reference files that should not change</td></tr><tr><td><code>public readonly execute</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>locked-down tools</td></tr><tr><td><code>group</code></td><td><code>640</code> <code>rw-r-----</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>files for your group only</td></tr><tr><td><code>group execute</code></td><td><code>750</code> <code>rwxr-x---</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>group-only scripts</td></tr><tr><td><code>group readonly</code></td><td><code>440</code> <code>r--r-----</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>group reference files</td></tr><tr><td><code>group readonly execute</code></td><td><code>550</code> <code>r-xr-x---</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>locked group tools</td></tr><tr><td><code>private</code></td><td><code>600</code> <code>rw-------</code></td><td><code>700</code> <code>rwx------</code></td><td>credentials, keys, tokens</td></tr><tr><td><code>private execute</code></td><td><code>700</code> <code>rwx------</code></td><td><code>700</code> <code>rwx------</code></td><td>personal scripts</td></tr><tr><td><code>private readonly</code></td><td><code>400</code> <code>r--------</code></td><td><code>500</code> <code>r-x------</code></td><td>ssh keys, certificates</td></tr><tr><td><code>private readonly execute</code></td><td><code>500</code> <code>r-x------</code></td><td><code>500</code> <code>r-x------</code></td><td>locked personal tools</td></tr></tbody></table></div>
+	<pre><code>frobulator.permissions public execute "${path}/${file}"
+frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
+</section>
+
+<section id="functions" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#f5f6f7" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>FUNCTIONS // EVERY COMMAND AND EXAMPLE</h2>
+	</header>
+	<p class="lead">All 110 Frobulator functions with their arguments and examples. Search them, or pick a group.</p>
+	<div class="command-tools">
+		<input id="command-search" type="search" placeholder="Search functions" aria-label="Search functions">
+		<div id="command-groups" class="chips"></div>
+	</div>
+	<div id="command-list" class="command-list">
+		<article class="command" id="function-plo" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.plo</h3><span class="command-meta">Markers</span></div>
+				<p>[ p ] rompt [ l ] ine [ o ] verwrite:</p>
+				<p>Clears a defined number of lines above the current cursor position, wiping from that point down to the end of the screen — built on <code>terminal_cursor_up</code> and <code>terminal_clear_down</code>.</p>
+				<pre><code>frobulator.plo 1</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-pmt" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.pmt</h3><span class="command-meta">Markers</span></div>
+				<p>[ p ] rompt [ m ] anagement [ t ] ool:</p>
+				<p>The shared prompt-formatting engine behind every color and marker command. Normalizes 1–3 arguments (<code>begin</code>, <code>end</code>, <code>span character</code>) into a line as wide as the terminal (<code>columns_terminal</code>, never below 80): pads/fills the middle span, folds <code>begin</code> with word-detection when it would overflow the line, and truncates an overlong <code>end</code> with an ellipsis while preserving its surrounding bracket style - a <code>[ 'name' // value ]</code> bracket keeps its whole <code> // value ]</code> tail (and the closing quote), so only the name is shortened. Populates the <code>prompt_string</code> array consumed by every wrapper below rather than printing directly.</p>
+				<pre><code>frobulator.pmt "Downloading" "[ package.tar.gz ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-brk" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.brk</h3><span class="command-meta">Markers</span></div>
+				<p>Line break: prints the blank line that follows every marker line and notice block, and flags it so the carry-over markers (<code>frobulator.nul</code>, <code>frobulator.ind</code>) can rejoin the line above instead. Called by the markers themselves - use it directly only after your own <code>echo</code> output. It also adds the marker line and its blank line to <code>lines_printed_terminal</code> (wrapped rows counted at the real terminal width), which <code>frobulator.escalate</code> uses to clear its output.</p>
+				<pre><code>frobulator.brk</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ltr" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ltr</h3><span class="command-meta">Markers</span></div>
+				<p><b>Letter.</b></p>
+				<p>Prints a lettered step marker — first argument is the letter, remaining arguments are forwarded to <code>frobulator.pmt</code>.</p>
+				<pre><code>frobulator.ltr a "Select source directory"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-num" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.num</h3><span class="command-meta">Markers</span></div>
+				<p><b>Number.</b></p>
+				<p>Prints a numbered step marker — first argument is the number, remaining arguments are forwarded to <code>frobulator.pmt</code>. An optional palette color before the number prints the number and the line in that color - e.g. green for files to add and red for files to remove, matching their <code>frobulator.add</code> / <code>frobulator.rem</code> headers.</p>
+				<pre><code>frobulator.num 1 "Install dependencies"
+frobulator.num lime 1 "new-track.mp3"
+frobulator.num crimson 2 "old-track.mp3"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-sep" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.sep</h3><span class="command-meta">Markers</span></div>
+				<p><b>Separator.</b></p>
+				<p>Prints a full-width separator line built from <code>frobulator.pmt</code>. The line is uncolored unless an optional palette color is given first, which prints the line and its text in that color.</p>
+				<pre><code>frobulator.sep
+frobulator.sep lime "Section"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ntf" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ntf</h3><span class="command-meta">Markers</span></div>
+				<p><b>Notify.</b></p>
+				<p>Prints a framed notice block. Optional leading arguments select a frame <code>style</code> (<code>square</code> [default], <code>round</code>, <code>heavy</code>, <code>double</code>, <code>dots</code>, <code>matrix</code>, <code>tech</code>, <code>skel</code>, <code>ascii</code>), the <code>split</code> keyword (renders title and message as two separate frames instead of one divided frame), and a marker-type keyword (<code>inf</code>, <code>wrn</code>, <code>scs</code>, <code>err</code>, etc.) to color the title using that marker's color. Remaining arguments are <code>title</code> then <code>message</code>; a second marker-type keyword placed between them colors the message. Like the line markers, the block is followed by a blank line.</p>
+				<pre><code>frobulator.ntf round inf "Notice" "The setup process is ready."</code></pre>
+				<pre><code>frobulator.ntf heavy split err "Failure" "Could not reach the update server."</code></pre>
+				<pre><code>frobulator.ntf wrn "Disclaimer" inf "This action is permanent."</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-nil" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.nil</h3><span class="command-meta">Markers</span></div>
+				<p><b>Empty (nil) line.</b> Prints a empty marker line with the <span class="glyph" style="color:#eeeeee">[  i  ]</span> marker in white.</p>
+				<pre><code>frobulator.nil "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-inf" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.inf</h3><span class="command-meta">Markers</span></div>
+				<p><b>Information.</b> Prints a information line with the <span class="glyph" style="color:#5294e2">[  i  ]</span> marker in blue.</p>
+				<pre><code>frobulator.inf "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-wrn" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.wrn</h3><span class="command-meta">Markers</span></div>
+				<p><b>Warning.</b> Prints a warning line with the <span class="glyph" style="color:#ff5f00">[  !  ]</span> marker in orange.</p>
+				<pre><code>frobulator.wrn "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-msg" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.msg</h3><span class="command-meta">Markers</span></div>
+				<p><b>Message.</b> Prints a message line with the <span class="glyph" style="color:#005fd7">[  #  ]</span> marker in navy.</p>
+				<pre><code>frobulator.msg "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-add" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.add</h3><span class="command-meta">Markers</span></div>
+				<p><b>Add.</b> Prints a add/create line with the <span class="glyph" style="color:#008700">[  +  ]</span> marker in lime.</p>
+				<pre><code>frobulator.add "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-rem" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.rem</h3><span class="command-meta">Markers</span></div>
+				<p><b>Remove.</b> Prints a remove/delete line with the <span class="glyph" style="color:#c0393f">[  -  ]</span> marker in crimson.</p>
+				<pre><code>frobulator.rem "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ret" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ret</h3><span class="command-meta">Markers</span></div>
+				<p><b>Retain.</b> Prints a retain/keep line with the <span class="glyph" style="color:#00aade">[  ●  ]</span> marker in aqua.</p>
+				<pre><code>frobulator.ret "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-rel" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.rel</h3><span class="command-meta">Markers</span></div>
+				<p><b>Release.</b> Prints a release line with the <span class="glyph" style="color:#008787">[  ○  ]</span> marker in teal.</p>
+				<pre><code>frobulator.rel "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-fwd" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.fwd</h3><span class="command-meta">Markers</span></div>
+				<p><b>Forward.</b> Prints a forward/progress line with the <span class="glyph" style="color:#a8a8a8">[  ▷  ]</span> marker in silver.</p>
+				<pre><code>frobulator.fwd "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-rev" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.rev</h3><span class="command-meta">Markers</span></div>
+				<p><b>Reverse.</b> Prints a reverse/back line with the <span class="glyph" style="color:#a8a8a8">[  ◁  ]</span> marker in silver.</p>
+				<pre><code>frobulator.rev "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-stp" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.stp</h3><span class="command-meta">Markers</span></div>
+				<p><b>Stop.</b> Prints a stop line with the <span class="glyph" style="color:#767676">[  □  ]</span> marker in grey.</p>
+				<pre><code>frobulator.stp "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-dwl" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.dwl</h3><span class="command-meta">Markers</span></div>
+				<p><b>Download.</b> Prints a download line with the <span class="glyph" style="color:#c061cb">[  ▽  ]</span> marker in magenta.</p>
+				<pre><code>frobulator.dwl "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-upl" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.upl</h3><span class="command-meta">Markers</span></div>
+				<p><b>Upload.</b> Prints a upload line with the <span class="glyph" style="color:#9a5fb5">[  △  ]</span> marker in purple.</p>
+				<pre><code>frobulator.upl "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-lnk" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.lnk</h3><span class="command-meta">Markers</span></div>
+				<p><b>Link.</b> Prints a link line with the <span class="glyph" style="color:#f6d32d">[  □  ]</span> marker in yellow.</p>
+				<pre><code>frobulator.lnk "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-scs" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.scs</h3><span class="command-meta">Markers</span></div>
+				<p><b>Success.</b> Prints a success line with the <span class="glyph" style="color:#5ac25a">[  ✓  ]</span> marker in green.</p>
+				<pre><code>frobulator.scs "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-err" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.err</h3><span class="command-meta">Markers</span></div>
+				<p><b>Error.</b> Prints a error line with the <span class="glyph" style="color:#cc575d">[  𐄂  ]</span> marker in red.</p>
+				<pre><code>frobulator.err "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ins" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ins</h3><span class="command-meta">Markers</span></div>
+				<p><b>Insert.</b> Prints a insert/input line with the <span class="glyph" style="color:#008787">[  &gt;  ]</span> marker in teal.</p>
+				<pre><code>frobulator.ins "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-cpt" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.cpt</h3><span class="command-meta">Markers</span></div>
+				<p><b>Complete.</b> Prints a complete line with the <span class="glyph" style="color:#c061cb">[  ¤  ]</span> marker in magenta.</p>
+				<pre><code>frobulator.cpt "Message" "[ detail ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-url" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.url</h3><span class="command-meta">Markers</span></div>
+				<p><b>Url.</b> Prints a url line with the <span class="glyph" style="color:#a8a8a8">[  /  ]</span> marker in silver.</p>
+				<pre><code>frobulator.url "https://example.com"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-qst" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.qst</h3><span class="command-meta">Markers</span></div>
+				<p><b>Question prompt.</b> Prints a question prompt with the <span class="glyph" style="color:#d33fa8">[  ?  ]</span> marker in fuschia, and stays on the same line for the answer.</p>
+				<pre><code>frobulator.qst "Enter value"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ipt" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ipt</h3><span class="command-meta">Markers</span></div>
+				<p><b>Input prompt.</b> Prints a input prompt with the <span class="glyph" style="color:#ff00d7">[  +  ]</span> marker in pink, and stays on the same line for the answer.</p>
+				<pre><code>frobulator.ipt "Enter value"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-usr" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.usr</h3><span class="command-meta">Markers</span></div>
+				<p><b>User prompt.</b> Prints a user prompt with the <span class="glyph" style="color:#767676">[  ~  ]</span> marker in grey, and stays on the same line for the answer.</p>
+				<pre><code>frobulator.usr "Enter value"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-rtn" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.rtn</h3><span class="command-meta">Markers</span></div>
+				<p><b>Return prompt.</b> Prints a return prompt with the <span class="glyph" style="color:#00aade">[  ↵  ]</span> marker in aqua, and stays on the same line for the answer.</p>
+				<pre><code>frobulator.rtn "Press to close" "[ konsole // 'weather' ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-nul" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.nul</h3><span class="command-meta">Markers</span></div>
+				<p><b>Null line - carry-over: keep color of the line above.</b> Carry-over line: continue line, retain color. Rejoins the line above on screen, so a message and its details stay together.</p>
+				<pre><code>frobulator.nul "continued output"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ind" data-group="Markers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ind</h3><span class="command-meta">Markers</span></div>
+				<p><b>Index line - carry-over: without color.</b> Carry-over line: continue line, clear color. Rejoins the line above on screen, so a message and its details stay together.</p>
+				<pre><code>frobulator.ind "continued output"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-erase" data-group="Formatting">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.erase</h3><span class="command-meta">Formatting</span></div>
+				<p>Thin wrapper around <code>frobulator.plo</code> — erases a defined number of lines above the current cursor position the same way.</p>
+				<pre><code>frobulator.erase 3</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-columns" data-group="Formatting">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.columns</h3><span class="command-meta">Formatting</span></div>
+				<p>Sets <code>columns_terminal</code> - the width used by prompts, notifications, bars and images - from the terminal width (<code>tput cols</code>), never below <code>columns_terminal_minimum</code> (default <code>80</code>), which is also used when output is not a terminal. Runs on load and again on every window resize (<code>WINCH</code> trap), so new output follows the window width.</p>
+				<pre><code>columns_terminal_minimum=100
+frobulator.columns</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-colors" data-group="Colors">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.[color]</h3><span class="command-meta">Colors</span></div>
+				<p>Each named color wrapper calls <code>frobulator.pmt</code>, stores its color into <code>prompt_string</code> and echoes the result, so every color line follows the same formatting rules as the markers.</p>
+				<pre><code>frobulator.[color] "[string]" "[string]" "[span character]"
+frobulator.lime "Highlighted" "[ value ]"</code></pre>
+				<div class="values"><span class="value" style="color:#eeeeee">frobulator.white</span><span class="value" style="color:#a8a8a8">frobulator.silver</span><span class="value" style="color:#767676">frobulator.grey</span><span class="value" style="color:#6b7080">frobulator.black</span><span class="value" style="color:#cc575d">frobulator.red</span><span class="value" style="color:#c0393f">frobulator.crimson</span><span class="value" style="color:#5ac25a">frobulator.green</span><span class="value" style="color:#008700">frobulator.lime</span><span class="value" style="color:#f6d32d">frobulator.yellow</span><span class="value" style="color:#ff5f00">frobulator.orange</span><span class="value" style="color:#5294e2">frobulator.blue</span><span class="value" style="color:#005fd7">frobulator.navy</span><span class="value" style="color:#c061cb">frobulator.magenta</span><span class="value" style="color:#9a5fb5">frobulator.purple</span><span class="value" style="color:#d33fa8">frobulator.fuschia</span><span class="value" style="color:#ff00d7">frobulator.pink</span><span class="value" style="color:#00aade">frobulator.aqua</span><span class="value" style="color:#008787">frobulator.teal</span></div>
+			</div>
+		</article>
+		<article class="command" id="function-palette" data-group="Colors">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.palette</h3><span class="command-meta">Colors</span></div>
+				<p>Adds a named color to the palette at run time from a 256-color code (<code>0</code> to <code>255</code>). The name is then accepted wherever a palette color name is - the optional color of <code>frobulator.num</code> and <code>frobulator.sep</code>, and the critter. Like the built-in colors, the sequence is set only when output is a terminal (via <code>tput</code>, or ANSI without it) and is empty otherwise. Adding an existing name updates its color.</p>
+				<pre><code>frobulator.palette cornflower 68
+frobulator.num cornflower 1 "Soft blue line" "[ value ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-separate" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.separate</h3><span class="command-meta">Prompts</span></div>
+				<p>Prints a predefined <code>frobulator.sep</code> line (which prints its own blank line after it) — use to separate instructions or warnings from prompts.</p>
+				<pre><code>frobulator.separate</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-read" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.read</h3><span class="command-meta">Prompts</span></div>
+				<p>Wraps the <code>read</code> builtin (forwarding all arguments to it) and prints a trailing blank line, so prompts stay evenly spaced after user input.</p>
+				<pre><code>frobulator.qst "Continue?" "[ y/n ]"
+frobulator.read reply</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-script" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.script</h3><span class="command-meta">Prompts</span></div>
+				<p>Prints a script startup banner: a <code>msg</code>-colored notice block titled <code>Script</code> showing <code>Executing: '${script}'</code> and <code>Version:</code>. An optional description is shown above them.</p>
+				<pre><code>frobulator.script</code></pre>
+				<pre><code>frobulator.script "Welcome to the Gutendex terminal library!"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-type" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.type</h3><span class="command-meta">Prompts</span></div>
+				<p>Prints a string one character at a time with a randomized delay between each, to emulate human typing. The first argument is the speed, a single digit from <code>0</code> to <code>9</code> (optional, defaults to <code>9</code>). Each step adds 0.02 s to the maximum delay per character: <code>0</code> types at a steady 0.02 s, about one screen refresh, and <code>9</code> at up to 0.2 s. Every argument after it is printed, joined with spaces, so the string needs no quotes. When the first argument is not a single digit, it is part of the string.</p>
+				<pre><code>frobulator.type 3 "Preparing environment..."</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-timeout" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.timeout</h3><span class="command-meta">Prompts</span></div>
+				<p>Sleeps for a number of seconds (defaults to <code>1</code> when omitted) — a simple pause between commands.</p>
+				<pre><code>frobulator.timeout 5</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-clear" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.clear</h3><span class="command-meta">Prompts</span></div>
+				<p>Pauses for <code>frobulator.timeout</code>'s default interval, then clears the terminal — used for script "paging" once a step's checkpoints are met.</p>
+				<pre><code>frobulator.clear</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-countdown" data-group="Prompts">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.countdown</h3><span class="command-meta">Prompts</span></div>
+				<p>Shows a live countdown before continuing, validating that the first argument is a non-negative integer. Remaining arguments are forwarded to <code>frobulator.pmt</code> as the message shown beside the counter.</p>
+				<pre><code>frobulator.countdown 10 "Starting install" "[ press ctrl+c to cancel ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-action" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.action</h3><span class="command-meta">Progress</span></div>
+				<p>Generates a randomly colored, grammatically conjugated action prompt from a verb (e.g. <code>download</code> → <code>Downloading...</code>, <code>panic</code> → <code>Panicking...</code>), falling back to <code>frobulate</code> when no verb is given. Handles common English suffix rules (<code>-ie</code> → <code>-y</code>, silent <code>-e</code> drop, <code>-ic</code> → <code>-ick</code>, and final consonant doubling for one-syllable verbs ending consonant-vowel-consonant plus a short list of verbs stressed on the last syllable, e.g. <code>strip</code> → <code>Stripping</code>, <code>submit</code> → <code>Submitting</code>, but <code>open</code> → <code>Opening</code>) before appending <code>-ing</code>. Sets the <code>prompt_progress</code>/<code>color_progress</code> globals consumed by <code>frobulator.progress</code>. Callable directly, but normally invoked internally.</p>
+				<pre><code>frobulator.action "download" "[ ${file} ]"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-process" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.process</h3><span class="command-meta">Progress</span></div>
+				<p>Waits on the most recently backgrounded process (<code>${!}</code>), animating a simple <code>/\</code> ticker beside a message until it exits, then returns that process's exit status.</p>
+				<pre><code>frobulator.background process "Updating package index" -- apt-get update</code></pre>
+				<p>Called directly, it follows the job started just before it: <code>apt-get update &amp;</code> then <code>frobulator.process "Updating package index"</code> — <code>frobulator.background</code> does both without the shell's job notices.</p>
+			</div>
+		</article>
+		<article class="command" id="function-progress" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.progress</h3><span class="command-meta">Progress</span></div>
+				<p>Same as <code>frobulator.process</code>, but generates its message via <code>frobulator.action</code> (so the first argument is a bare verb, not a pre-built message) and animates a smoother <code>⎺⎻⎼⎽⎼⎻</code> ticker.</p>
+				<pre><code>frobulator.background download "[ ${file} ]" -- curl -L "${url}" -o "${file}"</code></pre>
+				<p>Called directly, it follows the job started just before it: <code>curl … &amp;</code> then <code>frobulator.progress "download" "[ ${file} ]"</code> — <code>frobulator.background</code> does both without the shell's job notices.</p>
+			</div>
+		</article>
+		<article class="command" id="function-bar" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.bar</h3><span class="command-meta">Progress</span></div>
+				<p>Runs a command (via <code>"${SHELL}" -c</code>) with a simulated activity bar — progress accelerates early, slows near 90%, and only reaches 100% once the process actually exits. Not a true byte-accurate progress meter.</p>
+				<pre><code>frobulator.bar sleep 5
+frobulator.bar apt-get update
+frobulator.bar rsync -av source/ destination/</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-temporary" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.temporary</h3><span class="command-meta">Progress</span></div>
+				<p>Creates one or more temporary directories (template <code>frobulator.temporary.XXXXXX</code>, via <code>mktemp -d</code>) and, for each, <code>eval</code>-assigns the resulting path back into the <i>named variable you pass in</i> — so the argument is a variable name, not a path. Several variable names can be passed; the caller's own variables are left untouched.</p>
+				<pre><code>frobulator.temporary directory_temporary
+# ${directory_temporary} now holds the generated path</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-trap" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.trap</h3><span class="command-meta">Progress</span></div>
+				<p>Registers <code>EXIT</code>/<code>HUP</code>/<code>INT</code>/<code>PIPE</code>/<code>QUIT</code>/<code>TERM</code> traps that recursively delete the given directories on interruption or normal exit. Paths are fixed when the trap is set, and directories from every call are kept - so several temporary directories can be cleaned up. Use immediately after <code>frobulator.temporary</code>.</p>
+				<pre><code>frobulator.temporary directory_temporary
+frobulator.trap "${directory_temporary}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-complete" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.complete</h3><span class="command-meta">Progress</span></div>
+				<p>One-line status check after a command, with <code>frobulator.result</code> once at the end of the script. The first argument picks what a failure means:</p>
+				<ul><li><b><code>continue</code></b> (default, also when omitted) - records the status, reports <code>Complete - &lt;label&gt;</code> or <code>Incomplete - &lt;label&gt;</code>, logs failures, and carries on.</li><li><b><code>halt</code></b> - same on success; on failure prints the message (or <code>Incomplete - &lt;label&gt;</code>), logs it, prints the <code>frobulator.result</code> summary and exits the script - also when called inside a function.</li></ul>
+				<p>An optional message and detail follow the keyword; the message replaces the label on failure. Without a message the label is the calling function's name (<code>image_download</code> → <code>image download</code>). At script level it is the previous command in the script (<code>frobulator.write</code> → <code>write</code>, <code>cd</code> → <code>cd</code>), or the action of <code>frobulator.progress</code> or <code>frobulator.background</code> (<code>clone</code>); assignments and lines it cannot read fall back to <code>Operation N</code>. Failures are written to the script's log (<code>~/.local/var/log/&lt;script&gt;-&lt;stamp&gt;.log</code>) through <code>frobulator.silence log</code>.</p>
+				<pre><code>apk_tool_update
+frobulator.complete halt
+
+zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
+frobulator.complete halt "Align failed" "[ ${file_aligned} ]"
+
+rm -f "${cache}"
+frobulator.complete
+
+frobulator.result "${script}"</code></pre>
+				<p>The checkpoint form runs a command once and skips it on later runs: <b><code>frobulator.complete [ continue | halt ] "[path]" "[checkpoint]" command [arguments...]</code></b> - skips the command if <code>"${path}/${checkpoint}"</code> exists, otherwise runs it, records its status and creates the checkpoint file on success. On failure the stale checkpoint is removed; <code>halt</code> then prints the summary and exits.</p>
+				<pre><code>frobulator.complete "${checkpoint_directory}" "make-all" make all
+
+frobulator.complete halt "${checkpoint_directory}" "image-checkpoint" download_image</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-halt" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.halt</h3><span class="command-meta">Progress</span></div>
+				<p>Stops the script when the command that ran immediately before it failed - the stop behind <code>frobulator.complete halt</code>, also callable directly - a one-line replacement for an <code>if [ "${?}" -ne 0 ]</code> block ending in <code>exit</code>. On success it records the status for <code>frobulator.result</code> and continues silently. On failure it prints the optional message with <code>frobulator.err</code>, writes a dated line to the script's log through <code>frobulator.silence log</code> (<code>~/.local/var/log/&lt;script&gt;-&lt;stamp&gt;.log</code>), and exits with the failed command's own status.</p>
+				<pre><code>zipalign -p -f 4 "${file_unsigned}" "${file_aligned}"
+frobulator.halt "Align failed" "[ ${file_aligned} ]"</code></pre>
+				<pre><code>mkdir -p "${directory}"
+frobulator.halt</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-fail" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.fail</h3><span class="command-meta">Progress</span></div>
+				<p>Same as <code>frobulator.halt</code>, for use inside functions: instead of exiting the script it returns the failed status, so the caller keeps control. Follow it with <code>|| return</code> to leave the calling function - a function cannot make its caller return on its own.</p>
+				<pre><code>build () {
+	make all
+	frobulator.fail "Build failed" "[ ${target} ]" || return
+}</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-track" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.track</h3><span class="command-meta">Progress</span></div>
+				<p>One-line replacement for an <code>if [ "${?}" -ne 0 ]; then status=1; fi</code> block inside a function: records the failure of the command that ran immediately before it in the calling function's <code>status</code>, and returns that command's own exit status - so it can be chained to leave a loop or the function.</p>
+				<pre><code>build () {
+	local status=0
+	make all
+	frobulator.track
+	make install
+	frobulator.track || return 1
+	return "${status}"
+}</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-result" data-group="Progress">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.result</h3><span class="command-meta">Progress</span></div>
+				<p>Evaluates every status recorded by <code>frobulator.complete</code> since the last call, reports overall success or a failure count (pointing at the log directory on failure: <code>${HOME}/.local/var/log/</code>, or <code>${PREFIX}/var/log/</code> for a system-context run - the same directory <code>frobulator.silence log</code> writes to), then clears the recorded checkpoint/status collections. Use in tandem with <code>frobulator.complete</code>.</p>
+				<pre><code>frobulator.result setup</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-directory" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.directory</h3><span class="command-meta">Files</span></div>
+				<p>Creates a directory (and sets ownership via <code>frobulator.ownership</code>) from a path/name or array. With a single argument containing a <code>/</code>, the path is split automatically (parent directory vs. final segment) — so a single absolute path works correctly here, unlike some of the item-based helpers below.</p>
+				<pre><code>frobulator.directory "${HOME}/.config" "frobulator"</code></pre>
+				<pre><code>frobulator.directory "${HOME}/.config/frobulator"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-write" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.write</h3><span class="command-meta">Files</span></div>
+				<p>Writes <code>content</code> to one or more files under <code>path</code> (<code>path</code> defaults to <code>${PWD}</code> when a 3-argument call is used), creating the directory first if needed, and sets ownership on each written file. <code>mode</code> controls how content is applied:</p>
+				<ul><li><code>append</code> — adds content to the end of the file</li><li><code>write</code> — overwrites the file entirely</li><li><code>prepend</code> — adds content before the file's existing contents</li></ul>
+				<pre><code>frobulator.write append "enabled=true" "${HOME}/.config/frobulator" "config"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-file" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.file</h3><span class="command-meta">Files</span></div>
+				<p>Creates one or more empty files (via <code>touch</code>) under <code>path</code> (<code>path</code> defaults to <code>${PWD}</code> when a single-argument call is used) and sets ownership on each.</p>
+				<pre><code>frobulator.file "${HOME}/.config/frobulator" "config"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-keep" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.keep</h3><span class="command-meta">Files</span></div>
+				<p>Reverse-selects: <code>cd</code>s into <code>path</code>, then deletes every item in that directory <i>except</i> the file(s)/array you list — the inverse of <code>frobulator.delete</code>.</p>
+				<pre><code>frobulator.keep "${HOME}/Downloads" "important.zip"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-delete" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.delete</h3><span class="command-meta">Files</span></div>
+				<p>Deletes selected item(s) from a directory. A single argument is treated as an item relative to <code>${PWD}</code> (unlike <code>frobulator.directory</code>, it does <b>not</b> auto-split a <code>/</code>-containing single argument into path + item — pass the base path and item separately, or use <code>dirname</code>/<code>basename</code>, when deleting an absolute path). Two arguments treat the first as the base path and the second as the item or array of items. Warns instead of silently succeeding when the resolved target doesn't exist.</p>
+				<pre><code>frobulator.delete "${temporary_directory}" "old-file.tmp"</code></pre>
+				<pre><code>list=( adb fastboot )
+frobulator.delete "${directory_android}" list</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-copy" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.copy</h3><span class="command-meta">Files</span></div>
+				<p>Recursively copies file(s)/directories: <code>frobulator.copy "[source]" "[target]" "[file]" | "[array]"</code>. Creates <code>target</code> if missing.</p>
+				<pre><code>frobulator.copy "${source_directory}" "${target_directory}" "config"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-move" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.move</h3><span class="command-meta">Files</span></div>
+				<p>Moves file(s)/directories, then sets <code>public execute</code> permissions (<code>755</code>) on the moved item(s) at the target via <code>frobulator.permissions</code>. <code>source</code> defaults to <code>${PWD}</code> per item if left empty.</p>
+				<pre><code>frobulator.move "${source_directory}" "${target_directory}" "archive.tar.gz"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-link" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.link</h3><span class="command-meta">Files</span></div>
+				<p>Creates symbolic links, detecting and labeling whether each source item is a <code>file</code> or <code>directory</code> in its status output, then sets ownership on the created link. Three call forms:</p>
+				<ul><li><code>frobulator.link "[source]" "[target]" "[item]"</code> — link a single item, same name at target</li><li><code>frobulator.link "[source]" "[target]" "[item]" "[link name]"</code> — link a single item under a different name</li><li><code>frobulator.link "[source]" "[target]" "[array]"</code> (more than 4 total arguments) — link every item in the array, same names</li></ul>
+				<pre><code>frobulator.link "${directory_platform_tools}" "${HOME}/.local/bin" "adb"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-image" data-group="Files">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.image</h3><span class="command-meta">Files</span></div>
+				<p>Displays a local or remote image directly in supported terminals (local file path, <code>http(s)://</code> URL, or stdin). Width defaults to terminal width and cells/percentages are accepted; specifying an explicit height disables automatic aspect-ratio preservation.</p>
+				<pre><code>frobulator.image "${image_file}"
+frobulator.image "${image_file}" 50%
+frobulator.image "${image_file}" 80 40</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-http" data-group="Network">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.http</h3><span class="command-meta">Network</span></div>
+				<p>Fetches the HTTP status code for a URL into <code>${status_url}</code> — silently, via <code>curl --write-out</code>. Called with one argument it checks the URL as-is; called with two (<code>url</code>, <code>data</code>) it checks <code>"${url}/${data}"</code> following redirects. Use before <code>frobulator.status</code>.</p>
+				<pre><code>frobulator.http "https://example.com/file.tar.gz"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-status" data-group="Network">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.status</h3><span class="command-meta">Network</span></div>
+				<p>Interprets <code>${status_url}</code> (set by a prior <code>frobulator.http</code> call) into a 1xx/2xx/3xx/4xx/5xx category, prints a colored status line accordingly, and sets <code>${proceed}</code> to <code>1</code> (ok to continue) or <code>0</code> (abort) plus <code>${reason}</code> (<code>client</code>/<code>server</code>/<code>response</code>) on failure.</p>
+				<pre><code>frobulator.http "https://example.com/file.tar.gz"
+frobulator.status</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-repository" data-group="Network">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.repository</h3><span class="command-meta">Network</span></div>
+				<p>Lists the file names at the top level of a GitHub repository through its contents listing (<code>curl</code> only - names extracted with <code>grep</code> and <code>cut</code>). An optional prefix keeps only names starting with it. Names are stored in the <code>frobulator_return</code> array (reset on each call); an unreachable listing or no matching name is an error and makes the function return <code>1</code>. Pair with <code>frobulator.download</code> to fetch the listed files.</p>
+				<pre><code>frobulator.repository "nathaneltitane/terminal" "bash-function-"
+
+frobulator.download get.trmnl.me "${HOME}"/.local/bin "${frobulator_return[@]}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-download" data-group="Network">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.download</h3><span class="command-meta">Network</span></div>
+				<p>Downloads file(s), one request per item, reported by the HTTP status code of the download itself (<code>2xx</code> is success; any other code, or an unreachable server, is an error and makes the function return <code>1</code>). Each file is written to a partial file beside the target and only moved into place on success, then set to <code>public execute</code> (<code>755</code>) via <code>frobulator.permissions</code>. Missing directories are created. The caller's arrays are left untouched.</p>
+				<p>Call forms:</p>
+				<ul><li><code>"[url]" "[directory]" "[item]" | "[array]"</code> - each item from <code>"[url]"/"[item]"</code> into the directory. A single item is fetched from the url itself when the url already ends with the item or with a file name (extension) - so the item becomes the saved name.</li><li><code>"[url]"/"[item]" "[directory]"/"[item]"</code> - the url is the file, saved under the given path.</li><li><code>"[url]"/"[item]" "[directory]"</code> - the url is the file, saved under its own name.</li><li><code>"[url]" "[source item]" "[directory]" "[item]"</code> - <code>"[url]"/"[source item]"</code> saved under a different name.</li></ul>
+				<p>Every message ends its bracket with <code>// &lt;status code&gt;</code> - <code>000</code> when no response was received. A server that does not answer within 30 seconds is reported as unreachable.</p>
+				<pre><code>frobulator.download get.frbltr.app "${HOME}/.local/bin/frobulator"</code></pre>
+				<pre><code>list=( "dextop" "dextop-additions" )
+frobulator.download get.dxtp.app "${HOME}/.local/bin" "${list[@]}"</code></pre>
+				<pre><code>frobulator.download "https://dl.winehq.org/wine/wine-mono/7.4.0/wine-mono-7.4.0-x86.msi" "${HOME}/Downloads" wine-mono.msi</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-upload" data-group="Network">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.upload</h3><span class="command-meta">Network</span></div>
+				<p>Uploads data or file(s), one request per item. First argument is the HTTP request method (<code>POST</code>, <code>PUT</code>, etc.), second is the URL, remaining argument(s)/array are payloads — a <code>{...}</code> or <code>[...]</code> JSON string is sent with a JSON content type, an <code>@file</code> argument is sent as multipart form data, anything else is sent as URL-encoded form data. Each upload runs with a <code>frobulator.progress "upload"</code> indicator and is reported by the HTTP status code of the upload itself (<code>2xx</code> is success; any other code, or an unreachable server, is an error and makes the function return <code>1</code>). Every message ends its bracket with <code>// &lt;status code&gt;</code> - <code>000</code> when no response was received (unreachable server - no answer within 30 seconds - or the request was never sent). The caller's arrays are left untouched.</p>
+				<pre><code>frobulator.upload POST "https://example.com/upload" "${archive_file}"</code></pre>
+				<pre><code>frobulator.upload POST "https://example.com/upload" '{"key":"value"}'</code></pre>
+				<pre><code>list=( "name=one" "name=two" )
+frobulator.upload PUT "https://example.com/items" "${list[@]}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-silence" data-group="Wrappers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.silence</h3><span class="command-meta">Wrappers</span></div>
+				<p>Runs a command (given as one string, via <code>"${SHELL}" -c</code>) with all its output out of sight. By default stdout and stderr go to the null sink. With <code>log</code> first, they are appended to the script's timestamped log file instead — <code>${directory_log}/${script}-${stamp}.log</code>, where <code>directory_log</code> is <code>${PREFIX}/var/log</code> for a system-context run or <code>${HOME}/.local/var/log</code> otherwise. It runs in the foreground; to show a ticker while it runs, start it through <code>frobulator.background</code>.</p>
+				<pre><code>frobulator.silence "apt-get update"
+frobulator.silence log "apt-get install --assume-yes curl"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-background" data-group="Wrappers">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.background</h3><span class="command-meta">Wrappers</span></div>
+				<p>Runs a command in the background without the shell's job notices — no <code>[1] 12345</code> when it starts and no <code>[1]+ Done</code> when it ends, even in an interactive shell where a bash function calls it. Job control is switched off while the command runs and restored afterwards; only the job start notice goes to the null sink, so the command's own errors still reach the terminal. The command is given as separate arguments after <code>--</code>, so paths and patterns pass through untouched.</p>
+				<ul><li>With an action (and optional detail) before <code>--</code>, it shows a <code>frobulator.progress</code> ticker until the command ends and returns the command's exit status. The command's stdout goes to the null sink, since the ticker owns the line.</li><li>With nothing before <code>--</code>, the command is left running detached and its process identifier is stored in <code>frobulator_return</code>. Its output is left as is; redirect the whole call to silence it.</li></ul>
+				<p>Options, in this order, before the action:</p>
+				<ul><li><code>quiet</code> — the command's errors go to the null sink as well.</li><li><code>process</code> — use the <code>frobulator.process</code> ticker with free text instead of the <code>frobulator.progress</code> action verb.</li><li><code>output "[file]"</code> — write the command's stdout to that file instead of the null sink, to read once the ticker ends.</li></ul>
+				<pre><code>frobulator.background download "[ ${file} ]" -- curl -s -L -o "${file}" "${url}"
+frobulator.background quiet generate -- blender --background "${file_model}"
+frobulator.background process "Stopping display server" -- x11vnc -R stop
+frobulator.background output "${file_status}" download -- curl -s -o "${file}" -w "%{http_code}" "${url}"
+frobulator.background install -- frobulator.silence log "apt-get install --assume-yes curl"
+frobulator.background -- mpv --no-terminal "${file_audio}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-password" data-group="Input">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.password</h3><span class="command-meta">Input</span></div>
+				<p>Captures masked password input character-by-character, showing <code>•</code> per keystroke and handling backspace/delete, until Enter. Result is stored in <code>${password}</code> (and returned via <code>${input}</code> as well).</p>
+				<pre><code>frobulator.password</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-input" data-group="Input">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.input</h3><span class="command-meta">Input</span></div>
+				<p>Captures one or more prompted values by label. Labels containing <code>password</code> are captured with <code>frobulator.password</code>; everything else uses a plain <code>read</code>. Re-prompts on empty input. Results accumulate in the <code>frobulator_return</code> array as <code>label=value</code> pairs.</p>
+				<pre><code>options=( "username" "password" )
+frobulator.input "${options[@]}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-manager" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.manager</h3><span class="command-meta">Packages</span></div>
+				<p>Prints the package manager command for an action: <code>update</code>, <code>upgrade</code>, <code>install</code>, <code>reinstall</code>, <code>purge</code>, <code>autoremove</code>, <code>autoclean</code>, <code>clean</code>, <code>hold</code> or <code>release</code>. Prints nothing when the manager has no equivalent (dnf has no <code>autoclean</code>).</p>
+				<pre><code>command_install="$(frobulator.manager install)"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-installed" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.installed</h3><span class="command-meta">Packages</span></div>
+				<p>Prints <code>install ok installed</code> when the package is installed - read from <code>rpm</code> under dnf/yum and from <code>dpkg-query</code> under apt.</p>
+				<pre><code>frobulator.installed curl</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-clean" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.clean</h3><span class="command-meta">Packages</span></div>
+				<p>Runs <code>apt-get autoremove</code>, <code>autoclean</code>, and <code>clean</code> in sequence (each shown with its own progress indicator), then clears stale <code>dpkg</code> post-install scripts under <code>${PREFIX}/var/lib/dpkg/info</code> to avoid package configuration errors. Under dnf: <code>dnf autoremove</code> and <code>dnf clean all</code>.</p>
+				<pre><code>frobulator.clean</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-hold" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.hold</h3><span class="command-meta">Packages</span></div>
+				<p>Marks package(s) for version freeze via <code>apt-mark hold</code>. Under dnf: <code>dnf versionlock add</code> - built into dnf5 (Fedora 41 and later), a plugin on dnf4 (<code>python3-dnf-plugin-versionlock</code>).</p>
+				<pre><code>frobulator.hold firefox-esr</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-release" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.release</h3><span class="command-meta">Packages</span></div>
+				<p>Reverses <code>frobulator.hold</code> via <code>apt-mark unhold</code>. Under dnf: <code>dnf versionlock delete</code>.</p>
+				<pre><code>frobulator.release firefox-esr</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-failsafe" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.failsafe</h3><span class="command-meta">Packages</span></div>
+				<p>Runs a background <code>apt update &amp;&amp; apt full-upgrade</code> (<code>dnf makecache</code> and <code>dnf upgrade</code> under dnf), then sequentially updates/upgrades/installs each named package — a heavier pre-flight pass meant to avoid "not found" or "ignored" errors on the install(s) that follow.</p>
+				<pre><code>frobulator.failsafe curl</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-install" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.install</h3><span class="command-meta">Packages</span></div>
+				<p>Installs package(s). A <code>.deb</code> or <code>.rpm</code> path is installed directly; otherwise the package is looked up with <code>apt search</code> first, and installation is skipped (with a "present on system" message) if it's already installed.</p>
+				<pre><code>frobulator.install curl</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-require" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.require</h3><span class="command-meta">Packages</span></div>
+				<p>Checks whether each name is available as a command or as an installed package (<code>dpkg-query</code>), and if neither, searches <code>apt-file</code> to find and install the package that provides it. <code>apt-file</code> is only installed and refreshed when something is actually missing, so requirements that are already met need no root access — supports <code>*</code> glob package-name queries too, expanding them against <code>apt-cache pkgnames</code> before installing every match. Under dnf the installed check reads <code>rpm</code>, the providing package comes from <code>dnf repoquery --whatprovides</code> on <code>/usr/bin</code> and <code>/usr/sbin</code> and globs expand through <code>dnf repoquery</code> - no <code>apt-file</code> needed.</p>
+				<pre><code>frobulator.require curl</code></pre>
+				<pre><code>frobulator.require "libssl*"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-reinstall" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.reinstall</h3><span class="command-meta">Packages</span></div>
+				<p>Reinstalls package(s) via <code>apt-get install --reinstall</code> (<code>dnf reinstall</code> under dnf).</p>
+				<pre><code>frobulator.reinstall curl</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-update" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.update</h3><span class="command-meta">Packages</span></div>
+				<p>Runs <code>apt-get update</code> (<code>dnf makecache</code> under dnf) with a progress indicator.</p>
+				<pre><code>frobulator.update</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-upgrade" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.upgrade</h3><span class="command-meta">Packages</span></div>
+				<p>Runs <code>apt-get dist-upgrade</code> (<code>dnf upgrade</code> under dnf) with a progress indicator.</p>
+				<pre><code>frobulator.upgrade</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-purge" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.purge</h3><span class="command-meta">Packages</span></div>
+				<p>Purges package(s) via <code>apt-get purge --autoremove</code> (<code>dnf remove</code> under dnf), but only if <code>apt search</code> shows the package as currently installed (skips with a message otherwise).</p>
+				<pre><code>frobulator.purge unused-package</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-dialog" data-group="Packages">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.dialog</h3><span class="command-meta">Packages</span></div>
+				<p>Opens a native directory-selection dialog via <code>zenity</code> (GNOME) or <code>kdialog</code> (KDE), whichever is available, with <code>${script}</code> in the window title, and prints the selection (one path per line) for capture. Extra arguments are passed on to the dialog tool. Fails with a warning if neither is installed.</p>
+				<pre><code>directory="$(frobulator.dialog "Directory")"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-terminate" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.terminate</h3><span class="command-meta">System</span></div>
+				<p>Forcefully and repeatedly <code>pkill -f</code>'s a process name/pattern until <code>pgrep -f</code> no longer finds it. Requires both <code>pgrep</code> and <code>pkill</code>.</p>
+				<pre><code>frobulator.terminate rogue-process</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-exit" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.exit</h3><span class="command-meta">System</span></div>
+				<p>Cleanly exits the current script or process instance — runs a 3-second <code>frobulator.countdown</code> ("Exiting"), then calls the <code>exit</code> builtin with an explicit exit code (defaults to <code>0</code>, or <code>1</code> if the countdown itself was interrupted). Does not touch the shell — see <code>frobulator.close</code> for that behavior. Being terminal, it never <code>return</code>s to its caller like the rest of the library does.</p>
+				<pre><code>frobulator.exit setup</code></pre>
+				<pre><code>frobulator.exit setup "${status}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-close" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.close</h3><span class="command-meta">System</span></div>
+				<p>Runs the same 3-second <code>frobulator.countdown</code>, then forcefully terminates the current <code>${SHELL}</code> via <code>frobulator.terminate</code> — this ends the shell session, not just the calling script. (This is what <code>frobulator.exit</code> used to do before the two were split.)</p>
+				<pre><code>frobulator.close setup</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-user" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.user</h3><span class="command-meta">System</span></div>
+				<p>Prints the active shell user (<code>${SUDO_USER}</code> if set, otherwise <code>${USER}</code>) and pauses 1 second — useful before privilege-sensitive steps.</p>
+				<pre><code>frobulator.user</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-assess" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.assess</h3><span class="command-meta">System</span></div>
+				<p>Checks whether the listed command(s) exist. If run as root, installs any missing ones via <code>frobulator.require</code> and asks the person to restart as their normal user. If not root, prompts to escalate (<code>frobulator.escalate</code>) for any missing command, or warns and fails if declined.</p>
+				<pre><code>requirements=( curl git )
+frobulator.assess "${requirements[@]}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-escalate" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.escalate</h3><span class="command-meta">System</span></div>
+				<p>Relaunches the current script as root via <code>sudo</code>, preserving the original arguments (read back from the <code>self_arguments</code> array set by the bootstrap header - spaces, quotes and empty arguments are kept exactly; a plain string from older headers is still word split). If already root, resolves the correct non-root <code>USER</code>/<code>HOME</code> from <code>SUDO_USER</code> instead of re-launching. Before restarting it clears the bootstrap header and its own messages (3 header lines + <code>lines_printed_terminal</code>); the restarted run then clears its own header and the sudo password prompt, so only the escalated runtime messages stay on screen.</p>
+				<pre><code>self_arguments=("${@}")
+frobulator.escalate</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-self" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.self</h3><span class="command-meta">System</span></div>
+				<p>Declares frobulator as loaded in the current shell by setting <code>frobulator_loaded="true"</code> - the bootstrap header checks it to skip downloading and sourcing again. Runs automatically when frobulator is sourced.</p>
+				<pre><code>frobulator.self</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-service" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.service</h3><span class="command-meta">System</span></div>
+				<p>Manages a systemd service, scoping automatically to <code>--user</code> or system context depending on whether the runtime is escalated (root). A single argument is treated as a daemon-level action with no target unit; two arguments target a specific service with the given action forwarded to <code>systemctl</code>. <code>activate</code> runs a full enable/start cycle with status verification. <code>reload</code> is the only action that doesn't require a service. Supported actions: <code>reload</code>, <code>status</code>, <code>activate</code>, <code>enable</code>, <code>disable</code>, <code>start</code>, <code>stop</code>, <code>restart</code>.</p>
+				<pre><code>frobulator.service reload</code></pre>
+				<pre><code>frobulator.service reload "${service}"</code></pre>
+				<pre><code>frobulator.service activate "${service}"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-ownership" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.ownership</h3><span class="command-meta">System</span></div>
+				<p>Restores ownership on a target after privileged operations. Resolves the real path and classifies it: paths under the invoking user's home directory are attributed to that user; paths under system directories (<code>/root</code>, <code>/usr</code>, <code>/etc</code>, <code>/var</code>, <code>/opt</code>, <code>/boot</code>) are attributed to root; anything else falls back to the invoking user. Applied recursively via <code>chown</code>. Called internally by <code>frobulator.directory</code>, <code>frobulator.write</code>, <code>frobulator.file</code>, and <code>frobulator.link</code>.</p>
+				<pre><code>frobulator.ownership "${directory_android}" "${HOME}/.local/bin/adb"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-permissions" data-group="System">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.permissions</h3><span class="command-meta">System</span></div>
+				<p>Sets file / directory permissions from a scope and optional modifiers, in place of raw <code>chmod</code> modes. Takes the scope first, then any modifiers (any order), then one or more targets (or an array). Sets the exact mode; directories always keep <code>execute</code> for whoever can read them, since a directory cannot be opened without it.</p>
+				<ul><li><b>scope:</b> <code>public</code> (you edit, everyone reads), <code>group</code> (you edit, your group reads, no access for others), <code>private</code> (only you)</li><li><b>modifiers:</b> <code>execute</code> (whoever can read can also run), <code>readonly</code> (nobody edits, including you)</li></ul>
+				<div class="table"><table><thead><tr><th>call</th><th>file</th><th>directory</th><th>typical use</th></tr></thead><tbody><tr><td><code>public</code></td><td><code>644</code> <code>rw-r--r--</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>regular files, configs, shared data</td></tr><tr><td><code>public execute</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>scripts, binaries, installed tools</td></tr><tr><td><code>public readonly</code></td><td><code>444</code> <code>r--r--r--</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>reference files that should not change</td></tr><tr><td><code>public readonly execute</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>locked-down tools</td></tr><tr><td><code>group</code></td><td><code>640</code> <code>rw-r-----</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>files for your group only</td></tr><tr><td><code>group execute</code></td><td><code>750</code> <code>rwxr-x---</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>group-only scripts</td></tr><tr><td><code>group readonly</code></td><td><code>440</code> <code>r--r-----</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>group reference files</td></tr><tr><td><code>group readonly execute</code></td><td><code>550</code> <code>r-xr-x---</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>locked group tools</td></tr><tr><td><code>private</code></td><td><code>600</code> <code>rw-------</code></td><td><code>700</code> <code>rwx------</code></td><td>credentials, keys, tokens</td></tr><tr><td><code>private execute</code></td><td><code>700</code> <code>rwx------</code></td><td><code>700</code> <code>rwx------</code></td><td>personal scripts</td></tr><tr><td><code>private readonly</code></td><td><code>400</code> <code>r--------</code></td><td><code>500</code> <code>r-x------</code></td><td>ssh keys, certificates</td></tr><tr><td><code>private readonly execute</code></td><td><code>500</code> <code>r-x------</code></td><td><code>500</code> <code>r-x------</code></td><td>locked personal tools</td></tr></tbody></table></div>
+				<pre><code>frobulator.permissions public execute "${path}/${file}"</code></pre>
+				<pre><code>frobulator.permissions private "${HOME}/.git-credentials"</code></pre>
+				<pre><code>frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-archive" data-group="Archives">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.archive</h3><span class="command-meta">Archives</span></div>
+				<p>Creates an archive from a directory (defaults to <code>${PWD}</code> when omitted). Supported <code>type</code> values: <code>tar</code>, <code>tar.gz</code>/<code>tgz</code>, <code>tar.bz2</code>/<code>tbz2</code>, <code>zip</code>, <code>7z</code>, <code>rar</code> — each checked and installed via <code>frobulator.require</code> before use.</p>
+				<pre><code>frobulator.archive "backup" tar.gz "${HOME}/Documents"</code></pre>
+			</div>
+		</article>
+		<article class="command" id="function-extract" data-group="Archives">
+			<div class="command-body">
+				<div class="command-head"><h3>frobulator.extract</h3><span class="command-meta">Archives</span></div>
+				<p>Extracts a known archive type (detected from everything after the first period of the file name, so names like <code>backup-1.2.tar.gz</code> are not recognized) into <code>directory</code> (defaults to <code>${PWD}</code> when omitted), installing the needed extractor (<code>tar</code>, <code>7z</code>, <code>unrar</code>, <code>unzip</code>) via <code>frobulator.require</code> first.</p>
+				<pre><code>frobulator.extract "backup.tar.gz" "${target_directory}"</code></pre>
+			</div>
+		</article>
+	</div>
+	<p id="command-empty" class="command-empty" hidden>No function matches your search.</p>
+</section>
+
+<section id="uses" class="section reveal">
+	<header class="section-head">
+		<svg class="icon big" style="color:#d4ade2" aria-hidden="true"><use href="#i-frobulator"/></svg>
+		<h2>USES // PROJECTS BUILT ON FROBULATOR</h2>
+	</header>
+	<p class="lead">These projects build their scripts on Frobulator.</p>
+	<ul class="points">
+		<li><b><a href="https://dextop.app">Dextop</a>.</b> Linux workstation for Android.</li>
+		<li><b><a href="https://l2cu.app">L²CU</a>.</b> LDraw Linux command line utility.</li>
+		<li><b><a href="https://terminal.me">Terminal</a>.</b> Shell scripts, templates, dotfiles and utilities.</li>
+		<li><b><a href="https://mechablocks.com">MechaBlocks</a>.</b> Custom LEGO® mecha MOCs.</li>
+		<li><b><a href="https://nathaneltitane.com">Nathanel + Titane</a>.</b> Industrial design portfolio.</li>
+	</ul>
+</section>
+
+<div class="copyright reveal">
+	<p>Frobulator is written for <a href="https://www.gnu.org/software/bash/">GNU Bash</a>, the shell environment on top of which the scripts function.</p>
+	<p>Frobulator is free software released under the GNU General Public License version 3.</p>
+	<p><a href="https://github.com/nathaneltitane/frobulator/issues">Submit a bug report or feature request</a> // <a href="https://github.com/nathaneltitane">NATHANEL + TITANE</a></p>
+</div>
+
+<nav id="footer" aria-label="Sections">
+	<div class="footer-border"></div>
+	<div class="footer">
+		<div class="footer-inner">
+			<span class="footer-start" aria-hidden="true"></span>
+			<a class="nav-button" href="#top"><svg class="icon" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Home</span></a>
+			<a class="nav-button" href="#overview"><svg class="icon" style="color:#5294e2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Overview</span></a>
+			<a class="nav-button" href="#install"><svg class="icon" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Install</span></a>
+			<a class="nav-button" href="#bootstrap"><svg class="icon" style="color:#a072b8" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Bootstrap</span></a>
+			<a class="nav-button" href="#markers"><svg class="icon" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Markers</span></a>
+			<a class="nav-button" href="#colors"><svg class="icon" style="color:#f6d32d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Colors</span></a>
+			<a class="nav-button" href="#checkpoints"><svg class="icon" style="color:#ff8080" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Checkpoints</span></a>
+			<a class="nav-button" href="#packages"><svg class="icon" style="color:#ffe680" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Packages</span></a>
+			<a class="nav-button" href="#permissions"><svg class="icon" style="color:#6acfec" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Permissions</span></a>
+			<a class="nav-button" href="#functions"><svg class="icon" style="color:#f5f6f7" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Functions</span></a>
+			<a class="nav-button" href="#uses"><svg class="icon" style="color:#d4ade2" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Uses</span></a>
+			<a class="nav-button" href="https://github.com/nathaneltitane/frobulator"><svg class="icon" style="color:#a7b0b7" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">GitHub</span></a>
+			<a class="nav-button" href="https://dextop.app"><svg class="icon" style="color:#00aade" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Dextop</span></a>
+			<a class="nav-button" href="https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ"><svg class="icon" style="color:#cc575d" aria-hidden="true"><use href="#i-frobulator"/></svg><span class="label">Donate</span></a>
+			<span class="footer-end" aria-hidden="true"></span>
+		</div>
+	</div>
+</nav>
+
+<div id="viewer" role="dialog" aria-label="Image viewer"><img alt=""></div>
+
+<script>
+// color the landing logo with a random logo variant on every load
+
+const logoColors = ['#5294e2', '#ffe680', '#cc575d', '#f5f6f7', '#6acfec', '#d4ade2'];
+
+document.querySelector('.landing-logo .logo').style.color = logoColors[Math.floor(Math.random() * logoColors.length)];
+
+// reveal sections as they scroll in
+
+const revealObserver = new IntersectionObserver((items) => {
+	items.forEach((item) => {
+		if (item.isIntersecting) {
+			item.target.classList.add('shown');
+			revealObserver.unobserve(item.target);
+		}
+	});
+}, { threshold: 0 });
+
+document.querySelectorAll('.reveal').forEach((node) => revealObserver.observe(node));
+
+// mark the footer button of the section in view
+
+const navFooter = document.querySelector('.footer');
+
+function navReveal(button) {
+	const left = button.offsetLeft - navFooter.offsetLeft;
+	const right = left + button.offsetWidth;
+
+	if (left >= navFooter.scrollLeft && right <= navFooter.scrollLeft + navFooter.clientWidth) return;
+
+	navFooter.scrollTo({ left: left - (navFooter.clientWidth - button.offsetWidth) / 2, behavior: 'smooth' });
+}
+
+// show the footer ends when the buttons do not all fit
+
+function navEnds() {
+	navFooter.classList.toggle('footer-scroll', navFooter.scrollWidth > navFooter.clientWidth + 1);
+}
+
+window.addEventListener('resize', navEnds);
+
+navEnds();
+
+// scroll the footer sideways with the mouse wheel
+
+navFooter.addEventListener('wheel', (event) => {
+	if (event.deltaY === 0 || navFooter.scrollWidth <= navFooter.clientWidth) return;
+
+	event.preventDefault();
+
+	navFooter.scrollLeft += event.deltaY;
+}, { passive: false });
+
+const navButtons = [...document.querySelectorAll('.nav-button[href^="#"]')];
+
+const navObserver = new IntersectionObserver((items) => {
+	items.forEach((item) => {
+		if (!item.isIntersecting) return;
+
+		navButtons.forEach((button) => {
+			const current = button.getAttribute('href') === '#' + item.target.id;
+
+			button.classList.toggle('current', current);
+
+			if (current) navReveal(button);
+		});
+	});
+}, { rootMargin: '-45% 0px -50% 0px' });
+
+document.querySelectorAll('.landing, .section').forEach((node) => navObserver.observe(node));
+
+// image viewer
+
+const viewer = document.getElementById('viewer');
+const viewerImage = viewer.querySelector('img');
+
+document.querySelectorAll('.shot').forEach((shot) => {
+	shot.addEventListener('click', () => {
+		viewerImage.src = shot.dataset.full;
+		viewerImage.alt = shot.querySelector('img').alt;
+		viewer.classList.add('open');
+	});
+});
+
+const viewerClose = () => viewer.classList.remove('open');
+
+viewer.addEventListener('click', viewerClose);
+
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'Escape') viewerClose();
+});
+
+// command reference with search and group chips
+
+const commandSearch = document.getElementById('command-search');
+const commandChips = document.getElementById('command-groups');
+const commandEmpty = document.getElementById('command-empty');
+const commandCards = [...document.querySelectorAll('.command')];
+const commandGroups = [...new Set(commandCards.map((card) => card.dataset.group))];
+
+let commandGroup = '';
+
+function commandChip(name, label) {
+	const chip = document.createElement('button');
+
+	chip.className = 'chip' + (name === commandGroup ? ' active' : '');
+	chip.textContent = label;
+
+	chip.addEventListener('click', () => {
+		commandGroup = name;
+		commandChips.querySelectorAll('.chip').forEach((other) => other.classList.toggle('active', other === chip));
+		commandRender();
+	});
+
+	commandChips.appendChild(chip);
+}
+
+function commandRender() {
+	const words = commandSearch.value.toLowerCase().split(/\s+/).filter(Boolean);
+
+	let count = 0;
+
+	commandCards.forEach((card) => {
+		const head = card.querySelector('.command-body').textContent.toLowerCase();
+		const options = [...card.querySelectorAll('.option')];
+
+		let shown = !commandGroup || card.dataset.group === commandGroup;
+
+		if (shown && words.length) {
+			const headMatch = words.every((word) => head.includes(word));
+
+			let optionCount = 0;
+
+			options.forEach((option) => {
+				const match = headMatch || words.every((word) => (head + ' ' + option.textContent.toLowerCase()).includes(word));
+
+				option.classList.toggle('hidden', !match);
+
+				if (match) optionCount++;
+			});
+
+			shown = headMatch || optionCount > 0;
+		} else {
+			options.forEach((option) => option.classList.remove('hidden'));
+		}
+
+		card.classList.toggle('hidden', !shown);
+
+		if (shown) count++;
+	});
+
+	commandEmpty.hidden = count > 0;
+}
+
+commandChip('', 'All');
+
+commandGroups.forEach((group) => commandChip(group, group));
+
+commandSearch.addEventListener('input', commandRender);
+
+commandRender();
+</script>
+</body>
+</html>

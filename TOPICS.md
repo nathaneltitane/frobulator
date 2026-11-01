@@ -1,0 +1,13 @@
+bash
+functions
+library
+programming
+scripting
+shell
+terminal
+ubuntu
+utility
+linux
+debian
+package-manager
+setup-tool

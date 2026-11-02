@@ -172,7 +172,6 @@
 				justify-content: center;
 				overflow: hidden;
 				opacity: 0;
-				filter: blur(1px);
 				animation: reveal-backdrop 2s ease forwards;
 			}
 
@@ -185,6 +184,7 @@
 				color: #5294e2;
 				font-size: clamp(5px, 0.9vw, 11px);
 				line-height: 1.1;
+				zoom: 2;
 			}
 
 			@keyframes reveal-backdrop {
@@ -375,6 +375,9 @@
 				height: 40px;
 				display: block;
 				margin: 0 auto;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: contain;
 			}
 
 			.icon.big {
@@ -382,6 +385,68 @@
 				height: 56px;
 				margin: 0;
 				flex: none;
+			}
+
+			/* buttons */
+
+			.logo-button-red {
+				background-image: url(logo/logo-button-red.svg);
+			}
+
+			.logo-button-orange {
+				background-image: url(logo/logo-button-orange.svg);
+			}
+
+			.logo-button-amber {
+				background-image: url(logo/logo-button-amber.svg);
+			}
+
+			.logo-button-yellow {
+				background-image: url(logo/logo-button-yellow.svg);
+			}
+
+			.logo-button-green {
+				background-image: url(logo/logo-button-green.svg);
+			}
+
+			.logo-button-emerald {
+				background-image: url(logo/logo-button-emerald.svg);
+			}
+
+			.logo-button-teal {
+				background-image: url(logo/logo-button-teal.svg);
+			}
+
+			.logo-button-cyan {
+				background-image: url(logo/logo-button-cyan.svg);
+			}
+
+			.logo-button-sky {
+				background-image: url(logo/logo-button-sky.svg);
+			}
+
+			.logo-button-blue {
+				background-image: url(logo/logo-button-blue.svg);
+			}
+
+			.logo-button-indigo {
+				background-image: url(logo/logo-button-indigo.svg);
+			}
+
+			.logo-button-violet {
+				background-image: url(logo/logo-button-violet.svg);
+			}
+
+			.logo-button-fuchsia {
+				background-image: url(logo/logo-button-fuchsia.svg);
+			}
+
+			.logo-button-pink {
+				background-image: url(logo/logo-button-pink.svg);
+			}
+
+			.logo-button-rose {
+				background-image: url(logo/logo-button-rose.svg);
 			}
 
 			/* figures */
@@ -999,7 +1064,7 @@ ________________________________________________________________________________
 
 		<section id="overview" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#8fd18f" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-orange" aria-hidden="true"></span>
 				<h2>OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS</h2>
 			</header>
 
@@ -1046,7 +1111,7 @@ ________________________________________________________________________________
 
 		<section id="install" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#f2d479" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-amber" aria-hidden="true"></span>
 				<h2>INSTALL // ONE FILE IN ~/.LOCAL/BIN</h2>
 			</header>
 
@@ -1069,7 +1134,7 @@ ________________________________________________________________________________
 
 		<section id="bootstrap" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#7fb2f0" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-yellow" aria-hidden="true"></span>
 				<h2>BOOTSTRAP // THE STANDARD SCRIPT HEADER</h2>
 			</header>
 
@@ -1183,7 +1248,7 @@ list=()
 
 		<section id="markers" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#d29be0" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-green" aria-hidden="true"></span>
 				<h2>MARKERS // 23 LINE TYPES</h2>
 			</header>
 
@@ -1247,7 +1312,7 @@ frobulator.inf "${prompt_arguments[@]}"</code></pre>
 
 		<section id="colors" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#6fd0e0" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-emerald" aria-hidden="true"></span>
 				<h2>COLORS // 18 NAMED 256 COLOR CODES</h2>
 			</header>
 
@@ -1262,7 +1327,7 @@ frobulator.num cornflower 1 "Soft blue line" "[ value ]"</code></pre>
 
 		<section id="checkpoints" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#e6e9ef" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-teal" aria-hidden="true"></span>
 				<h2>CHECKPOINTS // STATUS, LOGS AND RESUMES</h2>
 			</header>
 
@@ -1300,7 +1365,7 @@ frobulator.result "${script}"</code></pre>
 
 		<section id="packages" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#9aa3ad" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-cyan" aria-hidden="true"></span>
 				<h2>PACKAGES // APT AND DNF</h2>
 			</header>
 
@@ -1331,7 +1396,7 @@ frobulator.result "${script}"</code></pre>
 
 		<section id="permissions" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#ffa8a8" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-sky" aria-hidden="true"></span>
 				<h2>PERMISSIONS // SCOPES INSTEAD OF MODES</h2>
 			</header>
 
@@ -1352,7 +1417,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
 
 		<section id="functions" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#b8f0a0" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-blue" aria-hidden="true"></span>
 				<h2>FUNCTIONS // EVERY COMMAND AND EXAMPLE</h2>
 			</header>
 
@@ -2265,7 +2330,7 @@ frobulator.escalate</code></pre>
 
 		<section id="uses" class="section reveal">
 			<header class="head-section">
-				<svg class="icon big" style="color:#fff2a0" aria-hidden="true"><use href="#icon-frobulator"/></svg>
+				<span class="icon big logo-button-indigo" aria-hidden="true"></span>
 				<h2>USES // PROJECTS BUILT ON FROBULATOR</h2>
 			</header>
 
@@ -2293,21 +2358,21 @@ frobulator.escalate</code></pre>
 			<div class="footer">
 				<div class="inner-footer">
 					<span class="start-footer" aria-hidden="true"></span>
-					<a class="button-navigation" href="#top"><svg class="icon" style="color:#f28b82" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Home</span></a>
-					<a class="button-navigation" href="#overview"><svg class="icon" style="color:#8fd18f" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Overview</span></a>
-					<a class="button-navigation" href="#install"><svg class="icon" style="color:#f2d479" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Install</span></a>
-					<a class="button-navigation" href="#bootstrap"><svg class="icon" style="color:#7fb2f0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Bootstrap</span></a>
-					<a class="button-navigation" href="#markers"><svg class="icon" style="color:#d29be0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Markers</span></a>
-					<a class="button-navigation" href="#colors"><svg class="icon" style="color:#6fd0e0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Colors</span></a>
-					<a class="button-navigation" href="#checkpoints"><svg class="icon" style="color:#e6e9ef" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Checkpoints</span></a>
-					<a class="button-navigation" href="#packages"><svg class="icon" style="color:#9aa3ad" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Packages</span></a>
-					<a class="button-navigation" href="#permissions"><svg class="icon" style="color:#ffa8a8" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Permissions</span></a>
-					<a class="button-navigation" href="#functions"><svg class="icon" style="color:#b8f0a0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Functions</span></a>
-					<a class="button-navigation" href="#uses"><svg class="icon" style="color:#fff2a0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Uses</span></a>
-					<a class="button-navigation" href="https://github.com/nathaneltitane/frobulator"><svg class="icon" style="color:#a8c8ff" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">GitHub</span></a>
-					<a class="button-navigation" href="https://dextop.app"><svg class="icon" style="color:#f0b0ff" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Dextop</span></a>
-					<a class="button-navigation" href="https://terminal.me"><svg class="icon" style="color:#ffffff" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Terminal</span></a>
-					<a class="button-navigation" href="https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ"><svg class="icon" style="color:#a0f0f0" aria-hidden="true"><use href="#icon-frobulator"/></svg><span class="label">Donate</span></a>
+					<a class="button-navigation" href="#top"><span class="icon logo-button-red" aria-hidden="true"></span><span class="label">Home</span></a>
+					<a class="button-navigation" href="#overview"><span class="icon logo-button-orange" aria-hidden="true"></span><span class="label">Overview</span></a>
+					<a class="button-navigation" href="#install"><span class="icon logo-button-amber" aria-hidden="true"></span><span class="label">Install</span></a>
+					<a class="button-navigation" href="#bootstrap"><span class="icon logo-button-yellow" aria-hidden="true"></span><span class="label">Bootstrap</span></a>
+					<a class="button-navigation" href="#markers"><span class="icon logo-button-green" aria-hidden="true"></span><span class="label">Markers</span></a>
+					<a class="button-navigation" href="#colors"><span class="icon logo-button-emerald" aria-hidden="true"></span><span class="label">Colors</span></a>
+					<a class="button-navigation" href="#checkpoints"><span class="icon logo-button-teal" aria-hidden="true"></span><span class="label">Checkpoints</span></a>
+					<a class="button-navigation" href="#packages"><span class="icon logo-button-cyan" aria-hidden="true"></span><span class="label">Packages</span></a>
+					<a class="button-navigation" href="#permissions"><span class="icon logo-button-sky" aria-hidden="true"></span><span class="label">Permissions</span></a>
+					<a class="button-navigation" href="#functions"><span class="icon logo-button-blue" aria-hidden="true"></span><span class="label">Functions</span></a>
+					<a class="button-navigation" href="#uses"><span class="icon logo-button-indigo" aria-hidden="true"></span><span class="label">Uses</span></a>
+					<a class="button-navigation" href="https://github.com/nathaneltitane/frobulator"><span class="icon logo-button-violet" aria-hidden="true"></span><span class="label">GitHub</span></a>
+					<a class="button-navigation" href="https://dextop.app"><span class="icon logo-button-fuchsia" aria-hidden="true"></span><span class="label">Dextop</span></a>
+					<a class="button-navigation" href="https://terminal.me"><span class="icon logo-button-pink" aria-hidden="true"></span><span class="label">Terminal</span></a>
+					<a class="button-navigation" href="https://www.paypal.com/donate?hosted_button_id=ZW3CDCANHJCWJ"><span class="icon logo-button-rose" aria-hidden="true"></span><span class="label">Donate</span></a>
 					<span class="end-footer" aria-hidden="true"></span>
 				</div>
 			</div>

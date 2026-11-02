@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/nathaneltitane/frobulator/main/frobulator.svg" alt="frobulator"><br><b>Shell parser and scripting function library</b><br>FROBULATE ALL THE THINGS!</p>
+<p align="center"><img src="https://raw.githubusercontent.com/nathaneltitane/frobulator/main/resources/logo/logo-frobulator.svg" alt="frobulator"><br><b>Shell parser and scripting function library</b><br>FROBULATE ALL THE THINGS!</p>
 
 ---
 

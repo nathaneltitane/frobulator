@@ -1,4 +1,5 @@
-/tools/frobulator-site-update
-/tools/frobulator-social-update
-/site/
+/tools/frobulator-site
+/tools/frobulator-social
+/resources/site/
+/index-social.html
 AGENTS.md

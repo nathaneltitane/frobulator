@@ -13,7 +13,7 @@
 
 		<title>Frobulator - Shell scripting function library</title>
 		<meta name="description" content="Frobulator is a shell parser and scripting function library for Bash: colorized line markers, prompts, progress, checkpoints, file, network and apt or dnf package helpers in one sourced file.">
-		<meta name="theme-color" content="#2f343f">
+		<meta name="theme-color" content="#251f33">
 		<link rel="canonical" href="https://frobulator.app/">
 
 		<!-- structured data -->
@@ -122,11 +122,18 @@
 			html {
 				scroll-behavior: smooth;
 				scroll-padding-top: 20px;
+				scrollbar-width: none;
+			}
+
+			/* page scrollbar hidden so the fixed footer spans the full width */
+
+			html::-webkit-scrollbar {
+				display: none;
 			}
 
 			body {
-				background: #2f343f;
-				color: #a7b0b7;
+				background: #251f33;
+				color: #b9aed0;
 				margin: 0;
 				padding: 0 0 100px 0;
 				font-size: 14px;
@@ -135,7 +142,7 @@
 			}
 
 			h1, h2, h3, b, strong {
-				color: #f5f6f7;
+				color: #f6f3fa;
 			}
 
 			h1, h2, h3 {
@@ -144,7 +151,7 @@
 			}
 
 			a {
-				color: #5294e2;
+				color: #a06cd5;
 			}
 
 			a:hover {
@@ -152,7 +159,7 @@
 			}
 
 			code {
-				color: #f5f6f7;
+				color: #f6f3fa;
 			}
 
 			/* landing */
@@ -181,7 +188,7 @@
 				background: none;
 				border-radius: 0;
 				overflow: visible;
-				color: #5294e2;
+				color: #a06cd5;
 				font-size: clamp(5px, 0.9vw, 11px);
 				line-height: 1.1;
 				zoom: 2;
@@ -215,7 +222,7 @@
 				left: 50%;
 				width: min(36vw, 44vh, 380px);
 				height: min(36vw, 44vh, 380px);
-				color: #5294e2;
+				color: #a06cd5;
 				transform: translate(-50%, -55%);
 				opacity: 0;
 				animation: reveal-logo 1.25s ease 0.25s forwards;
@@ -264,15 +271,15 @@
 			}
 
 			.button {
-				background: #5294e2;
-				color: #f5f6f7;
+				background: #a06cd5;
+				color: #f6f3fa;
 				border-radius: 20px;
 				padding: 10px 20px;
 				text-decoration: none;
 			}
 
 			.button:hover {
-				background: #4b84c9;
+				background: #8c58c2;
 			}
 
 			@keyframes reveal-fade {
@@ -294,7 +301,7 @@
 				display: flex;
 				align-items: center;
 				gap: 15px;
-				border-bottom: 2px solid #404552;
+				border-bottom: 2px solid #3a3150;
 				padding: 0 0 10px 0;
 				margin: 0 0 20px 0;
 			}
@@ -324,12 +331,12 @@
 			}
 
 			.points li {
-				border-left: 4px solid #5294e2;
+				border-left: 5px solid #a06cd5;
 				padding: 2.5px 0 2.5px 10px;
 			}
 
 			.points code {
-				white-space: nowrap;
+				overflow-wrap: anywhere;
 			}
 
 			.steps {
@@ -343,7 +350,7 @@
 			}
 
 			.steps li::marker {
-				color: #5294e2;
+				color: #a06cd5;
 				font-weight: bold;
 			}
 
@@ -375,8 +382,8 @@
 			}
 
 			.icon.big {
-				width: 56px;
-				height: 56px;
+				width: 55px;
+				height: 55px;
 				margin: 0;
 				flex: none;
 			}
@@ -458,14 +465,19 @@
 				width: 100%;
 				padding: 0;
 				border: 0;
-				border-radius: 3px;
-				background: #383c4a;
+				border-radius: 5px;
+				background: #2e2740;
 				overflow: visible;
 				cursor: pointer;
 			}
 
+			figure.plain .shot {
+				background: transparent;
+				border-radius: 5px;
+			}
+
 			.shot img {
-				border-radius: 3px;
+				border-radius: 5px;
 				display: block;
 				width: 100%;
 				height: auto;
@@ -474,6 +486,22 @@
 
 			.shot:hover img {
 				transform: scale(1.02);
+			}
+
+			figure.video {
+				margin: 25px 0;
+			}
+
+			.gallery figure.video {
+				margin: 0;
+			}
+
+			figure.video video {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 5px;
+				background: #18141f;
 			}
 
 			figcaption {
@@ -490,6 +518,56 @@
 
 			.gallery.two { grid-template-columns: repeat(2, 1fr); }
 
+			.gallery.square .shot {
+				background: transparent;
+			}
+
+			.gallery.tall .shot img {
+				aspect-ratio: 960 / 1100;
+				object-fit: cover;
+				object-position: top;
+			}
+
+			.gallery.natural {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: flex-start;
+				gap: 20px;
+			}
+
+			.gallery.natural figure {
+				flex: 0 1 auto;
+				max-width: 100%;
+			}
+
+			.gallery.natural .shot {
+				background: transparent;
+				border-radius: 5px;
+			}
+
+			.gallery.natural .shot img {
+				width: auto;
+				max-width: 100%;
+				max-height: 520px;
+			}
+
+			.gallery.cube {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: flex-start;
+				gap: 40px;
+			}
+
+			.gallery.cube .shot {
+				width: auto;
+				background: transparent;
+			}
+
+			.gallery.cube .shot img {
+				width: auto;
+			}
+
 			/* tables and code */
 
 			.table {
@@ -501,19 +579,20 @@
 			table {
 				border-collapse: collapse;
 				min-width: 100%;
+				background: #332949;
 			}
 
 			th, td {
 				text-align: left;
 				vertical-align: top;
 				padding: 10px 15px;
-				border-bottom: 1px solid #404552;
+				border-bottom: 1px solid #3a3150;
 				white-space: nowrap;
 			}
 
 			th {
-				color: #f5f6f7;
-				background: #404552;
+				color: #f6f3fa;
+				background: #3a3150;
 			}
 
 			.table.wrap td {
@@ -523,18 +602,18 @@
 
 			.package {
 				display: inline-block;
-				background: #383c4a;
-				color: #f5f6f7;
+				background: #2e2740;
+				color: #f6f3fa;
 				border-radius: 20px;
 				padding: 5px 10px;
-				margin: 3px 0;
+				margin: 5px 0;
 				font-size: 12px;
 				white-space: nowrap;
 			}
 
 			pre {
-				background: #383c4a;
-				color: #f5f6f7;
+				background: #2e2740;
+				color: #f6f3fa;
 				border-radius: 20px;
 				padding: 15px 20px;
 				overflow-x: auto;
@@ -548,15 +627,15 @@
 			/* scrollbars kept clear of the corner radii */
 
 			::-webkit-scrollbar {
-				width: 6px;
-				height: 6px;
+				width: 5px;
+				height: 5px;
 			}
 
 			::-webkit-scrollbar-track {
 				background: transparent;
 			}
 
-			pre::-webkit-scrollbar-track:horizontal {
+			::-webkit-scrollbar-track:horizontal {
 				margin: 0 20px;
 			}
 
@@ -565,60 +644,73 @@
 			}
 
 			::-webkit-scrollbar-thumb {
-				background: #4b5162;
-				border-radius: 3px;
+				background: #4a3f63;
+				border-radius: 5px;
 			}
 
 			::-webkit-scrollbar-thumb:hover {
-				background: #7c818c;
+				background: #8a7fa3;
 			}
 
 			@supports not selector(::-webkit-scrollbar) {
 				* {
 					scrollbar-width: thin;
-					scrollbar-color: #4b5162 transparent;
+					scrollbar-color: #4a3f63 transparent;
 				}
+			}
+
+			/* options */
+
+			.options {
+				columns: 2 420px;
+				column-gap: 25px;
+				margin: 25px 0;
 			}
 
 			/* commands */
 
-			.tools-command {
+			.tools-search {
 				position: sticky;
 				top: 0;
 				z-index: 5;
-				background: #2f343f;
+				background: #251f33;
 				padding: 10px 0;
 			}
 
-			#search-command {
+			#search {
 				width: 100%;
 				padding: 10px 20px;
-				background: #383c4a;
+				background: #2e2740;
 				border: 0;
 				border-radius: 20px;
-				color: #f5f6f7;
+				color: #f6f3fa;
 				font-size: 14px;
 				outline: none;
 			}
 
-			#search-command:focus {
-				background: #404552;
+			#search:focus {
+				background: #3a3150;
 			}
 
 			.chips {
 				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-				grid-auto-rows: 28px;
+				grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+				grid-auto-rows: 30px;
 				gap: 10px;
-				max-height: calc(4 * 28px + 3 * 10px);
+				max-height: calc(4 * 30px + 3 * 10px);
 				overflow-y: auto;
-				margin: 10px 0 0 0;
+				scrollbar-gutter: stable;
+				padding-right: 10px;
+				margin: 10px -15px 0 0;
 			}
 
 			.chip {
 				text-align: center;
-				background: #383c4a;
-				color: #a7b0b7;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				background: #2e2740;
+				color: #b9aed0;
 				border: 0;
 				border-radius: 20px;
 				padding: 5px 10px;
@@ -630,8 +722,8 @@
 			}
 
 			.chip.active {
-				background: #5294e2;
-				color: #f5f6f7;
+				background: #a06cd5;
+				color: #f6f3fa;
 				font-weight: bold;
 			}
 
@@ -642,8 +734,8 @@
 
 			.command {
 				break-inside: avoid;
-				background: #383c4a;
-				border-radius: 14px;
+				background: #2e2740;
+				border-radius: 15px;
 				padding: 15px;
 				margin: 0 0 20px 0;
 			}
@@ -663,7 +755,7 @@
 
 			.meta-command {
 				font-size: 12px;
-				color: #7c818c;
+				color: #8a7fa3;
 			}
 
 			.command p {
@@ -674,33 +766,33 @@
 				margin: 10px 0;
 				padding: 10px 15px;
 				border-radius: 10px;
-				background: #2f343f;
+				background: #251f33;
 				font-size: 12px;
 				white-space: pre-wrap;
 			}
 
 			.option {
-				border-top: 1px solid #404552;
-				padding: 8px 0 0 0;
-				margin: 8px 0 0 0;
+				border-top: 1px solid #3a3150;
+				padding: 10px 0 0 0;
+				margin: 10px 0 0 0;
 			}
 
 			.option code {
-				color: #f5f6f7;
+				color: #f6f3fa;
 				font-weight: bold;
 			}
 
 			.option .argument {
-				color: #7c818c;
+				color: #8a7fa3;
 				font-weight: normal;
 			}
 
 			.option p {
-				margin: 2px 0 0 0;
+				margin: 5px 0 0 0;
 			}
 
 			.marker {
-				color: #5294e2;
+				color: #a06cd5;
 				font-weight: bold;
 				text-decoration: underline;
 			}
@@ -713,17 +805,41 @@
 				margin: 10px 0 0 0;
 			}
 
+			.values li {
+				background: #251f33;
+				border-radius: 10px;
+				padding: 5px 10px;
+				margin: 0 0 5px 0;
+				font-size: 12px;
+			}
+
+			.tag {
+				display: inline-block;
+				background: #3a3150;
+				color: #f6f3fa;
+				border-radius: 20px;
+				padding: 5px 10px;
+				margin: 5px 0;
+				font-size: 12px;
+				white-space: nowrap;
+			}
+
+			.tag.default {
+				background: #4a3f63;
+				color: #251f33;
+			}
+
 			.value {
 				text-align: center;
-				background: #2f343f;
+				background: #251f33;
 				border-radius: 20px;
 				padding: 5px 10px;
 				font-size: 12px;
-				color: #f5f6f7;
+				color: #f6f3fa;
 			}
 
 			.value i {
-				color: #7c818c;
+				color: #8a7fa3;
 				font-style: normal;
 			}
 
@@ -735,17 +851,49 @@
 				display: none;
 			}
 
+			.list-help {
+				columns: 3 320px;
+				column-gap: 25px;
+			}
+
+			.group-help {
+				column-span: all;
+				break-inside: avoid;
+				margin: 20px 0 5px 0;
+				font-size: 15px;
+			}
+
+			.item-help {
+				break-inside: avoid;
+				background: #2e2740;
+				border-radius: 15px;
+				padding: 10px 15px;
+				margin: 0 0 10px 0;
+			}
+
+			.item-help b {
+				display: block;
+			}
+
+			.item-help p {
+				margin: 5px 0 0 0;
+			}
+
+			.empty-help {
+				padding: 20px 0;
+			}
+
 			/* notices */
 
 			details {
-				background: #383c4a;
-				border-radius: 14px;
+				background: #2e2740;
+				border-radius: 15px;
 				padding: 10px 15px;
 				margin: 0 0 10px 0;
 			}
 
 			summary {
-				color: #f5f6f7;
+				color: #f6f3fa;
 				font-weight: bold;
 				cursor: pointer;
 			}
@@ -753,6 +901,16 @@
 			details ul {
 				margin: 10px 0 5px 0;
 				padding: 0 0 0 20px;
+			}
+
+			details li {
+				margin: 0 0 5px 0;
+			}
+
+			details code {
+				color: #f6f3fa;
+				font-weight: bold;
+				overflow-wrap: anywhere;
 			}
 
 			/* footer */
@@ -763,7 +921,7 @@
 				right: 0;
 				bottom: 0;
 				height: 80px;
-				background: #383c4a;
+				background: #2e2740;
 				border-radius: 20px 20px 0 0;
 				overflow: hidden;
 				z-index: 20;
@@ -782,6 +940,12 @@
 				overflow-x: auto;
 				overflow-y: hidden;
 				scrollbar-width: none;
+			}
+
+			/* page scrollbar hidden so the fixed footer spans the full width */
+
+			html::-webkit-scrollbar {
+				display: none;
 			}
 
 			.footer::-webkit-scrollbar {
@@ -821,11 +985,11 @@
 				position: absolute;
 				inset: 0;
 				z-index: 1;
-				border: 10px solid #383c4a;
+				border: 10px solid #2e2740;
 				border-top: 0;
 				border-bottom: 0;
 				border-radius: 20px 20px 0 0;
-				box-shadow: inset 5px 0 10px #383c4a, inset -5px 0 10px #383c4a;
+				box-shadow: inset 5px 0 10px #2e2740, inset -5px 0 10px #2e2740;
 				pointer-events: none;
 			}
 
@@ -838,7 +1002,7 @@
 				flex: none;
 				width: 80px;
 				padding: 10px 0 0 0;
-				color: #a7b0b7;
+				color: #b9aed0;
 				text-align: center;
 				text-decoration: none;
 				font-size: 12px;
@@ -850,12 +1014,12 @@
 
 			.button-navigation:hover .icon,
 			.button-navigation.current .icon {
-				transform: translateY(-3px);
+				transform: translateY(-5px);
 			}
 
 			.button-navigation:hover,
 			.button-navigation.current {
-				color: #f5f6f7;
+				color: #f6f3fa;
 				font-weight: bold;
 			}
 
@@ -870,7 +1034,7 @@
 				width: calc(100% - 40px);
 				margin: 20px auto 0 auto;
 				padding: 20px 0;
-				border-top: 2px solid #404552;
+				border-top: 2px solid #3a3150;
 				font-size: 12px;
 			}
 
@@ -897,8 +1061,8 @@
 
 			.copyright .avatar img {
 				display: block;
-				width: 64px;
-				height: 64px;
+				width: 65px;
+				height: 65px;
 			}
 
 			/* the last section ends flush so every site keeps the same gap above the credits */
@@ -930,15 +1094,15 @@
 			#viewer img {
 				max-width: 100%;
 				max-height: 100%;
-				border-radius: 3px;
+				border-radius: 5px;
 				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 			}
 
 			/* terminal */
 
 			.terminal {
-				background: #1e2129;
-				color: #f5f6f7;
+				background: #18141f;
+				color: #f6f3fa;
 				border-radius: 20px;
 				padding: 15px 20px;
 				font-size: 12px;
@@ -949,15 +1113,15 @@
 
 			.bar-terminal {
 				display: flex;
-				gap: 6px;
-				margin: 0 0 12px 0;
+				gap: 5px;
+				margin: 0 0 10px 0;
 			}
 
 			.bar-terminal i {
 				width: 10px;
 				height: 10px;
 				border-radius: 50%;
-				background: #4b5162;
+				background: #4a3f63;
 			}
 
 			/* palette */
@@ -970,17 +1134,17 @@
 			}
 
 			.swatch {
-				background: #383c4a;
-				border-radius: 14px;
+				background: #2e2740;
+				border-radius: 15px;
 				padding: 10px;
 				font-size: 12px;
 			}
 
 			.swatch span {
 				display: block;
-				height: 36px;
-				border-radius: 8px;
-				margin: 0 0 8px 0;
+				height: 35px;
+				border-radius: 10px;
+				margin: 0 0 10px 0;
 			}
 
 			.swatch b {
@@ -1007,10 +1171,14 @@
 			}
 
 			@media (max-width: 800px) {
+				.gallery.three, .gallery.four { grid-template-columns: repeat(2, 1fr); }
 				.foot-landing { left: 0; }
 				.section .gallery:has(> figure + figure) { display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 15px; margin: 25px -20px; padding: 0 20px 10px 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 20px; scrollbar-width: none; }
 				.section .gallery:has(> figure + figure)::-webkit-scrollbar { display: none; }
 				.section .gallery:has(> figure + figure) > figure { flex: none; width: 82%; scroll-snap-align: center; }
+				.section .gallery.natural:has(> figure + figure) > figure { width: auto; max-width: 82%; }
+				.section .gallery.cube:has(> figure + figure) { justify-content: center; overflow-x: visible; }
+				.section .gallery.cube:has(> figure + figure) > figure { width: auto; }
 			}
 
 			@media (max-width: 520px), (max-height: 560px) {
@@ -1022,11 +1190,13 @@
 
 			@media (max-width: 520px) {
 				.gallery.two { grid-template-columns: 1fr; }
+				.gallery.two, .gallery.three, .gallery.four { grid-template-columns: 1fr; }
 				.points { grid-template-columns: 1fr; }
 				.list-command { columns: 1; }
 				.section { padding: 50px 15px 15px 15px; }
 				.copyright { width: calc(100% - 30px); }
 				.section .gallery:has(> figure + figure) { margin: 25px -15px; padding: 0 15px 10px 15px; scroll-padding: 0 15px; }
+				.gallery.natural .shot img { max-height: 440px; }
 			}
 
 			@media (prefers-reduced-motion: reduce) {
@@ -1448,8 +1618,8 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
 
 			<p class="lead">All 110 Frobulator functions with their arguments and examples. Search them, or pick a group.</p>
 
-			<div class="tools-command">
-				<input id="search-command" type="search" placeholder="Search functions" aria-label="Search functions">
+			<div class="tools-search">
+				<input id="search" type="search" placeholder="Search functions" aria-label="Search functions">
 				<div id="groups-command" class="chips"></div>
 			</div>
 
@@ -2596,7 +2766,7 @@ frobulator.escalate</code></pre>
 
 			// command reference with search and group chips
 
-			const search_command = document.getElementById ( 'search-command' ) ;
+			const search_command = document.getElementById ( 'search' ) ;
 			const chips_command = document.getElementById ( 'groups-command' ) ;
 			const empty_command = document.getElementById ( 'empty-command' ) ;
 			const cards_command = [ ...document.querySelectorAll ( '.command' ) ] ;

@@ -325,9 +325,8 @@
 				padding: 0;
 				margin: 25px 0;
 				display: grid;
-				align-items: start;
 				grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-				gap: 10px 30px;
+				gap: 10px 20px;
 			}
 
 			.points li {
@@ -560,7 +559,9 @@
 			}
 
 			.gallery.cube .shot {
+				display: block;
 				width: auto;
+				margin: 0 auto;
 				background: transparent;
 			}
 
@@ -1288,14 +1289,14 @@ ________________________________________________________________________________
 			</figure>
 
 			<ul class="points">
-				<li><b>Line <a href="#markers">markers</a>.</b> Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.</li>
 				<li><b>Standard lines.</b> Every line is parsed to the terminal width, never below 80 columns: long text folds into paragraphs, long details shorten with an ellipsis.</li>
+				<li><b>Files and network.</b> Directory, write, copy, move, link and delete helpers with ownership kept, plus downloads and uploads reported by HTTP status.</li>
 				<li><b>Prompts and input.</b> Question, input, user and return prompts, lettered and numbered steps, masked password input and labelled value capture.</li>
+				<li><b>Line <a href="#markers">markers</a>.</b> Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.</li>
+				<li><b>Privileges.</b> Escalation through sudo that keeps the original arguments, systemd service control and readable permission scopes.</li>
+				<li><b>Packages.</b> One set of install, require, hold, purge and update commands for apt on Debian and Ubuntu, and dnf on Fedora.</li>
 				<li><b>Progress feedback.</b> Tickers, activity bars, countdowns and typed text, with background jobs that never print shell job notices.</li>
 				<li><b><a href="#checkpoints">Checkpoints</a>.</b> Status tracking that halts, fails or carries on, logs failures and skips completed steps on the next run.</li>
-				<li><b>Files and network.</b> Directory, write, copy, move, link and delete helpers with ownership kept, plus downloads and uploads reported by HTTP status.</li>
-				<li><b>Packages.</b> One set of install, require, hold, purge and update commands for apt on Debian and Ubuntu, and dnf on Fedora.</li>
-				<li><b>Privileges.</b> Escalation through sudo that keeps the original arguments, systemd service control and readable permission scopes.</li>
 				<li><b>Archives.</b> Create and extract tar, gzip, bzip2, zip, 7z and rar archives, with the needed tool installed on demand.</li>
 				<li><b>Self updating.</b> The <a href="#bootstrap">bootstrap</a> header fetches the latest release and only replaces the local copy with a newer one.</li>
 			</ul>
@@ -1485,9 +1486,9 @@ list=()
 
 			<ul class="points">
 				<li><b>Carry-over lines.</b> <code>frobulator.nul</code> keeps the color of the line above, <code>frobulator.ind</code> clears it - both rejoin the line above so details stay together.</li>
+				<li><b>Notices.</b> <code>frobulator.ntf</code> frames a title and message in square, round, heavy, double, dots, matrix, tech, skel or ascii style.</li>
 				<li><b>Steps.</b> <code>frobulator.ltr</code> and <code>frobulator.num</code> print lettered and numbered steps, optionally in a palette color.</li>
 				<li><b>Separators.</b> <code>frobulator.sep</code> prints a full width line, uncolored unless a palette color is given.</li>
-				<li><b>Notices.</b> <code>frobulator.ntf</code> frames a title and message in square, round, heavy, double, dots, matrix, tech, skel or ascii style.</li>
 			</ul>
 
 			<h3>Arguments</h3>
@@ -1598,10 +1599,10 @@ frobulator.result "${script}"</code></pre>
 			<p class="lead"><code>frobulator.permissions</code> sets the exact mode from a scope and optional modifiers, in place of raw <code>chmod</code> numbers. Directories always keep execute for whoever can read them.</p>
 
 			<ul class="points">
-				<li><b>public.</b> You edit, everyone reads.</li>
-				<li><b>group.</b> You edit, your group reads, no access for others.</li>
-				<li><b>private.</b> Only you.</li>
 				<li><b>execute / readonly.</b> Whoever can read can also run / nobody edits, including you.</li>
+				<li><b>group.</b> You edit, your group reads, no access for others.</li>
+				<li><b>public.</b> You edit, everyone reads.</li>
+				<li><b>private.</b> Only you.</li>
 			</ul>
 
 			<div class="table"><table><thead><tr><th>call</th><th>file</th><th>directory</th><th>typical use</th></tr></thead><tbody><tr><td><code>public</code></td><td><code>644</code> <code>rw-r--r--</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>regular files, configs, shared data</td></tr><tr><td><code>public execute</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td><code>755</code> <code>rwxr-xr-x</code></td><td>scripts, binaries, installed tools</td></tr><tr><td><code>public readonly</code></td><td><code>444</code> <code>r--r--r--</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>reference files that should not change</td></tr><tr><td><code>public readonly execute</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td><code>555</code> <code>r-xr-xr-x</code></td><td>locked-down tools</td></tr><tr><td><code>group</code></td><td><code>640</code> <code>rw-r-----</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>files for your group only</td></tr><tr><td><code>group execute</code></td><td><code>750</code> <code>rwxr-x---</code></td><td><code>750</code> <code>rwxr-x---</code></td><td>group-only scripts</td></tr><tr><td><code>group readonly</code></td><td><code>440</code> <code>r--r-----</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>group reference files</td></tr><tr><td><code>group readonly execute</code></td><td><code>550</code> <code>r-xr-x---</code></td><td><code>550</code> <code>r-xr-x---</code></td><td>locked group tools</td></tr><tr><td><code>private</code></td><td><code>600</code> <code>rw-------</code></td><td><code>700</code> <code>rwx------</code></td><td>credentials, keys, tokens</td></tr><tr><td><code>private execute</code></td><td><code>700</code> <code>rwx------</code></td><td><code>700</code> <code>rwx------</code></td><td>personal scripts</td></tr><tr><td><code>private readonly</code></td><td><code>400</code> <code>r--------</code></td><td><code>500</code> <code>r-x------</code></td><td>ssh keys, certificates</td></tr><tr><td><code>private readonly execute</code></td><td><code>500</code> <code>r-x------</code></td><td><code>500</code> <code>r-x------</code></td><td>locked personal tools</td></tr></tbody></table></div>

@@ -10,7 +10,7 @@
 
 # read as text by bootstrap
 
-update="2026-10-23-1100"
+update="2026-11-05-1030"
 
 version="${update}"
 
@@ -4369,6 +4369,52 @@ frobulator.permissions () {
 
 		frobulator.track
 	done
+
+	return "${status}"
+}
+
+# locate ───────────────────────────────────────────────────────────────────────
+
+# use to resolve paths from the script itself, not the calling directory
+
+# sets "${directory_script}" to the real directory of the running script
+
+# symbolic links resolved in pure bash - readlink only for a linked script file
+# working directory left unchanged
+
+# usage:      frobulator.locate
+
+frobulator.locate () {
+
+	local status=0
+
+	local path_script="${BASH_SOURCE[-1]}"
+	local path_target
+
+	# follow file links - bash cannot read link targets itself
+
+	while [ -L "${path_script}" ]
+	do
+		path_target="$(readlink -- "${path_script}")"
+
+		if [[ "${path_target}" != /* && "${path_script}" = */* ]]
+		then
+			path_target="${path_script%/*}/${path_target}"
+		fi
+
+		path_script="${path_target}"
+	done
+
+	# bare name - current directory
+
+	if [[ "${path_script}" != */* ]]
+	then
+		path_script="./${path_script}"
+	fi
+
+	# physical directory - resolves directory links
+
+	directory_script="$(CDPATH="" cd -P -- "${path_script%/*}/" && pwd -P)" || status=1
 
 	return "${status}"
 }

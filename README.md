@@ -26,16 +26,16 @@ Every function, argument and example is documented on [frobulator.app](https://f
   - Install ↴
     - Run the script to install it to '~/.local/bin' - paste or type:
 
-    ```
-    curl -s -L get.frbltr.app > frobulator && bash frobulator
-    ```
+      ```
+      curl -s -L get.frbltr.app > frobulator && bash frobulator
+      ```
 
   - Source ↴
     - Load it at the top of a script - paste or type:
 
-    ```
-    . "${HOME}"/.local/bin/frobulator
-    ```
+      ```
+      . "${HOME}"/.local/bin/frobulator
+      ```
 
   - Bootstrap ↴
     - Or start the script with the [bootstrap](bootstrap) header: it fetches the latest Frobulator, sources it and keeps it up to date.
@@ -43,9 +43,9 @@ Every function, argument and example is documented on [frobulator.app](https://f
   - Use ↴
     - Print a marker line - paste or type:
 
-    ```
-    frobulator.inf "Checking dependencies" "[ curl ]"
-    ```
+      ```
+      frobulator.inf "Checking dependencies" "[ curl ]"
+      ```
 
 ---
 

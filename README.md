@@ -59,6 +59,22 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 ---
 
+### Credits:
+
+Frobulator is written for [GNU Bash](https://www.gnu.org/software/bash/), the shell environment on top of which the scripts function.
+
+Frobulator is related to every project that builds its scripts on it: [Terminal](https://github.com/nathaneltitane/terminal), shell scripts, templates, dotfiles and utilities, [Dextop](https://github.com/nathaneltitane/dextop), a Linux based workstation for Android, [L²CU](https://github.com/nathaneltitane/l2cu), the LDraw Linux command line utility, [MechaBlocks](https://github.com/nathaneltitane/mechablocks), custom LEGO® mecha models, [PewPewPrints](https://github.com/nathaneltitane/pewpewprints), foam blaster printed parts and mods, and [Nathanel + Titane](https://github.com/nathaneltitane/nathaneltitane), an industrial design portfolio.
+
+---
+
+### License:
+
+Frobulator is free software released under the GNU General Public License version 3 - see 'LICENSE.md'.
+
+Linux is a registered trademark of Linus Torvalds, who does not sponsor, authorize or endorse this project.
+
+---
+
 ### Reports:
 
 [Submit bug report or feature request](https://github.com/nathaneltitane/frobulator/issues)

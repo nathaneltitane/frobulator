@@ -57,9 +57,13 @@ frobulator.inf "Checking dependencies" "[ curl ]"
 
 The current set of assertions upon which Frobulator is built restricts its functionality to scripts exclusively, at least for the time being.
 
+---
+
 ### Reports:
 
 [Submit bug report or feature request](https://github.com/nathaneltitane/frobulator/issues)
+
+---
 
 ### Projects:
 

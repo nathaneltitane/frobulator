@@ -25,7 +25,7 @@ Every function, argument and example is documented on [frobulator.app](https://f
 
 **Install ↴**
 
-Run the script to install it to '~/.local/bin' - paste or type:
+Run the script to install it to '~/.local/bin':
 
 ```
 curl -s -L get.frbltr.app > frobulator && bash frobulator
@@ -33,7 +33,7 @@ curl -s -L get.frbltr.app > frobulator && bash frobulator
 
 **Source ↴**
 
-Load it at the top of a script - paste or type:
+Load it at the top of a script:
 
 ```
 . "${HOME}"/.local/bin/frobulator
@@ -45,7 +45,7 @@ Or start the script with the [bootstrap](bootstrap) header: it fetches the lates
 
 **Use ↴**
 
-Print a marker line - paste or type:
+Print a marker line:
 
 ```
 frobulator.inf "Checking dependencies" "[ curl ]"

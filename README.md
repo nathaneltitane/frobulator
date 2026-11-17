@@ -21,7 +21,7 @@ Every function, argument and example is documented on [frobulator.app](https://f
 
 ---
 
-### TL;DR
+### TL:DR
 
 **Install ↴**
 

@@ -1,14 +1,14 @@
 # Site
 
-Every section of [frobulator.app](https://frobulator.app). `tools/frobulator-site` builds the page from this file. Each `##` section starts with a comment that sets its page id, icon and heading, and its first paragraph is the lead. `- **Title.** text` lines become points and `1. **Title.** text` lines steps, a `<!-- table class -->` comment sets the class of the table below it, and a `<!-- gallery class -->` comment turns the images and video links below it into one gallery, the title of a single image setting its figure class. A `<!-- video -->` comment turns the link below it into a looping video. A `<!-- include name -->` comment places content read from the scripts, a paragraph made of links ending in › becomes a more link, and `@NAME@` placeholders are filled with counts read from the scripts.
+Every section of [frobulator.app](https://frobulator.app). `tools/frobulator-site` builds the page from this file. Each `##` section starts with a comment that sets its page id, icon and heading, and its first paragraph is the lead. `- **Title.** text` lines become points and `1. **Title.** text` lines steps, a `[//]: # (table class)` comment sets the class of the table below it, and a `[//]: # (gallery class)` comment turns the images and video links below it into one gallery, the title of a single image setting its figure class. A `[//]: # (video)` comment turns the link below it into a looping video. A `[//]: # (include name)` comment places content read from the scripts, a paragraph made of links ending in › becomes a more link, and `@NAME@` placeholders are filled with counts read from the scripts.
 
 ## Overview
 
-<!-- overview | orange | OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS -->
+[//]: # (overview | orange | OVERVIEW // A FUNCTION LIBRARY FOR SHELL SCRIPTS)
 
 Frobulator is a shell parser and scripting function library. Source it at the top of a Bash script and every message, prompt, download, package install and checkpoint gets the same clean, colorized, 80 column output - all while making redundant and complex code bits a thing of the past.
 
-<!-- include demonstration -->
+[//]: # (include demonstration)
 
 - **Line markers.** Information, warning, success, error, download and two dozen more message types, each with its own glyph and color.
 - **Standard lines.** Every line is parsed to the terminal width, never below 80 columns: long text folds into paragraphs, long details shorten with an ellipsis.
@@ -27,7 +27,7 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 ## Install
 
-<!-- install | amber | INSTALL // ONE FILE IN ~/.LOCAL/BIN -->
+[//]: # (install | amber | INSTALL // ONE FILE IN ~/.LOCAL/BIN)
 
 Frobulator is a single Bash file. Run it to install it to `${HOME}/.local/bin`, then source it from your scripts - or let the bootstrap header do both.
 
@@ -60,7 +60,7 @@ Running the script directly installs it - no arguments default to `--install`. S
 
 ## Bootstrap
 
-<!-- bootstrap | yellow | BOOTSTRAP // THE STANDARD SCRIPT HEADER -->
+[//]: # (bootstrap | yellow | BOOTSTRAP // THE STANDARD SCRIPT HEADER)
 
 Start every script with this header. It fetches the latest Frobulator with curl or wget, sources it once, escalates when needed and prints the script banner. The sections below it are the standard layout of a Frobulator script.
 
@@ -70,17 +70,17 @@ Start every script with this header. It fetches the latest Frobulator with curl 
 4. **Loaded once.** `frobulator_loaded` skips the download and sourcing when Frobulator is already loaded.
 5. **Requirements.** The `list` array feeds `frobulator.require`, which installs whatever command or package is missing.
 
-<!-- include bootstrap -->
+[//]: # (include bootstrap)
 
 [Get the bootstrap header ›](https://github.com/nathaneltitane/frobulator/blob/main/bootstrap)
 
 ## Markers
 
-<!-- markers | green | MARKERS // @MARKERS@ LINE TYPES -->
+[//]: # (markers | green | MARKERS // @MARKERS@ LINE TYPES)
 
 Every marker prints a message, an optional detail and an optional fill character on one line as wide as the terminal, followed by a blank line from `frobulator.brk` - scripts do not add `echo` after messages. Prompts stay on the same line for the answer.
 
-<!-- include markers -->
+[//]: # (include markers)
 
 - **Carry-over lines.** `frobulator.nul` keeps the color of the line above, `frobulator.ind` clears it - both rejoin the line above so details stay together.
 - **Steps.** `frobulator.ltr` and `frobulator.num` print lettered and numbered steps, optionally in a palette color.
@@ -102,15 +102,15 @@ prompt_arguments=(
 frobulator.inf "${prompt_arguments[@]}"
 ```
 
-<!-- include example -->
+[//]: # (include example)
 
 ## Colors
 
-<!-- colors | emerald | COLORS // @COLORS@ NAMED 256 COLOR CODES -->
+[//]: # (colors | emerald | COLORS // @COLORS@ NAMED 256 COLOR CODES)
 
 Every palette color has its own line command, and its name is accepted wherever a color is: numbered steps, separators and the critter. Colors are set only when output is a terminal - through `tput`, or ANSI sequences without it - and stay empty otherwise.
 
-<!-- include swatches -->
+[//]: # (include swatches)
 
 ### Add your own
 
@@ -123,11 +123,11 @@ frobulator.num cornflower 1 "Soft blue line" "[ value ]"
 
 ## Checkpoints
 
-<!-- checkpoints | teal | CHECKPOINTS // STATUS, LOGS AND RESUMES -->
+[//]: # (checkpoints | teal | CHECKPOINTS // STATUS, LOGS AND RESUMES)
 
 Frobulator replaces the `if [ "${?}" -ne 0 ]` blocks of a script with one line checks. Failures are recorded, logged to `~/.local/var/log/<script>-<stamp>.log` and summed up at the end.
 
-<!-- table wrap -->
+[//]: # (table wrap)
 | Command | On failure |
 | --- | --- |
 | `frobulator.complete` | Reports `Incomplete - &lt;label&gt;`, logs the failure and carries on |
@@ -153,7 +153,7 @@ The checkpoint form runs a command once: it is skipped while `"${path}/${checkpo
 
 ## Packages
 
-<!-- packages | cyan | PACKAGES // APT AND DNF -->
+[//]: # (packages | cyan | PACKAGES // APT AND DNF)
 
 The package manager is picked from the distribution family in `/etc/os-release`: `debian` and its derivatives use apt, `fedora` and its derivatives use dnf, or yum when dnf is missing. The family decides, not the commands on the `PATH`, so a Fedora container under Termux uses dnf even with Termux's apt in reach.
 
@@ -173,7 +173,7 @@ The package manager is picked from the distribution family in `/etc/os-release`:
 
 ## Permissions
 
-<!-- permissions | sky | PERMISSIONS // SCOPES INSTEAD OF MODES -->
+[//]: # (permissions | sky | PERMISSIONS // SCOPES INSTEAD OF MODES)
 
 `frobulator.permissions` sets the exact mode from a scope and optional modifiers, in place of raw `chmod` numbers. Directories always keep execute for whoever can read them.
 
@@ -182,7 +182,7 @@ The package manager is picked from the distribution family in `/etc/os-release`:
 - **private.** Only you.
 - **execute / readonly.** Whoever can read can also run / nobody edits, including you.
 
-<!-- include permissions -->
+[//]: # (include permissions)
 
 ```
 frobulator.permissions public execute "${path}/${file}"
@@ -191,9 +191,9 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"
 
 ## Functions
 
-<!-- functions | blue | FUNCTIONS // EVERY COMMAND AND EXAMPLE -->
+[//]: # (functions | blue | FUNCTIONS // EVERY COMMAND AND EXAMPLE)
 
 All @FUNCTIONS@ Frobulator functions with their arguments and examples. Search them, or pick a group.
 
-<!-- include functions -->
+[//]: # (include functions)
 

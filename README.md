@@ -63,7 +63,7 @@ The current set of assertions upon which Frobulator is built restricts its funct
 
 Frobulator is written for [GNU Bash](https://www.gnu.org/software/bash/), the shell environment on top of which the scripts function.
 
-Frobulator is related to every project that builds its scripts on it: [Terminal](https://github.com/nathaneltitane/terminal), shell scripts, templates, dotfiles and utilities, [Dextop](https://github.com/nathaneltitane/dextop), a Linux based workstation for Android, [L²CU](https://github.com/nathaneltitane/l2cu), the LDraw Linux command line utility, [MechaBlocks](https://github.com/nathaneltitane/mechablocks), custom LEGO® mecha models, [PewPewPrints](https://github.com/nathaneltitane/pewpewprints), foam blaster printed parts and mods, and [Nathanel + Titane](https://github.com/nathaneltitane/nathaneltitane), an industrial design portfolio.
+Frobulator is related to every project that builds its scripts on it: [Terminal](https://github.com/nathaneltitane/terminal), shell scripts, templates, dotfiles and utilities, [Dextop](https://github.com/nathaneltitane/dextop), a Linux based workstation for Android, [L²CU](https://github.com/nathaneltitane/l2cu), the LDraw Linux command line utility, [MechaBlocks](https://github.com/nathaneltitane/mechablocks), custom LEGO® mecha models, [PewPewPrints](https://github.com/nathaneltitane/pewpewprints), foam blaster printed parts and mods, [Nathanel + Titane](https://github.com/nathaneltitane/nathaneltitane), an industrial design portfolio, and [ADA](https://github.com/nathaneltitane/ada), a local coding agent whose installer runs on it.
 
 ---
 
@@ -98,6 +98,8 @@ Linux is a registered trademark of Linus Torvalds, who does not sponsor, authori
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/nathaneltitane?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=NATHANEL%20%2b%20TITANE)](https://github.com/nathaneltitane/nathaneltitane)
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/pewpewprints?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=PEW%21%20PEW%21%20PRINTS)](https://github.com/nathaneltitane/pewpewprints)
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/nathaneltitane/ada?style=for-the-badge&logo=gnubash&logoColor=ffffff&label=ADA)](https://github.com/nathaneltitane/ada)
 
 ---
 

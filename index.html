@@ -624,7 +624,7 @@ frobulator.sep lime "Section"</code></pre>
 					<div class="command-body">
 						<div class="command-head"><h3>frobulator.llm</h3><span class="command-meta">Markers</span></div>
 						<p>[ l ] arge [ l ] anguage [ m ] odel:</p>
-						<p>Prints a lavender line for a language model, like <code>frobulator.inf</code>, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: <code>list_ticker_llm_work</code> is a wave flowing through the cells while the model works, and <code>list_ticker_llm_wait</code> is a bar sliding over a row of dots while it waits. <code>marker_llm</code> is the first waiting frame.</p>
+						<p>Prints a lavender line for a language model, like <code>frobulator.inf</code>, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: <code>list_ticker_llm_work</code> is a wave flowing through the cells while the model works, and <code>list_ticker_llm_wait</code> is a bar sliding back and forth over a row of dots while it waits. <code>marker_llm</code> is the first waiting frame.</p>
 						<pre><code>frobulator.llm "Chatting with model" "[ ada // 20 GB ]"</code></pre>
 						<pre><code>printf '\e7\e[1;1H%s[ %s ]%s\e8' "${lavender}" "${list_ticker_llm_work[2]}" "${reset}"</code></pre>
 					</div>

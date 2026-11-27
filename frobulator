@@ -154,7 +154,15 @@ frobulator.columns () {
 
 	local columns
 
-	columns=$(tput cols 2> "${sink}")
+	# size read from the terminal itself - tput in a background or captured subshell falls back to 80
+
+	columns="$(stty size < /dev/tty 2> "${sink}")"
+	columns="${columns##* }"
+
+	if [[ ! "${columns}" =~ ^[1-9][0-9]*$ ]]
+	then
+		columns=$(tput cols 2> "${sink}")
+	fi
 
 	if [[ -t 1 ]] && [[ "${columns}" =~ ^[0-9]+$ ]] && [ "${columns}" -gt "${columns_terminal_minimum}" ]
 	then
@@ -950,7 +958,7 @@ unset format_marker
 unset list_markers_line
 
 # language model marker - three cells inside the brackets - frames for animated redraws
-#   working: wave flowing through the cells - waiting: bar sliding over a row of dots
+#   working: wave flowing through the cells - waiting: bar sliding back and forth over a row of dots
 
 list_ticker_llm_work=(
 	'⣀⣤⣶'
@@ -968,6 +976,10 @@ list_ticker_llm_wait=(
 	'⣀⣸⣀'
 	'⣀⣀⣇'
 	'⣀⣀⣸'
+	'⣀⣀⣇'
+	'⣀⣸⣀'
+	'⣀⣇⣀'
+	'⣸⣀⣀'
 )
 
 marker_llm="${marker_brl}${marker_spc}${list_ticker_llm_wait[0]}${marker_spc}${marker_brr}"

@@ -221,7 +221,7 @@ frobulator.ntf wrn "Disclaimer" inf "This action is permanent."
 
 [ l ] arge [ l ] anguage [ m ] odel:
 
-Prints a lavender line for a language model, like `frobulator.inf`, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: `list_ticker_llm_work` is a wave flowing through the cells while the model works, and `list_ticker_llm_wait` is a bar sliding over a row of dots while it waits. `marker_llm` is the first waiting frame.
+Prints a lavender line for a language model, like `frobulator.inf`, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: `list_ticker_llm_work` is a wave flowing through the cells while the model works, and `list_ticker_llm_wait` is a bar sliding back and forth over a row of dots while it waits. `marker_llm` is the first waiting frame.
 
 ```bash
 frobulator.llm "Chatting with model" "[ ada // 20 GB ]"

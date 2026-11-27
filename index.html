@@ -435,11 +435,11 @@ frobulator.inf "${prompt_arguments[@]}"</code></pre>
 		<section id="colors" class="section reveal">
 			<header class="section-head">
 				<span class="icon big logo-button-emerald" aria-hidden="true"></span>
-				<h2>COLORS // 18 NAMED 256 COLOR CODES</h2>
+				<h2>COLORS // 19 NAMED 256 COLOR CODES</h2>
 			</header>
 
 			<p class="lead">Every palette color has its own line command, and its name is accepted wherever a color is: numbered steps, separators and the critter. Colors are set only when output is a terminal - through <code>tput</code>, or ANSI sequences without it - and stay empty otherwise.</p>
-			<div class="swatches"><div class="swatch"><span style="background:#eeeeee"></span><b>white</b>255 // #eeeeee</div><div class="swatch"><span style="background:#a8a8a8"></span><b>silver</b>248 // #a8a8a8</div><div class="swatch"><span style="background:#767676"></span><b>grey</b>243 // #767676</div><div class="swatch"><span style="background:#6b7080"></span><b>black</b>238 // #6b7080</div><div class="swatch"><span style="background:#cc575d"></span><b>red</b>1 // #cc575d</div><div class="swatch"><span style="background:#c0393f"></span><b>crimson</b>88 // #c0393f</div><div class="swatch"><span style="background:#5ac25a"></span><b>green</b>2 // #5ac25a</div><div class="swatch"><span style="background:#008700"></span><b>lime</b>28 // #008700</div><div class="swatch"><span style="background:#f6d32d"></span><b>yellow</b>11 // #f6d32d</div><div class="swatch"><span style="background:#ff5f00"></span><b>orange</b>202 // #ff5f00</div><div class="swatch"><span style="background:#5294e2"></span><b>blue</b>4 // #5294e2</div><div class="swatch"><span style="background:#005fd7"></span><b>navy</b>26 // #005fd7</div><div class="swatch"><span style="background:#c061cb"></span><b>magenta</b>5 // #c061cb</div><div class="swatch"><span style="background:#9a5fb5"></span><b>purple</b>53 // #9a5fb5</div><div class="swatch"><span style="background:#d33fa8"></span><b>fuschia</b>126 // #d33fa8</div><div class="swatch"><span style="background:#ff00d7"></span><b>pink</b>200 // #ff00d7</div><div class="swatch"><span style="background:#00aade"></span><b>aqua</b>6 // #00aade</div><div class="swatch"><span style="background:#008787"></span><b>teal</b>30 // #008787</div></div>
+			<div class="swatches"><div class="swatch"><span style="background:#eeeeee"></span><b>white</b>255 // #eeeeee</div><div class="swatch"><span style="background:#a8a8a8"></span><b>silver</b>248 // #a8a8a8</div><div class="swatch"><span style="background:#767676"></span><b>grey</b>243 // #767676</div><div class="swatch"><span style="background:#6b7080"></span><b>black</b>238 // #6b7080</div><div class="swatch"><span style="background:#cc575d"></span><b>red</b>1 // #cc575d</div><div class="swatch"><span style="background:#c0393f"></span><b>crimson</b>88 // #c0393f</div><div class="swatch"><span style="background:#5ac25a"></span><b>green</b>2 // #5ac25a</div><div class="swatch"><span style="background:#008700"></span><b>lime</b>28 // #008700</div><div class="swatch"><span style="background:#f6d32d"></span><b>yellow</b>11 // #f6d32d</div><div class="swatch"><span style="background:#ff5f00"></span><b>orange</b>202 // #ff5f00</div><div class="swatch"><span style="background:#5294e2"></span><b>blue</b>4 // #5294e2</div><div class="swatch"><span style="background:#005fd7"></span><b>navy</b>26 // #005fd7</div><div class="swatch"><span style="background:#c061cb"></span><b>magenta</b>5 // #c061cb</div><div class="swatch"><span style="background:#9a5fb5"></span><b>purple</b>53 // #9a5fb5</div><div class="swatch"><span style="background:#af87ff"></span><b>lavender</b>141 // #af87ff</div><div class="swatch"><span style="background:#d33fa8"></span><b>fuschia</b>126 // #d33fa8</div><div class="swatch"><span style="background:#ff00d7"></span><b>pink</b>200 // #ff00d7</div><div class="swatch"><span style="background:#00aade"></span><b>aqua</b>6 // #00aade</div><div class="swatch"><span style="background:#008787"></span><b>teal</b>30 // #008787</div></div>
 			<h3>Add your own</h3>
 			<p><code>frobulator.palette</code> adds a named color at run time from a 256 color code. Adding an existing name updates its color. The colors shown here follow a dark terminal theme, with the darkest codes lifted for reading: your terminal decides how they look.</p>
 
@@ -543,7 +543,7 @@ frobulator.permissions private readonly "${HOME}/.ssh/id_ed25519"</code></pre>
 				<h2>FUNCTIONS // EVERY COMMAND AND EXAMPLE</h2>
 			</header>
 
-			<p class="lead">All 110 Frobulator functions with their arguments and examples. Search them, or pick a group.</p>
+			<p class="lead">All 112 Frobulator functions with their arguments and examples. Search them, or pick a group.</p>
 
 			<div class="search-tools">
 				<input id="search" type="search" placeholder="Search functions" aria-label="Search functions">
@@ -617,6 +617,16 @@ frobulator.sep lime "Section"</code></pre>
 						<pre><code>frobulator.ntf round inf "Notice" "The setup process is ready."</code></pre>
 						<pre><code>frobulator.ntf heavy split err "Failure" "Could not reach the update server."</code></pre>
 						<pre><code>frobulator.ntf wrn "Disclaimer" inf "This action is permanent."</code></pre>
+					</div>
+				</article>
+
+				<article class="command" id="function-llm" data-group="Markers">
+					<div class="command-body">
+						<div class="command-head"><h3>frobulator.llm</h3><span class="command-meta">Markers</span></div>
+						<p>[ l ] arge [ l ] anguage [ m ] odel:</p>
+						<p>Prints a lavender line for a language model, like <code>frobulator.inf</code>, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: <code>list_ticker_llm_work</code> is a wave flowing through the cells while the model works, and <code>list_ticker_llm_wait</code> is a bar sliding over a row of dots while it waits. <code>marker_llm</code> is the first waiting frame.</p>
+						<pre><code>frobulator.llm "Chatting with model" "[ ada // 20 GB ]"</code></pre>
+						<pre><code>printf '\e7\e[1;1H%s[ %s ]%s\e8' "${lavender}" "${list_ticker_llm_work[2]}" "${reset}"</code></pre>
 					</div>
 				</article>
 
@@ -846,7 +856,7 @@ frobulator.columns</code></pre>
 						<pre><code>frobulator.[color] "[string]" "[string]" "[span character]"
 frobulator.lime "Highlighted" "[ value ]"</code></pre>
 
-						<div class="values"><span class="value" style="color:#eeeeee">frobulator.white</span><span class="value" style="color:#a8a8a8">frobulator.silver</span><span class="value" style="color:#767676">frobulator.grey</span><span class="value" style="color:#6b7080">frobulator.black</span><span class="value" style="color:#cc575d">frobulator.red</span><span class="value" style="color:#c0393f">frobulator.crimson</span><span class="value" style="color:#5ac25a">frobulator.green</span><span class="value" style="color:#008700">frobulator.lime</span><span class="value" style="color:#f6d32d">frobulator.yellow</span><span class="value" style="color:#ff5f00">frobulator.orange</span><span class="value" style="color:#5294e2">frobulator.blue</span><span class="value" style="color:#005fd7">frobulator.navy</span><span class="value" style="color:#c061cb">frobulator.magenta</span><span class="value" style="color:#9a5fb5">frobulator.purple</span><span class="value" style="color:#d33fa8">frobulator.fuschia</span><span class="value" style="color:#ff00d7">frobulator.pink</span><span class="value" style="color:#00aade">frobulator.aqua</span><span class="value" style="color:#008787">frobulator.teal</span></div>
+						<div class="values"><span class="value" style="color:#eeeeee">frobulator.white</span><span class="value" style="color:#a8a8a8">frobulator.silver</span><span class="value" style="color:#767676">frobulator.grey</span><span class="value" style="color:#6b7080">frobulator.black</span><span class="value" style="color:#cc575d">frobulator.red</span><span class="value" style="color:#c0393f">frobulator.crimson</span><span class="value" style="color:#5ac25a">frobulator.green</span><span class="value" style="color:#008700">frobulator.lime</span><span class="value" style="color:#f6d32d">frobulator.yellow</span><span class="value" style="color:#ff5f00">frobulator.orange</span><span class="value" style="color:#5294e2">frobulator.blue</span><span class="value" style="color:#005fd7">frobulator.navy</span><span class="value" style="color:#c061cb">frobulator.magenta</span><span class="value" style="color:#9a5fb5">frobulator.purple</span><span class="value" style="color:#af87ff">frobulator.lavender</span><span class="value" style="color:#d33fa8">frobulator.fuschia</span><span class="value" style="color:#ff00d7">frobulator.pink</span><span class="value" style="color:#00aade">frobulator.aqua</span><span class="value" style="color:#008787">frobulator.teal</span></div>
 					</div>
 				</article>
 

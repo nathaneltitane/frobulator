@@ -553,6 +553,7 @@ colors_selection=(
 
 	magenta="5"
 	purple="53"
+	lavender="141"
 
 	fuschia="126"
 	pink="200"
@@ -620,6 +621,7 @@ then
 
 		magenta=$(echo -e \\e\[38\;5\;"${magenta}"m)
 		purple=$(echo -e \\e\[38\;5\;"${purple}"m)
+		lavender=$(echo -e \\e\[38\;5\;"${lavender}"m)
 
 		fuschia=$(echo -e \\e\[38\;5\;"${fuschia}"m)
 		pink=$(echo -e \\e\[38\;5\;"${pink}"m)
@@ -670,6 +672,7 @@ else
 
 		magenta=$(tput setaf "${magenta}")
 		purple=$(tput setaf "${purple}")
+		lavender=$(tput setaf "${lavender}")
 
 		fuschia=$(tput setaf "${fuschia}")
 		pink=$(tput setaf "${pink}")
@@ -945,6 +948,29 @@ done
 unset entry_marker
 unset format_marker
 unset list_markers_line
+
+# language model marker - three cells inside the brackets - frames for animated redraws
+#   working: wave flowing through the cells - waiting: bar sliding over a row of dots
+
+list_ticker_llm_work=(
+	'⣀⣤⣶'
+	'⣤⣶⣿'
+	'⣶⣿⣶'
+	'⣿⣶⣤'
+	'⣶⣤⣀'
+	'⣤⣀⣤'
+)
+
+list_ticker_llm_wait=(
+	'⣇⣀⣀'
+	'⣸⣀⣀'
+	'⣀⣇⣀'
+	'⣀⣸⣀'
+	'⣀⣀⣇'
+	'⣀⣀⣸'
+)
+
+marker_llm="${marker_brl}${marker_spc}${list_ticker_llm_wait[0]}${marker_spc}${marker_brr}"
 
 # blank marker of line marker width
 
@@ -1522,6 +1548,17 @@ frobulator.purple () {
 	frobulator.brk
 }
 
+frobulator.lavender () {
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lavender}${prompt}${reset}"
+
+	frobulator.brk
+}
+
 frobulator.fuschia () {
 
 	frobulator.pmt "${@}"
@@ -1615,6 +1652,27 @@ frobulator.inf () {
 	echo -e "${blue}${marker_inf}${marker_spc}${prompt}${reset}"
 
 	entry_color=("${blue}")
+
+	frobulator.brk
+
+	# entry_color kept - frobulator.nul continues in this color
+
+	return "${status}"
+}
+
+# language model line marker ───────────────────────────────────────────────────
+
+frobulator.llm () {
+
+	local status=0
+
+	frobulator.pmt "${@}"
+
+	prompt="${prompt_string[@]}"
+
+	echo -e "${lavender}${marker_llm}${marker_spc}${prompt}${reset}"
+
+	entry_color=("${lavender}")
 
 	frobulator.brk
 

@@ -15,6 +15,7 @@ Short names for the functions used most: prompt formatting and line markers. Eac
 | `frobulator.ind` | index line - carry-over: without color |
 | `frobulator.nil` | empty (nil) line |
 | `frobulator.inf` | information |
+| `frobulator.llm` | large language model |
 | `frobulator.wrn` | warning |
 | `frobulator.msg` | message |
 | `frobulator.add` | add |
@@ -216,6 +217,20 @@ frobulator.ntf heavy split err "Failure" "Could not reach the update server."
 frobulator.ntf wrn "Disclaimer" inf "This action is permanent."
 ```
 
+### frobulator.llm
+
+[ l ] arge [ l ] anguage [ m ] odel:
+
+Prints a lavender line for a language model, like `frobulator.inf`, with a three-cell braille marker. The marker frames are kept for scripts that redraw the marker in place: `list_ticker_llm_work` is a wave flowing through the cells while the model works, and `list_ticker_llm_wait` is a bar sliding over a row of dots while it waits. `marker_llm` is the first waiting frame.
+
+```bash
+frobulator.llm "Chatting with model" "[ ada // 20 GB ]"
+```
+
+```bash
+printf '\e7\e[1;1H%s[ %s ]%s\e8' "${lavender}" "${list_ticker_llm_work[2]}" "${reset}"
+```
+
 ## prompt formatting
 
 ### frobulator.erase
@@ -259,6 +274,7 @@ frobulator.[color] "[string]" "[string]" "[span character]"
 | `frobulator.navy` | `frobulator.navy "Highlighted" "[ value ]"` |
 | `frobulator.magenta` | `frobulator.magenta "Highlighted" "[ value ]"` |
 | `frobulator.purple` | `frobulator.purple "Highlighted" "[ value ]"` |
+| `frobulator.lavender` | `frobulator.lavender "Highlighted" "[ value ]"` |
 | `frobulator.fuschia` | `frobulator.fuschia "Highlighted" "[ value ]"` |
 | `frobulator.pink` | `frobulator.pink "Highlighted" "[ value ]"` |
 | `frobulator.aqua` | `frobulator.aqua "Highlighted" "[ value ]"` |
@@ -961,6 +977,7 @@ frobulator.pmt
 frobulator.brk
 frobulator.nil
 frobulator.inf
+frobulator.llm
 frobulator.wrn
 frobulator.msg
 frobulator.add
@@ -1003,6 +1020,7 @@ frobulator.blue
 frobulator.navy
 frobulator.magenta
 frobulator.purple
+frobulator.lavender
 frobulator.fuschia
 frobulator.pink
 frobulator.aqua

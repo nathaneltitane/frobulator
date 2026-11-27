@@ -152,11 +152,13 @@ lines_printed_terminal=0
 
 frobulator.columns () {
 
+	local file_terminal="/dev/tty"
 	local columns
 
 	# size read from the terminal itself - tput in a background or captured subshell falls back to 80
+	# error output redirected first - it also silences a missing terminal
 
-	columns="$(stty size < /dev/tty 2> "${sink}")"
+	columns="$(stty size 2> "${sink}" < "${file_terminal}")"
 	columns="${columns##* }"
 
 	if [[ ! "${columns}" =~ ^[1-9][0-9]*$ ]]
